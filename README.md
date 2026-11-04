@@ -40,7 +40,69 @@ node -v
 
    You are redirected to `/ar` (Arabic, right-to-left) or `/en` (English), depending on your browser language. You can switch language from the header.
 
-No environment variables are needed yet. Supabase and the AI assistant arrive in later milestones. When they do, their keys will go in `.env.local`, with an `.env.example` committed next to it.
+The landing page runs without any setup. Sign-in and every signed-in screen need Supabase: see [Supabase and demo sign-in](#supabase-and-demo-sign-in) below.
+
+## Supabase and demo sign-in
+
+### 1. Environment variables
+
+Copy `.env.example` to `.env.local` and fill it in. `.env.local` is git-ignored.
+
+| Variable | Where it's used | Notes |
+|---|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL` | Browser and server | Project settings → API |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Browser and server | Project settings → API |
+| `SUPABASE_SERVICE_ROLE_KEY` | Server only | Facility-code role change, UAE PASS mock, seed script, tests. Never prefix with `NEXT_PUBLIC_`. |
+| `DEMO_UAE_PASS_ENABLED` | Server | `true` shows the UAE PASS mock. Leave unset in production. |
+| `GOOGLE_AUTH_ENABLED` | Server | Leave empty: "Continue with Google" appears by itself once the Google provider is on in Supabase (step 3). `false` hides it. |
+| `PHONE_AUTH_ENABLED` | Server | `true` shows phone code sign-in. **Off for now**: email is the main path until the Phone provider is set up (step 3). |
+
+### 2. Database
+
+Apply the migrations in `supabase/migrations/` (tables `profiles`, `consents`, `counsellors`, `events`, the new-user trigger and row-level security):
+
+- **Hosted project:** `npx supabase link --project-ref <ref>` then `npx supabase db push`, or paste the SQL file into the SQL editor.
+- **Local (needs Docker):** `npx supabase start`. This also applies `supabase/config.toml`, which already has the test phone numbers.
+
+### 3. Auth settings (hosted project)
+
+In the Supabase dashboard, **Authentication**:
+
+- **Sign In / Providers → Phone** (only when `PHONE_AUTH_ENABLED=true`): enable it. Choose any SMS provider and enter placeholder credentials; the test numbers below never send an SMS. Under **Test Phone Numbers and OTPs** add:
+  `971500000001=123456, 971500000002=123456, 971500000003=123456, 971500000004=123456, 971500000009=123456`
+- **Sign In / Providers → Email:** enabled (magic link). The default Supabase mailer only delivers to your team's addresses; add custom SMTP to email anyone else.
+- **Sign In / Providers → Google** (optional): in Google Cloud, create an OAuth client (Web application) with redirect URI `https://<ref>.supabase.co/auth/v1/callback`, then paste its client ID and secret here. The button appears on the sign-in page within a minute.
+- **URL Configuration:** Site URL `http://localhost:3000`; add `http://localhost:3000/**` (and your Vercel URL) to the redirect URLs.
+- **Rate limits** stay at Supabase's defaults; the app shows "Too many attempts. Please wait a minute." when one is hit.
+
+### 4. Seed the demo users
+
+```bash
+npm run seed:auth
+```
+
+Safe to run again. All data is synthetic.
+
+| Persona | Role | Email | Test number (after +971), when phone is on | Lands on |
+|---|---|---|---|---|
+| Mariam | individual | `mariam@demo.genebridge.app` | `50 000 0001`, code `123456` | `/home` |
+| Khalid | individual | `khalid@demo.genebridge.app` | `50 000 0002`, code `123456` | `/home` |
+| Patient R. | individual | `patient.r@demo.genebridge.app` | `50 000 0003`, code `123456` | `/home` |
+| Dr. Amaka Okoro | counsellor | `amaka.okoro@demo.genebridge.app` | `50 000 0004`, code `123456` | `/pro` |
+| *(no account)* | | | `50 000 0009`, code `123456` | `/onboarding` (try sign-up) |
+
+The demo email addresses don't receive mail. To sign in as any persona in a demo, use the UAE PASS mock. To try sign-up, use your own email (the default Supabase mailer only delivers to members of your Supabase organisation).
+
+- **UAE PASS (mock):** "Continue with UAE PASS" opens a "Demo: UAE PASS" dialog with all four personas. Dr. Amaka Okoro lands on `/pro`.
+- **Facility code:** "Sign in with a facility code", then `GB-DEMO-001` with your own email. The role is set to `counsellor` on the server.
+
+### How sign-in works
+
+- Email magic link (main path for now), Google and phone code (when turned on) all create the account on first use, so the page never reveals whether a number or email already has one.
+- **Passwords:** sign-up is always by email link. Right after an email-link sign-in, people are offered "Set a password" (`/auth/password`) or "Skip for now". Next time they can choose "Sign in with a password instead" on the Sign in tab. Forgotten password: sign in with an email link, then set a new one at `/auth/password`. A wrong password and an unknown email get the same message.
+- Anyone without a `terms` consent is asked for it before going further, including new people who used the Sign in tab.
+- Sessions end after 30 minutes without activity, with a notice on the sign-in page.
+- Auth events stored in `events`: `auth_method_selected` (method: email, password, google, uae_pass or phone), `sign_up_completed`, `sign_in_completed`, `consent_given` (kind). No phone numbers, emails or names.
 
 ## Scripts
 
@@ -50,6 +112,9 @@ No environment variables are needed yet. Supabase and the AI assistant arrive in
 | `npm run build` | Creates a production build |
 | `npm run start` | Serves the production build (run `npm run build` first) |
 | `npm run lint` | Runs ESLint across the project |
+| `npm run seed:auth` | Creates or updates the demo users (needs `.env.local`) |
+| `npm run test:rls` | Unit tests, plus row-level security tests when Supabase env vars are set |
+| `npm run test:e2e` | Playwright auth flow tests (needs Supabase set up as above; run `npx playwright install chromium` once) |
 
 Before pushing, make sure `npm run build` and `npm run lint` both pass.
 
@@ -68,17 +133,24 @@ app/
   [locale]/
     layout.tsx           Root layout: fonts, lang/dir, translations
     (marketing)/         Landing page, terms, contact
-    (auth)/              Sign up / sign in
+    (auth)/              Sign up / sign in, email and Google callback
     (app)/               Signed-in screens (results, couple, simulator, ...)
 components/
   ui/                    Shared building blocks: Button, Card, Chip, Logo, SectionHeading
   marketing/             Landing page sections, header, footer, mobile menu
+  auth/                  Inactivity sign-out
+lib/
+  supabase/              Browser, server and service-role clients
+  auth/                  Server actions, redirect rules, UAE PASS mock, demo users
 i18n/                    Locale routing, navigation helpers, message loading
 messages/
-  en/  ar/               UI strings for each locale (landing.json, common.json)
+  en/  ar/               UI strings for each locale (landing.json, common.json, auth.json)
+supabase/                Migrations and local config (test phone numbers)
+scripts/                 Seed scripts
+tests/                   Playwright (e2e/) and RLS (rls/) tests
 design/                  Screenshots, HTML screens and tokens (UI source of truth)
 public/                  Logo and static assets
-proxy.ts                 Redirects requests to the right locale
+proxy.ts                 Locale routing, session refresh, route protection, inactivity sign-out
 ```
 
 ## Working on the project
@@ -95,6 +167,7 @@ proxy.ts                 Redirects requests to the right locale
 | Milestone | Status |
 |---|---|
 | M1 Landing page | Done: `/ar` and `/en`, Lighthouse accessibility 96+ |
-| M2 onwards | Not started. Linked routes show a placeholder page for now. |
+| M2 Auth | Built: email link, Google, UAE PASS mock, facility code, consent, route protection. Phone code built but off (`PHONE_AUTH_ENABLED`). |
+| M3 onwards | Not started. Linked routes show a placeholder page for now. |
 
 See [PROJECT.md section 11](PROJECT.md) for the full build order.
