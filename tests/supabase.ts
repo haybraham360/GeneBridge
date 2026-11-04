@@ -94,7 +94,7 @@ export async function resetOnboarding(key: DemoUser['key'], { locale = 'en' } = 
   return userId;
 }
 
-/** After onboarding tests: back to "finished" so the auth tests still land on /home. */
+/** After onboarding tests: back to "finished" so the auth tests still land on /dashboard. */
 export async function restoreFinished(key: DemoUser['key']) {
   const user = persona(key);
   const userId = await findUserId({ email: user.email });

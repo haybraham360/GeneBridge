@@ -40,7 +40,7 @@ describe('finishDestination', () => {
   it('sends flagged results to the counsellor, never the explainer', () => {
     expect(finishDestination({ connected: true, flagged: true })).toBe('/dashboard/counsellor');
     expect(finishDestination({ connected: true, flagged: false })).toBe('/dashboard/results');
-    expect(finishDestination({ connected: false, flagged: false })).toBe('/home');
+    expect(finishDestination({ connected: false, flagged: false })).toBe('/dashboard');
   });
 });
 

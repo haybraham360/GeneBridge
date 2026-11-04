@@ -41,5 +41,5 @@ export async function acceptInvite(token: string): Promise<AcceptState> {
   const finished = (profile?.onboarding_step ?? 0) >= FINISHED_ONBOARDING_STEP;
 
   // Their own onboarding skips the invite step, as they're now linked.
-  return redirect({ href: finished ? '/home' : '/onboarding', locale: await getLocale() });
+  return redirect({ href: finished ? '/dashboard' : '/onboarding', locale: await getLocale() });
 }

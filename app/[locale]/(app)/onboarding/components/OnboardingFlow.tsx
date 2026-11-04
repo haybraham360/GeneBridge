@@ -51,7 +51,7 @@ const HEADING_ID = 'onboarding-title';
 const finishKeys = {
   '/dashboard/results': 'results',
   '/dashboard/counsellor': 'counsellor',
-  '/home': 'home',
+  '/dashboard': 'home',
 } as const satisfies Record<Finish['destination'], string>;
 
 /**
@@ -92,7 +92,7 @@ export function OnboardingFlow({ initial }: { initial: OnboardingInitial }) {
 
   const key = stepKey(step);
   const title = t(`steps.${key}.title`);
-  const finishKey = finishKeys[finish?.destination ?? '/home'];
+  const finishKey = finishKeys[finish?.destination ?? '/dashboard'];
   const body = key === 'done' ? t(`steps.done.body.${finishKey}`) : t(`steps.${key}.body`);
 
   // ---------------------------------------------------------------- listen
@@ -466,7 +466,7 @@ export function OnboardingFlow({ initial }: { initial: OnboardingInitial }) {
                 {primary.label}
               </button>
             ) : (
-              <Button href={finish?.destination ?? '/home'} className="min-w-[200px]">
+              <Button href={finish?.destination ?? '/dashboard'} className="min-w-[200px]">
                 {t(`steps.done.cta.${finishKey}`)}
               </Button>
             )}

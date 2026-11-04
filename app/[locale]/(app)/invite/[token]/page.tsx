@@ -66,7 +66,7 @@ export default async function InvitePage({ params }: PageProps<'/[locale]/invite
               </li>
             ))}
           </ul>
-          <AcceptInviteForm token={token} laterHref={finished ? '/home' : '/onboarding'} />
+          <AcceptInviteForm token={token} laterHref={finished ? '/dashboard' : '/onboarding'} />
         </Card>
       </main>
     </div>

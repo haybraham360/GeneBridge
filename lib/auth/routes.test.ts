@@ -12,7 +12,7 @@ describe('destinationFor', () => {
   });
 
   it('sends people who finished onboarding home, or back where they were', () => {
-    expect(destinationFor({ role: 'individual', onboarding_step: 8 }, null)).toBe('/home');
+    expect(destinationFor({ role: 'individual', onboarding_step: 8 }, null)).toBe('/dashboard');
     expect(destinationFor({ role: 'individual', onboarding_step: 8 }, '/simulator')).toBe(
       '/simulator',
     );

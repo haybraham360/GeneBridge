@@ -56,5 +56,6 @@ export function destinationFor(profile: DestinationProfile, next: string | null)
   // An invite is accepted first; the invite page then sends them on.
   if (isInvitePath(next)) return next as string;
   if (!profile || profile.onboarding_step < FINISHED_ONBOARDING_STEP) return '/onboarding';
-  return next ?? '/home';
+  // The dashboard is the signed-in home page.
+  return next ?? '/dashboard';
 }

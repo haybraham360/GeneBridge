@@ -4,7 +4,7 @@
  *
  * Each test puts the persona back at the start of onboarding, and the
  * personas are marked finished again afterwards so the auth tests still
- * land on /home.
+ * land on /dashboard.
  */
 import { expect, test, type Page } from '@playwright/test';
 import {
@@ -182,7 +182,7 @@ test('Mariam completes onboarding, claims her result and ends on /dashboard/resu
 
   // Finished: signing in again goes straight home.
   await page.goto('/en/onboarding');
-  await expect(page).toHaveURL(/\/en\/home$/);
+  await expect(page).toHaveURL(/\/en\/dashboard$/);
 });
 
 test('Patient R. (flagged) ends on the counsellor route with no risk shown', async ({ page }) => {

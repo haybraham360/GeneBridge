@@ -130,13 +130,13 @@ export function referenceFromQr(text: string): string | null {
 // ---------------------------------------------------------------------------
 
 // Results and counsellor live under the dashboard (feat(dashboard)).
-export type FinishDestination = '/dashboard/results' | '/dashboard/counsellor' | '/home';
+export type FinishDestination = '/dashboard/results' | '/dashboard/counsellor' | '/dashboard';
 
 /**
  * Where "You're all set" leads. A flagged result goes straight to the
  * counsellor and never to the explainer (guardrail 4).
  */
 export function finishDestination(result: { connected: boolean; flagged: boolean }): FinishDestination {
-  if (!result.connected) return '/home';
+  if (!result.connected) return '/dashboard';
   return result.flagged ? '/dashboard/counsellor' : '/dashboard/results';
 }

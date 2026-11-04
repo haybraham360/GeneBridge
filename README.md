@@ -93,13 +93,13 @@ Both are safe to run again. All data is synthetic. `seed:results` adds the demo 
 | `AD-PMS-2026-048214` | Khalid | Carrier, sickle cell trait (HbAS) |
 | `AD-PMS-2026-048215` | Patient R. | Variant of uncertain significance, `flagged = true` (goes to the counsellor) |
 
-The personas are seeded as having finished onboarding, so they land on `/home`. To demo onboarding with one, set their `profiles.onboarding_step` to `0` in the dashboard.
+The personas are seeded as having finished onboarding, so they land on `/dashboard`. To demo onboarding with one, set their `profiles.onboarding_step` to `0` in the dashboard.
 
 | Persona | Role | Email | Test number (after +971), when phone is on | Lands on |
 |---|---|---|---|---|
-| Mariam | individual | `mariam@demo.genebridge.app` | `50 000 0001`, code `123456` | `/home` |
-| Khalid | individual | `khalid@demo.genebridge.app` | `50 000 0002`, code `123456` | `/home` |
-| Patient R. | individual | `patient.r@demo.genebridge.app` | `50 000 0003`, code `123456` | `/home` |
+| Mariam | individual | `mariam@demo.genebridge.app` | `50 000 0001`, code `123456` | `/dashboard` |
+| Khalid | individual | `khalid@demo.genebridge.app` | `50 000 0002`, code `123456` | `/dashboard` |
+| Patient R. | individual | `patient.r@demo.genebridge.app` | `50 000 0003`, code `123456` | `/dashboard` |
 | Dr. Amaka Okoro | counsellor | `amaka.okoro@demo.genebridge.app` | `50 000 0004`, code `123456` | `/pro` |
 | *(no account)* | | | `50 000 0009`, code `123456` | `/onboarding` (try sign-up) |
 
@@ -117,7 +117,7 @@ The demo email addresses don't receive mail. To sign in as any persona in a demo
 
 ### How onboarding works
 
-- `/onboarding` has 8 steps. `profiles.onboarding_step` holds the step to resume on, saved after every Next, Skip and Back; reaching step 8 marks it finished, and later sign-ins go to `/home`.
+- `/onboarding` has 8 steps. `profiles.onboarding_step` holds the step to resume on, saved after every Next, Skip and Back; reaching step 8 marks it finished, and later sign-ins go to `/dashboard`.
 - Choosing a language saves it and reloads the page in that language straight away. Urdu, Hindi and Tagalog are stored as chosen and shown in English for now.
 - Step 6 claims a result through the `claim_screening_result` database function. Each code can be claimed once; a wrong code and one already claimed get the same message. After 10 failed tries in an hour, a person has to wait.
 - Step 7 creates a pending `couple_links` row with a single-use token that expires after 14 days. The partner opens `/invite/<token>`, signs in, and accepts. This links the accounts only; it shares no result and doesn't open the couple view.

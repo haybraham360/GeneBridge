@@ -44,8 +44,8 @@ export default async function OnboardingPage({ params }: PageProps<'/[locale]/on
     .maybeSingle();
   if (!profile) return redirect({ href: '/auth', locale });
 
-  // Finished: later visits go straight home.
-  if (profile.onboarding_step >= DONE_STEP) return redirect({ href: '/home', locale });
+  // Finished: later visits go straight to the dashboard.
+  if (profile.onboarding_step >= DONE_STEP) return redirect({ href: '/dashboard', locale });
 
   // Resume in the language they chose, on any device.
   const preferred = uiLocaleFor(profile.locale);

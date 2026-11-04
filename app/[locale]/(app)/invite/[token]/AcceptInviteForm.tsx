@@ -7,8 +7,8 @@ import { acceptInvite, type AcceptState } from './actions';
 
 type AcceptInviteFormProps = {
   token: string;
-  /** Where "Not now" leads: onboarding if unfinished, otherwise home. */
-  laterHref: '/onboarding' | '/home';
+  /** Where "Not now" leads: onboarding if unfinished, otherwise the dashboard. */
+  laterHref: '/onboarding' | '/dashboard';
 };
 
 export function AcceptInviteForm({ token, laterHref }: AcceptInviteFormProps) {
