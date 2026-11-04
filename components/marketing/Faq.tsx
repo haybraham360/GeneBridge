@@ -10,14 +10,14 @@ export function Faq() {
 
   return (
     <section id="faq" className="mx-auto mt-28 max-w-[820px] px-6">
-      <SectionHeading title={t('title')} className="mb-8" />
+      <SectionHeading title={t('title')} className="reveal mb-8" />
       <div className="flex flex-col gap-3">
         {questions.map((key) => (
-          <Card as="details" key={key} className="group">
+          <Card as="details" key={key} className="group reveal transition-colors duration-200 hover:border-brand-ring open:border-brand-ring">
             <summary className="flex min-h-11 cursor-pointer list-none items-center gap-3 rounded-card px-6 py-5 text-[17px] font-bold">
               <ChevronDown
                 aria-hidden="true"
-                className="size-5 shrink-0 -rotate-90 transition-transform group-open:rotate-0 rtl:rotate-90 rtl:group-open:rotate-0"
+                className="size-5 shrink-0 -rotate-90 text-brand-text transition-transform duration-300 group-open:rotate-0 rtl:rotate-90 rtl:group-open:rotate-0"
               />
               {t(`${key}.q`)}
             </summary>

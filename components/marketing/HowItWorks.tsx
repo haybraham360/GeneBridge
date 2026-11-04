@@ -13,11 +13,11 @@ export function HowItWorks() {
 
   return (
     <section id="how" className="mx-auto mt-24 max-w-[1200px] px-6 text-center">
-      <SectionHeading chip={t('chip')} chipIcon={ArrowRight} />
+      <SectionHeading chip={t('chip')} chipIcon={ArrowRight} className="reveal" />
       <ol className="mt-12 grid grid-cols-1 gap-10 md:grid-cols-3">
         {steps.map(({ key, icon: Icon, number }) => (
-          <li key={key} className="flex flex-col items-center gap-3.5 px-3 text-center">
-            <div className="relative flex size-[68px] items-center justify-center rounded-full border border-line bg-surface">
+          <li key={key} className="group reveal flex flex-col items-center gap-3.5 px-3 text-center">
+            <div className="relative flex size-[68px] items-center justify-center rounded-full border border-line bg-surface transition-[border-color,scale] duration-300 group-hover:scale-105 group-hover:border-brand-ring">
               <Icon aria-hidden="true" className="size-7 text-ink" strokeWidth={2} />
               <span
                 aria-hidden="true"
