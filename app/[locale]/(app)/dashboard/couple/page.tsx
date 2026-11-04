@@ -3,12 +3,12 @@ import { notFound } from 'next/navigation';
 import { PlaceholderPage, placeholderMetadata } from '@/components/PlaceholderPage';
 import { routing } from '@/i18n/routing';
 
-export async function generateMetadata({ params }: PageProps<'/[locale]/couple'>) {
+export async function generateMetadata({ params }: PageProps<'/[locale]/dashboard/couple'>) {
   const { locale } = await params;
   return hasLocale(routing.locales, locale) ? placeholderMetadata(locale, 'couple') : {};
 }
 
-export default async function Page({ params }: PageProps<'/[locale]/couple'>) {
+export default async function Page({ params }: PageProps<'/[locale]/dashboard/couple'>) {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
   return <PlaceholderPage locale={locale} screen="couple" />;
