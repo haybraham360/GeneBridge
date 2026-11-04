@@ -27,7 +27,7 @@ export function SiteHeader() {
         <LanguageSwitch className={pillLink} />
         <Link
           href="/auth"
-          className="ms-1 inline-flex min-h-11 items-center rounded-full bg-white px-[18px] text-sm font-bold text-ink no-underline hover:bg-brand-tint-soft focus-visible:outline-white"
+          className="ms-1 inline-flex min-h-11 items-center rounded-full bg-white px-4.5 text-sm font-bold text-ink no-underline hover:bg-brand-tint-soft focus-visible:outline-white"
         >
           {t('getStarted')}
         </Link>

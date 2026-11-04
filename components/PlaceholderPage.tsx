@@ -13,7 +13,8 @@ export type PlaceholderScreen =
   | 'family'
   | 'privacy'
   | 'terms'
-  | 'contact';
+  | 'contact'
+  | 'dashboard';
 
 /** Temporary stand-in so landing-page links resolve until each milestone ships. */
 export async function PlaceholderPage({ locale, screen }: { locale: Locale; screen: PlaceholderScreen }) {
@@ -28,7 +29,7 @@ export async function PlaceholderPage({ locale, screen }: { locale: Locale; scre
       <main id="main" className="flex flex-1 flex-col items-center justify-center gap-5 py-16 text-center">
         <Chip>{t('eyebrow')}</Chip>
         <h1 className="text-[32px] font-extrabold tracking-[-0.02em]">{t(`screens.${screen}`)}</h1>
-        <p className="max-w-[480px] text-[15px] leading-[1.55] text-muted">{t('body')}</p>
+        <p className="max-w-120 text-[15px] leading-[1.55] text-muted">{t('body')}</p>
         <Button href="/" variant="dark">
           {t('back')}
         </Button>

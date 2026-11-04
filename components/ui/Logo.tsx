@@ -27,7 +27,7 @@ export function Logo({ size = 'md', className }: LogoProps) {
         src={mark}
         alt=""
         priority={size === 'md'}
-        className={cn('w-auto', size === 'md' ? 'h-[38px]' : 'h-[29px]')}
+        className={cn('w-auto', size === 'md' ? 'h-9.5' : 'h-7.25')}
       />
       <span lang="en">
         <span className="text-ink">{t('gene')}</span>

@@ -7,6 +7,7 @@
     "screens": {
       "auth": "Sign up or sign in",
       "counsellor": "Counsellor & Referral",
+      "dashboard": "Dashboard",
       "results": "Genetic Risk Analysis",
       "couple": "Couple Compatibility",
       "simulator": "Inheritance Simulator",
