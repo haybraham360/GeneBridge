@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>GeneBridge: sign up or sign in</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FFF7F0;color:#141414;font-family:'Plus Jakarta Sans',system-ui,sans-serif}
+a{color:#C2410C}a:hover{color:#9A3412}
+.card{background:#FFFFFF;border:1px solid #F1E3D8;border-radius:20px;box-shadow:0 8px 24px rgba(60,30,10,0.06)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 24px;border-radius:999px;font-weight:700;font-size:15px;text-decoration:none;border:0;cursor:pointer;font-family:inherit;box-sizing:border-box}
+.btn-o{background:#FF5A1F;color:#141414}.btn-o:hover{background:#FF7440;color:#141414}
+.btn-d{background:#141414;color:#FFFFFF}.btn-d:hover{background:#2E2A27;color:#FFFFFF}
+.btn-g{background:#FFFFFF;color:#141414;border:1px solid #E7D7CA}.btn-g:hover{background:#FFF1E7;color:#141414}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;background:#FFFFFF;border:1px solid #F1E3D8;font-size:13px;font-weight:600;color:#141414}
+.muted{color:#5C5550}
+.side a{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:12px;color:#3A3532;text-decoration:none;font-weight:600;font-size:14px}
+.side a:hover{background:#FFEDE2;color:#141414}
+.side a.on{background:#141414;color:#FFFFFF}
+svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+@media (max-width:900px){.decor{display:none}}
+</style>
+</helmet>
+<div style="display:flex;flex-wrap:wrap;min-height:100vh">
+<section style="flex:1 1 480px;padding:32px clamp(24px,5vw,80px) 48px;display:flex;flex-direction:column;gap:32px;box-sizing:border-box">
+<div><a href="Main.dc.html" aria-label="GeneBridge home" style="display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:800;font-size:24px;letter-spacing:-0.02em"><img src="/_blob/f8889963ab98eebf581048531cfae115" alt="" style="height:35px;width:auto;display:block"><span><span style="color:#141414">Gene</span><span style="color:#FF5A1F">Bridge</span></span></a></div>
+<div style="max-width:440px;width:100%;margin:auto 0;display:flex;flex-direction:column;gap:20px">
+<div style="display:flex;background:#F6E9DF;border-radius:999px;padding:4px">
+<button type="button" onClick="{{toSignup}}" style="flex:1;min-height:44px;border:0;border-radius:999px;font-family:inherit;font-weight:700;font-size:14px;cursor:pointer;background:{{tabA.bg}};color:{{tabA.fg}}">Create account</button>
+<button type="button" onClick="{{toSignin}}" style="flex:1;min-height:44px;border:0;border-radius:999px;font-family:inherit;font-weight:700;font-size:14px;cursor:pointer;background:{{tabB.bg}};color:{{tabB.fg}}">Sign in</button>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<h1 style="margin:0;font-size:36px;font-weight:800;letter-spacing:-0.02em">{{heading}}</h1>
+<p class="muted" style="margin:0;font-size:16px">{{subline}}</p>
+</div>
+<a class="btn btn-g" href="Onboarding.dc.html" style="width:100%;min-height:52px"><span style="width:24px;height:24px;border-radius:6px;background:#141414;color:#FFFFFF;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center">ID</span>Continue with UAE PASS</a>
+<div style="display:flex;align-items:center;gap:12px" class="muted"><span style="flex:1;height:1px;background:#EADBD0"></span><span style="font-size:13px">or use your phone</span><span style="flex:1;height:1px;background:#EADBD0"></span></div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<label for="phone" style="font-weight:700;font-size:14px">Mobile number</label>
+<div style="display:flex;gap:8px">
+<span style="min-height:52px;padding:0 16px;border:1px solid #E7D7CA;border-radius:14px;background:#FFFFFF;display:flex;align-items:center;font-weight:600">+971</span>
+<input id="phone" type="tel" placeholder="50 123 4567" style="flex:1;min-width:0;min-height:52px;padding:0 16px;border:1px solid #E7D7CA;border-radius:14px;font-family:inherit;font-size:16px;background:#FFFFFF">
+</div>
+</div>
+<a class="btn btn-o" href="Onboarding.dc.html" style="width:100%;min-height:52px">Send verification code</a>
+<a href="Onboarding.dc.html" style="font-size:14px;font-weight:600;text-align:center">Use email instead (we&#39;ll send a sign-in link)</a>
+<sc-if value="{{isSignup}}" hint-placeholder-val="{{true}}">
+<label style="display:flex;gap:12px;align-items:flex-start;font-size:14px;line-height:1.5;padding:16px;background:#FFFFFF;border:1px solid #F1E3D8;border-radius:16px"><input type="checkbox" checked style="width:20px;height:20px;accent-color:#141414;margin:2px 0 0;flex:none"><span>I agree that GeneBridge stores my screening interpretation, never my raw genome, and that I can delete my data at any time. <a href="Privacy.dc.html">Read how we protect your data</a></span></label>
+</sc-if>
+<p class="muted" style="margin:0;font-size:14px">Healthcare professional? <a href="#">Sign in with a facility code</a></p>
+</div>
+</section>
+<aside style="flex:1 1 420px;background:#FF5A1F;padding:56px clamp(24px,5vw,72px);display:flex;flex-direction:column;justify-content:center;gap:32px;box-sizing:border-box">
+<h2 style="margin:0;font-size:clamp(36px,4vw,52px);line-height:1.05;font-weight:800;letter-spacing:-0.03em;color:#141414">Private by design.</h2>
+<ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:16px;font-size:18px;font-weight:600;color:#141414">
+<li style="display:flex;gap:12px;align-items:center"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="color:#141414;width:24px;height:24px"><path d="M5 12l5 5 9-10"/></svg>Your result is yours</li>
+<li style="display:flex;gap:12px;align-items:center"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="color:#141414;width:24px;height:24px"><path d="M5 12l5 5 9-10"/></svg>You choose who sees what</li>
+<li style="display:flex;gap:12px;align-items:center"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="color:#141414;width:24px;height:24px"><path d="M5 12l5 5 9-10"/></svg>Change your mind at any time</li>
+</ul>
+<div style="background:#FFFFFF;border-radius:24px;padding:24px;display:flex;flex-direction:column;gap:12px;max-width:420px;transform:rotate(-1.5deg)">
+<div style="display:flex;align-items:center;gap:10px;font-weight:800"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="color:#C2410C"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Inviting your partner</div>
+<p class="muted" style="margin:0;font-size:15px;line-height:1.55">Inviting Khalid does not share your result. A couple view opens only when you both agree.</p>
+</div>
+</aside>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview": {"width": 1440, "height": 900}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { mode: 'signup' }; }
+  renderVals() {
+    const up = this.state.mode === 'signup';
+    const on = { bg: '#141414', fg: '#FFFFFF' }, off = { bg: 'transparent', fg: '#3A3532' };
+    return {
+      isSignup: up,
+      heading: up ? 'Create your account' : 'Welcome back',
+      subline: up ? 'Takes about a minute. Your results stay private.' : 'Sign in to continue where you left off.',
+      tabA: up ? on : off, tabB: up ? off : on,
+      toSignup: () => this.setState({ mode: 'signup' }),
+      toSignin: () => this.setState({ mode: 'signin' })
+    };
+  }
+}
+</script>
+</body>
+</html>
