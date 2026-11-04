@@ -1,0 +1,36 @@
+import { ArrowRight, CalendarDays, Dna, Users, type LucideIcon } from 'lucide-react';
+import { useTranslations } from 'next-intl';
+import { SectionHeading } from '@/components/ui/SectionHeading';
+
+const steps: ReadonlyArray<{ key: 'add' | 'understand' | 'support'; icon: LucideIcon; number: string }> = [
+  { key: 'add', icon: Dna, number: '01' },
+  { key: 'understand', icon: Users, number: '02' },
+  { key: 'support', icon: CalendarDays, number: '03' },
+];
+
+export function HowItWorks() {
+  const t = useTranslations('landing.how');
+
+  return (
+    <section id="how" className="mx-auto mt-24 max-w-[1200px] px-6 text-center">
+      <SectionHeading chip={t('chip')} chipIcon={ArrowRight} />
+      <ol className="mt-12 grid grid-cols-1 gap-10 md:grid-cols-3">
+        {steps.map(({ key, icon: Icon, number }) => (
+          <li key={key} className="flex flex-col items-center gap-3.5 px-3 text-center">
+            <div className="relative flex size-[68px] items-center justify-center rounded-full border border-line bg-surface">
+              <Icon aria-hidden="true" className="size-7 text-ink" strokeWidth={2} />
+              <span
+                aria-hidden="true"
+                className="absolute -end-3 -top-2 flex size-[30px] items-center justify-center rounded-full bg-brand text-xs font-extrabold text-ink"
+              >
+                {number}
+              </span>
+            </div>
+            <h3 className="mt-1.5 text-[22px] font-extrabold">{t(`${key}.title`)}</h3>
+            <p className="max-w-[320px] text-base leading-[1.55] text-muted">{t(`${key}.body`)}</p>
+          </li>
+        ))}
+      </ol>
+    </section>
+  );
+}

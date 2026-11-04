@@ -1,0 +1,224 @@
+{
+  "meta": {
+    "title": "GeneBridge: understand your genetic risks",
+    "description": "A privacy-first platform that helps individuals and couples understand inherited disease risks, explore their options, and connect with qualified genetic counsellors."
+  },
+  "logo": {
+    "gene": "Gene",
+    "bridge": "Bridge",
+    "homeLabel": "GeneBridge home"
+  },
+  "header": {
+    "navLabel": "Main",
+    "how": "How it works",
+    "features": "Features",
+    "pros": "For professionals",
+    "pricing": "Pricing",
+    "faqs": "FAQs",
+    "getStarted": "Get started",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
+  },
+  "language": {
+    "switchTo": "العربية"
+  },
+  "hero": {
+    "chip": "Genetic health & reproductive planning",
+    "title": "Understand your genetic risks. Make informed reproductive decisions.",
+    "subtitle": "A privacy-first platform that helps individuals and couples understand inherited disease risks, explore their options, and connect with qualified genetic counsellors.",
+    "primaryCta": "Get started free",
+    "secondaryCta": "Book a counsellor",
+    "note": "In Arabic and English · Nothing is shared without your permission"
+  },
+  "preview": {
+    "label": "Product preview",
+    "profile": {
+      "title": "Your genetic profile",
+      "initial": "M",
+      "name": "Mariam",
+      "status": "Carrier (HbAS)",
+      "conditionLabel": "Condition",
+      "condition": "Sickle cell trait",
+      "inheritanceLabel": "Inheritance",
+      "inheritance": "Autosomal recessive",
+      "healthLabel": "Your health",
+      "health": "You are healthy"
+    },
+    "couple": {
+      "title": "Couple compatibility",
+      "partnerA": "M",
+      "partnerB": "K",
+      "partnersLabel": "Mariam and Khalid",
+      "consent": "Both agreed to share",
+      "chanceTitle": "Chance for each pregnancy (example)",
+      "affectedValue": "25%",
+      "affected": "Affected",
+      "carrierValue": "50%",
+      "carrier": "Carrier",
+      "unaffectedValue": "25%",
+      "unaffected": "Unaffected"
+    },
+    "simulator": {
+      "title": "Inheritance simulator",
+      "gridLabel": "Punnett square: two carrier parents (AS × AS)",
+      "parentA": "Parent 1 gene copies",
+      "parentB": "Parent 2 gene copies"
+    },
+    "counsellor": {
+      "title": "Talk to a genetic counsellor",
+      "initials": "AO",
+      "name": "Dr. Amaka Okoro",
+      "role": "Genetic counsellor",
+      "available": "Available today",
+      "cta": "Book session"
+    }
+  },
+  "partners": {
+    "title": "Built to work alongside",
+    "screening": "[Screening centre]",
+    "hospital": "[Hospital partner]",
+    "lab": "[Genomics lab]",
+    "ivf": "[IVF clinic]",
+    "authority": "[Health authority]"
+  },
+  "how": {
+    "chip": "How GeneBridge works",
+    "add": {
+      "title": "Add your results",
+      "body": "Enter your screening reference or scan the QR code on your report. Securely."
+    },
+    "understand": {
+      "title": "Understand your risk",
+      "body": "A clear, plain-language explanation of inherited risks, for you and, if you both agree, as a couple."
+    },
+    "support": {
+      "title": "Get expert support",
+      "body": "Explore every option and connect with a qualified genetic counsellor in your language."
+    }
+  },
+  "features": {
+    "chip": "Key features",
+    "title": "More than a test result. A complete genetic decision platform.",
+    "cta": "Explore all features",
+    "results": {
+      "title": "Genetic Risk Analysis",
+      "body": "Understand what your results mean, and what they don't, in plain language."
+    },
+    "couple": {
+      "title": "Couple Compatibility",
+      "body": "See your shared chances for future children, only when you both agree."
+    },
+    "simulator": {
+      "title": "Inheritance Simulator",
+      "body": "Visualise how gene copies pass from parents to a child, one pregnancy at a time."
+    },
+    "family": {
+      "title": "Family History Mapping",
+      "body": "Build a private family tree to see where inherited conditions appear."
+    },
+    "counsellor": {
+      "title": "Counsellor & Referral",
+      "body": "Book verified genetic counsellors and track every step of your care."
+    },
+    "privacy": {
+      "title": "Privacy & Consent",
+      "body": "You control your data, what to share, and who can see it."
+    }
+  },
+  "privacy": {
+    "eyebrow": "Privacy by design",
+    "title": "Your result is yours.",
+    "point1": "Nothing is shared without your permission, not even with your partner",
+    "point2": "Change or withdraw consent at any time",
+    "point3": "We store your result interpretation, never your raw genome",
+    "point4": "Tell relatives about a family risk without revealing your own result",
+    "card": {
+      "title": "Who can see my result",
+      "partner": "Khalid (partner)",
+      "partnerLevel": "Summary only",
+      "counsellor": "Dr. Amaka Okoro (counsellor)",
+      "counsellorLevel": "Full report",
+      "family": "Family members",
+      "familyLevel": "Nothing shared",
+      "on": "Sharing on",
+      "off": "Sharing off",
+      "log": "Access log: Dr. Amaka viewed your report · 3 Nov, 10:14"
+    }
+  },
+  "pros": {
+    "chip": "For professionals",
+    "title": "Patients arrive informed. You see what they choose to share.",
+    "point1": "A clear summary of each patient's result and questions before the session",
+    "point2": "Complex or uncertain findings are routed to you, never explained by the app",
+    "point3": "Referral tracking from screening to specialist",
+    "point4": "Programme insights from aggregated, anonymised data",
+    "cta": "Professional sign-in",
+    "card": {
+      "title": "Today's sessions",
+      "date": "Thu 12 Nov",
+      "session1": {
+        "time": "10:00",
+        "name": "Mariam and Khalid",
+        "detail": "Shared: result summary, values summary",
+        "tag": "Couple"
+      },
+      "session2": {
+        "time": "11:30",
+        "name": "Patient R.",
+        "detail": "Flagged: uncertain finding",
+        "tag": "Priority"
+      },
+      "session3": {
+        "time": "14:00",
+        "name": "Patient S.",
+        "detail": "Follow-up after confirmatory test",
+        "tag": "Follow-up"
+      }
+    }
+  },
+  "pricing": {
+    "title": "Simple, fair access",
+    "individual": {
+      "name": "Individuals and couples",
+      "price": "Free",
+      "body": "Funded through [SCREENING PROGRAMME]. Results, couple view, simulator, family map and booking.",
+      "cta": "Get started free"
+    },
+    "clinic": {
+      "name": "Clinics and programmes",
+      "price": "[YOUR PRICE]",
+      "body": "Counsellor workspace, referral tracking, programme dashboard and integration support.",
+      "cta": "Talk to us"
+    }
+  },
+  "faq": {
+    "title": "Questions people ask",
+    "carrier": {
+      "q": "Does a carrier result mean I'm sick?",
+      "a": "No. Carriers are healthy. Being a carrier only matters when planning children, and only if your partner carries a change in the same gene."
+    },
+    "sharing": {
+      "q": "Will my partner or family see my result?",
+      "a": "Only if you choose. Your partner sees a couple view only when you both agree, and you can tell relatives about a family risk without revealing your own result."
+    },
+    "marriage": {
+      "q": "Will GeneBridge tell us whether to marry?",
+      "a": "No. GeneBridge gives information and support, never a recommendation. Every option is shown equally and the decision is always yours."
+    },
+    "ai": {
+      "q": "Does the AI assistant interpret my result?",
+      "a": "No. It answers general questions about genetics. Your personal result, and anything uncertain or complex, is explained by a qualified counsellor."
+    }
+  },
+  "cta": {
+    "title": "Start with understanding. Decide together.",
+    "button": "Get started free"
+  },
+  "footer": {
+    "copyright": "© 2026 GeneBridge",
+    "linksLabel": "Footer",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "contact": "Contact"
+  }
+}

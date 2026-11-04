@@ -1,0 +1,41 @@
+@import 'tailwindcss';
+@config '../tailwind.config.ts';
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  body {
+    @apply bg-bg font-sans text-ink antialiased;
+  }
+
+  /* Anchored sections land below the top edge, not flush against it. */
+  [id] {
+    scroll-margin-top: 24px;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-ink);
+    outline-offset: 3px;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+}
+
+/*
+ * Negative letter-spacing breaks the joins between Arabic letters, so tracking
+ * is reset for RTL pages. Unlayered, so it overrides the tracking utilities.
+ */
+html[dir='rtl'] [class*='tracking-'] {
+  letter-spacing: 0;
+}

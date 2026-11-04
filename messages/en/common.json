@@ -1,0 +1,19 @@
+{
+  "skipToContent": "Skip to content",
+  "placeholder": {
+    "eyebrow": "Coming soon",
+    "body": "This screen is part of a later milestone. It is here so links from the landing page work.",
+    "back": "Back to home",
+    "screens": {
+      "auth": "Sign up or sign in",
+      "counsellor": "Counsellor & Referral",
+      "results": "Genetic Risk Analysis",
+      "couple": "Couple Compatibility",
+      "simulator": "Inheritance Simulator",
+      "family": "Family History Mapping",
+      "privacy": "Privacy & Consent",
+      "terms": "Terms",
+      "contact": "Contact us"
+    }
+  }
+}
