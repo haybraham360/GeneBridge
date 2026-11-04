@@ -14,7 +14,12 @@
       "family": "Family History Mapping",
       "privacy": "Privacy & Consent",
       "terms": "Terms",
-      "contact": "Contact us"
+      "contact": "Contact us",
+      "onboarding": "Onboarding",
+      "home": "Home",
+      "pro": "Counsellor workspace",
+      "admin": "Health authority dashboard"
     }
-  }
+  },
+  "signOut": "Sign out"
 }

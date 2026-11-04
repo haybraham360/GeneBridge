@@ -1,0 +1,45 @@
+# Local Supabase settings (`npx supabase start`, needs Docker).
+# Only the settings GeneBridge depends on are listed; everything else uses the
+# CLI defaults. For a hosted project, set the same values in the dashboard
+# (see README.md → Demo sign-in).
+
+project_id = "genebridge"
+
+[auth]
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["http://localhost:3000/**"]
+# 30 minutes of inactivity signs people out (enforced in proxy.ts as well).
+jwt_expiry = 3600
+
+[auth.rate_limit]
+# Built-in limits; the auth page shows a calm "please wait" message on 429.
+sms_sent = 30
+token_verifications = 30
+email_sent = 4
+
+[auth.email]
+enable_signup = true
+otp_expiry = 3600
+
+[auth.sms]
+enable_signup = true
+enable_confirmations = true
+otp_length = 6
+max_frequency = "30s"
+
+# Demo phone numbers with fixed codes, so no SMS provider is needed.
+# Keep in sync with scripts/seed-auth.ts and README.md.
+[auth.sms.test_otp]
+971500000001 = "123456" # Mariam
+971500000002 = "123456" # Khalid
+971500000003 = "123456" # Patient R.
+971500000004 = "123456" # Dr. Amaka Okoro
+971500000009 = "123456" # spare number for trying sign-up
+
+# A provider block must exist for phone auth to be enabled locally; the test
+# numbers above never reach it.
+[auth.sms.twilio]
+enabled = true
+account_sid = "demo"
+message_service_sid = "demo"
+auth_token = "env(SUPABASE_AUTH_SMS_TWILIO_AUTH_TOKEN)"

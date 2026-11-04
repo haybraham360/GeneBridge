@@ -9,7 +9,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { Button } from '@/components/ui/Button';
+import { Button, buttonArrowClasses } from '@/components/ui/Button';
 import { cardClasses } from '@/components/ui/Card';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { Link } from '@/i18n/navigation';
@@ -32,6 +32,7 @@ export function Features() {
   return (
     <section id="features" className="mx-auto mt-28 max-w-[1200px] px-6 text-center">
       <SectionHeading
+        className="reveal"
         chip={t('chip')}
         chipIcon={Layers}
         title={t('title')}
@@ -39,15 +40,15 @@ export function Features() {
       />
       <ul className="mt-12 grid grid-cols-1 gap-5 text-start md:grid-cols-2 lg:grid-cols-3">
         {features.map(({ key, href, icon: Icon }) => (
-          <li key={key} className="flex">
+          <li key={key} className="reveal flex">
             <Link
               href={href}
               className={cn(
                 cardClasses,
-                'flex w-full flex-col gap-3 p-7 text-ink no-underline transition-colors hover:border-brand-ring',
+                'group flex w-full flex-col gap-3 p-7 text-ink no-underline transition-[translate,border-color,box-shadow] duration-300 hover:-translate-y-1 hover:border-brand-ring hover:shadow-[0_16px_40px_rgba(60,30,10,0.10)]',
               )}
             >
-              <Icon aria-hidden="true" className="size-[30px] text-[#E2531B]" strokeWidth={2} />
+              <Icon aria-hidden="true" className="size-[30px] text-[#E2531B] transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6" strokeWidth={2} />
               <h3 className="mt-2 text-[19px] font-extrabold">{t(`${key}.title`)}</h3>
               <p className="text-[15px] leading-[1.55] text-muted">{t(`${key}.body`)}</p>
             </Link>
@@ -56,7 +57,7 @@ export function Features() {
       </ul>
       <Button href="/auth" variant="primary" className="mt-10">
         {t('cta')}
-        <ArrowRight aria-hidden="true" className="size-5 rtl:-scale-x-100" />
+        <ArrowRight aria-hidden="true" className={buttonArrowClasses} />
       </Button>
     </section>
   );

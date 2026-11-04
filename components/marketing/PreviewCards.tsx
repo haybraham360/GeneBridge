@@ -2,9 +2,20 @@ import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { cn } from '@/lib/cn';
+import { PunnettPreview } from './PunnettPreview';
 
 const cardBase = 'flex flex-col gap-3.5 p-6';
 const cardTitle = 'text-[17px] font-extrabold';
+// Tilted cards straighten and lift when hovered or when something inside has focus.
+const cardMotion =
+  'transition-[rotate,translate,box-shadow] duration-300 ease-out hover:rotate-0 hover:-translate-y-1.5 hover:shadow-[0_16px_40px_rgba(60,30,10,0.12)] focus-within:rotate-0 focus-within:-translate-y-1.5';
+// Cards rise in one after another, just after the hero.
+const entrance = [
+  'motion-safe:animate-fade-up motion-safe:[animation-delay:420ms]',
+  'motion-safe:animate-fade-up motion-safe:[animation-delay:500ms]',
+  'motion-safe:animate-fade-up motion-safe:[animation-delay:580ms]',
+  'motion-safe:animate-fade-up motion-safe:[animation-delay:660ms]',
+];
 
 function ProfileCard() {
   const t = useTranslations('landing.preview.profile');
@@ -15,7 +26,7 @@ function ProfileCard() {
   ] as const;
 
   return (
-    <Card as="article" className={cn(cardBase, '-rotate-[1.5deg]')}>
+    <Card as="article" className={cn(cardBase, cardMotion, '-rotate-[1.5deg]')}>
       <h2 className={cardTitle}>{t('title')}</h2>
       <div className="flex items-center gap-2.5">
         <span
@@ -51,7 +62,7 @@ function CoupleCard() {
   ] as const;
 
   return (
-    <Card as="article" className={cn(cardBase, 'rotate-1 items-center text-center')}>
+    <Card as="article" className={cn(cardBase, cardMotion, 'rotate-1 items-center text-center')}>
       <h2 className={cardTitle}>{t('title')}</h2>
       <div role="img" aria-label={t('partnersLabel')} className="flex items-center gap-3">
         <span className="flex size-11 items-center justify-center rounded-full bg-[#FFE3D3] font-extrabold text-brand-text-dark">
@@ -84,34 +95,11 @@ function CoupleCard() {
 
 function SimulatorCard() {
   const t = useTranslations('landing.preview.simulator');
-  const cell = 'rounded-lg py-3.5';
 
-  // Genotype notation is always left-to-right, so the grid is pinned to LTR.
   return (
-    <Card as="article" className={cn(cardBase, '-rotate-1')}>
+    <Card as="article" className={cn(cardBase, cardMotion, '-rotate-1')}>
       <h2 className={cardTitle}>{t('title')}</h2>
-      <table dir="ltr" className="w-full table-fixed border-separate border-spacing-1.5 text-center text-[15px] font-bold">
-        <caption className="sr-only">{t('gridLabel')}</caption>
-        <thead>
-          <tr>
-            <td />
-            <th scope="col" className="p-2">A</th>
-            <th scope="col" className="p-2">S</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th scope="row" className="py-3.5">A</th>
-            <td className={cn(cell, 'bg-[#F7F2EE]')}>AA</td>
-            <td className={cn(cell, 'bg-[#F7F2EE]')}>AS</td>
-          </tr>
-          <tr>
-            <th scope="row" className="py-3.5">S</th>
-            <td className={cn(cell, 'bg-[#F7F2EE]')}>AS</td>
-            <td className={cn(cell, 'bg-affected-tint')}>SS</td>
-          </tr>
-        </tbody>
-      </table>
+      <PunnettPreview caption={t('gridLabel')} parentA={t('parentA')} parentB={t('parentB')} />
     </Card>
   );
 }
@@ -120,7 +108,7 @@ function CounsellorCard() {
   const t = useTranslations('landing.preview.counsellor');
 
   return (
-    <Card as="article" className={cn(cardBase, 'rotate-[1.5deg] items-center text-center')}>
+    <Card as="article" className={cn(cardBase, cardMotion, 'rotate-[1.5deg] items-center text-center')}>
       <h2 className={cardTitle}>{t('title')}</h2>
       <span
         aria-hidden="true"
@@ -151,10 +139,13 @@ export function PreviewCards() {
       aria-label={t('label')}
       className="mx-auto grid max-w-[1280px] grid-cols-1 gap-[22px] p-6 sm:grid-cols-2 xl:grid-cols-4"
     >
-      <ProfileCard />
-      <CoupleCard />
-      <SimulatorCard />
-      <CounsellorCard />
+      {[ProfileCard, CoupleCard, SimulatorCard, CounsellorCard].map((PreviewCard, index) => (
+        // The entrance animation sits on a wrapper so it never fights the
+        // card's own hover transform.
+        <div key={index} className={cn('flex flex-col [&>*]:flex-1', entrance[index])}>
+          <PreviewCard />
+        </div>
+      ))}
     </section>
   );
 }

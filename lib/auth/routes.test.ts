@@ -1,0 +1,71 @@
+import { describe, expect, it } from 'vitest';
+import { sendErrorKey, verifyErrorKey } from './errors';
+import { destinationFor, isProtectedPath, safeNextPath } from './routes';
+
+describe('destinationFor', () => {
+  it('sends new users and unfinished onboarding to /onboarding', () => {
+    expect(destinationFor(null, null)).toBe('/onboarding');
+    expect(destinationFor({ role: 'individual', onboarding_step: 0 }, null)).toBe('/onboarding');
+    expect(destinationFor({ role: 'individual', onboarding_step: 7 }, '/results')).toBe(
+      '/onboarding',
+    );
+  });
+
+  it('sends people who finished onboarding home, or back where they were', () => {
+    expect(destinationFor({ role: 'individual', onboarding_step: 8 }, null)).toBe('/home');
+    expect(destinationFor({ role: 'individual', onboarding_step: 8 }, '/simulator')).toBe(
+      '/simulator',
+    );
+  });
+
+  it('sends counsellors to /pro', () => {
+    expect(destinationFor({ role: 'counsellor', onboarding_step: 0 }, null)).toBe('/pro');
+  });
+});
+
+describe('safeNextPath', () => {
+  it('accepts protected app paths', () => {
+    expect(safeNextPath('/home')).toBe('/home');
+    expect(safeNextPath('/admin/analytics')).toBe('/admin/analytics');
+    expect(safeNextPath('/results?x=1')).toBe('/results');
+  });
+
+  it('rejects other sites, odd paths and public pages', () => {
+    for (const bad of [
+      '//evil.com',
+      'https://evil.com',
+      '/\\evil.com',
+      '/',
+      '/auth',
+      'home',
+      '/homey',
+      42,
+      undefined,
+    ]) {
+      expect(safeNextPath(bad)).toBeNull();
+    }
+  });
+});
+
+describe('isProtectedPath', () => {
+  it('matches whole segments only', () => {
+    expect(isProtectedPath('/pro')).toBe(true);
+    expect(isProtectedPath('/pro/sessions')).toBe(true);
+    expect(isProtectedPath('/pricing')).toBe(false);
+    expect(isProtectedPath('/')).toBe(false);
+  });
+});
+
+describe('auth error messages', () => {
+  it('maps rate limits to "please wait"', () => {
+    expect(verifyErrorKey({ status: 429 })).toBe('tooMany');
+    expect(sendErrorKey({ code: 'over_sms_send_rate_limit' }, 'phone')).toBe('tooMany');
+  });
+
+  it('never distinguishes unknown accounts from wrong codes', () => {
+    expect(verifyErrorKey({ status: 403, code: 'otp_expired' })).toBe('codeInvalid');
+    expect(verifyErrorKey({ status: 400, code: 'user_not_found' })).toBe('codeInvalid');
+    expect(sendErrorKey({ status: 400 }, 'phone')).toBe('sendFailed');
+    expect(sendErrorKey({ status: 400 }, 'email')).toBe('emailFailed');
+  });
+});

@@ -17,7 +17,7 @@ export function ForProfessionals() {
 
   return (
     <section id="pros" className="mx-auto mt-28 flex max-w-[1200px] flex-wrap items-center gap-12 px-6">
-      <div className="flex min-w-0 flex-[1_1_380px] flex-col gap-[18px]">
+      <div className="reveal flex min-w-0 flex-[1_1_380px] flex-col gap-[18px]">
         <SectionHeading
           chip={t('chip')}
           chipIcon={Users}
@@ -31,14 +31,14 @@ export function ForProfessionals() {
         </Button>
       </div>
 
-      <Card className="flex min-w-0 flex-[1_1_380px] flex-col gap-3 p-6">
+      <Card className="reveal flex min-w-0 flex-[1_1_380px] flex-col gap-3 p-6">
         <div className="flex items-center justify-between">
           <h3 className="text-base font-extrabold">{t('card.title')}</h3>
           <span className="text-[13px] text-muted">{t('card.date')}</span>
         </div>
         <ul className="flex flex-col gap-3">
           {sessions.map(({ key, tag }) => (
-            <li key={key} className="flex items-center gap-3 rounded-input bg-bg p-3">
+            <li key={key} className="flex items-center gap-3 rounded-input bg-bg p-3 transition-[translate,background-color] duration-200 hover:translate-x-1 hover:bg-brand-tint-soft rtl:hover:-translate-x-1">
               <span dir="ltr" className="w-14 shrink-0 font-extrabold">
                 {t(`card.${key}.time`)}
               </span>

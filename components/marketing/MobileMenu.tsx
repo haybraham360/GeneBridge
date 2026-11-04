@@ -48,7 +48,7 @@ export function MobileMenu() {
         id={panelId}
         aria-label={t('navLabel')}
         hidden={!open}
-        className="absolute inset-x-4 top-[88px] z-40 rounded-3xl bg-ink p-3 shadow-card"
+        className="absolute inset-x-4 top-[88px] z-40 rounded-3xl bg-ink p-3 shadow-card transition-[opacity,translate] duration-200 starting:-translate-y-2 starting:opacity-0"
       >
         <ul className="flex flex-col gap-1">
           {navItems.map((item) => (

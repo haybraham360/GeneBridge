@@ -6,7 +6,11 @@ export type ButtonVariant = 'primary' | 'dark' | 'ghost';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
 const base =
-  'inline-flex items-center justify-center gap-2 rounded-full font-bold no-underline transition-colors cursor-pointer select-none';
+  'group inline-flex items-center justify-center gap-2 rounded-full font-bold no-underline cursor-pointer select-none transition-[background-color,translate,box-shadow] duration-200 hover:-translate-y-0.5 hover:shadow-card active:translate-y-0';
+
+/** Arrow icons inside a Button nudge forward on hover (mirrored in RTL). */
+export const buttonArrowClasses =
+  'size-5 transition-transform duration-200 rtl:-scale-x-100 group-hover:translate-x-1 rtl:group-hover:-translate-x-1';
 
 const variants: Record<ButtonVariant, string> = {
   // Orange always carries dark ink text: white on #FF5A1F fails contrast.
