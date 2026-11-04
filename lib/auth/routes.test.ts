@@ -18,6 +18,16 @@ describe('destinationFor', () => {
     );
   });
 
+  it('keeps a partner invite link ahead of unfinished onboarding', () => {
+    expect(destinationFor(null, '/invite/abc123')).toBe('/invite/abc123');
+    expect(destinationFor({ role: 'individual', onboarding_step: 3 }, '/invite/abc123')).toBe(
+      '/invite/abc123',
+    );
+    expect(destinationFor({ role: 'individual', onboarding_step: 3 }, '/invite')).toBe(
+      '/onboarding',
+    );
+  });
+
   it('sends counsellors to /pro', () => {
     expect(destinationFor({ role: 'counsellor', onboarding_step: 0 }, null)).toBe('/pro');
   });
@@ -28,6 +38,7 @@ describe('safeNextPath', () => {
     expect(safeNextPath('/home')).toBe('/home');
     expect(safeNextPath('/admin/analytics')).toBe('/admin/analytics');
     expect(safeNextPath('/results?x=1')).toBe('/results');
+    expect(safeNextPath('/invite/abc123')).toBe('/invite/abc123');
   });
 
   it('rejects other sites, odd paths and public pages', () => {

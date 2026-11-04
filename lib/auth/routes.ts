@@ -3,6 +3,7 @@
 /** Paths (without the locale prefix) that need a signed-in user. */
 export const protectedPaths = [
   '/home',
+  '/dashboard',
   '/results',
   '/couple',
   '/simulator',
@@ -11,6 +12,7 @@ export const protectedPaths = [
   '/counsellor',
   '/privacy',
   '/onboarding',
+  '/invite',
   '/pro',
   '/admin',
 ] as const;
@@ -43,9 +45,16 @@ export const FINISHED_ONBOARDING_STEP = 8;
 
 type DestinationProfile = { role: string; onboarding_step: number } | null;
 
+/** A partner invite link (task 04). Accepted before onboarding continues. */
+export function isInvitePath(path: string | null): boolean {
+  return path !== null && /^\/invite\/[^/]+$/.test(path);
+}
+
 /** Where to send someone after they sign in (section 3 of task 03). */
 export function destinationFor(profile: DestinationProfile, next: string | null): string {
   if (profile?.role === 'counsellor') return next ?? '/pro';
+  // An invite is accepted first; the invite page then sends them on.
+  if (isInvitePath(next)) return next as string;
   if (!profile || profile.onboarding_step < FINISHED_ONBOARDING_STEP) return '/onboarding';
   return next ?? '/home';
 }

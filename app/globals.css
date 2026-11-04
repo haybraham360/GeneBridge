@@ -43,6 +43,24 @@
     }
   }
 
+  /*
+   * Onboarding: each step's content slides 16px along the reading direction
+   * as it appears. --step-from is set per direction (see .step-forward and
+   * .step-back below), so Arabic mirrors automatically.
+   */
+  --animate-step-in: step-in 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
+
+  @keyframes step-in {
+    from {
+      opacity: 0;
+      translate: var(--step-from, 0) 0;
+    }
+    to {
+      opacity: 1;
+      translate: 0 0;
+    }
+  }
+
   @keyframes rung {
     0%,
     100% {
@@ -66,6 +84,31 @@
       animation-timeline: view();
       animation-range: entry 0% entry 70%;
     }
+  }
+}
+
+/*
+ * Onboarding step entrance. Forward moves along the reading direction
+ * (left to right in English, right to left in Arabic); Back moves against it.
+ * No sliding at all for reduced motion.
+ */
+@utility step-forward {
+  --step-from: -16px;
+  &:where([dir='rtl'] *) {
+    --step-from: 16px;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    animation: var(--animate-step-in);
+  }
+}
+
+@utility step-back {
+  --step-from: 16px;
+  &:where([dir='rtl'] *) {
+    --step-from: -16px;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    animation: var(--animate-step-in);
   }
 }
 

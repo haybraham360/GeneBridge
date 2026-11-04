@@ -87,11 +87,17 @@ export default async function proxy(request: NextRequest) {
       return redirectWithCookies(target, response);
     }
 
-    response.cookies.set(LAST_ACTIVE_COOKIE, String(Date.now()), {
-      sameSite: 'lax',
-      path: '/',
-      secure: process.env.NODE_ENV === 'production',
-    });
+    // Not on server-action calls: a cookie set there makes Next re-render the
+    // whole page before the action finishes (about a second per onboarding
+    // step). On-page activity already refreshes it from the browser
+    // (IdleSignOut), and the next page request sets it here.
+    if (!request.headers.has('next-action')) {
+      response.cookies.set(LAST_ACTIVE_COOKIE, String(Date.now()), {
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+      });
+    }
   }
 
   // 4. Protected routes: signed-out visitors go to /auth and come back after.

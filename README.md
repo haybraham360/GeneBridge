@@ -59,9 +59,12 @@ Copy `.env.example` to `.env.local` and fill it in. `.env.local` is git-ignored.
 
 ### 2. Database
 
-Apply the migrations in `supabase/migrations/` (tables `profiles`, `consents`, `counsellors`, `events`, the new-user trigger and row-level security):
+Apply the migrations in `supabase/migrations/`, in order:
 
-- **Hosted project:** `npx supabase link --project-ref <ref>` then `npx supabase db push`, or paste the SQL file into the SQL editor.
+1. `20261104000000_auth.sql`: tables `profiles`, `consents`, `counsellors`, `events`, the new-user trigger and row-level security.
+2. `20261104010000_onboarding.sql`: onboarding answers on `profiles`, the `privacy_basics` consent, `screening_results` (claimed by reference code) and `couple_links` (partner invites), with their row-level security and database functions.
+
+- **Hosted project:** `npx supabase link --project-ref <ref>` then `npx supabase db push`, or paste each SQL file into the SQL editor. With `SUPABASE_DB_URL` set in `.env.local` (Connect → Session pooler), `psql "$SUPABASE_DB_URL" -f <file>` also works.
 - **Local (needs Docker):** `npx supabase start`. This also applies `supabase/config.toml`, which already has the test phone numbers.
 
 ### 3. Auth settings (hosted project)
@@ -79,9 +82,18 @@ In the Supabase dashboard, **Authentication**:
 
 ```bash
 npm run seed:auth
+npm run seed:results
 ```
 
-Safe to run again. All data is synthetic.
+Both are safe to run again. All data is synthetic. `seed:results` adds the demo screening results **unclaimed** (each persona connects theirs in onboarding) and clears couple links between the personas.
+
+| Reference number | Belongs to | Result |
+|---|---|---|
+| `AD-PMS-2026-048213` | Mariam | Carrier, sickle cell trait (HbAS) |
+| `AD-PMS-2026-048214` | Khalid | Carrier, sickle cell trait (HbAS) |
+| `AD-PMS-2026-048215` | Patient R. | Variant of uncertain significance, `flagged = true` (goes to the counsellor) |
+
+The personas are seeded as having finished onboarding, so they land on `/home`. To demo onboarding with one, set their `profiles.onboarding_step` to `0` in the dashboard.
 
 | Persona | Role | Email | Test number (after +971), when phone is on | Lands on |
 |---|---|---|---|---|
@@ -102,6 +114,14 @@ The demo email addresses don't receive mail. To sign in as any persona in a demo
 - **Passwords:** sign-up is always by email link. Right after an email-link sign-in, people are offered "Set a password" (`/auth/password`) or "Skip for now". Next time they can choose "Sign in with a password instead" on the Sign in tab. Forgotten password: sign in with an email link, then set a new one at `/auth/password`. A wrong password and an unknown email get the same message.
 - Anyone without a `terms` consent is asked for it before going further, including new people who used the Sign in tab.
 - Sessions end after 30 minutes without activity, with a notice on the sign-in page.
+
+### How onboarding works
+
+- `/onboarding` has 8 steps. `profiles.onboarding_step` holds the step to resume on, saved after every Next, Skip and Back; reaching step 8 marks it finished, and later sign-ins go to `/home`.
+- Choosing a language saves it and reloads the page in that language straight away. Urdu, Hindi and Tagalog are stored as chosen and shown in English for now.
+- Step 6 claims a result through the `claim_screening_result` database function. Each code can be claimed once; a wrong code and one already claimed get the same message. After 10 failed tries in an hour, a person has to wait.
+- Step 7 creates a pending `couple_links` row with a single-use token that expires after 14 days. The partner opens `/invite/<token>`, signs in, and accepts. This links the accounts only; it shares no result and doesn't open the couple view.
+- Onboarding events in `events`: `onboarding_step_completed`, `onboarding_language_set`, `onboarding_learning_mode_set`, `result_claimed`, `partner_invite_created`, `partner_invite_accepted`, `onboarding_completed`. No reference codes or personal details.
 - Auth events stored in `events`: `auth_method_selected` (method: email, password, google, uae_pass or phone), `sign_up_completed`, `sign_in_completed`, `consent_given` (kind). No phone numbers, emails or names.
 
 ## Scripts
@@ -113,6 +133,7 @@ The demo email addresses don't receive mail. To sign in as any persona in a demo
 | `npm run start` | Serves the production build (run `npm run build` first) |
 | `npm run lint` | Runs ESLint across the project |
 | `npm run seed:auth` | Creates or updates the demo users (needs `.env.local`) |
+| `npm run seed:results` | Adds the demo screening results, unclaimed, and clears demo couple links |
 | `npm run test:rls` | Unit tests, plus row-level security tests when Supabase env vars are set |
 | `npm run test:e2e` | Playwright auth flow tests (needs Supabase set up as above; run `npx playwright install chromium` once) |
 
@@ -142,6 +163,8 @@ components/
 lib/
   supabase/              Browser, server and service-role clients
   auth/                  Server actions, redirect rules, UAE PASS mock, demo users
+  onboarding/            Step rules, events, reads and demo results for onboarding
+  audio/                 Listen mode (speak.ts, browser speech for now)
 i18n/                    Locale routing, navigation helpers, message loading
 messages/
   en/  ar/               UI strings for each locale (landing.json, common.json, auth.json)
@@ -168,6 +191,7 @@ proxy.ts                 Locale routing, session refresh, route protection, inac
 |---|---|
 | M1 Landing page | Done: `/ar` and `/en`, Lighthouse accessibility 96+ |
 | M2 Auth | Built: email link, Google, UAE PASS mock, facility code, consent, route protection. Phone code built but off (`PHONE_AUTH_ENABLED`). |
-| M3 onwards | Not started. Linked routes show a placeholder page for now. |
+| M3 Onboarding | Built: 8 steps with resume, language switch, listen mode, result claiming by reference or QR, partner invite and accept (`/invite/<token>`). |
+| M4 onwards | Not started. Linked routes show a placeholder page for now. |
 
 See [PROJECT.md section 11](PROJECT.md) for the full build order.

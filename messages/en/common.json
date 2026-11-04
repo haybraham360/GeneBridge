@@ -21,5 +21,9 @@
       "admin": "Health authority dashboard"
     }
   },
-  "signOut": "Sign out"
+  "signOut": "Sign out",
+  "listen": {
+    "play": "Listen to this step",
+    "stop": "Stop reading"
+  }
 }

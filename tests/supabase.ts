@@ -56,3 +56,51 @@ export async function signedInAs(key: DemoUser['key']) {
   if (verifyError || !session.user) throw verifyError ?? new Error('No session');
   return { client, userId: session.user.id };
 }
+
+/**
+ * Puts a persona back at the start of onboarding (task 04): no answers, no
+ * privacy consent, no claimed result, no couple links, no failed claims.
+ * Terms consent and role are kept.
+ */
+export async function resetOnboarding(key: DemoUser['key'], { locale = 'en' } = {}) {
+  const admin = adminClient();
+  const userId = await findUserId({ email: persona(key).email });
+  if (!userId) throw new Error(`Persona ${key} is not seeded (npm run seed:auth)`);
+
+  const steps = [
+    admin
+      .from('profiles')
+      .update({
+        locale,
+        learning_mode: null,
+        reason: null,
+        onboarding_step: 0,
+        onboarding_started_at: null,
+        onboarding_completed_at: null,
+      })
+      .eq('user_id', userId),
+    admin.from('consents').delete().eq('user_id', userId).eq('kind', 'privacy_basics'),
+    admin
+      .from('screening_results')
+      .update({ owner_id: null, claimed_at: null })
+      .eq('owner_id', userId),
+    admin.from('couple_links').delete().or(`inviter_id.eq.${userId},invitee_id.eq.${userId}`),
+    admin.from('result_claim_attempts').delete().eq('user_id', userId),
+  ];
+  for (const step of steps) {
+    const { error } = await step;
+    if (error) throw new Error(`reset ${key}: ${error.message}`);
+  }
+  return userId;
+}
+
+/** After onboarding tests: back to "finished" so the auth tests still land on /home. */
+export async function restoreFinished(key: DemoUser['key']) {
+  const user = persona(key);
+  const userId = await findUserId({ email: user.email });
+  if (!userId) return;
+  await adminClient()
+    .from('profiles')
+    .update({ onboarding_step: user.onboardingStep, locale: user.locale })
+    .eq('user_id', userId);
+}

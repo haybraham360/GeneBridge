@@ -12,8 +12,11 @@ export type AuthEvent =
   | { name: 'sign_in_completed'; props?: undefined }
   | { name: 'consent_given'; props: { kind: 'terms' } };
 
+/** Any typed event list (auth, onboarding, ...). Props hold no personal data. */
+type LoggableEvent = { name: string; props?: Record<string, string | number | boolean> };
+
 /** Writes events as the signed-in user (RLS: insert own only). Never throws. */
-export async function logEvents(supabase: SupabaseClient, userId: string, events: AuthEvent[]) {
+export async function logEvents(supabase: SupabaseClient, userId: string, events: LoggableEvent[]) {
   if (events.length === 0) return;
   const { error } = await supabase.from('events').insert(
     events.map((e) => ({
