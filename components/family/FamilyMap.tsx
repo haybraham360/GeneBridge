@@ -1,0 +1,1584 @@
+"use client";
+
+import { useEffect, useId, useMemo, useRef, useState } from "react";
+import type { FormEvent, ReactNode } from "react";
+import { Calendar, Check, Lock, X } from "lucide-react";
+
+/* -------------------------------------------------------------------------- */
+/*  Types                                                                     */
+/* -------------------------------------------------------------------------- */
+
+export type Status = "condition" | "carrier" | "unsure" | "none";
+export type Origin = "added" | "self" | "shared";
+export type Gender = "male" | "female" | "unspecified";
+
+export interface Person {
+  id: string;
+  name: string;
+  gender: Gender;
+  status: Status;
+  /** Shown in brackets after the status, e.g. "shared" -> "Carrier (shared)". */
+  statusNote?: string;
+  origin: Origin;
+  /** Generation row. 0 is the oldest row on the map. */
+  gen: number;
+  /** Left edge of the node, in map units. */
+  x: number;
+}
+
+export interface Union {
+  id: string;
+  /** One or two partner ids. A single id means "parent with no partner on the map". */
+  partners: string[];
+  children: string[];
+  /** Draws the double marriage line labelled "cousins". */
+  consanguineous?: boolean;
+}
+
+export interface FamilyMapData {
+  people: Person[];
+  unions: Union[];
+}
+
+export interface NotifyPayload {
+  relativeIds: string[];
+  anonymous: boolean;
+  message: string;
+}
+
+export interface FamilyMapProps {
+  initialData?: FamilyMapData;
+  lang?: string;
+  onChange?: (data: FamilyMapData) => void;
+  onShareChange?: (shared: boolean) => void;
+  /** Reject to show an error in the dialog. Resolves silently when omitted. */
+  onNotify?: (payload: NotifyPayload) => Promise<void> | void;
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Constants & seed data                                                     */
+/* -------------------------------------------------------------------------- */
+
+const NODE_W = 115;
+const NODE_H = 50;
+const PITCH = 130;
+const BAR_GAP = 23;
+const PAD_X = 14;
+const PAD_Y = 7;
+
+const NOTIFY_MESSAGE =
+  "A genetic condition may run in our family. Free, confidential testing is available through GeneBridge.";
+
+const STATUS_META: Record<Status, { label: string; box: string }> = {
+  condition: {
+    label: "Sickle cell disease",
+    box: "border-[#9f1239] bg-[#9f1239]",
+  },
+  carrier: { label: "Carrier", box: "border-[#ff5a1f] bg-[#ff5a1f]" },
+  unsure: { label: "Not sure", box: "border-[#e3d9cf] bg-white" },
+  none: { label: "No known condition", box: "border-[#e5ddd5] bg-[#e5ddd5]" },
+};
+
+const STATUS_OPTIONS: { value: Status; label: string }[] = [
+  { value: "condition", label: "Known condition" },
+  { value: "carrier", label: "Carrier" },
+  { value: "unsure", label: "Not sure" },
+  { value: "none", label: "No known condition" },
+];
+
+type RelationKind = "parent" | "sibling" | "child" | "partner";
+
+interface Relation {
+  id: string;
+  label: string;
+  kind: RelationKind;
+  gender: Gender;
+}
+
+const RELATIONS: Relation[] = [
+  { id: "father", label: "Father", kind: "parent", gender: "male" },
+  { id: "mother", label: "Mother", kind: "parent", gender: "female" },
+  { id: "parent", label: "Parent", kind: "parent", gender: "unspecified" },
+  { id: "brother", label: "Brother", kind: "sibling", gender: "male" },
+  { id: "sister", label: "Sister", kind: "sibling", gender: "female" },
+  { id: "sibling", label: "Sibling", kind: "sibling", gender: "unspecified" },
+  { id: "son", label: "Son", kind: "child", gender: "male" },
+  { id: "daughter", label: "Daughter", kind: "child", gender: "female" },
+  { id: "child", label: "Child", kind: "child", gender: "unspecified" },
+  { id: "husband", label: "Husband", kind: "partner", gender: "male" },
+  { id: "wife", label: "Wife", kind: "partner", gender: "female" },
+  { id: "partner", label: "Partner", kind: "partner", gender: "unspecified" },
+];
+
+export const DEFAULT_DATA: FamilyMapData = {
+  people: [
+    { id: "rashid", name: "Grandfather Rashid", gender: "male", status: "none", origin: "added", gen: 0, x: 29 },
+    { id: "fatima", name: "Grandmother Fatima", gender: "female", status: "unsure", origin: "added", gen: 0, x: 159 },
+    { id: "ali", name: "Grandfather Ali", gender: "male", status: "none", origin: "added", gen: 0, x: 319 },
+    { id: "noura", name: "Grandmother Noura", gender: "female", status: "unsure", origin: "added", gen: 0, x: 448 },
+    { id: "saeed", name: "Uncle Saeed", gender: "male", status: "condition", origin: "added", gen: 1, x: 14 },
+    { id: "ahmed", name: "Father Ahmed", gender: "male", status: "carrier", origin: "added", gen: 1, x: 159 },
+    { id: "huda", name: "Mother Huda", gender: "female", status: "unsure", origin: "added", gen: 1, x: 384 },
+    { id: "khalid", name: "Khalid", gender: "male", status: "carrier", statusNote: "shared", origin: "shared", gen: 2, x: 14 },
+    { id: "mariam", name: "Mariam (you)", gender: "female", status: "carrier", origin: "self", gen: 2, x: 217 },
+    { id: "yousef", name: "Brother Yousef", gender: "male", status: "unsure", origin: "added", gen: 2, x: 391 },
+  ],
+  unions: [
+    { id: "u1", partners: ["rashid", "fatima"], children: ["saeed", "ahmed"] },
+    { id: "u2", partners: ["ali", "noura"], children: ["huda"] },
+    { id: "u3", partners: ["saeed"], children: ["khalid"] },
+    { id: "u4", partners: ["ahmed", "huda"], children: ["mariam", "yousef"] },
+    { id: "u5", partners: ["khalid", "mariam"], children: [], consanguineous: true },
+  ],
+};
+
+/* -------------------------------------------------------------------------- */
+/*  Pure helpers: layout                                                      */
+/* -------------------------------------------------------------------------- */
+
+let idCounter = 0;
+function uid(prefix: string): string {
+  idCounter += 1;
+  return `${prefix}-${Date.now().toString(36)}-${idCounter.toString(36)}`;
+}
+
+function genY(gen: number): number {
+  if (gen === 0) return 7;
+  if (gen === 1) return 159;
+  if (gen >= 2) return 295 + 136 * (gen - 2);
+  return 7 + 152 * gen;
+}
+
+const isPerson = (p: Person | undefined): p is Person => p !== undefined;
+
+function indexPeople(people: Person[]): Map<string, Person> {
+  return new Map(people.map((p) => [p.id, p]));
+}
+
+function isFree(
+  people: Person[],
+  unions: Union[],
+  gen: number,
+  x: number,
+  ignore: string[] = [],
+): boolean {
+  const sameRow = people.filter((p) => p.gen === gen && !ignore.includes(p.id));
+  if (sameRow.some((p) => Math.abs(p.x - x) < NODE_W + 7)) return false;
+
+  // Never drop a node onto the marriage line between two partners.
+  const map = indexPeople(people);
+  for (const u of unions) {
+    if (u.partners.length < 2) continue;
+    const pair = u.partners
+      .map((id) => map.get(id))
+      .filter((p): p is Person => p !== undefined && p.gen === gen)
+      .sort((a, b) => a.x - b.x);
+    if (pair.length === 2 && x > pair[0].x && x < pair[1].x) return false;
+  }
+  return true;
+}
+
+function findFreeX(
+  people: Person[],
+  unions: Union[],
+  gen: number,
+  desired: number,
+): number {
+  for (let step = 0; step < 60; step += 1) {
+    const candidates =
+      step === 0 ? [desired] : [desired + step * PITCH, desired - step * PITCH];
+    for (const c of candidates) {
+      if (isFree(people, unions, gen, c)) return c;
+    }
+  }
+  return desired + 60 * PITCH;
+}
+
+type Placement = { people: Person[]; x: number } | { error: string };
+
+/** Finds a spot right next to `anchor`, pushing the row outwards when needed. */
+function placePartner(
+  people: Person[],
+  unions: Union[],
+  anchor: Person,
+): Placement {
+  const map = indexPeople(people);
+  const others = unions
+    .filter((u) => u.partners.includes(anchor.id))
+    .flatMap((u) => u.partners)
+    .filter((id) => id !== anchor.id)
+    .map((id) => map.get(id))
+    .filter(isPerson);
+
+  const hasRight = others.some((p) => p.x > anchor.x);
+  const hasLeft = others.some((p) => p.x < anchor.x);
+  if (hasRight && hasLeft) {
+    return { error: `${anchor.name} already has two partners on the map.` };
+  }
+
+  const side = hasRight ? -1 : 1;
+  const slot = anchor.x + side * PITCH;
+  if (isFree(people, unions, anchor.gen, slot)) return { people, x: slot };
+
+  const shifted = people.map((p) => {
+    const onThatSide = side === 1 ? p.x > anchor.x : p.x < anchor.x;
+    return p.gen === anchor.gen && p.id !== anchor.id && onThatSide
+      ? { ...p, x: p.x + side * PITCH }
+      : p;
+  });
+  return { people: shifted, x: slot };
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Pure helpers: editing the family                                          */
+/* -------------------------------------------------------------------------- */
+
+interface NewRelativeInput {
+  name: string;
+  status: Status;
+  relationId: string;
+  targetId: string;
+  consanguineous: boolean;
+}
+
+type AddResult = { data: FamilyMapData; id: string } | { error: string };
+
+function addRelative(
+  data: FamilyMapData,
+  input: NewRelativeInput,
+  ids: { person: string; union: string },
+): AddResult {
+  const rel = RELATIONS.find((r) => r.id === input.relationId);
+  const target = data.people.find((p) => p.id === input.targetId);
+  if (!rel || !target) return { error: "Choose who this person is related to." };
+
+  const { people, unions } = data;
+  const base = {
+    id: ids.person,
+    name: input.name.trim(),
+    gender: rel.gender,
+    status: input.status,
+    origin: "added" as Origin,
+  };
+  const map = indexPeople(people);
+
+  switch (rel.kind) {
+    case "partner": {
+      const placed = placePartner(people, unions, target);
+      if ("error" in placed) return placed;
+      const person: Person = { ...base, gen: target.gen, x: placed.x };
+      const single = unions.find(
+        (u) => u.partners.includes(target.id) && u.partners.length === 1,
+      );
+      const nextUnions: Union[] = single
+        ? unions.map((u) =>
+            u.id === single.id
+              ? {
+                  ...u,
+                  partners: [...u.partners, person.id],
+                  consanguineous: Boolean(u.consanguineous) || input.consanguineous,
+                }
+              : u,
+          )
+        : [
+            ...unions,
+            {
+              id: ids.union,
+              partners: [target.id, person.id],
+              children: [],
+              consanguineous: input.consanguineous,
+            },
+          ];
+      return {
+        data: { people: [...placed.people, person], unions: nextUnions },
+        id: person.id,
+      };
+    }
+
+    case "child": {
+      const gen = target.gen + 1;
+      const own = unions.find((u) => u.partners.includes(target.id));
+      let desired = target.x;
+      if (own) {
+        const kids = own.children.map((id) => map.get(id)).filter(isPerson);
+        const parents = own.partners.map((id) => map.get(id)).filter(isPerson);
+        desired = kids.length
+          ? Math.max(...kids.map((k) => k.x)) + PITCH
+          : parents.reduce((sum, p) => sum + p.x, 0) / Math.max(parents.length, 1);
+      }
+      const person: Person = {
+        ...base,
+        gen,
+        x: findFreeX(people, unions, gen, desired),
+      };
+      const nextUnions: Union[] = own
+        ? unions.map((u) =>
+            u.id === own.id ? { ...u, children: [...u.children, person.id] } : u,
+          )
+        : [
+            ...unions,
+            { id: ids.union, partners: [target.id], children: [person.id] },
+          ];
+      return {
+        data: { people: [...people, person], unions: nextUnions },
+        id: person.id,
+      };
+    }
+
+    case "parent": {
+      const gen = target.gen - 1;
+      const parentUnion = unions.find((u) => u.children.includes(target.id));
+
+      if (!parentUnion) {
+        const person: Person = {
+          ...base,
+          gen,
+          x: findFreeX(people, unions, gen, target.x),
+        };
+        return {
+          data: {
+            people: [...people, person],
+            unions: [
+              ...unions,
+              { id: ids.union, partners: [person.id], children: [target.id] },
+            ],
+          },
+          id: person.id,
+        };
+      }
+
+      if (parentUnion.partners.length >= 2) {
+        return { error: `${target.name} already has two parents on the map.` };
+      }
+      const existingParent = map.get(parentUnion.partners[0]);
+      if (!existingParent) return { error: "Something is off with this branch." };
+      const placed = placePartner(people, unions, existingParent);
+      if ("error" in placed) return placed;
+      const person: Person = { ...base, gen, x: placed.x };
+      return {
+        data: {
+          people: [...placed.people, person],
+          unions: unions.map((u) =>
+            u.id === parentUnion.id
+              ? { ...u, partners: [...u.partners, person.id] }
+              : u,
+          ),
+        },
+        id: person.id,
+      };
+    }
+
+    case "sibling": {
+      const parentUnion = unions.find((u) => u.children.includes(target.id));
+      if (!parentUnion) {
+        return {
+          error: `Add a parent of ${target.name} first, so siblings can be connected.`,
+        };
+      }
+      const person: Person = {
+        ...base,
+        gen: target.gen,
+        x: findFreeX(people, unions, target.gen, target.x + PITCH),
+      };
+      return {
+        data: {
+          people: [...people, person],
+          unions: unions.map((u) =>
+            u.id === parentUnion.id
+              ? { ...u, children: [...u.children, person.id] }
+              : u,
+          ),
+        },
+        id: person.id,
+      };
+    }
+  }
+}
+
+function removePerson(data: FamilyMapData, id: string): FamilyMapData {
+  const unions = data.unions
+    .map((u) => ({
+      ...u,
+      partners: u.partners.filter((p) => p !== id),
+      children: u.children.filter((c) => c !== id),
+    }))
+    .filter(
+      (u) =>
+        u.partners.length > 0 && (u.partners.length > 1 || u.children.length > 0),
+    );
+  return { people: data.people.filter((p) => p.id !== id), unions };
+}
+
+function joinNames(names: string[]): string {
+  if (names.length <= 1) return names[0] ?? "";
+  return `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`;
+}
+
+function describePerson(
+  person: Person,
+  data: FamilyMapData,
+): { status: string; relation: string } {
+  const label = STATUS_META[person.status].label;
+  const known = person.status === "condition" || person.status === "carrier";
+  const origin =
+    person.origin === "added"
+      ? "added by you"
+      : person.origin === "self"
+        ? "from your own result"
+        : "shared with you";
+  const status = `${label}${known ? " · known" : ""} · ${origin}.`;
+
+  const map = indexPeople(data.people);
+  const asPartner = data.unions.filter((u) => u.partners.includes(person.id));
+  const kids = asPartner
+    .flatMap((u) => u.children)
+    .map((id) => map.get(id)?.name)
+    .filter((n): n is string => Boolean(n));
+  const parentUnion = data.unions.find((u) => u.children.includes(person.id));
+  const parents = (parentUnion?.partners ?? [])
+    .map((id) => map.get(id)?.name)
+    .filter((n): n is string => Boolean(n));
+  const partners = asPartner
+    .flatMap((u) => u.partners)
+    .filter((id) => id !== person.id)
+    .map((id) => map.get(id)?.name)
+    .filter((n): n is string => Boolean(n));
+
+  let relation = "";
+  if (kids.length) {
+    const word =
+      person.gender === "male" ? "Father" : person.gender === "female" ? "Mother" : "Parent";
+    relation = `${word} of ${joinNames(kids)}.`;
+  } else if (parents.length) {
+    const word =
+      person.gender === "male" ? "Son" : person.gender === "female" ? "Daughter" : "Child";
+    relation = `${word} of ${joinNames(parents)}.`;
+  } else if (partners.length) {
+    const word =
+      person.gender === "male" ? "Husband" : person.gender === "female" ? "Wife" : "Partner";
+    relation = `${word} of ${joinNames(partners)}.`;
+  }
+  return { status, relation };
+}
+
+/* -------------------------------------------------------------------------- */
+/*  UI primitives                                                             */
+/* -------------------------------------------------------------------------- */
+
+const cardClass =
+  "rounded-3xl border border-[#f6e9df] bg-white shadow-[0_1px_2px_rgba(120,60,20,0.04),0_8px_28px_rgba(120,60,20,0.05)]";
+
+const focusRing =
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c2410c]";
+
+const inputClass = `h-10 w-full rounded-xl border border-[#ecdccf] bg-white px-3 text-sm text-[#16110d] placeholder:text-[#a4978c] ${focusRing}`;
+
+function Checkbox({
+  checked,
+  onChange,
+  children,
+  className = "",
+}: {
+  checked: boolean;
+  onChange: (next: boolean) => void;
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <label className={`flex cursor-pointer items-start gap-2.5 ${className}`}>
+      <input
+        type="checkbox"
+        className="peer sr-only"
+        checked={checked}
+        onChange={(e) => onChange(e.target.checked)}
+      />
+      <span
+        aria-hidden
+        className="mt-px grid size-4 shrink-0 place-items-center rounded-[5px] border-[1.5px] border-[#16110d] bg-white text-white transition peer-checked:bg-[#16110d] peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[#c2410c] [&>svg]:opacity-0 peer-checked:[&>svg]:opacity-100"
+      >
+        <Check className="size-3" strokeWidth={3} />
+      </span>
+      <span className="min-w-0 text-[13px] leading-snug">{children}</span>
+    </label>
+  );
+}
+
+function StatusPicker({
+  value,
+  onChange,
+  name,
+}: {
+  value: Status;
+  onChange: (next: Status) => void;
+  name: string;
+}) {
+  return (
+    <fieldset>
+      <legend className="mb-1.5 text-xs font-bold">Condition</legend>
+      <div className="grid grid-cols-2 gap-2">
+        {STATUS_OPTIONS.map((opt) => (
+          <label
+            key={opt.value}
+            className="flex cursor-pointer items-center gap-2 rounded-xl border border-[#ecdccf] bg-white px-3 py-2.5 text-xs font-semibold transition has-checked:border-[#16110d] has-checked:bg-[#fffaf6] has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-[#c2410c]"
+          >
+            <input
+              type="radio"
+              name={name}
+              className="sr-only"
+              checked={value === opt.value}
+              onChange={() => onChange(opt.value)}
+            />
+            <span
+              aria-hidden
+              className={`size-3 shrink-0 rounded-[3px] border ${STATUS_META[opt.value].box}`}
+            />
+            {opt.label}
+          </label>
+        ))}
+      </div>
+    </fieldset>
+  );
+}
+
+function Modal({
+  title,
+  description,
+  onClose,
+  children,
+  footer,
+}: {
+  title: string;
+  description?: string;
+  onClose: () => void;
+  children: ReactNode;
+  footer: ReactNode;
+}) {
+  const titleId = useId();
+  const descId = useId();
+  const panelRef = useRef<HTMLDivElement>(null);
+  const closeRef = useRef(onClose);
+
+  useEffect(() => {
+    closeRef.current = onClose;
+  });
+
+  useEffect(() => {
+    const previous = document.activeElement as HTMLElement | null;
+    const panel = panelRef.current;
+    const focusables = (): HTMLElement[] =>
+      panel
+        ? Array.from(
+            panel.querySelectorAll<HTMLElement>(
+              'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [href]',
+            ),
+          )
+        : [];
+
+    const initial =
+      panel?.querySelector<HTMLElement>("[data-autofocus]") ?? focusables()[0];
+    initial?.focus();
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.stopPropagation();
+        closeRef.current();
+        return;
+      }
+      if (e.key !== "Tab") return;
+      const items = focusables();
+      if (!items.length) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+      previous?.focus();
+    };
+  }, []);
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-[#16110d]/40 p-4"
+      onMouseDown={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        aria-describedby={description ? descId : undefined}
+        className="flex max-h-[90vh] w-full max-w-md flex-col rounded-3xl bg-white shadow-[0_20px_60px_rgba(60,25,5,0.25)]"
+      >
+        <div className="flex items-start justify-between gap-4 px-6 pt-6">
+          <div>
+            <h2 id={titleId} className="text-lg font-bold text-[#16110d]">
+              {title}
+            </h2>
+            {description && (
+              <p id={descId} className="mt-1 text-sm text-[#6b6159]">
+                {description}
+              </p>
+            )}
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close"
+            className={`rounded-full p-1.5 text-[#6b6159] transition hover:bg-[#fff4ec] ${focusRing}`}
+          >
+            <X className="size-4" aria-hidden />
+          </button>
+        </div>
+        <div className="min-h-0 flex-1 overflow-y-auto px-6 py-5">{children}</div>
+        <div className="flex flex-wrap justify-end gap-2.5 border-t border-[#f6e9df] px-6 py-4">
+          {footer}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const primaryBtn = `rounded-full bg-[#ff5a1f] px-5 py-2.5 text-xs font-bold text-white transition hover:bg-[#ea4c12] disabled:cursor-not-allowed disabled:opacity-50 ${focusRing}`;
+const darkBtn = `rounded-full bg-[#16110d] px-5 py-2.5 text-xs font-bold text-white transition hover:bg-[#2c2420] disabled:cursor-not-allowed disabled:opacity-50 ${focusRing}`;
+const outlineBtn = `rounded-full border border-[#f0e2d8] bg-white px-5 py-2.5 text-xs font-bold transition hover:border-[#e0c3ad] disabled:cursor-not-allowed disabled:opacity-50 ${focusRing}`;
+
+/* -------------------------------------------------------------------------- */
+/*  Dialogs                                                                   */
+/* -------------------------------------------------------------------------- */
+
+function AddRelativeDialog({
+  data,
+  defaultTargetId,
+  onAdd,
+  onClose,
+}: {
+  data: FamilyMapData;
+  defaultTargetId: string;
+  onAdd: (input: NewRelativeInput) => void;
+  onClose: () => void;
+}) {
+  const formId = useId();
+  const [name, setName] = useState("");
+  const [relationId, setRelationId] = useState("sibling");
+  const [targetId, setTargetId] = useState(defaultTargetId);
+  const [status, setStatus] = useState<Status>("unsure");
+  const [consanguineous, setConsanguineous] = useState(false);
+
+  const relation = RELATIONS.find((r) => r.id === relationId);
+  const isPartner = relation?.kind === "partner";
+
+  const problem = useMemo(() => {
+    const preview = addRelative(
+      data,
+      { name: "preview", status, relationId, targetId, consanguineous },
+      { person: "preview-person", union: "preview-union" },
+    );
+    return "error" in preview ? preview.error : null;
+  }, [data, status, relationId, targetId, consanguineous]);
+
+  const canSubmit = name.trim().length > 0 && problem === null;
+
+  const submit = (e: FormEvent) => {
+    e.preventDefault();
+    if (!canSubmit) return;
+    onAdd({
+      name,
+      status,
+      relationId,
+      targetId,
+      consanguineous: isPartner ? consanguineous : false,
+    });
+  };
+
+  return (
+    <Modal
+      title="Add a relative"
+      description="Self-reported and private to you. Only add what you know."
+      onClose={onClose}
+      footer={
+        <>
+          <button type="button" onClick={onClose} className={outlineBtn}>
+            Cancel
+          </button>
+          <button
+            type="submit"
+            form={formId}
+            disabled={!canSubmit}
+            className={primaryBtn}
+          >
+            Add to map
+          </button>
+        </>
+      }
+    >
+      <form id={formId} onSubmit={submit} className="space-y-4">
+        <div>
+          <label htmlFor={`${formId}-name`} className="mb-1.5 block text-xs font-bold">
+            Name, or how you know them
+          </label>
+          <input
+            id={`${formId}-name`}
+            data-autofocus
+            className={inputClass}
+            value={name}
+            maxLength={40}
+            placeholder="e.g. Aunt Zainab"
+            onChange={(e) => setName(e.target.value)}
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label htmlFor={`${formId}-rel`} className="mb-1.5 block text-xs font-bold">
+              This person is the
+            </label>
+            <select
+              id={`${formId}-rel`}
+              className={inputClass}
+              value={relationId}
+              onChange={(e) => setRelationId(e.target.value)}
+            >
+              {RELATIONS.map((r) => (
+                <option key={r.id} value={r.id}>
+                  {r.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label htmlFor={`${formId}-target`} className="mb-1.5 block text-xs font-bold">
+              of
+            </label>
+            <select
+              id={`${formId}-target`}
+              className={inputClass}
+              value={targetId}
+              onChange={(e) => setTargetId(e.target.value)}
+            >
+              {data.people.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {isPartner && (
+          <Checkbox checked={consanguineous} onChange={setConsanguineous}>
+            They are related by blood (cousins)
+          </Checkbox>
+        )}
+
+        <StatusPicker value={status} onChange={setStatus} name={`${formId}-status`} />
+
+        {problem && (
+          <p
+            role="alert"
+            className="rounded-xl bg-[#fff3ea] px-3 py-2.5 text-xs leading-relaxed text-[#9a3412]"
+          >
+            {problem}
+          </p>
+        )}
+      </form>
+    </Modal>
+  );
+}
+
+function EditPersonDialog({
+  person,
+  canRemove,
+  onSave,
+  onRemove,
+  onClose,
+}: {
+  person: Person;
+  canRemove: boolean;
+  onSave: (patch: { name: string; status: Status }) => void;
+  onRemove: () => void;
+  onClose: () => void;
+}) {
+  const formId = useId();
+  const [name, setName] = useState(person.name);
+  const [status, setStatus] = useState<Status>(person.status);
+  const [confirmRemove, setConfirmRemove] = useState(false);
+
+  const submit = (e: FormEvent) => {
+    e.preventDefault();
+    if (!name.trim()) return;
+    onSave({ name, status });
+  };
+
+  return (
+    <Modal
+      title={`Edit ${person.name}`}
+      onClose={onClose}
+      footer={
+        <>
+          <button type="button" onClick={onClose} className={outlineBtn}>
+            Cancel
+          </button>
+          <button
+            type="submit"
+            form={formId}
+            disabled={!name.trim()}
+            className={primaryBtn}
+          >
+            Save changes
+          </button>
+        </>
+      }
+    >
+      <form id={formId} onSubmit={submit} className="space-y-4">
+        <div>
+          <label htmlFor={`${formId}-name`} className="mb-1.5 block text-xs font-bold">
+            Name
+          </label>
+          <input
+            id={`${formId}-name`}
+            data-autofocus
+            className={inputClass}
+            value={name}
+            maxLength={40}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </div>
+
+        <StatusPicker value={status} onChange={setStatus} name={`${formId}-status`} />
+
+        {canRemove && (
+          <div className="border-t border-[#f6e9df] pt-4">
+            {confirmRemove ? (
+              <div className="flex flex-wrap items-center gap-2.5">
+                <p className="mr-auto text-xs text-[#6b6159]">
+                  Remove {person.name} from your map?
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setConfirmRemove(false)}
+                  className={outlineBtn}
+                >
+                  Keep
+                </button>
+                <button type="button" onClick={onRemove} className={darkBtn}>
+                  Remove
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setConfirmRemove(true)}
+                className={`text-xs font-bold text-[#9f1239] underline underline-offset-2 ${focusRing}`}
+              >
+                Remove from map
+              </button>
+            )}
+          </div>
+        )}
+      </form>
+    </Modal>
+  );
+}
+
+function ShareDialog({
+  shared,
+  peopleCount,
+  flaggedCount,
+  onShare,
+  onStop,
+  onClose,
+}: {
+  shared: boolean;
+  peopleCount: number;
+  flaggedCount: number;
+  onShare: () => void;
+  onStop: () => void;
+  onClose: () => void;
+}) {
+  const [understood, setUnderstood] = useState(false);
+
+  return (
+    <Modal
+      title={shared ? "Sharing with your counsellor" : "Share with my counsellor"}
+      description={
+        shared
+          ? "Your counsellor can see this family map. You can stop at any time."
+          : "Your counsellor will see this map so you can talk it through together."
+      }
+      onClose={onClose}
+      footer={
+        shared ? (
+          <>
+            <button type="button" onClick={onStop} className={outlineBtn}>
+              Stop sharing
+            </button>
+            <button type="button" onClick={onClose} className={darkBtn}>
+              Done
+            </button>
+          </>
+        ) : (
+          <>
+            <button type="button" onClick={onClose} className={outlineBtn}>
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={onShare}
+              disabled={!understood}
+              className={primaryBtn}
+            >
+              Share family map
+            </button>
+          </>
+        )
+      }
+    >
+      <div className="space-y-4">
+        <p className="rounded-xl bg-[#fff3ea] px-3 py-2.5 text-xs leading-relaxed text-[#6b6159]">
+          {peopleCount} {peopleCount === 1 ? "person" : "people"} on the map,{" "}
+          {flaggedCount} with a known condition or carrier status. Test results
+          from relatives are never included.
+        </p>
+        {!shared && (
+          <Checkbox checked={understood} onChange={setUnderstood}>
+            <span data-autofocus>
+              I understand my counsellor will see names and conditions on this map.
+            </span>
+          </Checkbox>
+        )}
+      </div>
+    </Modal>
+  );
+}
+
+function NotifyDialog({
+  relatives,
+  anonymous,
+  onSend,
+  onClose,
+}: {
+  relatives: Person[];
+  anonymous: boolean;
+  onSend: (ids: string[]) => Promise<void>;
+  onClose: () => void;
+}) {
+  const [picked, setPicked] = useState<string[]>([]);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const toggle = (id: string, next: boolean) =>
+    setPicked((prev) => (next ? [...prev, id] : prev.filter((p) => p !== id)));
+
+  const send = async () => {
+    if (!picked.length || sending) return;
+    setSending(true);
+    setError(null);
+    try {
+      await onSend(picked);
+    } catch {
+      setError("We couldn't send this. Check your connection and try again.");
+      setSending(false);
+    }
+  };
+
+  return (
+    <Modal
+      title="Choose relatives to notify"
+      description={
+        anonymous
+          ? "Sent anonymously through GeneBridge. Your own result is never included."
+          : "Sent with your name. Your own result is never included."
+      }
+      onClose={onClose}
+      footer={
+        <>
+          <button type="button" onClick={onClose} className={outlineBtn}>
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={send}
+            disabled={!picked.length || sending}
+            className={primaryBtn}
+          >
+            {sending ? "Sending…" : `Send to ${picked.length || "…"}`}
+          </button>
+        </>
+      }
+    >
+      <div className="space-y-4">
+        <blockquote className="rounded-xl bg-[#fff3ea] px-3 py-2.5 text-xs leading-relaxed text-[#6b6159]">
+          &ldquo;{NOTIFY_MESSAGE}&rdquo;
+        </blockquote>
+
+        <div className="flex items-center justify-between">
+          <p className="text-xs font-bold">Relatives</p>
+          <div className="flex gap-3 text-xs font-bold">
+            <button
+              type="button"
+              onClick={() => setPicked(relatives.map((r) => r.id))}
+              className={`underline underline-offset-2 ${focusRing}`}
+            >
+              Select all
+            </button>
+            <button
+              type="button"
+              onClick={() => setPicked([])}
+              className={`underline underline-offset-2 ${focusRing}`}
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+
+        {relatives.length === 0 ? (
+          <p className="text-xs text-[#6b6159]">
+            Add a relative to your map first, then choose who to notify.
+          </p>
+        ) : (
+          <ul className="divide-y divide-[#f6e9df] rounded-2xl border border-[#f6e9df]">
+            {relatives.map((r, i) => (
+              <li key={r.id} className="px-4 py-3">
+                <Checkbox
+                  checked={picked.includes(r.id)}
+                  onChange={(next) => toggle(r.id, next)}
+                >
+                  <span
+                    {...(i === 0 ? { "data-autofocus": true } : {})}
+                    className="flex items-center gap-2"
+                  >
+                    <span
+                      aria-hidden
+                      className={`size-3 shrink-0 rounded-[3px] border ${STATUS_META[r.status].box}`}
+                    />
+                    <span className="font-semibold">{r.name}</span>
+                  </span>
+                </Checkbox>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {error && (
+          <p role="alert" className="text-xs text-[#9a3412]">
+            {error}
+          </p>
+        )}
+      </div>
+    </Modal>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Tree                                                                      */
+/* -------------------------------------------------------------------------- */
+
+function PersonNode({
+  person,
+  left,
+  top,
+  selected,
+  onSelect,
+}: {
+  person: Person;
+  left: number;
+  top: number;
+  selected: boolean;
+  onSelect: (id: string) => void;
+}) {
+  const isSelf = person.origin === "self";
+  const subtitle = `${STATUS_META[person.status].label}${
+    person.statusNote ? ` (${person.statusNote})` : ""
+  }`;
+
+  const border = selected
+    ? "border-[1.5px] border-[#ff5a1f] shadow-[0_0_0_4px_rgba(255,90,31,0.18)]"
+    : isSelf
+      ? "border-[1.5px] border-[#16110d]"
+      : person.status === "unsure"
+        ? "border border-dashed border-[#d9ccc0]"
+        : "border border-[#e9dfd6]";
+
+  return (
+    <button
+      type="button"
+      data-person={person.id}
+      aria-pressed={selected}
+      aria-label={`${person.name}, ${subtitle}`}
+      onClick={() => onSelect(person.id)}
+      style={{ left, top, width: NODE_W, height: NODE_H }}
+      className={`absolute flex items-center gap-2 overflow-hidden rounded-xl bg-white px-2.5 py-0.5 text-left transition-shadow hover:shadow-[0_2px_8px_rgba(120,60,20,0.12)] ${border} ${focusRing}`}
+    >
+      <span
+        aria-hidden
+        className={`size-3 shrink-0 rounded-[3px] border ${STATUS_META[person.status].box}`}
+      />
+      <span className="min-w-0">
+        <span className="block text-[10.5px] leading-[1.15] font-bold">
+          {person.name}
+        </span>
+        <span className="block text-[9.5px] leading-[1.15] text-[#6b6159]">
+          {subtitle}
+        </span>
+      </span>
+    </button>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Main component                                                            */
+/* -------------------------------------------------------------------------- */
+
+type DialogKind = "add" | "edit" | "share" | "notify" | null;
+
+export default function FamilyMap({
+  lang = "en",    
+  initialData = DEFAULT_DATA,
+  onChange,
+  onShareChange,
+  onNotify,
+}: FamilyMapProps) {
+  const [data, setData] = useState<FamilyMapData>(initialData);
+  const [selectedId, setSelectedId] = useState("saeed");
+  const [dialog, setDialog] = useState<DialogKind>(null);
+  const [anonymous, setAnonymous] = useState(true);
+  const [shared, setShared] = useState(false);
+  const [toast, setToast] = useState<string | null>(null);
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLDivElement>(null);
+  const firstSelection = useRef(true);
+
+  const selected =
+    data.people.find((p) => p.id === selectedId) ??
+    data.people.find((p) => p.origin === "self") ??
+    data.people[0] ??
+    null;
+
+  const commit = (next: FamilyMapData) => {
+    setData(next);
+    onChange?.(next);
+  };
+
+  useEffect(() => {
+    if (!toast) return;
+    const t = window.setTimeout(() => setToast(null), 2800);
+    return () => window.clearTimeout(t);
+  }, [toast]);
+
+  // Bring a newly chosen relative into view inside the horizontal scroller.
+  useEffect(() => {
+    if (firstSelection.current) {
+      firstSelection.current = false;
+      return;
+    }
+    const scroller = scrollRef.current;
+    const el = canvasRef.current?.querySelector<HTMLElement>(
+      `[data-person="${CSS.escape(selectedId)}"]`,
+    );
+    if (!scroller || !el || scroller.scrollWidth <= scroller.clientWidth) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    scroller.scrollTo({
+      left: Math.max(0, el.offsetLeft - (scroller.clientWidth - el.offsetWidth) / 2),
+      behavior: reduce ? "auto" : "smooth",
+    });
+  }, [selectedId]);
+
+  /* ------------------------------ Layout maths ----------------------------- */
+
+  const layout = useMemo(() => {
+    const { people, unions } = data;
+    if (!people.length) {
+      return { width: 0, height: 0, ox: 0, oy: 0, path: "", labels: [] as { x: number; y: number }[] };
+    }
+
+    const minX = Math.min(...people.map((p) => p.x));
+    const minY = Math.min(...people.map((p) => genY(p.gen)));
+    const maxRight = Math.max(...people.map((p) => p.x + NODE_W));
+    const maxBottom = Math.max(...people.map((p) => genY(p.gen) + NODE_H));
+    const ox = PAD_X - minX;
+    const oy = PAD_Y - minY;
+    const width = maxRight - minX + PAD_X * 2;
+    const height = maxBottom - minY + PAD_Y + 22;
+
+    const map = indexPeople(people);
+    const pos = (p: Person) => ({ x: p.x + ox, y: genY(p.gen) + oy });
+    const segs: string[] = [];
+    const labels: { x: number; y: number }[] = [];
+
+    for (const u of unions) {
+      const partners = u.partners.map((id) => map.get(id)).filter(isPerson);
+      if (!partners.length) continue;
+      const kids = u.children.map((id) => map.get(id)).filter(isPerson);
+
+      let sx: number;
+      let sy: number;
+      if (partners.length >= 2) {
+        const [a, b] = [...partners].sort((m, n) => m.x - n.x);
+        const pa = pos(a);
+        const pb = pos(b);
+        const y = pa.y + NODE_H / 2;
+        const x1 = pa.x + NODE_W;
+        const x2 = pb.x;
+        if (u.consanguineous) {
+          segs.push(`M${x1} ${y - 2.5}H${x2}`, `M${x1} ${y + 2.5}H${x2}`);
+          labels.push({ x: (x1 + x2) / 2, y: y + 8 });
+        } else {
+          segs.push(`M${x1} ${y}H${x2}`);
+        }
+        sx = (x1 + x2) / 2;
+        sy = y;
+      } else {
+        const p = pos(partners[0]);
+        sx = p.x + NODE_W / 2;
+        sy = p.y + NODE_H;
+      }
+
+      if (kids.length) {
+        const childY = Math.min(...kids.map((k) => pos(k).y));
+        const barY = childY - BAR_GAP;
+        const centres = kids.map((k) => pos(k).x + NODE_W / 2);
+        const left = Math.min(sx, ...centres);
+        const right = Math.max(sx, ...centres);
+        segs.push(`M${sx} ${sy}V${barY}`);
+        if (right > left) segs.push(`M${left} ${barY}H${right}`);
+        for (const cx of centres) segs.push(`M${cx} ${barY}V${childY}`);
+      }
+    }
+
+    return { width, height, ox, oy, path: segs.join(""), labels };
+  }, [data]);
+
+  /* -------------------------------- Handlers ------------------------------- */
+
+  const flaggedCount = data.people.filter(
+    (p) => p.status === "condition" || p.status === "carrier",
+  ).length;
+  const generations = new Set(data.people.map((p) => p.gen)).size;
+  const relatives = data.people
+    .filter((p) => p.origin !== "self")
+    .sort((a, b) => a.gen - b.gen || a.x - b.x);
+
+  const handleAdd = (input: NewRelativeInput) => {
+    const result = addRelative(data, input, {
+      person: uid("p"),
+      union: uid("u"),
+    });
+    if ("error" in result) {
+      setToast(result.error);
+      return;
+    }
+    commit(result.data);
+    setSelectedId(result.id);
+    setDialog(null);
+    setToast(`${input.name.trim()} added to your map.`);
+  };
+
+  const handleSave = (patch: { name: string; status: Status }) => {
+    if (!selected) return;
+    commit({
+      ...data,
+      people: data.people.map((p) =>
+        p.id === selected.id
+          ? { ...p, name: patch.name.trim(), status: patch.status }
+          : p,
+      ),
+    });
+    setDialog(null);
+    setToast("Changes saved.");
+  };
+
+  const handleRemove = () => {
+    if (!selected) return;
+    const next = removePerson(data, selected.id);
+    commit(next);
+    setSelectedId(next.people.find((p) => p.origin === "self")?.id ?? next.people[0]?.id ?? "");
+    setDialog(null);
+    setToast(`${selected.name} removed from your map.`);
+  };
+
+  const setSharing = (next: boolean) => {
+    setShared(next);
+    onShareChange?.(next);
+    setDialog(null);
+    setToast(next ? "Shared with your counsellor." : "Sharing stopped.");
+  };
+
+  const handleSend = async (ids: string[]) => {
+    await onNotify?.({ relativeIds: ids, anonymous, message: NOTIFY_MESSAGE });
+    setDialog(null);
+    setToast(
+      `Sent ${anonymous ? "anonymously " : ""}to ${ids.length} ${
+        ids.length === 1 ? "relative" : "relatives"
+      }.`,
+    );
+  };
+
+  const info = selected ? describePerson(selected, data) : null;
+
+  /* --------------------------------- Render -------------------------------- */
+
+  return (
+    <div className="px-6 py-6 font-['Plus_Jakarta_Sans',ui-sans-serif,system-ui,sans-serif] text-[#16110d] antialiased">
+      <div className="w-full">
+        {/* Header */}
+        <header className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h1 className="text-[28px] leading-tight font-extrabold tracking-tight">
+              Family map
+            </h1>
+            <p className="mt-1 text-[13px] text-[#6b6159]">
+              {shared
+                ? "Shared with your counsellor. You can stop at any time."
+                : "Private to you unless you choose to share it."}
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setDialog("share")}
+              className={`inline-flex items-center gap-2 rounded-full border border-[#f0e2d8] bg-white px-5 py-2.5 text-sm font-semibold shadow-[0_1px_2px_rgba(120,60,20,0.05)] transition hover:border-[#e8c9b4] hover:bg-[#fffaf6] ${focusRing}`}
+            >
+              {shared ? (
+                <Check className="size-4 text-[#15803d]" aria-hidden />
+              ) : (
+                <Calendar className="size-4" aria-hidden />
+              )}
+              {shared ? "Shared with counsellor" : "Share with my counsellor"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setDialog("add")}
+              className={`rounded-full bg-[#ff5a1f] px-5 py-2.5 text-sm font-bold text-white transition hover:bg-[#ea4c12] ${focusRing}`}
+            >
+              Add a relative
+            </button>
+          </div>
+        </header>
+
+        {/* Privacy banner */}
+        <div className="mt-5 flex items-center gap-3 rounded-2xl bg-[#fff0e6] px-4 py-3 text-[13px]">
+          <Lock className="size-4 shrink-0 text-[#e8531c]" aria-hidden />
+          <p>
+            Self-reported and{" "}
+            <strong>{shared ? "shared with your counsellor" : "private to you"}</strong>
+            . GeneBridge never pulls in a relative&rsquo;s test result.
+          </p>
+        </div>
+
+        <div className="mt-5 grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_254px]">
+          {/* Tree card */}
+          <section aria-labelledby="family-title" className={`${cardClass} p-5`}>
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
+              <h2 id="family-title" className="text-base font-bold tracking-tight">
+                Your family
+              </h2>
+              <p className="text-[11px] text-[#6b6159]">
+                {generations} {generations === 1 ? "generation" : "generations"} ·{" "}
+                {data.people.length} {data.people.length === 1 ? "person" : "people"}
+              </p>
+            </div>
+
+            <div
+              ref={scrollRef}
+              className="mt-4 overflow-x-auto pb-3"
+              tabIndex={-1}
+            >
+              <div
+                ref={canvasRef}
+                role="group"
+                aria-label="Family tree"
+                className="relative mx-auto"
+                style={{ width: layout.width, height: layout.height }}
+              >
+                <svg
+                  aria-hidden
+                  width={layout.width}
+                  height={layout.height}
+                  className="pointer-events-none absolute inset-0"
+                  fill="none"
+                  stroke="#c4b6ab"
+                  strokeWidth={2}
+                  shapeRendering="crispEdges"
+                >
+                  <path d={layout.path} />
+                </svg>
+
+                {layout.labels.map((l, i) => (
+                  <span
+                    key={i}
+                    className="absolute -translate-x-1/2 text-[10px] text-[#6b6159]"
+                    style={{ left: l.x, top: l.y }}
+                  >
+                    cousins
+                  </span>
+                ))}
+
+                {data.people.map((p) => (
+                  <PersonNode
+                    key={p.id}
+                    person={p}
+                    left={p.x + layout.ox}
+                    top={genY(p.gen) + layout.oy}
+                    selected={selected?.id === p.id}
+                    onSelect={setSelectedId}
+                  />
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* Side column */}
+          <aside className="flex flex-col gap-4">
+            <section
+              aria-label="Selected relative"
+              aria-live="polite"
+              className={`${cardClass} p-5`}
+            >
+              <p className="text-[10px] font-semibold tracking-wide text-[#6b6159] uppercase">
+                Selected
+              </p>
+              {selected && info ? (
+                <>
+                  <h2 className="mt-2.5 text-base font-extrabold tracking-tight">
+                    {selected.name}
+                  </h2>
+                  <p className="mt-2 text-[11.5px] leading-relaxed text-[#6b6159]">
+                    {info.status} {info.relation}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setDialog("edit")}
+                    className={`mt-3.5 rounded-full border border-[#f0e2d8] bg-white px-5 py-2 text-xs font-bold transition hover:border-[#e0c3ad] ${focusRing}`}
+                  >
+                    Edit
+                  </button>
+                </>
+              ) : (
+                <p className="mt-2.5 text-[13px] text-[#6b6159]">
+                  Select a relative on the map, or add one to get started.
+                </p>
+              )}
+            </section>
+
+            <section aria-labelledby="tell-title" className={`${cardClass} p-5`}>
+              <h2 id="tell-title" className="text-sm font-extrabold tracking-tight">
+                Tell relatives, privately
+              </h2>
+              <p className="mt-2.5 text-[11.5px] leading-relaxed text-[#6b6159]">
+                Relatives in this branch may want to get tested. Your own result
+                is never included.
+              </p>
+              <blockquote className="mt-3.5 rounded-xl bg-[#fff3ea] px-3.5 py-3 text-[11.5px] leading-relaxed text-[#6b6159]">
+                &ldquo;{NOTIFY_MESSAGE}&rdquo;
+              </blockquote>
+              <Checkbox checked={anonymous} onChange={setAnonymous} className="mt-4">
+                <span className="text-xs font-semibold">
+                  Send anonymously through GeneBridge
+                </span>
+              </Checkbox>
+              <button
+                type="button"
+                onClick={() => setDialog("notify")}
+                className={`mt-4 w-full rounded-full bg-[#ff5a1f] px-5 py-3 text-[13px] font-bold text-white transition hover:bg-[#ea4c12] ${focusRing}`}
+              >
+                Choose relatives to notify
+              </button>
+            </section>
+
+            <section aria-labelledby="key-title" className={`${cardClass} p-5`}>
+              <h2 id="key-title" className="text-base font-extrabold tracking-tight">
+                Key
+              </h2>
+              <ul className="mt-3 space-y-2 text-xs">
+                {(
+                  [
+                    ["condition", "Known condition"],
+                    ["carrier", "Carrier"],
+                    ["unsure", "Not sure"],
+                    ["none", "No known condition"],
+                  ] as [Status, string][]
+                ).map(([status, label]) => (
+                  <li key={status} className="flex items-center gap-2.5">
+                    <span
+                      aria-hidden
+                      className={`size-3 rounded-[3px] border ${STATUS_META[status].box}`}
+                    />
+                    {label}
+                  </li>
+                ))}
+                <li className="flex items-center gap-2.5">
+                  <span aria-hidden className="flex w-3 flex-col gap-[3px]">
+                    <span className="h-[1.5px] bg-[#c4b6ab]" />
+                    <span className="h-[1.5px] bg-[#c4b6ab]" />
+                  </span>
+                  Marriage between cousins
+                </li>
+              </ul>
+            </section>
+          </aside>
+        </div>
+      </div>
+
+      {dialog === "add" && (
+        <AddRelativeDialog
+          data={data}
+          defaultTargetId={selected?.id ?? data.people[0]?.id ?? ""}
+          onAdd={handleAdd}
+          onClose={() => setDialog(null)}
+        />
+      )}
+      {dialog === "edit" && selected && (
+        <EditPersonDialog
+          person={selected}
+          canRemove={selected.origin !== "self"}
+          onSave={handleSave}
+          onRemove={handleRemove}
+          onClose={() => setDialog(null)}
+        />
+      )}
+      {dialog === "share" && (
+        <ShareDialog
+          shared={shared}
+          peopleCount={data.people.length}
+          flaggedCount={flaggedCount}
+          onShare={() => setSharing(true)}
+          onStop={() => setSharing(false)}
+          onClose={() => setDialog(null)}
+        />
+      )}
+      {dialog === "notify" && (
+        <NotifyDialog
+          relatives={relatives}
+          anonymous={anonymous}
+          onSend={handleSend}
+          onClose={() => setDialog(null)}
+        />
+      )}
+
+      {toast && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="fixed bottom-6 left-1/2 z-[60] -translate-x-1/2 rounded-full bg-[#16110d] px-4 py-2 text-sm font-medium text-white shadow-lg"
+        >
+          {toast}
+        </div>
+      )}
+    </div>
+  );
+}

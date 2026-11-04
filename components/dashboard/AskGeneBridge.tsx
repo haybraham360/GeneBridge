@@ -62,7 +62,7 @@ export default function AskGeneBridge() {
 
         {extra.map((text, i) => (
           <div key={i} className="mt-2.5 flex justify-end">
-            <div className="rounded-3 bg-brand-ink px-3 py-1.75 font-medium text-white">
+            <div className="rounded-xl bg-ink px-3 py-1.75 font-medium text-white">
               {text}
             </div>
           </div>

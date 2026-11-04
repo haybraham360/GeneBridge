@@ -75,7 +75,7 @@ export default function Sidebar() {
           <a
             key={label}
             href={link || "#"}
-            aria-current={activeLink ? "page" : undefined}
+            aria-current={spreadChars === link ? "page" : undefined}
             className={`flex items-center gap-3 rounded-xl px-4 py-2.5 text-[14px] font-medium leading-none ${
               spreadChars === link
                 ? " bg-black text-white"
@@ -90,7 +90,7 @@ export default function Sidebar() {
 
       <div className="mt-auto">
         <div className="mx-3.25 rounded-2xl bg-brand/10 p-2.75 pb-3.25">
-          <div className="flex items-center gap-1.5 text-2.75 font-semibold">
+          <div className="flex items-center gap-1.5 text-[11px] font-semibold">
             <MessageSquare
               className="h-3 w-3 text-[#9A3412]"
               strokeWidth={1.8}
