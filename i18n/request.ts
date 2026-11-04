@@ -6,11 +6,12 @@ export default getRequestConfig(async ({ requestLocale }) => {
   const requested = await requestLocale;
   const locale = hasLocale(routing.locales, requested) ? requested : routing.defaultLocale;
 
-  const [landing, common, auth, onboarding] = await Promise.all([
+  const [landing, common, auth, onboarding, analytics] = await Promise.all([
     import(`../messages/${locale}/landing.json`),
     import(`../messages/${locale}/common.json`),
     import(`../messages/${locale}/auth.json`),
     import(`../messages/${locale}/onboarding.json`),
+    import(`../messages/${locale}/analytics.json`),
   ]);
 
   return {
@@ -20,6 +21,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
       common: common.default,
       auth: auth.default,
       onboarding: onboarding.default,
+      analytics: analytics.default,
     },
   };
 });

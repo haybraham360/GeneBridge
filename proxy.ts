@@ -1,7 +1,13 @@
 import { createServerClient } from '@supabase/ssr';
 import createMiddleware from 'next-intl/middleware';
 import { NextResponse, type NextRequest } from 'next/server';
-import { IDLE_LIMIT_MS, IDLE_REASON, isProtectedPath, LAST_ACTIVE_COOKIE } from './lib/auth/routes';
+import {
+  IDLE_LIMIT_MS,
+  IDLE_REASON,
+  isAnalystPath,
+  isProtectedPath,
+  LAST_ACTIVE_COOKIE,
+} from './lib/auth/routes';
 import { routing } from './i18n/routing';
 
 const intl = createMiddleware(routing);
@@ -105,6 +111,20 @@ export default async function proxy(request: NextRequest) {
     const target = new URL(`/${locale}/auth`, request.url);
     target.searchParams.set('next', path);
     return redirectWithCookies(target, response);
+  }
+
+  // 5. Analyst-only area (task 05). Anyone else gets a plain 404, not a
+  // "forbidden" page, so the route doesn't announce itself. The page checks
+  // again, and every figure is guarded by the database functions as well.
+  if (signedIn && isAnalystPath(path)) {
+    const { data: analyst, error } = await supabase.rpc('analytics_is_analyst');
+    if (error || analyst !== true) {
+      const notFound = NextResponse.rewrite(new URL(`/${locale}/admin/not-found`, request.url), {
+        status: 404,
+      });
+      response.cookies.getAll().forEach((cookie) => notFound.cookies.set(cookie));
+      return notFound;
+    }
   }
 
   return response;

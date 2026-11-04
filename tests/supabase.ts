@@ -33,11 +33,16 @@ export function persona(key: DemoUser['key']): DemoUser {
 }
 
 export async function findUserId(match: { phone?: string; email?: string }) {
-  const { data, error } = await adminClient().auth.admin.listUsers({ perPage: 1000 });
-  if (error) throw error;
-  return data.users.find(
-    (u) => (match.phone && u.phone === match.phone) || (match.email && u.email === match.email),
-  )?.id;
+  // Pages through every account: the synthetic analytics seed adds over 1,000.
+  for (let page = 1; ; page++) {
+    const { data, error } = await adminClient().auth.admin.listUsers({ page, perPage: 1000 });
+    if (error) throw error;
+    const found = data.users.find(
+      (u) => (match.phone && u.phone === match.phone) || (match.email && u.email === match.email),
+    );
+    if (found) return found.id;
+    if (data.users.length < 1000) return undefined;
+  }
 }
 
 /** A client signed in as a seeded persona, without going through SMS. */

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { sendErrorKey, verifyErrorKey } from './errors';
-import { destinationFor, isProtectedPath, safeNextPath } from './routes';
+import { destinationFor, isAnalystPath, isProtectedPath, safeNextPath } from './routes';
 
 describe('destinationFor', () => {
   it('sends new users and unfinished onboarding to /onboarding', () => {
@@ -30,6 +30,16 @@ describe('destinationFor', () => {
 
   it('sends counsellors to /pro', () => {
     expect(destinationFor({ role: 'counsellor', onboarding_step: 0 }, null)).toBe('/pro');
+  });
+
+  it('sends analysts to the dashboard, never into onboarding or patient screens', () => {
+    expect(destinationFor({ role: 'analyst', onboarding_step: 0 }, null)).toBe('/admin/analytics');
+    expect(destinationFor({ role: 'analyst', onboarding_step: 8 }, '/results')).toBe(
+      '/admin/analytics',
+    );
+    expect(destinationFor({ role: 'analyst', onboarding_step: 8 }, '/admin/analytics')).toBe(
+      '/admin/analytics',
+    );
   });
 });
 
@@ -78,5 +88,14 @@ describe('auth error messages', () => {
     expect(verifyErrorKey({ status: 400, code: 'user_not_found' })).toBe('codeInvalid');
     expect(sendErrorKey({ status: 400 }, 'phone')).toBe('sendFailed');
     expect(sendErrorKey({ status: 400 }, 'email')).toBe('emailFailed');
+  });
+});
+
+describe('isAnalystPath', () => {
+  it('covers /admin and everything under it, nothing else', () => {
+    expect(isAnalystPath('/admin')).toBe(true);
+    expect(isAnalystPath('/admin/analytics')).toBe(true);
+    expect(isAnalystPath('/administrator')).toBe(false);
+    expect(isAnalystPath('/dashboard')).toBe(false);
   });
 });

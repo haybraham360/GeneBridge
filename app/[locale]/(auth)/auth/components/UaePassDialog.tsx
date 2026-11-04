@@ -5,8 +5,16 @@ import { UserRound, X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { FieldError } from './FieldError';
 
-export type UaePassIdentityKey = 'mariam' | 'khalid' | 'patientR' | 'amaka';
-const identities: UaePassIdentityKey[] = ['mariam', 'khalid', 'patientR', 'amaka'];
+export type UaePassIdentityKey = 'mariam' | 'khalid' | 'patientR' | 'amaka' | 'analyst';
+const identities: UaePassIdentityKey[] = ['mariam', 'khalid', 'patientR', 'amaka', 'analyst'];
+
+const hintKey = {
+  mariam: 'identityHint',
+  khalid: 'identityHint',
+  patientR: 'identityHint',
+  amaka: 'identityHintCounsellor',
+  analyst: 'identityHintAnalyst',
+} as const;
 
 /** "Demo: UAE PASS" picker. The real integration isn't built yet (lib/auth/uaePass.ts). */
 export function UaePassDialog({
@@ -80,7 +88,7 @@ export function UaePassDialog({
                 <span className="flex flex-col">
                   <span className="font-bold">{t(`identities.${key}`)}</span>
                   <span className="text-[13px] text-muted">
-                    {t(key === 'amaka' ? 'identityHintCounsellor' : 'identityHint')}
+                    {t(hintKey[key])}
                   </span>
                 </span>
               </button>

@@ -10,7 +10,10 @@
     "seed:auth": "tsx scripts/seed-auth.ts",
     "test:e2e": "playwright test",
     "test:rls": "vitest run",
-    "seed:results": "tsx scripts/seed-results.ts"
+    "seed:results": "tsx scripts/seed-results.ts",
+    "seed:analytics": "tsx scripts/seed-analytics.ts",
+    "clear:synthetic": "tsx scripts/clear-synthetic.ts",
+    "test:sql": "tsx scripts/test-sql.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

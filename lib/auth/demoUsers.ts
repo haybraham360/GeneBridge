@@ -7,12 +7,12 @@ export const DEMO_OTP = '123456';
 export const DEMO_FACILITY_CODE = 'GB-DEMO-001';
 
 export type DemoUser = {
-  key: 'mariam' | 'khalid' | 'patientR' | 'amaka';
+  key: 'mariam' | 'khalid' | 'patientR' | 'amaka' | 'analyst';
   displayName: string;
   /** E.164 without the plus, as Supabase stores it. */
   phone: string;
   email: string;
-  role: 'individual' | 'counsellor';
+  role: 'individual' | 'counsellor' | 'analyst';
   locale: 'ar' | 'en';
   onboardingStep: number;
 };
@@ -51,6 +51,17 @@ export const demoUsers: DemoUser[] = [
     phone: '971500000004',
     email: 'amaka.okoro@demo.genebridge.app',
     role: 'counsellor',
+    locale: 'en',
+    onboardingStep: 8,
+  },
+  {
+    // Health authority analyst (task 05). Sees aggregate figures only, on
+    // /admin/analytics. The role is set by the seed script, never the browser.
+    key: 'analyst',
+    displayName: 'Programme analyst',
+    phone: '971500000005',
+    email: 'analyst@demo.genebridge.app',
+    role: 'analyst',
     locale: 'en',
     onboardingStep: 8,
   },

@@ -3,6 +3,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { logEvents, type AuthEvent, type AuthMethod } from './events';
+import { destinationProfile } from './destination';
 import { destinationFor, safeNextPath } from './routes';
 
 /**
@@ -149,12 +150,7 @@ export async function finishSignIn(
   await logEvents(supabase, user.id, events);
   await clearPendingAuth();
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role, onboarding_step')
-    .eq('user_id', user.id)
-    .maybeSingle();
-
+  const profile = await destinationProfile(supabase, user.id);
   const destination = destinationFor(profile, pending?.next ?? null);
 
   // After an email-link sign-in, offer to set a password for next time,
