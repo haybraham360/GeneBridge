@@ -19,7 +19,7 @@ export default async function Page({ params }: PageProps<'/[locale]/dashboard'>)
   if (!hasLocale(routing.locales, locale)) notFound();
 //   return <PlaceholderPage locale={locale} screen="dashboard" />;
   return (
-        <main className="min-w-0 overflow-auto flex-1 px-10 pb-10 pt-9">
+        <main className="min-w-0 min-h-0 overflow-auto flex-1 px-10 pb-10 pt-9">
             <div className="mx-auto">
             <header className="flex items-start justify-between">
                 <div>

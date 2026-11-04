@@ -1,7 +1,8 @@
 import { hasLocale } from 'next-intl';
 import { notFound } from 'next/navigation';
-import { PlaceholderPage, placeholderMetadata } from '@/components/PlaceholderPage';
+import { placeholderMetadata } from '@/components/PlaceholderPage';
 import { routing } from '@/i18n/routing';
+import ResultPage from '@/components/result/ResultPage';
 
 export async function generateMetadata({ params }: PageProps<'/[locale]/dashboard/results'>) {
   const { locale } = await params;
@@ -11,5 +12,5 @@ export async function generateMetadata({ params }: PageProps<'/[locale]/dashboar
 export default async function Page({ params }: PageProps<'/[locale]/dashboard/results'>) {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
-  return <PlaceholderPage locale={locale} screen="results" />;
+  return <ResultPage />;
 }

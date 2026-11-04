@@ -16,6 +16,7 @@ export type PlaceholderScreen =
   | 'terms'
   | 'contact'
   | 'dashboard'
+  | 'options'
   | 'onboarding'
   | 'home'
   | 'pro'

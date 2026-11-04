@@ -2,6 +2,7 @@ import { hasLocale } from 'next-intl';
 import { notFound } from 'next/navigation';
 import { PlaceholderPage, placeholderMetadata } from '@/components/PlaceholderPage';
 import { routing } from '@/i18n/routing';
+import InheritanceSimulator from '@/components/simulator/InheritanceSimulator';
 
 export async function generateMetadata({ params }: PageProps<'/[locale]/dashboard/simulator'>) {
   const { locale } = await params;
@@ -11,5 +12,5 @@ export async function generateMetadata({ params }: PageProps<'/[locale]/dashboar
 export default async function Page({ params }: PageProps<'/[locale]/dashboard/simulator'>) {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
-  return <PlaceholderPage locale={locale} screen="simulator" />;
+  return <InheritanceSimulator lang={locale} />;
 }

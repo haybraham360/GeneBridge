@@ -17,10 +17,10 @@ export function Hero() {
       <Chip icon={Dna} className={enter}>
         {t('chip')}
       </Chip>
-      <h1 className="mx-auto mt-6 motion-safe:animate-fade-up motion-safe:[animation-delay:80ms] max-w-[840px] text-[clamp(40px,5.4vw,68px)] leading-[1.05] font-extrabold tracking-[-0.03em]">
+      <h1 className="mx-auto mt-6 motion-safe:animate-fade-up motion-safe:[animation-delay:80ms] max-w-210 text-[clamp(40px,5.4vw,68px)] leading-[1.05] font-extrabold tracking-[-0.03em]">
         {t('title')}
       </h1>
-      <p className="mx-auto mt-6 max-w-[620px] text-[19px] leading-[1.6] text-muted motion-safe:animate-fade-up motion-safe:[animation-delay:180ms]">{t('subtitle')}</p>
+      <p className="mx-auto mt-6 max-w-155 text-[19px] leading-[1.6] text-muted motion-safe:animate-fade-up motion-safe:[animation-delay:180ms]">{t('subtitle')}</p>
       <div className="mt-8 flex flex-wrap justify-center gap-3 motion-safe:animate-fade-up motion-safe:[animation-delay:280ms]">
         <Button href="/auth" variant="primary" size="lg">
           {t('primaryCta')}
@@ -29,7 +29,7 @@ export function Hero() {
           {t('secondaryCta')}
         </Button>
       </div>
-      <p className="mt-[18px] text-sm text-muted motion-safe:animate-fade-up motion-safe:[animation-delay:360ms]">{t('note')}</p>
+      <p className="mt-4.5 text-sm text-muted motion-safe:animate-fade-up motion-safe:[animation-delay:360ms]">{t('note')}</p>
     </section>
   );
 }
