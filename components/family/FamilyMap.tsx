@@ -1522,7 +1522,7 @@ export default function FamilyMap({
                   </li>
                 ))}
                 <li className="flex items-center gap-2.5">
-                  <span aria-hidden className="flex w-3 flex-col gap-[3px]">
+                  <span aria-hidden className="flex w-3 flex-col gap-0.75">
                     <span className="h-[1.5px] bg-[#c4b6ab]" />
                     <span className="h-[1.5px] bg-[#c4b6ab]" />
                   </span>
@@ -1574,7 +1574,7 @@ export default function FamilyMap({
         <div
           role="status"
           aria-live="polite"
-          className="fixed bottom-6 left-1/2 z-[60] -translate-x-1/2 rounded-full bg-[#16110d] px-4 py-2 text-sm font-medium text-white shadow-lg"
+          className="fixed bottom-6 left-1/2 z-60 -translate-x-1/2 rounded-full bg-[#16110d] px-4 py-2 text-sm font-medium text-white shadow-lg"
         >
           {toast}
         </div>

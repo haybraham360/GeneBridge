@@ -134,7 +134,7 @@ export default function ResultPage() {
               className={pillBtn}
             >
               <span
-                className={`flex h-4 w-4 items-center justify-center rounded-[4px] border ${
+                className={`flex h-4 w-4 items-center justify-center rounded-sm border ${
                   simple
                     ? "border-ink bg-ink text-white"
                     : "border-neutral-700 bg-white"
