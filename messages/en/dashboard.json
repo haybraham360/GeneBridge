@@ -398,5 +398,197 @@
       "sharedOff": "Sharing stopped.",
       "sent": "{anonymous, select, yes {Sent anonymously to {count, plural, one {# relative} other {# relatives}}.} other {Sent to {count, plural, one {# relative} other {# relatives}}.}}"
     }
+  },
+
+  "options": {
+    "header": {
+      "title": "Your options",
+      "subtitle": "Every option here is valid. Take your time."
+    },
+    "notice": "GeneBridge doesn’t recommend an option. Options are listed alphabetically, not ranked. A counsellor can help you think each one through.",
+    "cards": {
+      "questionsLink": "Questions to ask your counsellor",
+      "timeline": "Timeline:",
+      "timelineValue": "[Confirm with counsellor]",
+      "cost": "Cost and cover:",
+      "costValue": "[Programme details]",
+      "continue": {
+        "title": "Continue and plan ahead",
+        "body": "Go ahead with pregnancy as you planned, with information about early care and newborn screening."
+      },
+      "ivf": {
+        "title": "IVF with embryo testing (PGT)",
+        "body": "Embryos are tested before transfer so only those without sickle cell disease are used."
+      },
+      "counsellor": {
+        "title": "Talk it through with a counsellor first",
+        "body": "Take time to understand everything before choosing any path. There is no deadline."
+      },
+      "test": {
+        "title": "Test during pregnancy",
+        "body": "A test early in pregnancy shows whether the baby has sickle cell disease, so you can prepare."
+      },
+      "relatives": {
+        "title": "Test other family members",
+        "body": "Relatives may also want to know their status. You can tell them without sharing your result."
+      },
+      "faith": {
+        "title": "Faith and family",
+        "body": "Many couples want religious guidance on these choices. See official guidance from {authority}, or discuss it with your counsellor.",
+        "authority": "[RELIGIOUS AUTHORITY]",
+        "link": "Read official guidance"
+      }
+    },
+    "matters": {
+      "title": "What matters to you?",
+      "private": "Private to you",
+      "less": "Less important",
+      "more": "Very important",
+      "children": "Having biological children",
+      "religion": "Following religious guidance",
+      "procedures": "Avoiding medical procedures",
+      "cost": "Cost of treatment",
+      "family": "Family’s views"
+    },
+    "compare": {
+      "title": "Compare with {name}",
+      "finished": "{gender, select, male {{name} has finished his answers.} female {{name} has finished her answers.} other {{name} has finished their answers.}}",
+      "explain": "You’ll see where you agree and what to talk about, never a score.",
+      "agreed": "You agreed to compare",
+      "waiting": "Waiting for {name} to agree",
+      "cta": "Compare answers"
+    },
+    "bring": {
+      "title": "Bring it to counselling",
+      "body": "Save a one-page summary of your answers and questions to share with {counsellor} before your session.",
+      "cta": "Save summary for my counsellor"
+    },
+    "listen": {
+      "intro": "Your options. Every option here is valid. Take your time."
+    }
+  },
+
+  "counsellor": {
+    "header": {
+      "title": "Counsellor & referral",
+      "subtitle": "Qualified genetic counsellors, in your language."
+    },
+    "notice": "Some results, such as uncertain or complex findings, need a specialist to explain them. When that happens, GeneBridge brings you straight here instead of showing an explanation.",
+    "choose": {
+      "title": "Choose a counsellor",
+      "caption": "Certified genetic counsellor · Next: {next}",
+      "select": "Select",
+      "selected": "Selected",
+      "selectAria": "Select {name}",
+      "selectedAria": "Selected {name}"
+    },
+    "days": {
+      "short": { "wed11": "Wed 11", "thu12": "Thu 12", "sun15": "Sun 15" },
+      "long": { "wed11": "Wed 11 Nov", "thu12": "Thu 12 Nov", "sun15": "Sun 15 Nov" }
+    },
+    "referral": {
+      "title": "Your referral path",
+      "steps": {
+        "received": { "title": "Screening result received", "meta": "28 Oct · {centre}" },
+        "booked": { "title": "Counselling booked", "meta": "3 Nov · {counsellor}" },
+        "session": { "title": "Counselling session", "meta": "Thu 12 Nov, 10:00 · Video call" },
+        "test": { "title": "Confirmatory test", "meta": "Arranged after your session, if advised" },
+        "specialist": { "title": "Specialist referral", "meta": "Only if needed" }
+      },
+      "record": "Referral shared with your health record (Malaffi, demo)"
+    },
+    "book": {
+      "title": "Book with {name}",
+      "day": "Day",
+      "time": "Time",
+      "session": "Session",
+      "video": "Video call",
+      "inPerson": "In person",
+      "shareLegend": "Share before the session",
+      "share": {
+        "result": "Summary of my result",
+        "values": "My values summary",
+        "family": "My family map"
+      },
+      "confirm": "Confirm booking",
+      "invite": "You can invite {partner} to join the session.",
+      "booked": "Booked with {counsellor} · {day}, {time} · {session}"
+    }
+  },
+
+  "privacy": {
+    "header": {
+      "title": "Privacy & consent",
+      "subtitle": "You decide who sees what. Changes take effect immediately."
+    },
+    "who": {
+      "title": "Who can see my result",
+      "person": "Person",
+      "canSee": "Can see",
+      "since": "Since",
+      "action": "Action",
+      "familyMembers": "Family members",
+      "roles": {
+        "partner": "Partner",
+        "counsellor": "Genetic counsellor",
+        "relatives": "Relatives"
+      },
+      "levels": {
+        "summary": "Summary only",
+        "full": "Full report"
+      },
+      "none": "Nothing shared",
+      "revoke": "Revoke",
+      "revokeAria": "Revoke access for {name}",
+      "share": "Share",
+      "shareAria": "Share with {name}",
+      "dates": {
+        "oct30": "30 Oct 2026",
+        "nov3": "3 Nov 2026",
+        "today": "Today"
+      }
+    },
+    "log": {
+      "title": "Access log",
+      "subtitle": "Every time someone opens your result.",
+      "viewedFull": "{name} viewed your full report",
+      "viewedSummary": "{name} viewed your summary",
+      "downloaded": "You downloaded your result",
+      "when": {
+        "a": "3 Nov, 10:14",
+        "b": "30 Oct, 21:02",
+        "c": "29 Oct, 18:40"
+      }
+    },
+    "notifications": {
+      "title": "Family notifications",
+      "subtitle": "Messages you sent to relatives through GeneBridge.",
+      "sent": "Sent anonymously to {count, plural, one {# relative} other {# relatives}}",
+      "sentWhen": "1 Nov · your result was not included",
+      "opened": "{count, plural, one {# relative opened the testing information} other {# relatives opened the testing information}}",
+      "openedWhen": "2 Nov"
+    },
+    "data": {
+      "title": "Your data",
+      "store": "We store",
+      "storeBody": "Your result interpretation, consents, bookings and family map.",
+      "never": "We never store",
+      "neverBody": "Your raw genome or any relative’s test result.",
+      "download": "Download my data",
+      "delete": "Delete my account",
+      "cancel": "Cancel",
+      "confirmDelete": "Yes, delete everything"
+    },
+    "consent": {
+      "title": "Consent history",
+      "agreed": "Agreed to the privacy terms",
+      "unlocked": "Unlocked couple view with {name} (summary only)",
+      "shared": "Shared full report with {name}",
+      "when": {
+        "a": "27 Oct 2026",
+        "b": "30 Oct 2026",
+        "c": "3 Nov 2026"
+      }
+    }
   }
 }
