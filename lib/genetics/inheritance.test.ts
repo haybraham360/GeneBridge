@@ -1,9 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import {
   calculateInheritance,
+  childOf,
   expectedCounts,
   InheritanceInputError,
   numbersIn,
+  parentCopies,
+  patterns,
+  statusesFor,
+  type Outcome,
 } from './inheritance';
 
 describe('autosomal recessive', () => {
@@ -112,5 +117,40 @@ describe('helpers', () => {
   it('gives expected counts out of 100 runs', () => {
     const r = calculateInheritance('autosomal_recessive', 'carrier', 'carrier');
     expect(expectedCounts(r, 100)).toEqual({ affected: 25, carrier: 50, unaffected: 25 });
+  });
+});
+
+describe('simulator helpers', () => {
+  it('only offers statuses the engine accepts', () => {
+    for (const pattern of patterns) {
+      for (const a of statusesFor(pattern, 1)) {
+        for (const b of statusesFor(pattern, 2)) {
+          expect(() => calculateInheritance(pattern, a, b)).not.toThrow();
+        }
+      }
+    }
+    expect(statusesFor('autosomal_dominant', 1)).not.toContain('carrier');
+    expect(statusesFor('x_linked', 2)).not.toContain('carrier');
+    expect(statusesFor('x_linked', 1)).toContain('carrier');
+  });
+
+  it('builds the same four squares the chances come from', () => {
+    for (const pattern of patterns) {
+      for (const a of statusesFor(pattern, 1)) {
+        for (const b of statusesFor(pattern, 2)) {
+          const counts: Record<Outcome, number> = { affected: 0, carrier: 0, unaffected: 0 };
+          for (const x of parentCopies(pattern, 1, a)) {
+            for (const y of parentCopies(pattern, 2, b)) counts[childOf(pattern, x, y).outcome] += 25;
+          }
+          expect(counts).toEqual(calculateInheritance(pattern, a, b).chances);
+        }
+      }
+    }
+  });
+
+  it('gives X-linked children a sex from the father\'s copy', () => {
+    expect(childOf('x_linked', 'a', 'Y')).toEqual({ outcome: 'affected', sex: 'son' });
+    expect(childOf('x_linked', 'a', 'A')).toEqual({ outcome: 'carrier', sex: 'daughter' });
+    expect(childOf('autosomal_recessive', 'a', 'a')).toEqual({ outcome: 'affected' });
   });
 });

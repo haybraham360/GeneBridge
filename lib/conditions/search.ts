@@ -30,7 +30,7 @@ function fold(text: string): string {
 }
 
 /** Name or alias search (genes such as GJB2 and HbAS are aliases). */
-export function searchConditions(query: string, conditions: CatalogueCondition[]): CatalogueCondition[] {
+export function searchConditions<T extends Pick<CatalogueCondition, 'title' | 'aliases'>>(query: string, conditions: T[]): T[] {
   const q = fold(query);
   if (!q) return conditions;
   return conditions.filter((c) => [c.title, ...c.aliases].some((name) => fold(name).includes(q)));

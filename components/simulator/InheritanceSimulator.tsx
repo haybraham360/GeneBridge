@@ -1,663 +1,844 @@
-"use client";
+'use client';
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowDown, Square, Volume1 } from "lucide-react";
-import { calculateInheritance, type ParentStatus } from "@/lib/genetics/inheritance";
-import { useTranslations } from "next-intl";
+import { ArrowDown, ChevronDown, Info, Search, X } from 'lucide-react';
+import { useTranslations } from 'next-intl';
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
+import { logSimulatorRun } from '@/app/[locale]/(app)/dashboard/simulator/actions';
+import { buttonClasses } from '@/components/ui/Button';
+import { cardClasses } from '@/components/ui/Card';
+import { ListenPill } from '@/components/ui/ListenPill';
+import { Link } from '@/i18n/navigation';
+import { cn } from '@/lib/cn';
+import { conditionGuideHref } from '@/lib/conditions/links';
+import { searchConditions, type CatalogueCondition } from '@/lib/conditions/search';
+import {
+  calculateInheritance,
+  childOf,
+  expectedCounts,
+  parentCopies,
+  patterns,
+  statusesFor,
+  type Allele,
+  type Child,
+  type InheritancePattern,
+  type Outcome,
+  type ParentStatus,
+} from '@/lib/genetics/inheritance';
 
 /* -------------------------------------------------------------------------- */
-/*  Types & static content                                                    */
+/*  Types                                                                     */
 /* -------------------------------------------------------------------------- */
 
-type Allele = "A" | "S";
-type OutcomeKey = "scd" | "carrier" | "none";
-type PatternId = "both" | "one" | "xlinked";
-
-interface Pattern {
-  id: Exclude<PatternId, "xlinked">;
-  label: string;
-  parent1: [Allele, Allele];
-  parent2: [Allele, Allele];
-  // parent1Label: string;
-  // parent2Label: string;
-  expected: Record<OutcomeKey, number>;
-}
-
-interface SingleResult {
-  row: 0 | 1; // allele index taken from parent 1
-  col: 0 | 1; // allele index taken from parent 2
-  alleles: [Allele, Allele];
-  outcome: OutcomeKey;
-}
-
-/** Expected chances come from the shared inheritance engine (lib/genetics). */
-function expectedFor(p1: ParentStatus, p2: ParentStatus): Record<OutcomeKey, number> {
-  const { chances } = calculateInheritance("autosomal_recessive", p1, p2);
-  return { scd: chances.affected, carrier: chances.carrier, none: chances.unaffected };
-}
-
-const PATTERNS: Pattern[] = [
-  {
-    id: "both",
-    label: "Both parents carriers (AS × AS)",
-    parent1: ["A", "S"],
-    parent2: ["A", "S"],
-    // parent1Label: "Carrier (AS)",
-//     parent2Label: "Carrier (AS)",
-    expected: expectedFor("carrier", "carrier"),
-  },
-  {
-    id: "one",
-    label: "One parent carrier (AS × AA)",
-    parent1: ["A", "S"],
-    parent2: ["A", "A"],
-    // parent1Label: "Carrier (AS)",
-    // parent2Label: "Not a carrier (AA)",
-    expected: expectedFor("carrier", "unaffected"),
-  },
-];
-
-// const XLINKED_LABEL = "X-linked: talk to a counsellor";
-
-// const OUTCOME_META: Record<
-//   OutcomeKey,
-//   { label: string; dot: string; sentence: string }
-// > = {
-//   scd: {
-//     label: "Sickle cell disease",
-//     dot: "bg-[#9f1239] border-[#9f1239]",
-//     sentence: "This child has sickle cell disease (SS).",
-//   },
-//   carrier: {
-//     label: "Healthy carrier",
-//     dot: "bg-[#ff5a1f] border-[#ff5a1f]",
-//     sentence: "This child is a healthy carrier (AS).",
-//   },
-//   none: {
-//     label: "No changed copy",
-//     dot: "bg-[#e9e2db] border-[#e9e2db]",
-//     sentence: "This child has no changed copy (AA).",
-//   },
-// };
-const OUTCOME_META: Record<OutcomeKey, { dot: string }> = {
-  scd: { dot: "bg-[#9f1239] border-[#9f1239]" },
-  carrier: { dot: "bg-[#ff5a1f] border-[#ff5a1f]" },
-  none: { dot: "bg-[#e9e2db] border-[#e9e2db]" },
+/** A catalogue condition, with what the simulator needs to name it. */
+export type SimCondition = Pick<CatalogueCondition, 'id' | 'title' | 'aliases' | 'gene' | 'inheritance'> & {
+  diseaseLabel: string;
+  inheritancePlain: string;
 };
 
-const OUTCOME_ORDER: OutcomeKey[] = ["scd", "carrier", "none"];
+type Mine = { id: string; tag: 'result' | 'following' };
+type Square = { r: 0 | 1; c: 0 | 1 };
+type CopyKind = 'typical' | 'changed' | 'y';
+
+type Props = {
+  conditions: SimCondition[];
+  /** The person's own conditions (results first, then followed). Offered first, never preselected as parents. */
+  mine: Mine[];
+  initialConditionId: string | null;
+};
+
+/* -------------------------------------------------------------------------- */
+/*  Static set-up                                                             */
+/* -------------------------------------------------------------------------- */
+
+const PRESETS = [
+  { id: 'rec2', pattern: 'autosomal_recessive', p1: 'carrier', p2: 'carrier' },
+  { id: 'rec1', pattern: 'autosomal_recessive', p1: 'carrier', p2: 'unaffected' },
+  { id: 'dom', pattern: 'autosomal_dominant', p1: 'affected', p2: 'unaffected' },
+  { id: 'xl', pattern: 'x_linked', p1: 'carrier', p2: 'unaffected' },
+] as const satisfies readonly { id: string; pattern: InheritancePattern; p1: ParentStatus; p2: ParentStatus }[];
+
+const DEFAULTS: Record<InheritancePattern, [ParentStatus, ParentStatus]> = {
+  autosomal_recessive: ['carrier', 'carrier'],
+  autosomal_dominant: ['affected', 'unaffected'],
+  x_linked: ['carrier', 'unaffected'],
+};
+
+const OUTCOMES: Outcome[] = ['affected', 'carrier', 'unaffected'];
 const TOTAL_RUNS = 100;
-const REVEAL_INTERVAL_MS = 14;
+const REVEAL_MS = 14;
+const PASSING_MS = 700;
+const FAMILY_MAX = 12;
+
+const beadClasses: Record<CopyKind, string> = {
+  typical: 'bg-bead-typical text-ink',
+  changed: 'bg-brand text-ink',
+  y: 'bg-info-tint text-info-text',
+};
+const dotClasses: Record<Outcome, string> = {
+  affected: 'bg-affected border-affected',
+  carrier: 'bg-brand border-brand',
+  unaffected: 'bg-neutral-fill border-neutral-line',
+};
+const outcomeText: Record<Outcome, string> = {
+  affected: 'text-affected',
+  carrier: 'text-brand-text',
+  unaffected: 'text-unaffected',
+};
 
 /* -------------------------------------------------------------------------- */
 /*  Helpers                                                                   */
 /* -------------------------------------------------------------------------- */
 
-function outcomeFor(a: Allele, b: Allele): OutcomeKey {
-  const changed = (a === "S" ? 1 : 0) + (b === "S" ? 1 : 0);
-  return changed === 2 ? "scd" : changed === 1 ? "carrier" : "none";
+function isPattern(p: unknown): p is InheritancePattern {
+  return (patterns as readonly unknown[]).includes(p);
 }
 
-function coinFlip(): 0 | 1 {
+function kindOf(a: Allele): CopyKind {
+  return a === 'Y' ? 'y' : a === 'a' ? 'changed' : 'typical';
+}
+
+/** The letters people see: A/a for recessive, D/d for dominant, X/x/Y for X-linked. */
+function letter(pattern: InheritancePattern, a: Allele): string {
+  if (pattern === 'x_linked') return a === 'Y' ? 'Y' : a === 'a' ? 'x' : 'X';
+  if (pattern === 'autosomal_dominant') return a === 'a' ? 'D' : 'd';
+  return a;
+}
+
+function genotype(pattern: InheritancePattern, x: Allele, y: Allele): string {
+  const rank = (a: Allele) =>
+    pattern === 'autosomal_dominant' ? (a === 'a' ? 0 : 1) : a === 'Y' ? 2 : a === 'a' ? 1 : 0;
+  return [x, y]
+    .sort((m, n) => rank(m) - rank(n))
+    .map((a) => letter(pattern, a))
+    .join('');
+}
+
+function coin(): 0 | 1 {
   return Math.random() < 0.5 ? 0 : 1;
 }
 
-function simulateOnce(p: Pattern): SingleResult {
-  const row = coinFlip();
-  const col = coinFlip();
-  const alleles: [Allele, Allele] = [p.parent1[row], p.parent2[col]];
-  return { row, col, alleles, outcome: outcomeFor(alleles[0], alleles[1]) };
-}
-
-function cellLabel(a: Allele, b: Allele): string {
-  return [a, b].sort().join("");
-}
-
-function prefersReducedMotion(): boolean {
-  return (
-    typeof window !== "undefined" &&
-    window.matchMedia?.("(prefers-reduced-motion: reduce)").matches === true
-  );
+function reducedMotion(): boolean {
+  return typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches === true;
 }
 
 /* -------------------------------------------------------------------------- */
 /*  Small building blocks                                                     */
 /* -------------------------------------------------------------------------- */
 
-function AlleleCircle({ allele }: { allele: Allele }) {
+function Bead({
+  pattern,
+  allele,
+  state = 'normal',
+  size = 'lg',
+  pop = false,
+}: {
+  pattern: InheritancePattern;
+  allele: Allele;
+  state?: 'normal' | 'chosen' | 'dimmed';
+  size?: 'lg' | 'sm';
+  pop?: boolean;
+}) {
+  const t = useTranslations('dashboard.simulator.copies');
   return (
     <span
-      className={`grid size-10 place-items-center rounded-full text-[15px] font-bold text-[#16110d] ${
-        allele === "S" ? "bg-[#ff5a1f]" : "bg-[#ece6e0]"
-      }`}
+      role="img"
+      aria-label={t('aria', { letter: letter(pattern, allele), kind: kindOf(allele) })}
+      className={cn(
+        'grid place-items-center rounded-full font-extrabold transition-[translate,opacity,box-shadow] duration-300',
+        size === 'lg' ? 'size-13 text-xl' : 'size-6 text-[11px]',
+        beadClasses[kindOf(allele)],
+        state === 'chosen' && '-translate-y-1.5 shadow-card ring-[3px] ring-ink ring-offset-2',
+        state === 'dimmed' && 'opacity-35',
+        pop && 'animate-pop',
+      )}
     >
-      {allele}
+      {letter(pattern, allele)}
     </span>
   );
 }
 
-function ParentBlock({
-  title,
-  alleles,
-  caption,
-}: {
-  title: string;
-  alleles: [Allele, Allele];
-  caption: string;
-}) {
-  return (
-    <div className="flex flex-col items-center">
-      <h3 className="text-[13px] font-bold">{title}</h3>
-      <div className="mt-2.5 flex gap-1.5">
-        <AlleleCircle allele={alleles[0]} />
-        <AlleleCircle allele={alleles[1]} />
-      </div>
-      <p className="mt-2 text-[11px] text-[#6b6159]">{caption}</p>
-    </div>
-  );
-}
-
-const pillBase =
-  "rounded-full border px-4 py-2 text-xs font-bold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c2410c]";
-
-function Toast({ message }: { message: string }) {
-  return (
-    <div
-      role="status"
-      aria-live="polite"
-      className="fixed bottom-6 left-1/2 z-40 -translate-x-1/2 rounded-full bg-[#16110d] px-4 py-2 text-sm font-medium text-white shadow-lg"
-    >
-      {message}
-    </div>
-  );
+function OutcomeDot({ outcome, className }: { outcome: Outcome; className?: string }) {
+  return <span aria-hidden="true" className={cn('inline-block size-3.5 shrink-0 rounded-full border', dotClasses[outcome], className)} />;
 }
 
 /* -------------------------------------------------------------------------- */
 /*  Main component                                                            */
 /* -------------------------------------------------------------------------- */
 
-export interface InheritanceSimulatorProps {
-  /** BCP-47 tag used by the "Listen" speech synthesis. */
-  lang?: string;
-  /** Called from the X-linked panel. Falls back to a toast when omitted. */
-  onBookCounsellor?: () => void;
-}
+export default function InheritanceSimulator({ conditions, mine, initialConditionId }: Props) {
+  const t = useTranslations('dashboard.simulator');
+  const tShared = useTranslations('dashboard.shared');
 
-export default function InheritanceSimulator({
-  lang = "en",
-  onBookCounsellor,
-}: InheritanceSimulatorProps) {
-  const [patternId, setPatternId] = useState<PatternId>("both");
-  const [single, setSingle] = useState<SingleResult | null>(null);
-  const [runs, setRuns] = useState<OutcomeKey[]>([]);
+  const byId = useMemo(() => new Map(conditions.map((c) => [c.id, c])), [conditions]);
+  const initial = initialConditionId ? byId.get(initialConditionId) ?? null : null;
+  const initialPattern: InheritancePattern = isPattern(initial?.inheritance) ? initial.inheritance : 'autosomal_recessive';
+
+  const [conditionId, setConditionId] = useState<string | null>(initial?.id ?? null);
+  const [pattern, setPattern] = useState<InheritancePattern>(initialPattern);
+  const [status1, setStatus1] = useState<ParentStatus>(DEFAULTS[initialPattern][0]);
+  const [status2, setStatus2] = useState<ParentStatus>(DEFAULTS[initialPattern][1]);
+
+  const [pick, setPick] = useState<Square | null>(null);
+  const [phase, setPhase] = useState<'idle' | 'passing' | 'done'>('idle');
+  const [family, setFamily] = useState<(Square & { n: number })[]>([]);
+  const [runs, setRuns] = useState<Outcome[]>([]);
   const [revealed, setRevealed] = useState(0);
   const [running, setRunning] = useState(false);
-  const [listening, setListening] = useState(false);
-  const [toast, setToast] = useState<string | null>(null);
-  const timerRef = useRef<number | null>(null);
-  const t = useTranslations("dashboard.simulator");
-  const tShared = useTranslations("dashboard.shared");
+  const [hover, setHover] = useState<Square | null>(null);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [query, setQuery] = useState('');
 
-  const patternLabels: Record<PatternId, string> = {
-    both: t("patterns.both"),
-    one: t("patterns.one"),
-    xlinked: t("patterns.xlinked"),
-  };
-  const outcomeLabels: Record<OutcomeKey, string> = {
-    scd: t("outcomes.scd"),
-    carrier: t("outcomes.carrier"),
-    none: t("outcomes.none"),
-  };
-  const outcomeSentences: Record<OutcomeKey, string> = {
-    scd: t("sentences.scd"),
-    carrier: t("sentences.carrier"),
-    none: t("sentences.none"),
-  };
-  const parentCaption = (a: [Allele, Allele]) =>
-    a.includes("S") ? t("parents.carrier") : t("parents.notCarrier");
+  const passTimer = useRef<number | null>(null);
+  const runTimer = useRef<number | null>(null);
+  const countRef = useRef(0);
+  const pickerId = useId();
+  const searchRef = useRef<HTMLInputElement>(null);
 
-  const pattern = useMemo(
-    () => PATTERNS.find((p) => p.id === patternId) ?? null,
-    [patternId],
-  );
+  const condition = conditionId ? byId.get(conditionId) ?? null : null;
+  /** Complex or unknown patterns aren't simulated: a two-copy model would mislead. */
+  const simulatable = !condition || isPattern(condition.inheritance);
 
-  const stopTimer = useCallback(() => {
-    if (timerRef.current !== null) {
-      window.clearInterval(timerRef.current);
-      timerRef.current = null;
-    }
+  /* ----------------------------- Engine values ---------------------------- */
+
+  const copies1 = parentCopies(pattern, 1, status1);
+  const copies2 = parentCopies(pattern, 2, status2);
+  const result = calculateInheritance(pattern, status1, status2);
+  const expected = expectedCounts(result, TOTAL_RUNS);
+  const childAt = (sq: Square): Child => childOf(pattern, copies1[sq.r], copies2[sq.c]);
+
+  /* ------------------------------- Labels -------------------------------- */
+
+  const isX = pattern === 'x_linked';
+  const name1 = isX ? t('parentNames.mother') : t('parentNames.p1');
+  const name2 = isX ? t('parentNames.father') : t('parentNames.p2');
+  const outcomeLabel = (o: Outcome) =>
+    o === 'affected' && condition ? t('outcomes.affectedNamed', { name: condition.diseaseLabel }) : t(`outcomes.${o}`);
+  const statusLabel = (s: ParentStatus) => t(`status.${s}`);
+
+  /* ------------------------------- Timers -------------------------------- */
+
+  const stopTimers = useCallback(() => {
+    if (passTimer.current !== null) window.clearTimeout(passTimer.current);
+    if (runTimer.current !== null) window.clearInterval(runTimer.current);
+    passTimer.current = null;
+    runTimer.current = null;
   }, []);
 
+  useEffect(() => stopTimers, [stopTimers]);
+
   const reset = useCallback(() => {
-    stopTimer();
-    setSingle(null);
+    stopTimers();
+    setPick(null);
+    setPhase('idle');
+    setFamily([]);
     setRuns([]);
     setRevealed(0);
     setRunning(false);
-  }, [stopTimer]);
+    countRef.current = 0;
+  }, [stopTimers]);
 
-  // Cleanup timers and speech on unmount.
-  useEffect(() => {
-    return () => {
-      stopTimer();
-      if (typeof window !== "undefined" && "speechSynthesis" in window) {
-        window.speechSynthesis.cancel();
-      }
-    };
-  }, [stopTimer]);
+  /* ------------------------------- Changes ------------------------------- */
 
-  useEffect(() => {
-    if (!toast) return;
-    const timer = window.setTimeout(() => setToast(null), 2600);
-    return () => window.clearTimeout(timer);
-  }, [toast]);
-
-  const selectPattern = (id: PatternId) => {
-    if (id === patternId) return;
+  const setParents = (p: InheritancePattern, s1: ParentStatus, s2: ParentStatus) => {
     reset();
-    setPatternId(id);
+    setPattern(p);
+    setStatus1(s1);
+    setStatus2(s2);
   };
+
+  const chooseCondition = (id: string | null) => {
+    setPickerOpen(false);
+    setQuery('');
+    setConditionId(id);
+    const next = id ? byId.get(id) : null;
+    const p = next && isPattern(next.inheritance) ? next.inheritance : next ? pattern : 'autosomal_recessive';
+    setParents(p, DEFAULTS[p][0], DEFAULTS[p][1]);
+    // Keep the address shareable and in step with the links that open this page.
+    const url = new URL(window.location.href);
+    if (id) url.searchParams.set('condition', id);
+    else url.searchParams.delete('condition');
+    window.history.replaceState(null, '', url);
+  };
+
+  useEffect(() => {
+    if (pickerOpen) searchRef.current?.focus();
+  }, [pickerOpen]);
+
+  /* ------------------------------ Simulation ----------------------------- */
 
   const simulateOne = () => {
-    if (!pattern || running) return;
-    setSingle(simulateOnce(pattern));
+    if (running || phase === 'passing') return;
+    const sq: Square = { r: coin(), c: coin() };
+    setPick(sq);
+    countRef.current += 1;
+    const entry = { ...sq, n: countRef.current };
+    const finish = () => {
+      setPhase('done');
+      setFamily((f) => [...f, entry].slice(-FAMILY_MAX));
+    };
+    void logSimulatorRun(pattern, 1).catch(() => {});
+    if (reducedMotion()) return finish();
+    setPhase('passing');
+    passTimer.current = window.setTimeout(finish, PASSING_MS);
   };
 
-  const runHundred = () => {
-    if (!pattern || running) return;
-    stopTimer();
-    const results = Array.from({ length: TOTAL_RUNS }, () => simulateOnce(pattern).outcome);
+  const runMany = () => {
+    if (running) return;
+    stopTimers();
+    const results = Array.from({ length: TOTAL_RUNS }, () => childAt({ r: coin(), c: coin() }).outcome);
     setRuns(results);
-
-    if (prefersReducedMotion()) {
+    void logSimulatorRun(pattern, TOTAL_RUNS).catch(() => {});
+    if (reducedMotion()) {
       setRevealed(TOTAL_RUNS);
       return;
     }
-
     setRevealed(0);
     setRunning(true);
     let shown = 0;
-    timerRef.current = window.setInterval(() => {
+    runTimer.current = window.setInterval(() => {
       shown += 1;
       setRevealed(shown);
       if (shown >= TOTAL_RUNS) {
-        stopTimer();
+        if (runTimer.current !== null) window.clearInterval(runTimer.current);
+        runTimer.current = null;
         setRunning(false);
       }
-    }, REVEAL_INTERVAL_MS);
+    }, REVEAL_MS);
   };
 
   const counts = useMemo(() => {
-    const c: Record<OutcomeKey, number> = { scd: 0, carrier: 0, none: 0 };
+    const c: Record<Outcome, number> = { affected: 0, carrier: 0, unaffected: 0 };
     for (let i = 0; i < revealed; i += 1) c[runs[i]] += 1;
     return c;
   }, [runs, revealed]);
 
-  /* ----------------------------- Listen (TTS) ---------------------------- */
+  /* --------------------------- Bead highlighting -------------------------- */
 
-  // const spokenText = useMemo(() => {
-  //   const intro =
-  //     "Inheritance simulator. See how gene copies pass from parents to a child. This shows chances, not what will happen.";
-  //   if (!pattern) {
-  //     return `${intro} X-linked conditions follow a different inheritance pattern. Talk to a counsellor to understand your family's chances.`;
-  //   }
-  //   const expected = pattern.expected;
-  //   const combos = `Pattern: ${pattern.label}. Each pregnancy has a ${expected.scd} percent chance of sickle cell disease, ${expected.carrier} percent of a healthy carrier, and ${expected.none} percent of no changed copy.`;
-  //   return `${intro} ${combos}`;
-  // }, [pattern]);
-  const spokenText = useMemo(() => {
-    if (!pattern) return `${t("listen.intro")} ${t("listen.xlinked")}`;
-    const e = pattern.expected;
-    return `${t("listen.intro")} ${t("listen.pattern", {
-      label: patternLabels[pattern.id],
-      scd: e.scd,
-      carrier: e.carrier,
-      none: e.none,
-    })}`;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pattern, t]);
-
-  const toggleListen = () => {
-    if (typeof window === "undefined" || !("speechSynthesis" in window)) {
-      // setToast("Listening isn't supported in this browser.");
-      setToast(t("listen.unsupported"));
-      return;
-    }
-    const synth = window.speechSynthesis;
-    if (listening) {
-      synth.cancel();
-      setListening(false);
-      return;
-    }
-    const utterance = new SpeechSynthesisUtterance(spokenText);
-    utterance.lang = lang;
-    utterance.onend = () => setListening(false);
-    utterance.onerror = () => setListening(false);
-    synth.cancel();
-    synth.speak(utterance);
-    setListening(true);
+  // Hovering a square lights up the two copies that make it; otherwise the
+  // last simulated pregnancy does.
+  const focus = hover ?? (phase !== 'idle' ? pick : null);
+  const beadState = (parent: 1 | 2, i: number): 'normal' | 'chosen' | 'dimmed' => {
+    if (!focus) return 'normal';
+    return (parent === 1 ? focus.r : focus.c) === i ? 'chosen' : 'dimmed';
   };
 
-  const bookCounsellor = () => {
-    if (onBookCounsellor) onBookCounsellor();
-    // else setToast("Opening couple session booking…");
-    else setToast(t("toast.booking"));
-  };
+  /* --------------------------------- Listen ------------------------------- */
+
+  const listenText = [
+    t('listen.intro'),
+    condition && !simulatable
+      ? `${t('condition.complexTitle', { name: condition.title })} ${t('condition.complexBody')}`
+      : t('listen.summary', {
+          pattern: condition ? `${condition.title}, ${t(`patternNames.${pattern}`)}` : t(`patternNames.${pattern}`),
+          parent1: name1,
+          status1: statusLabel(status1),
+          parent2: name2,
+          status2: statusLabel(status2),
+          affected: result.chances.affected,
+          carrier: result.chances.carrier,
+          unaffected: result.chances.unaffected,
+          affectedLabel: condition ? t('listen.hasNamed', { name: condition.diseaseLabel }) : t('listen.has'),
+        }),
+  ].join(' ');
+
+  /* -------------------------------- Picker -------------------------------- */
+
+  const mineIds = new Set(mine.map((m) => m.id));
+  const matches = searchConditions(query, conditions);
+  const mineMatches = mine
+    .map((m) => ({ ...m, c: byId.get(m.id) }))
+    .filter((m): m is Mine & { c: SimCondition } => Boolean(m.c) && matches.includes(m.c!));
+  const otherMatches = matches.filter((c) => !mineIds.has(c.id));
+  const tagFor = (id: string) => mine.find((m) => m.id === id)?.tag;
+
+  const presets = PRESETS.filter((p) => !condition || p.pattern === pattern);
 
   /* -------------------------------- Render -------------------------------- */
 
-  const cardClass =
-    "rounded-3xl border border-[#f6e9df] bg-white shadow-[0_1px_2px_rgba(120,60,20,0.04),0_8px_28px_rgba(120,60,20,0.05)]";
+  const card = cn(cardClasses, 'p-6');
+  const pickedChild = pick ? childAt(pick) : null;
+  const hasAffectedSquare = result.chances.affected > 0;
 
   return (
-    <div className="min-h-screen bg-[#fff6f0] px-6 py-6 font-['Plus_Jakarta_Sans',ui-sans-serif,system-ui,sans-serif] text-[#16110d] antialiased">
-      <div className="mx-auto">
-        {/* Header */}
-        <header className="flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <h1 className="text-[28px] leading-tight font-extrabold tracking-tight">
-              {/* Inheritance simulator */}
-              {t("header.title")}
-            </h1>
-            <p className="mt-1 text-[13px] text-[#6b6159]">
-              {/* See how gene copies pass from parents to a child. This shows
-              chances, not what will happen. */}
-              {t("header.subtitle")}
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={toggleListen}
-            aria-pressed={listening}
-            className="inline-flex items-center gap-2 rounded-full border border-[#f0e2d8] bg-white px-5 py-2.5 text-sm font-semibold shadow-[0_1px_2px_rgba(120,60,20,0.05)] transition hover:border-[#e8c9b4] hover:bg-[#fffaf6] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c2410c]"
-          >
-            {listening ? (
-              <Square className="size-3.5 fill-current" aria-hidden />
-            ) : (
-              <Volume1 className="size-4" aria-hidden />
-            )}
-            {/* {listening ? "Stop" : "Listen"} */}
-            {listening ? t("header.stop") : tShared("listen")} 
-          </button>
-        </header>
+    <main className="min-w-0 flex-1 px-[clamp(16px,3vw,40px)] pt-9 pb-10">
+      {/* Header */}
+      <header className="flex flex-wrap items-start justify-between gap-4">
+        <div className="flex max-w-3xl flex-col gap-2">
+          <h1 className="text-[32px] leading-tight font-extrabold tracking-[-0.02em]">{t('header.title')}</h1>
+          <p className="text-[15px] text-muted">{t('header.subtitle')}</p>
+        </div>
+        <ListenPill text={listenText} play={tShared('listen')} stop={t('header.stop')} />
+      </header>
 
-        {/* Pattern selector */}
-        <div
-          role="group"
-          // aria-label="Pattern"
-          aria-label={t("patterns.label")}
-          className="mt-5 flex flex-wrap items-center gap-2"
-        >
-          <span className="me-1 text-xs font-bold">{t("patterns.label")}</span>
-          {PATTERNS.map((p) => {
-            const active = p.id === patternId;
+      {/* Quick examples (design presets) */}
+      {simulatable && (
+        <div role="group" aria-label={t('presets.label')} className="mt-6 flex flex-wrap gap-2.5">
+          {presets.map((p) => {
+            const active = p.pattern === pattern && p.p1 === status1 && p.p2 === status2;
             return (
               <button
                 key={p.id}
                 type="button"
                 aria-pressed={active}
-                onClick={() => selectPattern(p.id)}
-                className={`${pillBase} cursor-pointer ${
-                  active
-                    ? "border-[#16110d] bg-[#16110d] text-white"
-                    : "border-[#f0e2d8] bg-white text-[#16110d] hover:border-[#e0c3ad]"
-                }`}
+                onClick={() => setParents(p.pattern, p.p1, p.p2)}
+                className={cn(
+                  'min-h-11 cursor-pointer rounded-full border px-5 text-sm font-bold transition-colors',
+                  active ? 'border-ink bg-ink text-white' : 'border-line-strong bg-surface text-ink hover:bg-brand-tint-soft',
+                )}
               >
-                {/* {p.label} */}
-                {patternLabels[p.id]}
+                {t(`presets.${p.id}`)}
               </button>
             );
           })}
-          <button
-            type="button"
-            aria-pressed={patternId === "xlinked"}
-            onClick={() => selectPattern("xlinked")}
-            className={`${pillBase} cursor-pointer ${
-              patternId === "xlinked"
-                ? "border-[#16110d] bg-[#16110d] text-white"
-                : "border-dashed border-[#e6d6c9] bg-transparent text-[#6b6159] hover:border-[#d2b8a4]"
-            }`}
-          >
-            {/* {XLINKED_LABEL} */}
-            {patternLabels.xlinked} 
-          </button>
+        </div>
+      )}
+
+      {/* Condition bar */}
+      <section className="mt-5 rounded-card border border-line bg-surface">
+        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 px-5 py-3.5">
+          <p className="min-w-0 text-[15px]">
+            {condition ? (
+              <>
+                <strong className="font-extrabold">{condition.title}</strong>
+                {condition.gene && <span className="text-muted"> ({condition.gene})</span>}
+                {simulatable && <span className="text-muted"> · {t(`patternNames.${pattern}`)}</span>}
+                {tagFor(condition.id) && (
+                  <span className="ms-2 inline-block rounded-full bg-brand-tint px-2.5 py-0.5 align-middle text-xs font-bold text-brand-text-dark">
+                    {tagFor(condition.id) === 'result' ? t('condition.inResults') : t('condition.following')}
+                  </span>
+                )}
+              </>
+            ) : (
+              <>
+                <strong className="font-extrabold">{t(`patternNames.${pattern}`)}</strong> · {t(`examples.${pattern}`)}
+              </>
+            )}
+          </p>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+            {condition && (
+              <>
+                <Link href={conditionGuideHref(condition.id)} className="text-sm font-bold text-brand-text underline underline-offset-2">
+                  {t('condition.guide')}
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => chooseCondition(null)}
+                  className="inline-flex min-h-11 cursor-pointer items-center gap-1 text-sm font-bold text-muted underline underline-offset-2"
+                >
+                  <X aria-hidden="true" className="size-4" />
+                  {t('condition.clear')}
+                </button>
+              </>
+            )}
+            <button
+              type="button"
+              aria-expanded={pickerOpen}
+              aria-controls={pickerId}
+              onClick={() => setPickerOpen((o) => !o)}
+              className="inline-flex min-h-11 cursor-pointer items-center gap-1 text-sm font-bold text-brand-text underline underline-offset-2"
+            >
+              {condition ? t('condition.change') : t('findCondition')}
+              <ChevronDown aria-hidden="true" className={cn('size-4 transition-transform', pickerOpen && 'rotate-180')} />
+            </button>
+          </div>
         </div>
 
-        {pattern ? (
-          <>
-            {/* Top row */}
-            <div className="mt-5 grid gap-4 md:grid-cols-[minmax(0,1fr)_326px]">
-              {/* Simulator card */}
-              <section aria-label="Simulate a pregnancy" className={`${cardClass} p-6`}>
-                <div className="flex items-start justify-center gap-10">
-                  {/* <ParentBlock
-                    title="Parent 1"
-                    alleles={pattern.parent1}
-                    caption={pattern.parent1Label}
-                  />
-                  <ParentBlock
-                    title="Parent 2"
-                    alleles={pattern.parent2}
-                    caption={pattern.parent2Label}
-                  /> */}
-                  <ParentBlock title={t("parent", { n: 1 })} alleles={pattern.parent1} caption={parentCaption(pattern.parent1)} />
-                  <ParentBlock title={t("parent", { n: 2 })} alleles={pattern.parent2} caption={parentCaption(pattern.parent2)} />
-                </div>
+        {/* Condition picker */}
+        {pickerOpen && (
+          <div
+            id={pickerId}
+            className="border-t border-line px-5 py-4"
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') setPickerOpen(false);
+            }}
+          >
+            <div className="relative">
+              <Search aria-hidden="true" className="pointer-events-none absolute inset-y-0 start-4 my-auto size-5 text-muted" />
+              <input
+                ref={searchRef}
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder={t('condition.search')}
+                aria-label={t('condition.searchLabel')}
+                className="min-h-12 w-full rounded-input border border-line-strong bg-surface ps-12 pe-4 text-[15px] outline-none focus-visible:border-brand-text focus-visible:ring-2 focus-visible:ring-brand-ring"
+              />
+            </div>
+            <div className="mt-4 flex max-h-80 flex-col gap-4 overflow-auto">
+              {mineMatches.length > 0 && (
+                <ConditionGroup title={t('condition.mine')}>
+                  {mineMatches.map((m) => (
+                    <ConditionOption
+                      key={m.id}
+                      c={m.c}
+                      selected={m.id === conditionId}
+                      tag={m.tag === 'result' ? t('condition.inResults') : t('condition.following')}
+                      patternName={isPattern(m.c.inheritance) ? t(`patternNames.${m.c.inheritance}`) : null}
+                      onPick={() => chooseCondition(m.id)}
+                    />
+                  ))}
+                </ConditionGroup>
+              )}
+              {otherMatches.length > 0 && (
+                <ConditionGroup title={t('condition.all')}>
+                  {otherMatches.map((c) => (
+                    <ConditionOption
+                      key={c.id}
+                      c={c}
+                      selected={c.id === conditionId}
+                      patternName={isPattern(c.inheritance) ? t(`patternNames.${c.inheritance}`) : null}
+                      onPick={() => chooseCondition(c.id)}
+                    />
+                  ))}
+                </ConditionGroup>
+              )}
+              {matches.length === 0 && <p className="text-sm text-muted">{t('condition.empty', { q: query })}</p>}
+            </div>
+          </div>
+        )}
+      </section>
 
-                <div className="mt-4 flex justify-center">
-                  <ArrowDown className="size-5 text-[#b8aca2]" aria-hidden />
-                </div>
+      {/* How the pattern works, and the not-a-diagnosis line */}
+      <div className="mt-3 flex flex-col gap-1.5 px-1">
+        {simulatable && (
+          <p className="text-[15px] leading-relaxed">
+            {condition?.inheritancePlain || t(`how.${pattern}`)}
+          </p>
+        )}
+        <p className="text-sm text-muted">{t('notDiagnosis')}</p>
+      </div>
 
-                <div
-                  aria-live="polite"
-                  className="mx-auto mt-4 flex min-h-26 max-w-68.5 flex-col items-center justify-center gap-2.5 rounded-3xl bg-[#fff3ea] px-6 py-5 text-center"
-                >
-                  {single ? (
-                    <>
-                      <div className="flex gap-1.5">
-                        <AlleleCircle allele={single.alleles[0]} />
-                        <AlleleCircle allele={single.alleles[1]} />
+      {!simulatable && condition ? (
+        <section className={cn(card, 'mt-5 flex flex-col items-center gap-3 py-12 text-center')}>
+          <h2 className="text-xl font-extrabold tracking-[-0.01em]">{t('condition.complexTitle', { name: condition.title })}</h2>
+          <p className="max-w-xl text-[15px] leading-relaxed text-muted">{t('condition.complexBody')}</p>
+          <Link href="/dashboard/counsellor" className={buttonClasses('primary', 'md', 'mt-2')}>
+            {t('condition.complexCta')}
+          </Link>
+        </section>
+      ) : (
+        <>
+          {/* Counsellor note for dominant and X-linked (design) */}
+          {pattern !== 'autosomal_recessive' && (
+            <p className="mt-5 flex items-start gap-3 rounded-card bg-brand-tint-soft px-5 py-4 text-[15px]">
+              <Info aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-brand-text" />
+              <span>
+                {t(`counsellorNote.${pattern}`)}{' '}
+                <Link href="/dashboard/counsellor" className="font-bold text-brand-text underline underline-offset-2">
+                  {t('counsellorNote.link')}
+                </Link>
+              </span>
+            </p>
+          )}
+
+          <div className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
+            {/* Stage: parents → child */}
+            <section aria-label={t('buttons.simulateOne')} className={cn(card, 'flex flex-col items-center')}>
+              <div className="grid w-full gap-6 sm:grid-cols-2">
+                {([1, 2] as const).map((parent) => {
+                  const copies = parent === 1 ? copies1 : copies2;
+                  const status = parent === 1 ? status1 : status2;
+                  const name = parent === 1 ? name1 : name2;
+                  const setStatus = (s: ParentStatus) =>
+                    parent === 1 ? setParents(pattern, s, status2) : setParents(pattern, status1, s);
+                  return (
+                    <div key={parent} className="flex flex-col items-center gap-3">
+                      <h3 className="text-base font-extrabold">{name}</h3>
+                      <div className="flex gap-2">
+                        {copies.map((a, i) => (
+                          <Bead key={i} pattern={pattern} allele={a} state={beadState(parent, i)} />
+                        ))}
                       </div>
-                      <p className="text-[13px] font-bold">
-                        {/* {OUTCOME_META[single.outcome].sentence} */}
-                        {outcomeSentences[single.outcome]}
-                      </p>
-                      <p className="text-[11px] text-[#6b6159]">
-                        {/* {single.alleles[0]} from Parent 1, {single.alleles[1]}{" "}
-                        from Parent 2 */}
-                        {t("single.from", { a: single.alleles[0], b: single.alleles[1] })}
-                      </p>
-                    </>
-                  ) : (
-                    <p className="text-xs leading-relaxed text-[#6b6159]">
-                      {/* Press &ldquo;Simulate one pregnancy&rdquo; to see one
-                      possible result. */}
-                      {t("single.empty", { button: t("buttons.simulateOne") })}
+                      <div
+                        role="radiogroup"
+                        aria-label={t('status.label', { parent: name })}
+                        className="flex flex-wrap justify-center gap-1.5"
+                      >
+                        {statusesFor(pattern, parent).map((s) => (
+                          <button
+                            key={s}
+                            type="button"
+                            role="radio"
+                            aria-checked={s === status}
+                            disabled={running}
+                            onClick={() => s !== status && setStatus(s)}
+                            className={cn(
+                              'min-h-11 cursor-pointer rounded-full border px-3.5 text-[13px] font-bold transition-colors disabled:cursor-not-allowed disabled:opacity-60',
+                              s === status
+                                ? 'border-brand-text bg-brand-tint text-brand-text-dark'
+                                : 'border-line bg-surface text-muted hover:border-line-strong hover:text-ink',
+                            )}
+                          >
+                            {statusLabel(s)}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Key */}
+              <ul className="mt-5 flex flex-wrap justify-center gap-x-4 gap-y-1 text-[13px] text-muted">
+                <li className="flex items-center gap-1.5">
+                  <span aria-hidden="true" className="size-3 rounded-full bg-bead-typical" />
+                  {t('copies.typical')}
+                </li>
+                <li className="flex items-center gap-1.5">
+                  <span aria-hidden="true" className="size-3 rounded-full bg-brand" />
+                  {t('copies.changed')}
+                </li>
+                {isX && (
+                  <li className="flex items-center gap-1.5">
+                    <span aria-hidden="true" className="size-3 rounded-full bg-info-tint" />
+                    {t('copies.y')}
+                  </li>
+                )}
+              </ul>
+
+              <ArrowDown aria-hidden="true" className={cn('mt-4 size-6 text-neutral-line', phase === 'passing' && 'animate-bounce')} />
+
+              {/* One pregnancy */}
+              <div
+                aria-live="polite"
+                className="mt-3 flex min-h-36 w-full max-w-md flex-col items-center justify-center gap-2.5 rounded-card bg-brand-tint-soft px-6 py-5 text-center"
+              >
+                {phase === 'idle' || !pick || !pickedChild ? (
+                  <p className="text-[15px] leading-relaxed text-muted">
+                    {t('single.empty', { button: t('buttons.simulateOne') })}
+                  </p>
+                ) : phase === 'passing' ? (
+                  <p className="text-[15px] leading-relaxed text-muted">{t('single.passing')}</p>
+                ) : (
+                  <>
+                    <div key={`${family.length}-${pick.r}${pick.c}`} className="flex gap-2">
+                      <Bead pattern={pattern} allele={copies1[pick.r]} pop />
+                      <Bead pattern={pattern} allele={copies2[pick.c]} pop />
+                    </div>
+                    <p className={cn('text-base font-extrabold', outcomeText[pickedChild.outcome])}>
+                      {t('single.sentence', {
+                        sex: pickedChild.sex ?? 'other',
+                        outcome: pickedChild.outcome,
+                        name: condition?.diseaseLabel ?? t('single.theCondition'),
+                      })}
                     </p>
-                  )}
-                </div>
+                    <ul className="flex flex-col gap-0.5 text-[13px] text-muted">
+                      {(
+                        [
+                          [name1, copies1[pick.r]],
+                          [name2, copies2[pick.c]],
+                        ] as const
+                      ).map(([parentName, a]) => (
+                        <li key={parentName}>
+                          {t('single.passed', { parent: parentName, kind: kindOf(a), letter: letter(pattern, a) })}
+                        </li>
+                      ))}
+                    </ul>
+                    <p className="text-[13px] font-bold">{t('single.same')}</p>
+                  </>
+                )}
+              </div>
 
-                <div className="mt-5 flex flex-wrap items-center justify-center gap-2.5">
-                  <button
-                    type="button"
-                    onClick={simulateOne}
-                    disabled={running}
-                    className="rounded-full bg-[#ff5a1f] px-5 py-2.5 text-xs font-bold text-white transition hover:bg-[#ea4c12] disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c2410c]"
-                  >
-                    {/* Simulate one pregnancy */}
-                    {t("buttons.simulateOne")} 
-                  </button>
-                  <button
-                    type="button"
-                    onClick={runHundred}
-                    disabled={running}
-                    className="rounded-full bg-[#16110d] px-5 py-2.5 text-xs font-bold text-white transition hover:bg-[#2c2420] disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c2410c]"
-                  >
-                    {/* Run 100 times */}
-                     {t("buttons.runMany", { count: TOTAL_RUNS })}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={reset}
-                    className="rounded-full border border-[#f0e2d8] bg-white px-5 py-2.5 text-xs font-bold transition hover:border-[#e0c3ad] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c2410c]"
-                  >
-                    {/* Reset */}
-                    {t("buttons.reset")}
-                  </button>
-                </div>
-              </section>
+              <div className="mt-5 flex flex-wrap items-center justify-center gap-2.5">
+                <button type="button" onClick={simulateOne} disabled={running || phase === 'passing'} className={buttonClasses('primary', 'sm', 'disabled:cursor-not-allowed disabled:opacity-60')}>
+                  {t('buttons.simulateOne')}
+                </button>
+                <button type="button" onClick={runMany} disabled={running} className={buttonClasses('dark', 'sm', 'disabled:cursor-not-allowed disabled:opacity-60')}>
+                  {runs.length ? t('buttons.runAgain', { count: TOTAL_RUNS }) : t('buttons.runMany', { count: TOTAL_RUNS })}
+                </button>
+                <button type="button" onClick={reset} className={buttonClasses('ghost', 'sm')}>
+                  {t('buttons.reset')}
+                </button>
+              </div>
 
-              {/* Combinations card */}
-              <section aria-labelledby="combos-title" className={`${cardClass} p-6`}>
-                <h2 id="combos-title" className="text-base font-bold tracking-tight">
-                  {/* All possible combinations */}
-                  {t("punnett.title")}
+              {/* Pregnancies so far: shows each one is independent */}
+              {family.length > 0 && (
+                <div className="mt-6 w-full border-t border-line pt-5">
+                  <h3 className="text-sm font-extrabold">{t('family.title')}</h3>
+                  <ol className="mt-3 flex flex-wrap gap-2">
+                    {family.map((f) => {
+                      const child = childAt(f);
+                      const g = genotype(pattern, copies1[f.r], copies2[f.c]);
+                      return (
+                        <li
+                          key={f.n}
+                          aria-label={t('family.child', { n: f.n, genotype: g, label: outcomeLabel(child.outcome) })}
+                          className="flex w-16 animate-pop flex-col items-center gap-1 rounded-tile border border-line bg-surface px-1.5 py-2"
+                        >
+                          <span aria-hidden="true" className="text-[11px] text-muted tabular-nums">
+                            {f.n}
+                          </span>
+                          <span aria-hidden="true" className="flex gap-0.5">
+                            <Bead pattern={pattern} allele={copies1[f.r]} size="sm" />
+                            <Bead pattern={pattern} allele={copies2[f.c]} size="sm" />
+                          </span>
+                          <span aria-hidden="true" className={cn('text-center text-[11px] leading-tight font-bold', outcomeText[child.outcome])}>
+                            {child.sex ? `${t(`sex.${child.sex}`)} · ` : ''}
+                            {t(`short.${child.outcome}`)}
+                          </span>
+                        </li>
+                      );
+                    })}
+                  </ol>
+                  <p className="mt-3 text-[13px] text-muted">{t('family.note')}</p>
+                </div>
+              )}
+            </section>
+
+            <div className="flex flex-col gap-5">
+              {/* Punnett square */}
+              <section aria-labelledby="combos-title" className={card}>
+                <h2 id="combos-title" className="text-xl font-extrabold tracking-[-0.01em]">
+                  {t('punnett.title')}
                 </h2>
-
+                <p className="mt-1 text-[13px] text-muted">{t('punnett.axes', { p1: name1, p2: name2 })}</p>
                 <div
-                  role="table"
-                  // aria-label="Punnett square"
-                  aria-label={t("punnett.aria")}
-                  className="mt-5 grid grid-cols-[56px_1fr_1fr] items-center gap-2"
+                  role="group"
+                  aria-label={t('punnett.aria')}
+                  className="mt-5 grid grid-cols-[auto_minmax(0,1fr)_minmax(0,1fr)] items-center gap-2"
+                  onMouseLeave={() => setHover(null)}
                 >
-                  <div />
-                  {pattern.parent2.map((a, i) => (
-                    <div
-                      key={`col-${i}`}
-                      role="columnheader"
-                      className="py-1 text-center text-[13px] font-bold"
-                    >
-                      {a}
+                  <span aria-hidden="true" />
+                  {copies2.map((a, c) => (
+                    <div key={c} className="flex justify-center py-1">
+                      <Bead pattern={pattern} allele={a} size="sm" state={focus ? (focus.c === c ? 'chosen' : 'dimmed') : 'normal'} />
                     </div>
                   ))}
-
-                  {pattern.parent1.map((rowAllele, r) => (
+                  {copies1.map((rowAllele, r) => (
                     <PunnettRow
-                      key={`row-${r}`}
+                      key={r}
+                      r={r as 0 | 1}
                       rowAllele={rowAllele}
-                      rowIndex={r}
-                      cols={pattern.parent2}
-                      highlight={single}
+                      cols={copies2}
+                      pattern={pattern}
+                      focus={focus}
+                      picked={phase === 'done' ? pick : null}
+                      childAt={childAt}
+                      outcomeLabel={outcomeLabel}
+                      onHover={setHover}
                     />
                   ))}
                 </div>
-
-                <p className="mt-4 text-[11px] leading-relaxed text-[#6b6159]">
-                  {/* Each square is one of four equally likely combinations.{" "} */}
-                  {t("punnett.note")}{" "}
-                  {/* {pattern.expected.scd > 0
-                    ? "A shaded square means two changed copies (sickle cell disease)."
-                    : "No square has two changed copies, so sickle cell disease is not possible in this pattern."} */}
-                  {pattern.expected.scd > 0 ? t("punnett.noteScd") : t("punnett.noteNoScd")}
+                <p className="mt-4 min-h-10 text-[13px] leading-relaxed">
+                  {focus
+                    ? t('punnett.explain', {
+                        a: letter(pattern, copies1[focus.r]),
+                        b: letter(pattern, copies2[focus.c]),
+                        p1: name1,
+                        p2: name2,
+                        outcome: outcomeLabel(childAt(focus).outcome),
+                      })
+                    : <span className="text-muted">{t('punnett.hint')}</span>}
+                </p>
+                <p className="mt-2 text-[13px] leading-relaxed text-muted">
+                  {!hasAffectedSquare ? t('punnett.noteNone') : isX ? t('punnett.noteX') : t('punnett.note')}
                 </p>
               </section>
-            </div>
 
-            {/* 100 pregnancies */}
-            <section
-              aria-labelledby="hundred-title"
-              className={`${cardClass} mt-4 p-6`}
-            >
-              <div className="grid gap-8 md:grid-cols-[minmax(0,1fr)_320px]">
-                <div>
-                  <h2
-                    id="hundred-title"
-                    className="text-base font-bold tracking-tight"
-                  >
-                    {/* 100 pregnancies */}
-                    {t("many.title", { count: TOTAL_RUNS })}
-                  </h2>
-                  <p className="mt-2 text-[13px] text-[#6b6159]">
-                    {/* Run 100 pregnancies to see how the chances add up over many
-                    families. */}
-                    {t("many.description", { count: TOTAL_RUNS })}
-                  </p>
-
-                  <ul className="mt-3 space-y-2.5" aria-live="polite">
-                    {OUTCOME_ORDER.map((key) => (
-                      <li
-                        key={key}
-                        className="grid grid-cols-[14px_minmax(0,1fr)_32px_auto] items-center gap-2.5 text-[13px]"
+              {/* Chances for each pregnancy (engine numbers, never animated) */}
+              <section aria-labelledby="chances-title" className={card}>
+                <h2 id="chances-title" className="text-xl font-extrabold tracking-[-0.01em]">
+                  {t('chances.title')}
+                </h2>
+                <div className="mt-4 flex flex-col gap-4">
+                  {(result.bySex
+                    ? ([
+                        [t('chances.son'), result.bySex.son],
+                        [t('chances.daughter'), result.bySex.daughter],
+                      ] as const)
+                    : ([[null, result.chances]] as const)
+                  ).map(([label, chances]) => (
+                    <div key={label ?? 'all'} className="flex flex-col gap-2">
+                      {label && <h3 className="text-sm font-bold">{label}</h3>}
+                      <div
+                        role="img"
+                        aria-label={t('chances.aria', {
+                          affected: chances.affected,
+                          carrier: chances.carrier,
+                          unaffected: chances.unaffected,
+                          affectedLabel: outcomeLabel('affected'),
+                        })}
+                        className="flex h-4 w-full overflow-hidden rounded-full bg-line"
                       >
-                        <span
-                          className={`size-3.5 rounded-full border ${OUTCOME_META[key].dot}`}
-                          aria-hidden
-                        />
-                        {/* <span>{OUTCOME_META[key].label}</span> */}
-                        <span>{outcomeLabels[key]}</span>
-                        <span className="text-center font-bold tabular-nums">
-                          {counts[key]}
-                        </span>
-                        <span className="text-[11px] text-[#6b6159]">
-                          {/* expected about {pattern.expected[key]} */}
-                          {t("many.expected", { n: pattern.expected[key] })}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <p className="mt-4 text-xs font-bold">
-                    {/* This shows chances, not what will happen. */}
-                    {t("many.disclaimer")}
-                  </p>
+                        {OUTCOMES.filter((o) => chances[o] > 0).map((o) => (
+                          <span key={o} className={cn('h-full border-e-2 border-surface last:border-e-0', dotClasses[o])} style={{ inlineSize: `${chances[o]}%` }} />
+                        ))}
+                      </div>
+                      <ul aria-hidden="true" className="flex flex-wrap gap-x-4 gap-y-1 text-[13px]">
+                        {OUTCOMES.filter((o) => chances[o] > 0).map((o) => (
+                          <li key={o} className="flex items-center gap-1.5">
+                            <OutcomeDot outcome={o} className="size-3" />
+                            <span>
+                              <strong className="font-extrabold tabular-nums">{chances[o]}%</strong> {outcomeLabel(o)}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
                 </div>
+                <p className="mt-4 text-[13px] font-bold">{t('chances.same')}</p>
+              </section>
+            </div>
+          </div>
 
-                <div
-                  role="img"
-                  // aria-label={`${revealed} of ${TOTAL_RUNS} simulated pregnancies shown`}
-                  aria-label={t("many.aria", { revealed, total: TOTAL_RUNS })}
-                  className="grid w-full max-w-[320px] grid-cols-10 gap-1.5 justify-self-end"
-                >
-                  {Array.from({ length: TOTAL_RUNS }, (_, i) => {
-                    const filled = i < revealed;
-                    return (
-                      <span
-                        key={i}
-                        className={`aspect-square rounded-full border transition-colors duration-150 ${
-                          filled
-                            ? OUTCOME_META[runs[i]].dot
-                            : "border-[#e6ddd5] bg-white"
-                        }`}
-                      />
-                    );
-                  })}
-                </div>
+          {/* 100 pregnancies */}
+          <section aria-labelledby="many-title" className={cn(card, 'mt-5')}>
+            <div className="grid gap-8 md:grid-cols-[minmax(0,1fr)_minmax(0,420px)]">
+              <div>
+                <h2 id="many-title" className="text-xl font-extrabold tracking-[-0.01em]">
+                  {t('many.title', { count: TOTAL_RUNS })}
+                </h2>
+                <p className="mt-2 text-[15px] text-muted">
+                  {runs.length ? t('many.after') : t('many.description', { count: TOTAL_RUNS })}
+                </p>
+                <ul className="mt-4 flex flex-col gap-3" aria-live="polite">
+                  {OUTCOMES.filter((o) => !(o === 'carrier' && pattern === 'autosomal_dominant')).map((o) => (
+                    <li key={o} className="flex flex-col gap-1.5">
+                      <div className="grid grid-cols-[14px_minmax(0,1fr)_36px_auto] items-center gap-2.5 text-[15px]">
+                        <OutcomeDot outcome={o} />
+                        <span>{outcomeLabel(o)}</span>
+                        <span className="text-end font-extrabold tabular-nums">{counts[o]}</span>
+                        <span className="text-[13px] text-muted">{t('many.expected', { n: expected[o] })}</span>
+                      </div>
+                      {/* Count against expected: the tick marks what the chances predict */}
+                      <div aria-hidden="true" className="relative ms-6 h-1.5 rounded-full bg-bead-typical">
+                        <span className={cn('absolute inset-y-0 start-0 rounded-full', o === 'unaffected' ? 'bg-neutral-line' : dotClasses[o])} style={{ inlineSize: `${counts[o]}%` }} />
+                        {expected[o] > 0 && (
+                          <span className="absolute -inset-y-1 w-0.5 rounded-full bg-ink" style={{ insetInlineStart: `${expected[o]}%` }} />
+                        )}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-5 text-[15px] font-bold">{t('many.disclaimer')}</p>
               </div>
-            </section>
-          </>
-        ) : (
-          <section
-            aria-labelledby="xlinked-title"
-            className={`${cardClass} mt-5 flex min-h-80 flex-col items-center justify-center p-8 text-center`}
-          >
-            <h2 id="xlinked-title" className="text-base font-bold tracking-tight">
-              {/* X-linked conditions follow a different pattern */}
-              {t("xlinked.title")}
-            </h2>
-            <p className="mt-2 max-w-md text-[13px] leading-relaxed text-[#6b6159]">
-              {/* Chances depend on which parent carries the changed copy and on the
-              sex of the child, so a simple simulator could mislead you. A
-              counsellor can walk through your family&rsquo;s chances with you. */}
-              {t("xlinked.body")}
-            </p>
-            <button
-              type="button"
-              onClick={bookCounsellor}
-              className="mt-5 rounded-full bg-[#ff5a1f] px-5 py-2.5 text-xs font-bold text-white transition hover:bg-[#ea4c12] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c2410c]"
-            >
-              {/* Talk to a counsellor */}
-              {t("xlinked.cta")}
-            </button>
-            <p className="mt-4 text-xs text-[#6b6159]">
-              {/* This is information, not a recommendation. */}
-              {t("xlinked.note")}
-            </p>
-          </section>
-        )}
-      </div>
 
-      {toast && <Toast message={toast} />}
-    </div>
+              <div
+                role="img"
+                aria-label={t('many.aria', {
+                  revealed,
+                  total: TOTAL_RUNS,
+                  affected: counts.affected,
+                  carrier: counts.carrier,
+                  unaffected: counts.unaffected,
+                  affectedLabel: outcomeLabel('affected'),
+                })}
+                className="grid w-full grid-cols-10 gap-1.5 justify-self-end"
+              >
+                {Array.from({ length: TOTAL_RUNS }, (_, i) =>
+                  i < revealed ? (
+                    <span key={`${runs.length}-${i}`} className={cn('aspect-square animate-pop rounded-full border', dotClasses[runs[i]])} />
+                  ) : (
+                    <span key={i} className="aspect-square rounded-full border border-line-strong bg-surface" />
+                  ),
+                )}
+              </div>
+            </div>
+          </section>
+        </>
+      )}
+    </main>
   );
 }
 
@@ -666,46 +847,111 @@ export default function InheritanceSimulator({
 /* -------------------------------------------------------------------------- */
 
 function PunnettRow({
+  r,
   rowAllele,
-  rowIndex,
   cols,
-  highlight,
+  pattern,
+  focus,
+  picked,
+  childAt,
+  outcomeLabel,
+  onHover,
 }: {
+  r: 0 | 1;
   rowAllele: Allele;
-  rowIndex: number;
   cols: [Allele, Allele];
-  highlight: SingleResult | null;
+  pattern: InheritancePattern;
+  focus: Square | null;
+  picked: Square | null;
+  childAt: (sq: Square) => Child;
+  outcomeLabel: (o: Outcome) => string;
+  onHover: (sq: Square | null) => void;
 }) {
-  const t = useTranslations("dashboard.simulator.punnett");
+  const t = useTranslations('dashboard.simulator');
   return (
     <>
-      <div role="rowheader" className="text-center text-[13px] font-bold">
-        {rowAllele}
+      <div className="flex justify-center px-1">
+        <Bead pattern={pattern} allele={rowAllele} size="sm" state={focus ? (focus.r === r ? 'chosen' : 'dimmed') : 'normal'} />
       </div>
       {cols.map((colAllele, c) => {
-        const label = cellLabel(rowAllele, colAllele);
-        const isScd = label === "SS";
-        const isPicked = highlight?.row === rowIndex && highlight?.col === c;
+        const sq: Square = { r, c: c as 0 | 1 };
+        const child = childAt(sq);
+        const g = genotype(pattern, rowAllele, colAllele);
+        const isPicked = picked?.r === r && picked?.c === c;
+        const isFocus = focus?.r === r && focus?.c === c;
         return (
-          <div
+          <button
             key={c}
-            role="cell"
-            // aria-label={`${label}${isScd ? ", sickle cell disease" : ""}${
-            //   isPicked ? ", last simulated result" : ""
-            // }`}
-            aria-label={t("cell", {
-              label,
-              scd: isScd ? "yes" : "no",
-              picked: isPicked ? "yes" : "no",
-            })}
-            className={`grid h-11.5 place-items-center rounded-xl text-sm font-bold transition-shadow ${
-              isScd ? "bg-[#ffe1e1]" : "bg-[#f6f0ea]"
-            } ${isPicked ? "ring-2 ring-[#16110d] ring-offset-2" : ""}`}
+            type="button"
+            onMouseEnter={() => onHover(sq)}
+            onFocus={() => onHover(sq)}
+            onBlur={() => onHover(null)}
+            onClick={() => onHover(isFocus ? null : sq)}
+            aria-label={t('punnett.cell', { genotype: g, outcome: outcomeLabel(child.outcome), picked: isPicked ? 'yes' : 'no' })}
+            className={cn(
+              'flex min-h-16 cursor-pointer flex-col items-center justify-center gap-0.5 rounded-tile px-1 transition-[box-shadow,background-color]',
+              child.outcome === 'affected' ? 'bg-affected-tint' : 'bg-bead-typical/60',
+              isFocus && 'ring-2 ring-ink',
+              isPicked && 'ring-[3px] ring-ink ring-offset-2',
+            )}
           >
-            {label}
-          </div>
+            <span className="text-lg font-extrabold">{g}</span>
+            <span className={cn('text-center text-[11px] leading-tight font-bold', outcomeText[child.outcome])}>
+              {child.sex ? `${t(`sex.${child.sex}`)} · ` : ''}
+              {t(`short.${child.outcome}`)}
+            </span>
+          </button>
         );
       })}
     </>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Picker pieces                                                             */
+/* -------------------------------------------------------------------------- */
+
+function ConditionGroup({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <h3 className="mb-2 text-xs font-bold tracking-wide text-muted uppercase">{title}</h3>
+      <ul className="grid gap-2 sm:grid-cols-2">{children}</ul>
+    </div>
+  );
+}
+
+function ConditionOption({
+  c,
+  selected,
+  tag,
+  patternName,
+  onPick,
+}: {
+  c: SimCondition;
+  selected: boolean;
+  tag?: string;
+  patternName: string | null;
+  onPick: () => void;
+}) {
+  return (
+    <li>
+      <button
+        type="button"
+        aria-pressed={selected}
+        onClick={onPick}
+        className={cn(
+          'flex min-h-14 w-full cursor-pointer flex-col items-start gap-0.5 rounded-input border px-4 py-2.5 text-start transition-colors',
+          selected ? 'border-ink bg-brand-tint-soft' : 'border-line bg-surface hover:border-line-strong hover:bg-brand-tint-soft',
+        )}
+      >
+        <span className="flex flex-wrap items-center gap-2 text-[15px] font-bold">
+          {c.title}
+          {tag && <span className="rounded-full bg-brand-tint px-2 py-0.5 text-[11px] font-bold text-brand-text-dark">{tag}</span>}
+        </span>
+        <span className="text-[13px] text-muted">
+          {[c.gene, patternName].filter(Boolean).join(' · ')}
+        </span>
+      </button>
+    </li>
   );
 }

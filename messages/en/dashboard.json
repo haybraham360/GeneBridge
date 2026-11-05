@@ -247,68 +247,137 @@
   "simulator": {
     "header": {
       "title": "Inheritance simulator",
-      "subtitle": "See how gene copies pass from parents to a child. This shows chances, not what will happen.",
+      "subtitle": "See how gene changes pass from parents to children, for any inheritance pattern. This shows chances, not what will happen.",
       "stop": "Stop"
     },
-    "patterns": {
-      "label": "Pattern", 
-      "both": "Both parents carriers (AS × AS)",
-      "one": "One parent carrier (AS × AA)",
-      "xlinked": "X-linked: talk to a counsellor"
+    "notDiagnosis": "These are example parents, not anyone's test result. This isn't a diagnosis.",
+    "condition": {
+      "label": "Condition",
+      "general": "General example",
+      "choose": "Choose a condition",
+      "change": "Change condition",
+      "clear": "Back to general examples",
+      "search": "Search by name or gene",
+      "searchLabel": "Search conditions",
+      "empty": "No condition matches “{q}”.",
+      "mine": "Your conditions",
+      "all": "All conditions",
+      "inResults": "In your results",
+      "following": "Following",
+      "guide": "Read the guide",
+      "complexTitle": "{name} follows a more complex pattern",
+      "complexBody": "More than one gene is involved, so a simple simulator with two copies could mislead you. A genetic counsellor can explain how it passes on in your family.",
+      "complexCta": "Talk to a counsellor"
     },
-    "parent": "Parent {n}",
-    "parents": {
-      "carrier": "Carrier (AS)",
-      "notCarrier": "Not a carrier (AA)"
+    "presets": {
+      "label": "Quick examples",
+      "rec2": "Recessive: both parents carriers",
+      "rec1": "Recessive: one parent carrier",
+      "dom": "Dominant: one parent has it",
+      "xl": "X-linked: mother is a carrier"
     },
-    "outcomes": {
-      "scd": "Sickle cell disease",
-      "carrier": "Healthy carrier",
-      "none": "No changed copy"
+    "patternNames": {
+      "autosomal_recessive": "Autosomal recessive",
+      "autosomal_dominant": "Autosomal dominant",
+      "x_linked": "X-linked recessive"
     },
-    "sentences": {
-      "scd": "This child has sickle cell disease (SS).",
-      "carrier": "This child is a healthy carrier (AS).",
-      "none": "This child has no changed copy (AA)."
+    "examples": {
+      "autosomal_recessive": "Example conditions: beta-thalassemia, SMA, cystic fibrosis, hereditary hearing loss",
+      "autosomal_dominant": "Example conditions: familial hypercholesterolaemia, Huntington disease",
+      "x_linked": "Example conditions: G6PD deficiency, Duchenne muscular dystrophy, fragile X"
+    },
+    "findCondition": "Find your condition",
+    "how": {
+      "autosomal_recessive": "A child has the condition only if they get a changed copy from both parents. One changed copy means a healthy carrier.",
+      "autosomal_dominant": "One changed copy is enough to cause the condition, so there are no carriers.",
+      "x_linked": "The gene is on the X chromosome. A son gets his only X from his mother, so one changed copy affects him. A daughter gets an X from each parent and is usually a healthy carrier."
+    },
+    "counsellorNote": {
+      "autosomal_dominant": "If a dominant condition runs in your own family, a genetic counsellor should talk it through with you.",
+      "x_linked": "If an X-linked condition runs in your own family, a genetic counsellor should talk it through with you.",
+      "link": "Book a counsellor"
+    },
+    "parentNames": {
+      "p1": "Parent 1",
+      "p2": "Parent 2",
+      "mother": "Mother",
+      "father": "Father"
+    },
+    "status": {
+      "unaffected": "No changed copy",
+      "carrier": "Carrier",
+      "affected": "Has the condition",
+      "label": "{parent}: change status"
+    },
+    "copies": {
+      "typical": "Typical copy",
+      "changed": "Changed copy",
+      "y": "Y chromosome",
+      "aria": "{letter}, {kind, select, typical {typical copy} changed {changed copy} other {Y chromosome}}"
     },
     "single": {
+      "theCondition": "the condition",
       "empty": "Press “{button}” to see one possible result.",
-      "from": "{a} from Parent 1, {b} from Parent 2"
+      "passing": "Each parent passes on one of their two copies, like a coin toss…",
+      "passed": "{parent} passed on {kind, select, typical {a typical copy} changed {a changed copy} other {the Y chromosome}} ({letter}).",
+      "sentence": "{sex, select, son {This son} daughter {This daughter} other {This child}} {outcome, select, affected {has {name}.} carrier {is a healthy carrier.} other {has no changed copy.}}",
+      "same": "The next pregnancy has exactly the same chances. Earlier children don't change them."
+    },
+    "family": {
+      "title": "Pregnancies so far",
+      "note": "Each pregnancy is a new coin toss for each parent, so one family can have more or fewer than the chances suggest.",
+      "child": "Pregnancy {n}: {genotype}, {label}"
     },
     "buttons": {
       "simulateOne": "Simulate one pregnancy",
       "runMany": "Run {count} times",
+      "runAgain": "Run {count} again",
       "reset": "Reset"
     },
+    "chances": {
+      "title": "Chances for each pregnancy",
+      "same": "The same for every pregnancy.",
+      "son": "If it is a son",
+      "daughter": "If it is a daughter",
+      "item": "{pct}% {label}",
+      "aria": "{affected}% {affectedLabel}, {carrier}% healthy carrier, {unaffected}% no changed copy"
+    },
+    "outcomes": {
+      "affected": "Has the condition",
+      "affectedNamed": "Has {name}",
+      "carrier": "Healthy carrier",
+      "unaffected": "No changed copy"
+    },
+    "sex": { "son": "Son", "daughter": "Daughter" },
+    "short": {
+      "affected": "Has it",
+      "carrier": "Carrier",
+      "unaffected": "No change"
+    },
     "punnett": {
+      "axes": "Rows are copies from {p1}; columns are copies from {p2}.",
       "title": "All possible combinations",
       "aria": "Punnett square",
-      "cell": "{label}{scd, select, yes {, sickle cell disease} other {}}{picked, select, yes {, last simulated result} other {}}",
-      "note": "Each square is one of four equally likely combinations.",
-      "noteScd": "A shaded square means two changed copies (sickle cell disease).",
-      "noteNoScd": "No square has two changed copies, so sickle cell disease is not possible in this pattern."
+      "hint": "Point at or tap a square to see which copies make it.",
+      "cell": "{genotype}: {outcome}{picked, select, yes {, last simulated result} other {}}",
+      "explain": "{a} from {p1} and {b} from {p2}: {outcome}.",
+      "note": "Each square is one of four equally likely combinations. A shaded square means a child with the condition.",
+      "noteX": "Each square is one of four equally likely combinations. Combinations with Y are sons. A shaded square means a child with the condition.",
+      "noteNone": "Each square is one of four equally likely combinations. No square has the condition with these parents."
     },
     "many": {
       "title": "{count} pregnancies",
       "description": "Run {count} pregnancies to see how the chances add up over many families.",
+      "after": "Each dot is one simulated pregnancy. Results vary a little each run, around the expected numbers.",
       "expected": "expected about {n}",
       "disclaimer": "This shows chances, not what will happen.",
-      "aria": "{revealed} of {total} simulated pregnancies shown"
-    },
-    "xlinked": {
-      "title": "X-linked conditions follow a different pattern",
-      "body": "Chances depend on which parent carries the changed copy and on the sex of the child, so a simple simulator could mislead you. A counsellor can walk through your family’s chances with you.",
-      "cta": "Talk to a counsellor",
-      "note": "This is information, not a recommendation."
+      "aria": "{revealed} of {total} simulated pregnancies shown: {affected} {affectedLabel}, {carrier} healthy carrier, {unaffected} no changed copy"
     },
     "listen": {
-      "intro": "Inheritance simulator. See how gene copies pass from parents to a child. This shows chances, not what will happen.",
-      "pattern": "Pattern: {label}. Each pregnancy has a {scd} percent chance of sickle cell disease, {carrier} percent of a healthy carrier, and {none} percent of no changed copy.",
-      "xlinked": "X-linked conditions follow a different inheritance pattern. Talk to a counsellor to understand your family’s chances.",
-      "unsupported": "Listening isn’t supported in this browser."
-    },
-    "toast": {
-      "booking": "Opening couple session booking…"
+      "intro": "Inheritance simulator. This shows chances, not what will happen.",
+      "summary": "{pattern}. {parent1}: {status1}. {parent2}: {status2}. For each pregnancy, there is a {affected} percent chance of a child who {affectedLabel}, {carrier} percent of a healthy carrier, and {unaffected} percent of a child with no changed copy. The chances are the same for every pregnancy.",
+      "has": "has the condition",
+      "hasNamed": "has {name}"
     }
   },
 

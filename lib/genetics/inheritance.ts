@@ -40,7 +40,7 @@ export type InheritanceResult = {
 export class InheritanceInputError extends Error {}
 
 /** A copy of the gene: typical ('A') or changed ('a'). 'Y' is the father's Y. */
-type Allele = 'A' | 'a' | 'Y';
+export type Allele = 'A' | 'a' | 'Y';
 
 function autosomal(status: ParentStatus, pattern: InheritancePattern): [Allele, Allele] {
   if (pattern === 'autosomal_dominant' && status === 'carrier') {
@@ -66,7 +66,40 @@ function father(status: ParentStatus): [Allele, Allele] {
   return status === 'unaffected' ? ['A', 'Y'] : ['a', 'Y'];
 }
 
-type Outcome = keyof Chances;
+export type Outcome = keyof Chances;
+
+/**
+ * Which statuses make sense for a parent in a pattern. A dominant condition
+ * has no carriers, and an X-linked father (parent 2) has one X, so he either
+ * has the changed copy or not.
+ */
+export function statusesFor(pattern: InheritancePattern, parent: 1 | 2): ParentStatus[] {
+  if (pattern === 'autosomal_dominant') return ['unaffected', 'affected'];
+  if (pattern === 'x_linked' && parent === 2) return ['unaffected', 'affected'];
+  return ['unaffected', 'carrier', 'affected'];
+}
+
+/**
+ * The two copies a parent can pass on. For X-linked, parent 1 is the mother
+ * and parent 2 the father (whose second "copy" is his Y).
+ */
+export function parentCopies(
+  pattern: InheritancePattern,
+  parent: 1 | 2,
+  status: ParentStatus,
+): [Allele, Allele] {
+  if (pattern === 'x_linked') return parent === 1 ? mother(status) : father(status);
+  return autosomal(status, pattern);
+}
+
+export type Child = { outcome: Outcome; sex?: 'son' | 'daughter' };
+
+/** The child made from one copy of each parent. X-linked children have a sex. */
+export function childOf(pattern: InheritancePattern, fromParent1: Allele, fromParent2: Allele): Child {
+  const outcome = outcomeOf(pattern, fromParent1, fromParent2);
+  if (pattern !== 'x_linked') return { outcome };
+  return { outcome, sex: fromParent1 === 'Y' || fromParent2 === 'Y' ? 'son' : 'daughter' };
+}
 
 function outcomeOf(pattern: InheritancePattern, x: Allele, y: Allele): Outcome {
   const changed = [x, y].filter((c) => c === 'a').length;
@@ -106,10 +139,8 @@ export function calculateInheritance(
     if (!parentStatuses.includes(p)) throw new InheritanceInputError(`Unknown status ${p}`);
   }
 
-  const [p1, p2] =
-    pattern === 'x_linked'
-      ? [mother(parent1), father(parent2)]
-      : [autosomal(parent1, pattern), autosomal(parent2, pattern)];
+  const p1 = parentCopies(pattern, 1, parent1);
+  const p2 = parentCopies(pattern, 2, parent2);
 
   // All four combinations (one copy from each parent) are equally likely.
   const all = empty();
@@ -146,7 +177,7 @@ export function numbersIn(result: InheritanceResult): number[] {
 
 /**
  * Expected counts out of `runs` pregnancies, for the simulator's
- * "counts vs expected". Recessive and dominant only.
+ * "counts vs expected".
  */
 export function expectedCounts(result: InheritanceResult, runs: number): Chances {
   return {
