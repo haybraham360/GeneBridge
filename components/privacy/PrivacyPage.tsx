@@ -173,7 +173,7 @@ export default function PrivacyPage() {
                         ) : (
                           <span className="text-[12px] text-neutral-600">
                             {/* Nothing shared */}
-                            t("who.none")
+                            {t("who.none")}
                           </span>
                         )}
                       </td>
