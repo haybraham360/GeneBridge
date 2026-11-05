@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Conditions A to Z</title>
+<!-- Static reference export of the GeneBridge design canvas (Initial state). Interactive logic: design/source/Conditions.dc.html -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FFF7F0;color:#141414;font-family:'Plus Jakarta Sans',system-ui,sans-serif}
+a{color:#C2410C}a:hover{color:#9A3412}
+.card{background:#FFFFFF;border:1px solid #F1E3D8;border-radius:20px;box-shadow:0 8px 24px rgba(60,30,10,0.06)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 24px;border-radius:999px;font-weight:700;font-size:15px;text-decoration:none;border:0;cursor:pointer;font-family:inherit;box-sizing:border-box}
+.btn-o{background:#FF5A1F;color:#141414}.btn-o:hover{background:#FF7440;color:#141414}
+.btn-d{background:#141414;color:#FFFFFF}.btn-d:hover{background:#2E2A27;color:#FFFFFF}
+.btn-g{background:#FFFFFF;color:#141414;border:1px solid #E7D7CA}.btn-g:hover{background:#FFF1E7;color:#141414}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;background:#FFFFFF;border:1px solid #F1E3D8;font-size:13px;font-weight:600;color:#141414}
+.muted{color:#5C5550}
+.side a{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:12px;color:#3A3532;text-decoration:none;font-weight:600;font-size:14px}
+.side a:hover{background:#FFEDE2;color:#141414}
+.side a.on{background:#141414;color:#FFFFFF}
+svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+@media (max-width:900px){.decor{display:none}}
+</style>
+</head>
+<body>
+<div style="display:flex;flex-wrap:wrap;min-height:100vh;background:#FFF7F0">
+<aside class="side" style="flex:1 1 240px;background:#FFFFFF;border-right:1px solid #F1E3D8;padding:28px 16px;display:flex;flex-direction:column;gap:28px;box-sizing:border-box">
+<div style="padding:0 8px"><a href="Main.html" aria-label="GeneBridge home" style="display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:800;font-size:22px;letter-spacing:-0.02em"><img src="../../public/genebridge-mark.png" alt="" style="height:32px;width:auto;display:block"><span><span style="color:#141414">Gene</span><span style="color:#FF5A1F">Bridge</span></span></a></div>
+<nav aria-label="App" style="display:flex;flex-direction:column;gap:4px"><a href="Home.html" class=""><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10l9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Home</a><a href="RiskAnalysis.html" class=""><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V11M10 20V5M16 20v-7M21 20H3"/></svg>My results</a><a href="Conditions.html" class="on"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>Conditions A–Z</a><a href="Couple.html" class=""><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-4 3-6 7-6s7 2 7 6M16 4a4 4 0 0 1 0 8M22 21c0-3-2-5-4-6"/></svg>Couple view</a><a href="Simulator.html" class=""><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></svg>Inheritance simulator</a><a href="FamilyMap.html" class=""><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2.5"/><circle cx="5" cy="19" r="2.5"/><circle cx="19" cy="19" r="2.5"/><path d="M12 7.5V12M5 16.5V12h14v4.5"/></svg>Family map</a><a href="Talk.html" class=""><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg>Talking to family</a><a href="Options.html" class=""><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>Options</a><a href="Counsellor.html" class=""><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Counsellor &amp; referral</a><a href="Services.html" class=""><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6-5.5-6-11a6 6 0 0 1 12 0c0 5.5-6 11-6 11z"/><circle cx="12" cy="10" r="2.5"/></svg>Care &amp; services</a><a href="Privacy.html" class=""><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg>Privacy &amp; consent</a></nav>
+<div style="margin-top:auto;display:flex;flex-direction:column;gap:16px">
+<div style="background:#FFF1E7;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="color:#C2410C"><path d="M4 5h16v11H9l-5 4z"/></svg>Ask GeneBridge</div>
+<p style="margin:0;font-size:13px;line-height:1.5" class="muted">General questions about genetics. It won't interpret your personal result.</p>
+<a href="Home.html#ask" style="font-size:13px;font-weight:700">Ask a question</a>
+</div>
+<div style="display:flex;align-items:center;gap:12px;padding:0 8px">
+<span style="width:40px;height:40px;border-radius:50%;background:#FFE3D3;display:flex;align-items:center;justify-content:center;font-weight:800;color:#9A3412;flex:none">M</span>
+<span style="display:flex;flex-direction:column"><span style="font-weight:700;font-size:14px">Mariam</span><a href="#" style="font-size:12px;color:#5C5550;text-decoration:none">English · <span lang="ar">العربية</span></a></span>
+</div>
+<a href="Main.html" style="display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 12px;border-radius:999px;border:1px solid #E7D7CA;color:#141414;text-decoration:none;font-weight:700;font-size:13px;background:#FFFFFF"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="width:16px;height:16px"><path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h10"/></svg>Sign out</a>
+</div>
+</aside>
+<main style="flex:999 1 560px;min-width:0;padding:32px clamp(16px,3vw,40px) 48px;box-sizing:border-box;display:flex;flex-direction:column;gap:24px">
+<header style="display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:flex-end">
+<div style="display:flex;flex-direction:column;gap:8px"><h1 style="margin:0;font-size:32px;font-weight:800;letter-spacing:-0.02em">Conditions A–Z</h1><p class="muted" style="margin:0;font-size:15px">Plain-language guides to inherited conditions, whatever your screening finds.</p></div>
+<div style="display:flex;gap:12px;flex-wrap:wrap"><button type="button" class="btn btn-g" aria-label="Listen to this page"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M17 9a4 4 0 0 1 0 6"/></svg>Listen</button></div>
+</header>
+<div style="display:flex;gap:12px;align-items:center;padding:14px 18px;border-radius:16px;background:#FFF1E7;font-size:15px;line-height:1.5"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="color:#C2410C;width:22px;height:22px"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg><span>Draft content for the demo, written from public sources. To be reviewed by a genetic counsellor before launch.</span></div>
+<div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center">
+<div style="flex:1 1 320px;display:flex;align-items:center;gap:10px;min-height:52px;padding:0 16px;border-radius:999px;background:#FFFFFF;border:1px solid #E7D7CA"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="color:#5C5550"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><label for="cq" style="position:absolute;left:-9999px">Search conditions</label><input id="cq" type="search" placeholder="Search a condition or gene, e.g. thalassemia, SMN1" style="flex:1;min-width:0;border:0;outline:none;font-family:inherit;font-size:15px;background:transparent"></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div role="tablist" aria-label="Inheritance pattern" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center"><span style="font-weight:700;font-size:14px;min-width:72px">Pattern</span>
+<button type="button" role="tab" aria-selected="true" style="min-height:44px;padding:0 16px;border-radius:999px;font-family:inherit;font-weight:700;font-size:14px;cursor:pointer;border:1px solid #E7D7CA;background:#141414;color:#FFFFFF">All</button><button type="button" role="tab" aria-selected="false" style="min-height:44px;padding:0 16px;border-radius:999px;font-family:inherit;font-weight:700;font-size:14px;cursor:pointer;border:1px solid #E7D7CA;background:#FFFFFF;color:#141414">Recessive</button><button type="button" role="tab" aria-selected="false" style="min-height:44px;padding:0 16px;border-radius:999px;font-family:inherit;font-weight:700;font-size:14px;cursor:pointer;border:1px solid #E7D7CA;background:#FFFFFF;color:#141414">Dominant</button><button type="button" role="tab" aria-selected="false" style="min-height:44px;padding:0 16px;border-radius:999px;font-family:inherit;font-weight:700;font-size:14px;cursor:pointer;border:1px solid #E7D7CA;background:#FFFFFF;color:#141414">X-linked</button>
+</div>
+<div role="tablist" aria-label="Body system" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center"><span style="font-weight:700;font-size:14px;min-width:72px">Area</span>
+<button type="button" role="tab" aria-selected="true" style="min-height:44px;padding:0 16px;border-radius:999px;font-family:inherit;font-weight:700;font-size:14px;cursor:pointer;border:1px solid #E7D7CA;background:#141414;color:#FFFFFF">All</button><button type="button" role="tab" aria-selected="false" style="min-height:44px;padding:0 16px;border-radius:999px;font-family:inherit;font-weight:700;font-size:14px;cursor:pointer;border:1px solid #E7D7CA;background:#FFFFFF;color:#141414">Blood</button><button type="button" role="tab" aria-selected="false" style="min-height:44px;padding:0 16px;border-radius:999px;font-family:inherit;font-weight:700;font-size:14px;cursor:pointer;border:1px solid #E7D7CA;background:#FFFFFF;color:#141414">Nerves and muscles</button><button type="button" role="tab" aria-selected="false" style="min-height:44px;padding:0 16px;border-radius:999px;font-family:inherit;font-weight:700;font-size:14px;cursor:pointer;border:1px solid #E7D7CA;background:#FFFFFF;color:#141414">Hearing and vision</button><button type="button" role="tab" aria-selected="false" style="min-height:44px;padding:0 16px;border-radius:999px;font-family:inherit;font-weight:700;font-size:14px;cursor:pointer;border:1px solid #E7D7CA;background:#FFFFFF;color:#141414">Metabolic</button><button type="button" role="tab" aria-selected="false" style="min-height:44px;padding:0 16px;border-radius:999px;font-family:inherit;font-weight:700;font-size:14px;cursor:pointer;border:1px solid #E7D7CA;background:#FFFFFF;color:#141414">Heart</button><button type="button" role="tab" aria-selected="false" style="min-height:44px;padding:0 16px;border-radius:999px;font-family:inherit;font-weight:700;font-size:14px;cursor:pointer;border:1px solid #E7D7CA;background:#FFFFFF;color:#141414">Other</button>
+</div>
+</div>
+<p class="muted" style="margin:0;font-size:14px" aria-live="polite">16 of 16 conditions shown · more are added as your screening panel grows</p>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px">
+
+<article class="card" style="padding:22px;display:flex;flex-direction:column;gap:10px;border:2px solid #FF5A1F">
+<div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><h3 style="margin:0;font-size:17px;font-weight:800">Beta-thalassemia</h3><span style="font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;background:#FFEDE2;color:#9A3412;white-space:nowrap">In your results</span></div>
+<div style="display:flex;gap:6px;flex-wrap:wrap"><span class="chip" style="font-size:12px;padding:4px 10px">Autosomal recessive</span><span class="chip" style="font-size:12px;padding:4px 10px">Gene HBB</span><span class="chip" style="font-size:12px;padding:4px 10px">Blood</span></div>
+<p class="muted" style="margin:0;font-size:14px;line-height:1.55;flex:1">Reduces the body's ability to make haemoglobin. Carriers are healthy; people with two changed copies often need lifelong care.</p>
+
+<div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn btn-g" href="ConditionDetail.html" style="min-height:40px;font-size:13px;padding:0 16px">Read more</a><a class="btn btn-g" href="Simulator.html" style="min-height:40px;font-size:13px;padding:0 16px">How it&#39;s inherited</a></div>
+</article>
+
+<article class="card" style="padding:22px;display:flex;flex-direction:column;gap:10px;border:1px solid #F1E3D8">
+<div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><h3 style="margin:0;font-size:17px;font-weight:800">Alpha-thalassemia</h3></div>
+<div style="display:flex;gap:6px;flex-wrap:wrap"><span class="chip" style="font-size:12px;padding:4px 10px">Varies</span><span class="chip" style="font-size:12px;padding:4px 10px">Gene HBA1, HBA2</span><span class="chip" style="font-size:12px;padding:4px 10px">Blood</span></div>
+<p class="muted" style="margin:0;font-size:14px;line-height:1.55;flex:1">Affects haemoglobin production. Inheritance involves several gene copies, so a counsellor explains each family's chances.</p>
+<p style="margin:0;font-size:13px;line-height:1.5;color:#9A3412;font-weight:600">If this runs in your family, talk to a counsellor.</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn btn-g" href="ConditionDetail.html" style="min-height:40px;font-size:13px;padding:0 16px">Read more</a><a class="btn btn-g" href="Simulator.html" style="min-height:40px;font-size:13px;padding:0 16px">How it&#39;s inherited</a></div>
+</article>
+
+<article class="card" style="padding:22px;display:flex;flex-direction:column;gap:10px;border:1px solid #F1E3D8">
+<div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><h3 style="margin:0;font-size:17px;font-weight:800">Sickle cell disease</h3></div>
+<div style="display:flex;gap:6px;flex-wrap:wrap"><span class="chip" style="font-size:12px;padding:4px 10px">Autosomal recessive</span><span class="chip" style="font-size:12px;padding:4px 10px">Gene HBB</span><span class="chip" style="font-size:12px;padding:4px 10px">Blood</span></div>
+<p class="muted" style="margin:0;font-size:14px;line-height:1.55;flex:1">Red blood cells change shape, which can cause pain and anaemia. Carriers (sickle cell trait) are usually healthy.</p>
+
+<div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn btn-g" href="ConditionDetail.html" style="min-height:40px;font-size:13px;padding:0 16px">Read more</a><a class="btn btn-g" href="Simulator.html" style="min-height:40px;font-size:13px;padding:0 16px">How it&#39;s inherited</a></div>
+</article>
+
+<article class="card" style="padding:22px;display:flex;flex-direction:column;gap:10px;border:1px solid #F1E3D8">
+<div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><h3 style="margin:0;font-size:17px;font-weight:800">G6PD deficiency</h3></div>
+<div style="display:flex;gap:6px;flex-wrap:wrap"><span class="chip" style="font-size:12px;padding:4px 10px">X-linked</span><span class="chip" style="font-size:12px;padding:4px 10px">Gene G6PD</span><span class="chip" style="font-size:12px;padding:4px 10px">Blood</span></div>
+<p class="muted" style="margin:0;font-size:14px;line-height:1.55;flex:1">Red blood cells can break down after certain foods or medicines. More common in males; many people never have symptoms.</p>
+<p style="margin:0;font-size:13px;line-height:1.5;color:#9A3412;font-weight:600">If this runs in your family, talk to a counsellor.</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn btn-g" href="ConditionDetail.html" style="min-height:40px;font-size:13px;padding:0 16px">Read more</a><a class="btn btn-g" href="Simulator.html" style="min-height:40px;font-size:13px;padding:0 16px">How it&#39;s inherited</a></div>
+</article>
+
+<article class="card" style="padding:22px;display:flex;flex-direction:column;gap:10px;border:2px solid #FF5A1F">
+<div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><h3 style="margin:0;font-size:17px;font-weight:800">Spinal muscular atrophy (SMA)</h3><span style="font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;background:#FFEDE2;color:#9A3412;white-space:nowrap">In your results</span></div>
+<div style="display:flex;gap:6px;flex-wrap:wrap"><span class="chip" style="font-size:12px;padding:4px 10px">Autosomal recessive</span><span class="chip" style="font-size:12px;padding:4px 10px">Gene SMN1</span><span class="chip" style="font-size:12px;padding:4px 10px">Nerves and muscles</span></div>
+<p class="muted" style="margin:0;font-size:14px;line-height:1.55;flex:1">Affects the nerves that control muscles. Carriers are healthy. Treatments now exist.</p>
+
+<div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn btn-g" href="ConditionDetail.html" style="min-height:40px;font-size:13px;padding:0 16px">Read more</a><a class="btn btn-g" href="Simulator.html" style="min-height:40px;font-size:13px;padding:0 16px">How it&#39;s inherited</a></div>
+</article>
+
+<article class="card" style="padding:22px;display:flex;flex-direction:column;gap:10px;border:1px solid #F1E3D8">
+<div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><h3 style="margin:0;font-size:17px;font-weight:800">Duchenne muscular dystrophy</h3></div>
+<div style="display:flex;gap:6px;flex-wrap:wrap"><span class="chip" style="font-size:12px;padding:4px 10px">X-linked</span><span class="chip" style="font-size:12px;padding:4px 10px">Gene DMD</span><span class="chip" style="font-size:12px;padding:4px 10px">Nerves and muscles</span></div>
+<p class="muted" style="margin:0;font-size:14px;line-height:1.55;flex:1">Causes muscle weakness that gets worse over time, mainly in boys.</p>
+<p style="margin:0;font-size:13px;line-height:1.5;color:#9A3412;font-weight:600">If this runs in your family, talk to a counsellor.</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn btn-g" href="ConditionDetail.html" style="min-height:40px;font-size:13px;padding:0 16px">Read more</a><a class="btn btn-g" href="Simulator.html" style="min-height:40px;font-size:13px;padding:0 16px">How it&#39;s inherited</a></div>
+</article>
+
+<article class="card" style="padding:22px;display:flex;flex-direction:column;gap:10px;border:1px solid #F1E3D8">
+<div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><h3 style="margin:0;font-size:17px;font-weight:800">Cystic fibrosis</h3></div>
+<div style="display:flex;gap:6px;flex-wrap:wrap"><span class="chip" style="font-size:12px;padding:4px 10px">Autosomal recessive</span><span class="chip" style="font-size:12px;padding:4px 10px">Gene CFTR</span><span class="chip" style="font-size:12px;padding:4px 10px">Lungs and digestion</span></div>
+<p class="muted" style="margin:0;font-size:14px;line-height:1.55;flex:1">Thick mucus affects the lungs and digestion. Carriers are healthy.</p>
+
+<div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn btn-g" href="ConditionDetail.html" style="min-height:40px;font-size:13px;padding:0 16px">Read more</a><a class="btn btn-g" href="Simulator.html" style="min-height:40px;font-size:13px;padding:0 16px">How it&#39;s inherited</a></div>
+</article>
+
+<article class="card" style="padding:22px;display:flex;flex-direction:column;gap:10px;border:1px solid #F1E3D8">
+<div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><h3 style="margin:0;font-size:17px;font-weight:800">Hereditary hearing loss (GJB2)</h3></div>
+<div style="display:flex;gap:6px;flex-wrap:wrap"><span class="chip" style="font-size:12px;padding:4px 10px">Autosomal recessive</span><span class="chip" style="font-size:12px;padding:4px 10px">Gene GJB2</span><span class="chip" style="font-size:12px;padding:4px 10px">Hearing and vision</span></div>
+<p class="muted" style="margin:0;font-size:14px;line-height:1.55;flex:1">A common inherited cause of hearing loss from birth. Carriers have normal hearing.</p>
+
+<div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn btn-g" href="ConditionDetail.html" style="min-height:40px;font-size:13px;padding:0 16px">Read more</a><a class="btn btn-g" href="Simulator.html" style="min-height:40px;font-size:13px;padding:0 16px">How it&#39;s inherited</a></div>
+</article>
+
+<article class="card" style="padding:22px;display:flex;flex-direction:column;gap:10px;border:1px solid #F1E3D8">
+<div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><h3 style="margin:0;font-size:17px;font-weight:800">Retinitis pigmentosa</h3></div>
+<div style="display:flex;gap:6px;flex-wrap:wrap"><span class="chip" style="font-size:12px;padding:4px 10px">Varies</span><span class="chip" style="font-size:12px;padding:4px 10px">Gene Several genes</span><span class="chip" style="font-size:12px;padding:4px 10px">Hearing and vision</span></div>
+<p class="muted" style="margin:0;font-size:14px;line-height:1.55;flex:1">A group of conditions that gradually affect vision. It can be inherited in different ways.</p>
+<p style="margin:0;font-size:13px;line-height:1.5;color:#9A3412;font-weight:600">If this runs in your family, talk to a counsellor.</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn btn-g" href="ConditionDetail.html" style="min-height:40px;font-size:13px;padding:0 16px">Read more</a><a class="btn btn-g" href="Simulator.html" style="min-height:40px;font-size:13px;padding:0 16px">How it&#39;s inherited</a></div>
+</article>
+
+<article class="card" style="padding:22px;display:flex;flex-direction:column;gap:10px;border:1px solid #F1E3D8">
+<div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><h3 style="margin:0;font-size:17px;font-weight:800">Phenylketonuria (PKU)</h3></div>
+<div style="display:flex;gap:6px;flex-wrap:wrap"><span class="chip" style="font-size:12px;padding:4px 10px">Autosomal recessive</span><span class="chip" style="font-size:12px;padding:4px 10px">Gene PAH</span><span class="chip" style="font-size:12px;padding:4px 10px">Metabolic</span></div>
+<p class="muted" style="margin:0;font-size:14px;line-height:1.55;flex:1">The body can't break down an amino acid in food. Managed with a special diet from birth.</p>
+
+<div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn btn-g" href="ConditionDetail.html" style="min-height:40px;font-size:13px;padding:0 16px">Read more</a><a class="btn btn-g" href="Simulator.html" style="min-height:40px;font-size:13px;padding:0 16px">How it&#39;s inherited</a></div>
+</article>
+
+<article class="card" style="padding:22px;display:flex;flex-direction:column;gap:10px;border:1px solid #F1E3D8">
+<div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><h3 style="margin:0;font-size:17px;font-weight:800">Congenital adrenal hyperplasia</h3></div>
+<div style="display:flex;gap:6px;flex-wrap:wrap"><span class="chip" style="font-size:12px;padding:4px 10px">Autosomal recessive</span><span class="chip" style="font-size:12px;padding:4px 10px">Gene CYP21A2</span><span class="chip" style="font-size:12px;padding:4px 10px">Metabolic</span></div>
+<p class="muted" style="margin:0;font-size:14px;line-height:1.55;flex:1">Affects hormones made by the adrenal glands. Treatable with medicine.</p>
+
+<div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn btn-g" href="ConditionDetail.html" style="min-height:40px;font-size:13px;padding:0 16px">Read more</a><a class="btn btn-g" href="Simulator.html" style="min-height:40px;font-size:13px;padding:0 16px">How it&#39;s inherited</a></div>
+</article>
+
+<article class="card" style="padding:22px;display:flex;flex-direction:column;gap:10px;border:1px solid #F1E3D8">
+<div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><h3 style="margin:0;font-size:17px;font-weight:800">Familial Mediterranean fever</h3></div>
+<div style="display:flex;gap:6px;flex-wrap:wrap"><span class="chip" style="font-size:12px;padding:4px 10px">Autosomal recessive</span><span class="chip" style="font-size:12px;padding:4px 10px">Gene MEFV</span><span class="chip" style="font-size:12px;padding:4px 10px">Immune system</span></div>
+<p class="muted" style="margin:0;font-size:14px;line-height:1.55;flex:1">Causes repeated episodes of fever and inflammation. Treatable with medicine.</p>
+
+<div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn btn-g" href="ConditionDetail.html" style="min-height:40px;font-size:13px;padding:0 16px">Read more</a><a class="btn btn-g" href="Simulator.html" style="min-height:40px;font-size:13px;padding:0 16px">How it&#39;s inherited</a></div>
+</article>
+
+<article class="card" style="padding:22px;display:flex;flex-direction:column;gap:10px;border:1px solid #F1E3D8">
+<div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><h3 style="margin:0;font-size:17px;font-weight:800">Familial hypercholesterolaemia</h3></div>
+<div style="display:flex;gap:6px;flex-wrap:wrap"><span class="chip" style="font-size:12px;padding:4px 10px">Autosomal dominant</span><span class="chip" style="font-size:12px;padding:4px 10px">Gene LDLR and others</span><span class="chip" style="font-size:12px;padding:4px 10px">Heart</span></div>
+<p class="muted" style="margin:0;font-size:14px;line-height:1.55;flex:1">Causes very high cholesterol from a young age. One changed copy is enough to have it.</p>
+<p style="margin:0;font-size:13px;line-height:1.5;color:#9A3412;font-weight:600">If this runs in your family, talk to a counsellor.</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn btn-g" href="ConditionDetail.html" style="min-height:40px;font-size:13px;padding:0 16px">Read more</a><a class="btn btn-g" href="Simulator.html" style="min-height:40px;font-size:13px;padding:0 16px">How it&#39;s inherited</a></div>
+</article>
+
+<article class="card" style="padding:22px;display:flex;flex-direction:column;gap:10px;border:1px solid #F1E3D8">
+<div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><h3 style="margin:0;font-size:17px;font-weight:800">Huntington disease</h3></div>
+<div style="display:flex;gap:6px;flex-wrap:wrap"><span class="chip" style="font-size:12px;padding:4px 10px">Autosomal dominant</span><span class="chip" style="font-size:12px;padding:4px 10px">Gene HTT</span><span class="chip" style="font-size:12px;padding:4px 10px">Brain</span></div>
+<p class="muted" style="margin:0;font-size:14px;line-height:1.55;flex:1">Affects the brain, usually starting in adulthood. One changed copy is enough to have it.</p>
+<p style="margin:0;font-size:13px;line-height:1.5;color:#9A3412;font-weight:600">If this runs in your family, talk to a counsellor.</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn btn-g" href="ConditionDetail.html" style="min-height:40px;font-size:13px;padding:0 16px">Read more</a><a class="btn btn-g" href="Simulator.html" style="min-height:40px;font-size:13px;padding:0 16px">How it&#39;s inherited</a></div>
+</article>
+
+<article class="card" style="padding:22px;display:flex;flex-direction:column;gap:10px;border:1px solid #F1E3D8">
+<div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><h3 style="margin:0;font-size:17px;font-weight:800">Fragile X syndrome</h3></div>
+<div style="display:flex;gap:6px;flex-wrap:wrap"><span class="chip" style="font-size:12px;padding:4px 10px">X-linked</span><span class="chip" style="font-size:12px;padding:4px 10px">Gene FMR1</span><span class="chip" style="font-size:12px;padding:4px 10px">Development</span></div>
+<p class="muted" style="margin:0;font-size:14px;line-height:1.55;flex:1">A common inherited cause of learning difficulties. Inheritance can change between generations.</p>
+<p style="margin:0;font-size:13px;line-height:1.5;color:#9A3412;font-weight:600">If this runs in your family, talk to a counsellor.</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn btn-g" href="ConditionDetail.html" style="min-height:40px;font-size:13px;padding:0 16px">Read more</a><a class="btn btn-g" href="Simulator.html" style="min-height:40px;font-size:13px;padding:0 16px">How it&#39;s inherited</a></div>
+</article>
+
+<article class="card" style="padding:22px;display:flex;flex-direction:column;gap:10px;border:1px solid #F1E3D8">
+<div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><h3 style="margin:0;font-size:17px;font-weight:800">Bardet-Biedl syndrome</h3></div>
+<div style="display:flex;gap:6px;flex-wrap:wrap"><span class="chip" style="font-size:12px;padding:4px 10px">Autosomal recessive</span><span class="chip" style="font-size:12px;padding:4px 10px">Gene Several genes</span><span class="chip" style="font-size:12px;padding:4px 10px">Several systems</span></div>
+<p class="muted" style="margin:0;font-size:14px;line-height:1.55;flex:1">Affects vision, kidneys, weight and other body systems. Carriers are healthy.</p>
+
+<div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn btn-g" href="ConditionDetail.html" style="min-height:40px;font-size:13px;padding:0 16px">Read more</a><a class="btn btn-g" href="Simulator.html" style="min-height:40px;font-size:13px;padding:0 16px">How it&#39;s inherited</a></div>
+</article>
+
+</div>
+<p class="muted" style="margin:0;font-size:14px">Can&#39;t find a condition from your report? <a href="Home.html#ask">Ask GeneBridge</a> or <a href="Counsellor.html">talk to a counsellor</a>.</p>
+</main>
+</div>
+</body>
+</html>

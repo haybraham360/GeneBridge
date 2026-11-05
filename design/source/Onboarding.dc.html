@@ -70,6 +70,16 @@ svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke
 <button type="button" class="btn btn-g" style="width:100%">Scan the QR code on my report</button>
 </sc-if>
 
+<sc-if value="{{isPick}}" hint-placeholder-val="{{false}}">
+<div style="display:flex;align-items:center;gap:10px;min-height:52px;padding:0 16px;border-radius:14px;border:1px solid #E7D7CA"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="color:#5C5550"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><label for="cs" style="position:absolute;left:-9999px">Search conditions</label><input id="cs" type="search" placeholder="Search any condition or gene" style="flex:1;min-width:0;border:0;outline:none;font-family:inherit;font-size:16px;background:transparent"></div>
+<div style="display:flex;flex-wrap:wrap;gap:8px">
+<sc-for list="{{conds}}" as="c" hint-placeholder-count="9">
+<button type="button" onClick="{{c.pick}}" aria-pressed="{{c.sel}}" style="min-height:44px;padding:0 16px;border-radius:999px;font-family:inherit;font-weight:700;font-size:14px;cursor:pointer;color:#141414;background:{{c.bg}};border:2px solid {{c.bd}}">{{c.label}}</button>
+</sc-for>
+</div>
+<div style="display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:16px;background:#FFF7F0;font-size:14px;line-height:1.5"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="color:#C2410C"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg><span>Choosing a condition doesn&#39;t mean you have it. Only a genetic test can tell you. You can add a result later.</span></div>
+</sc-if>
+
 <sc-if value="{{isInvite}}" hint-placeholder-val="{{false}}">
 <div style="background:#FFF7F0;border-radius:16px;padding:16px;display:flex;gap:12px;align-items:flex-start;font-size:15px;line-height:1.5"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="color:#C2410C;width:22px;height:22px"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span><strong>Inviting your partner does not share your result.</strong> A couple view opens only when you both agree.</span></div>
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px">
@@ -83,7 +93,7 @@ svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke
 <div style="display:flex;flex-direction:column;gap:10px;background:#FFF7F0;border-radius:16px;padding:18px;font-size:15px">
 <div style="display:flex;gap:10px;align-items:center"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="color:#15803D"><path d="M5 12l5 5 9-10"/></svg>Language: {{lang}}</div>
 <div style="display:flex;gap:10px;align-items:center"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="color:#15803D"><path d="M5 12l5 5 9-10"/></svg>Learning style: {{learn}}</div>
-<div style="display:flex;gap:10px;align-items:center"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="color:#15803D"><path d="M5 12l5 5 9-10"/></svg>Result connected</div>
+<div style="display:flex;gap:10px;align-items:center"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="color:#15803D"><path d="M5 12l5 5 9-10"/></svg>{{doneLine}}</div>
 </div>
 </sc-if>
 
@@ -91,7 +101,8 @@ svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke
 <sc-if value="{{notFirst}}" hint-placeholder-val="{{false}}"><button type="button" class="btn btn-g" onClick="{{back}}">Back</button></sc-if>
 <span style="flex:1"></span>
 <sc-if value="{{notLast}}" hint-placeholder-val="{{true}}"><button type="button" class="btn btn-o" onClick="{{next}}" style="min-width:160px">{{cta}}</button></sc-if>
-<sc-if value="{{isDone}}" hint-placeholder-val="{{false}}"><a class="btn btn-o" href="RiskAnalysis.dc.html" style="min-width:200px">See what my result means</a></sc-if>
+<sc-if value="{{doneResult}}" hint-placeholder-val="{{false}}"><a class="btn btn-o" href="RiskAnalysis.dc.html" style="min-width:200px">See what my results mean</a></sc-if>
+<sc-if value="{{doneExplore}}" hint-placeholder-val="{{false}}"><a class="btn btn-o" href="HomeExplore.dc.html" style="min-width:200px">Start learning</a></sc-if>
 </div>
 </div>
 <p class="muted" style="margin:0;text-align:center;font-size:13px">You can change any of these later in settings.</p>
@@ -102,7 +113,7 @@ svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { step: 0, lang: "English", learn: "Read and listen", reason: "My premarital screening result" };
+    this.state = { step: 0, lang: "English", learn: "Read and listen", reason: "My premarital screening result", picks: [] };
   }
   renderVals() {
     const s = this.state, step = s.step;
@@ -112,7 +123,7 @@ class Component extends DCLogic {
       ["How do you like to learn?", "We'll set up every screen to match. Listening mode reads each card aloud."],
       ["What brings you here?", "This helps us choose where to start."],
       ["Your privacy, in three points", "Please read these, then agree to continue."],
-      ["Connect your screening result", "Enter the reference number from your screening centre, or scan the QR code on your report."],
+      ["Connect your screening result", "Enter the reference number from your screening centre, or scan the QR code on your report."], // replaced below when there is no result
       ["Invite your partner (optional)", "They'll create their own private account."],
       ["You're all set", "Your next step is to see what your result means. Take your time."]
     ];
@@ -124,12 +135,19 @@ class Component extends DCLogic {
     let opts = [];
     if (step === 1) opts = mk("lang", [["العربية", "Arabic"], ["English", "English"], ["اردو", "Urdu"], ["हिन्दी", "Hindi"], ["Tagalog", "Filipino"]]);
     if (step === 2) opts = mk("learn", [["Read", "Text on screen"], ["Listen", "Audio reads each card aloud"], ["Read and listen", "Both together"]]);
-    if (step === 3) opts = mk("reason", [["My premarital screening result", "I have a result to understand"], ["A condition runs in my family", "I want to understand my family's risk"], ["I'm just learning", "No result yet"]]);
+    if (step === 3) opts = mk("reason", [["My premarital screening result", "I have a result to understand"], ["A condition runs in my family", "I want to understand my family's risk"], ["I think I may have a condition", "I'd like to understand it better"], ["I'm just learning", "No result yet"]]);
+    const hasResult = s.reason === "My premarital screening result";
+    if (step === 5 && !hasResult) T[5] = ["Which condition would you like to understand?", "Choose one or more. Everything in GeneBridge will be shaped around them. You can change this any time."];
+    const C = ["Beta-thalassemia", "Sickle cell disease", "Spinal muscular atrophy", "Cystic fibrosis", "Hereditary hearing loss", "G6PD deficiency", "Duchenne muscular dystrophy", "Familial hypercholesterolaemia", "I'm not sure yet"];
+    const conds = C.map((c) => { const on = s.picks.indexOf(c) >= 0; return { label: c, sel: on ? "true" : "false", bg: on ? "#FFEDE2" : "#FFFFFF", bd: on ? "#FF5A1F" : "#EADBD0",
+      pick: () => this.setState({ picks: on ? s.picks.filter((x) => x !== c) : s.picks.concat([c]) }) }; });
     const go = (d) => this.setState({ step: Math.max(0, Math.min(7, step + d)) });
     return {
       title: T[step][0], body: T[step][1], stepNo: step + 1, pct: Math.round((step + 1) / 8 * 100),
       opts, hasOpts: opts.length > 0,
-      isWelcome: step === 0, isPrivacy: step === 4, isConnect: step === 5, isInvite: step === 6, isDone: step === 7,
+      isWelcome: step === 0, isPrivacy: step === 4, isConnect: step === 5 && hasResult, isPick: step === 5 && !hasResult, conds, isInvite: step === 6, isDone: step === 7,
+      doneResult: step === 7 && hasResult, doneExplore: step === 7 && !hasResult,
+      doneLine: hasResult ? "Result connected" : "Exploring: " + (s.picks.length ? s.picks.join(", ") : "not chosen yet"),
       notFirst: step > 0, notLast: step < 7, canSkip: step !== 4 && step < 7,
       cta: step === 0 ? "Let's start" : step === 4 ? "I agree" : step === 6 ? "Continue" : "Next",
       lang: s.lang, learn: s.learn,

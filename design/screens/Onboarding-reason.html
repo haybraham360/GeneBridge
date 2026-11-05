@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GeneBridge onboarding</title>
+<!-- Static reference export of the GeneBridge design canvas (State: {"step": 3}). Interactive logic: design/source/Onboarding.dc.html -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FFF7F0;color:#141414;font-family:'Plus Jakarta Sans',system-ui,sans-serif}
+a{color:#C2410C}a:hover{color:#9A3412}
+.card{background:#FFFFFF;border:1px solid #F1E3D8;border-radius:20px;box-shadow:0 8px 24px rgba(60,30,10,0.06)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 24px;border-radius:999px;font-weight:700;font-size:15px;text-decoration:none;border:0;cursor:pointer;font-family:inherit;box-sizing:border-box}
+.btn-o{background:#FF5A1F;color:#141414}.btn-o:hover{background:#FF7440;color:#141414}
+.btn-d{background:#141414;color:#FFFFFF}.btn-d:hover{background:#2E2A27;color:#FFFFFF}
+.btn-g{background:#FFFFFF;color:#141414;border:1px solid #E7D7CA}.btn-g:hover{background:#FFF1E7;color:#141414}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;background:#FFFFFF;border:1px solid #F1E3D8;font-size:13px;font-weight:600;color:#141414}
+.muted{color:#5C5550}
+.side a{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:12px;color:#3A3532;text-decoration:none;font-weight:600;font-size:14px}
+.side a:hover{background:#FFEDE2;color:#141414}
+.side a.on{background:#141414;color:#FFFFFF}
+svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+@media (max-width:900px){.decor{display:none}}
+</style>
+</head>
+<body>
+<div style="min-height:100vh;display:flex;flex-direction:column;box-sizing:border-box;padding:24px clamp(16px,4vw,48px) 48px;gap:24px">
+<header style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap"><a href="Main.html" aria-label="GeneBridge home" style="display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:800;font-size:22px;letter-spacing:-0.02em"><img src="../../public/genebridge-mark.png" alt="" style="height:32px;width:auto;display:block"><span><span style="color:#141414">Gene</span><span style="color:#FF5A1F">Bridge</span></span></a>
+<div style="display:flex;align-items:center;gap:16px"><span class="muted" style="font-size:14px;font-weight:600">Step 4 of 8</span>
+<button type="button" style="background:none;border:0;font-family:inherit;font-weight:700;font-size:14px;color:#C2410C;cursor:pointer;min-height:44px">Skip</button></div>
+</header>
+<div style="max-width:640px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:20px">
+<div style="height:8px;border-radius:999px;background:#F1E3D8;overflow:hidden"><div style="height:100%;border-radius:999px;background:#FF5A1F;width:50%"></div></div>
+<div class="card" style="padding:clamp(24px,4vw,40px);display:flex;flex-direction:column;gap:20px">
+<div style="display:flex;justify-content:space-between;gap:16px;align-items:flex-start">
+<div style="display:flex;flex-direction:column;gap:8px"><h1 style="margin:0;font-size:30px;font-weight:800;letter-spacing:-0.02em">What brings you here?</h1><p class="muted" style="margin:0;font-size:16px;line-height:1.55">This helps us choose where to start.</p></div>
+<button type="button" aria-label="Listen to this step" style="flex:none;width:48px;height:48px;border-radius:50%;border:1px solid #E7D7CA;background:#FFFFFF;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#141414"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M17 9a4 4 0 0 1 0 6"/></svg></button>
+</div>
+
+
+
+
+<div style="display:flex;flex-direction:column;gap:10px">
+
+<button type="button" style="display:flex;justify-content:space-between;align-items:center;gap:12px;text-align:left;min-height:60px;padding:14px 18px;border-radius:16px;font-family:inherit;cursor:pointer;color:#141414;background:#FFEDE2;border:2px solid #FF5A1F"><span style="display:flex;flex-direction:column;gap:2px"><span style="font-weight:700;font-size:16px">My premarital screening result</span><span class="muted" style="font-size:13px">I have a result to understand</span></span><span style="width:22px;height:22px;border-radius:50%;flex:none;border:2px solid #FF5A1F;background:#FF5A1F"></span></button>
+
+<button type="button" style="display:flex;justify-content:space-between;align-items:center;gap:12px;text-align:left;min-height:60px;padding:14px 18px;border-radius:16px;font-family:inherit;cursor:pointer;color:#141414;background:#FFFFFF;border:2px solid #EADBD0"><span style="display:flex;flex-direction:column;gap:2px"><span style="font-weight:700;font-size:16px">A condition runs in my family</span><span class="muted" style="font-size:13px">I want to understand my family's risk</span></span><span style="width:22px;height:22px;border-radius:50%;flex:none;border:2px solid #EADBD0;background:#FFFFFF"></span></button>
+
+<button type="button" style="display:flex;justify-content:space-between;align-items:center;gap:12px;text-align:left;min-height:60px;padding:14px 18px;border-radius:16px;font-family:inherit;cursor:pointer;color:#141414;background:#FFFFFF;border:2px solid #EADBD0"><span style="display:flex;flex-direction:column;gap:2px"><span style="font-weight:700;font-size:16px">I think I may have a condition</span><span class="muted" style="font-size:13px">I'd like to understand it better</span></span><span style="width:22px;height:22px;border-radius:50%;flex:none;border:2px solid #EADBD0;background:#FFFFFF"></span></button>
+
+<button type="button" style="display:flex;justify-content:space-between;align-items:center;gap:12px;text-align:left;min-height:60px;padding:14px 18px;border-radius:16px;font-family:inherit;cursor:pointer;color:#141414;background:#FFFFFF;border:2px solid #EADBD0"><span style="display:flex;flex-direction:column;gap:2px"><span style="font-weight:700;font-size:16px">I'm just learning</span><span class="muted" style="font-size:13px">No result yet</span></span><span style="width:22px;height:22px;border-radius:50%;flex:none;border:2px solid #EADBD0;background:#FFFFFF"></span></button>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:8px">
+<button type="button" class="btn btn-g">Back</button>
+<span style="flex:1"></span>
+<button type="button" class="btn btn-o" style="min-width:160px">Next</button>
+
+
+</div>
+</div>
+<p class="muted" style="margin:0;text-align:center;font-size:13px">You can change any of these later in settings.</p>
+</div>
+</div>
+</body>
+</html>
