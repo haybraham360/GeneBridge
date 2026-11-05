@@ -1,4 +1,5 @@
 import { ArrowRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 type Card = {
   pill: string;
@@ -9,34 +10,64 @@ type Card = {
   href?: string;
 };
 
-const cards: Card[] = [
-  {
-    pill: "Your result",
-    pillClass: "bg-[#FFEDE2] text-[#9A3412]",
-    title: "Carrier of sickle cell trait (HbAS)",
-    body: "You are healthy. See what this means for you.",
-    link: "Open explainer",
-    href: "/dashboard/results",
-  },
-  {
-    pill: "Couple view unlocked",
-    pillClass: "bg-[#E7F6EC] text-[#166534]",
-    title: "Khalid joined on 30 Oct",
-    body: "You both agreed to share result summaries.",
-    link: "See your shared chances",
-    href: "/dashboard/couple",
-  },
-  {
-    pill: "Next appointment",
-    pillClass: "bg-[#E5ECF6] text-[#1E3A8A]",
-    title: "Dr. Amaka Okoro",
-    body: "Thu 12 Nov, 10:00 · Video call · Arabic or English",
-    link: "Manage booking",
-    href: "/dashboard/counsellor",
-  },
-];
+// const cards: Card[] = [
+//   {
+//     pill: "Your result",
+//     pillClass: "bg-[#FFEDE2] text-[#9A3412]",
+//     title: "Carrier of sickle cell trait (HbAS)",
+//     body: "You are healthy. See what this means for you.",
+//     link: "Open explainer",
+//     href: "/dashboard/results",
+//   },
+//   {
+//     pill: "Couple view unlocked",
+//     pillClass: "bg-[#E7F6EC] text-[#166534]",
+//     title: "Khalid joined on 30 Oct",
+//     body: "You both agreed to share result summaries.",
+//     link: "See your shared chances",
+//     href: "/dashboard/couple",
+//   },
+//   {
+//     pill: "Next appointment",
+//     pillClass: "bg-[#E5ECF6] text-[#1E3A8A]",
+//     title: "Dr. Amaka Okoro",
+//     body: "Thu 12 Nov, 10:00 · Video call · Arabic or English",
+//     link: "Manage booking",
+//     href: "/dashboard/counsellor",
+//   },
+// ];
 
 export default function SummaryCards() {
+
+  const t = useTranslations("dashboard.summaryCards");
+
+  const cards = [
+    {
+      pill: t("result.pill"),
+      pillClass: "bg-[#FFEDE2] text-[#9A3412]",
+      title: t("result.title"),
+      body: t("result.body"),
+      link: t("result.link"),
+      href: "/dashboard/results",
+    },
+    {
+      pill: t("couple.pill"),
+      pillClass: "bg-[#E7F6EC] text-[#166534]",
+      title: t("couple.title", { partner: "Khalid" }),
+      body: t("couple.body"),
+      link: t("couple.link"),
+      href: "/dashboard/couple",
+    },
+    {
+      pill: t("appointment.pill"),
+      pillClass: "bg-[#E5ECF6] text-[#1E3A8A]",
+      title: t("appointment.title", { doctor: "Dr. Amaka Okoro" }),
+      body: t("appointment.body"),
+      link: t("appointment.link"),
+      href: "/dashboard/counsellor",
+    },
+  ];
+
   return (
     <section className="grid grid-cols-3 gap-5">
       {cards.map((c) => (

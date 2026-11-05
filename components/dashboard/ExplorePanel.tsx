@@ -1,4 +1,5 @@
 import { Layers, Compass } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 function FamilyIcon({ className }: { className?: string }) {
   return (
@@ -19,17 +20,27 @@ function FamilyIcon({ className }: { className?: string }) {
   );
 }
 
-const items = [
-  { label: "Inheritance simulator", icon: Layers, href: "/dashboard/simulator" },
-  { label: "Build your family map", icon: FamilyIcon, href: "/dashboard/family" },
-  { label: "Explore your options", icon: Compass, href: "/dashboard/options" },
-];
+// const items = [
+//   { label: "Inheritance simulator", icon: Layers, href: "/dashboard/simulator" },
+//   { label: "Build your family map", icon: FamilyIcon, href: "/dashboard/family" },
+//   { label: "Explore your options", icon: Compass, href: "/dashboard/options" },
+// ];
 
 export default function ExplorePanel() {
+
+  const t = useTranslations("dashboard.explorePanel");
+
+  const items = [
+    { label: t("simulator"), icon: Layers, href: "/dashboard/simulator" },
+    { label: t("family"), icon: FamilyIcon, href: "/dashboard/family" },
+    { label: t("options"), icon: Compass, href: "/dashboard/options" },
+  ];
+
   return (
     <section className="rounded-2xl bg-white px-4 pt-4.5 shadow-card">
       <h2 className="text-[20px] font-extrabold leading-none">
-        Explore at your own pace
+        {/* Explore at your own pace */}
+        {t("title")}
       </h2>
       <ul className="mt-2.75 flex flex-col gap-2.25">
         {items.map(({ label, icon: Icon, href }) => (

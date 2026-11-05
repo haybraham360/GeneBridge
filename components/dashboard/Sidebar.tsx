@@ -14,22 +14,36 @@ import { usePathname } from "next/navigation";
 import type { ComponentType } from "react";
 import { useState, useEffect } from "react";
 import { Logo } from "../ui/Logo";
+import { LanguageSwitch } from "../marketing/LanguageSwitch";
+import { useTranslations } from "next-intl";
+
+type NavKey =
+  | "home"
+  | "results"
+  | "couple"
+  | "simulator"
+  | "family"
+  | "options"
+  | "counsellor"
+  | "privacy";
+
 
 type NavItem = {
   label: string;
   icon: ComponentType<{ className?: string; strokeWidth?: number }>;
   link?: string;
+  short: NavKey;
 };
 
 const nav: NavItem[] = [
-  { label: "Home", icon: Home, link: "/dashboard" },
-  { label: "My results", icon: BarChart3, link: "/dashboard/results" },
-  { label: "Couple view", icon: Users, link: "/dashboard/couple" },
-  { label: "Inheritance simulator", icon: Layers, link: "/dashboard/simulator" },
-  { label: "Family map", icon: FamilyIcon, link: "/dashboard/family" },
-  { label: "Options", icon: Compass, link: "/dashboard/options" },
-  { label: "Counsellor & referral", icon: Calendar, link: "/dashboard/counsellor" },
-  { label: "Privacy & consent", icon: ShieldCheck, link: "/dashboard/privacy" },
+  { label: "Home", icon: Home, link: "/dashboard", short: "home" },
+  { label: "My results", icon: BarChart3, link: "/dashboard/results", short: "results" },
+  { label: "Couple view", icon: Users, link: "/dashboard/couple", short: "couple" },
+  { label: "Inheritance simulator", icon: Layers, link: "/dashboard/simulator", short: "simulator"  },
+  { label: "Family map", icon: FamilyIcon, link: "/dashboard/family", short: "family"  },
+  { label: "Options", icon: Compass, link: "/dashboard/options", short: "options"  },
+  { label: "Counsellor & referral", icon: Calendar, link: "/dashboard/counsellor", short: "counsellor"  },
+  { label: "Privacy & consent", icon: ShieldCheck, link: "/dashboard/privacy", short: "privacy"  },
 ];
 
 function FamilyIcon({ className }: { className?: string; strokeWidth?: number }) {
@@ -56,6 +70,7 @@ export default function Sidebar() {
   const [activeLink, setActiveLink] = useState("Home");
   const pathname = usePathname();
   const spreadChars = pathname.slice(3); 
+  const t = useTranslations('dashboard.sidebar'); 
 
   useEffect(() => {
     const activeItem = nav.find((item) => item.link === pathname);
@@ -71,7 +86,7 @@ export default function Sidebar() {
       </div>
 
       <nav className="flex flex-col gap-1.5 px-3.25">
-        {nav.map(({ label, icon: Icon, link }) => (
+        {nav.map(({ label, icon: Icon, link, short }) => (
           <a
             key={label}
             href={link || "#"}
@@ -83,7 +98,8 @@ export default function Sidebar() {
             }`}
           >
             <Icon className="h-5 w-5" strokeWidth={1.6} />
-            {label}
+            {/* {label} */}
+            {t(`nav.${short}`)}
           </a>
         ))}
       </nav>
@@ -95,14 +111,17 @@ export default function Sidebar() {
               className="h-3 w-3 text-[#9A3412]"
               strokeWidth={1.8}
             />
-            Ask GeneBridge
+            {/* Ask GeneBridge */}
+            {t("ask.title")}
           </div>
           <p className="mt-1.5 text-[10px] leading-3.5 text-neutral-600">
-            General questions about genetics. It won&apos;t interpret your
-            personal result.
+            {/* General questions about genetics. It won&apos;t interpret your
+            personal result. */}
+            {t("ask.description")}
           </p>
           <button className="mt-2.75 text-[10px] font-medium text-ink cursor-pointer hover:bg-brand/15 p-3 rounded-2xl">
-            Ask a question
+            {/* Ask a question */}
+            {t("ask.cta")}
           </button>
         </div>
 
@@ -110,10 +129,11 @@ export default function Sidebar() {
           <div className="flex h-6 w-6 items-center justify-center rounded-full bg-brand/10 text-[10px] font-medium text-[#9A3412]">
             M
           </div>
-          <div className="leading-tight">
+          <div className="leading-tight mt-3">
             <div className="text-[10px] font-medium">Mariam</div>
-            <div className="mt-0.75 text-[8.5px] text-neutral-500">
-              English · <span dir="rtl">العربية</span>
+            <div className="-mt-4 text-[8.5px] text-neutral-500">
+              {/* English · <span dir="rtl">العربية</span> */}
+              <LanguageSwitch />
             </div>
           </div>
         </div>

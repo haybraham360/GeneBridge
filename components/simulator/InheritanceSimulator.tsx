@@ -347,7 +347,7 @@ export default function InheritanceSimulator({
                 type="button"
                 aria-pressed={active}
                 onClick={() => selectPattern(p.id)}
-                className={`${pillBase} ${
+                className={`${pillBase} cursor-pointer ${
                   active
                     ? "border-[#16110d] bg-[#16110d] text-white"
                     : "border-[#f0e2d8] bg-white text-[#16110d] hover:border-[#e0c3ad]"
@@ -361,7 +361,7 @@ export default function InheritanceSimulator({
             type="button"
             aria-pressed={patternId === "xlinked"}
             onClick={() => selectPattern("xlinked")}
-            className={`${pillBase} ${
+            className={`${pillBase} cursor-pointer ${
               patternId === "xlinked"
                 ? "border-[#16110d] bg-[#16110d] text-white"
                 : "border-dashed border-[#e6d6c9] bg-transparent text-[#6b6159] hover:border-[#d2b8a4]"

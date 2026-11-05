@@ -1,0 +1,202 @@
+{
+  "sidebar": {
+    "nav": {
+      "home": "Home",
+      "results": "My results",
+      "couple": "Couple view",
+      "simulator": "Inheritance simulator",
+      "family": "Family map",
+      "options": "Options",
+      "counsellor": "Counsellor & referral",
+      "privacy": "Privacy & consent"
+    },
+    "ask": {
+      "title": "Ask GeneBridge",
+      "description": "General questions about genetics. It won't interpret your personal result.",
+      "cta": "Ask a question"
+    }
+  },
+
+  "shared": {
+    "listen": "Listen"
+  },
+  "home": {
+    "greeting": "Good morning, {name}",
+    "subtitle": "Here is where you are. Take it one step at a time."
+  },
+  "careJourney": {
+    "title": "Your care journey",
+    "progress": "Step {current} of {total}",
+    "steps": {
+      "screening": { "title": "Screening done", "meta": "28 Oct" },
+      "understood": { "title": "Result understood", "meta": "29 Oct" },
+      "booked": { "title": "Counselling booked", "meta": "Thu 12 Nov, 10:00" },
+      "session": { "title": "Counselling session", "meta": "Upcoming" },
+      "test": { "title": "Confirmatory test", "meta": "If advised" },
+      "specialist": { "title": "Specialist", "meta": "Only if needed" }
+    }
+  },
+  "summaryCards": {
+    "result": {
+      "pill": "Your result",
+      "title": "Carrier of sickle cell trait (HbAS)",
+      "body": "You are healthy. See what this means for you.",
+      "link": "Open explainer"
+    },
+    "couple": {
+      "pill": "Couple view unlocked",
+      "title": "{partner} joined on 30 Oct",
+      "body": "You both agreed to share result summaries.",
+      "link": "See your shared chances"
+    },
+    "appointment": {
+      "pill": "Next appointment",
+      "title": "{doctor}",
+      "body": "Thu 12 Nov, 10:00 · Video call · Arabic or English",
+      "link": "Manage booking"
+    }
+  },
+  "askGeneBridge": {
+    "title": "Ask GeneBridge",
+    "badge": "General education only",
+    "q1": "What is sickle cell trait?",
+    "a1": "Sickle cell trait means a person carries one changed copy of the gene for haemoglobin and one typical copy. People with the trait are usually healthy.",
+    "q2": "Does my result mean our baby will be sick?",
+    "a2": "I can't interpret your personal result. A genetic counsellor can explain what it means for you and {partner}.",
+    "book": "Book a counsellor",
+    "placeholder": "Ask a general question",
+    "send": "Send"
+  },
+  "explorePanel": {
+    "title": "Explore at your own pace",
+    "simulator": "Inheritance simulator",
+    "family": "Build your family map",
+    "options": "Explore your options"
+  },
+
+  "result": {
+    "header": {
+      "title": "Your result, explained",
+      "subtitle": "Sickle cell screening · Reported 28 Oct 2026 · {centre}",
+      "simpler": "Read it simpler"
+    },
+    "hero": {
+      "badge": "Carrier",
+      "heading": "You carry one copy of the sickle cell gene change (HbAS).",
+      "standard": {
+        "body": "This is called <b>sickle cell trait</b>. You are healthy and you don't need treatment.",
+        "small": "It may matter when planning children, and only if your partner also carries a change in the same gene."
+      },
+      "simple": {
+        "body": "This is called <b>sickle cell trait</b>. You are healthy. You do not need treatment.",
+        "small": "It may matter if you plan to have children and your partner also has it."
+      },
+      "typical": "Typical copy",
+      "changed": "Changed copy",
+      "geneAria": "Two gene copies: one typical copy (A) and one changed copy (S)"
+    },
+    "risk": {
+      "title": "A risk is not a diagnosis",
+      "trait": {
+        "title": "Sickle cell trait (you)",
+        "body": "One changed copy. Healthy, no symptoms. Can pass the copy on."
+      },
+      "disease": {
+        "title": "Sickle cell disease",
+        "body": "Two changed copies. A lifelong condition that needs medical care."
+      }
+    },
+    "everyone": {
+      "title": "Everyone carries something",
+      "body": "Most people carry a few gene changes without ever knowing. Finding yours means you can plan with information instead of worry.",
+      "cta": "What could this mean for children?"
+    },
+    "quiz": {
+      "title": "Check your understanding",
+      "subtitle": "3 quick questions · not a test",
+      "yes": "Yes",
+      "no": "No",
+      "q1": {
+        "question": "Does a carrier result mean you are ill?",
+        "explain": "A carrier result does not mean you are ill. You are healthy."
+      },
+      "q2": {
+        "question": "Is the chance the same for every pregnancy?",
+        "explain": "Each pregnancy has the same chance, no matter what happened in earlier ones."
+      },
+      "q3": {
+        "question": "Who can explain what your result means for your family?",
+        "counsellor": "A genetic counsellor",
+        "ai": "The AI assistant",
+        "explain": "A genetic counsellor can explain what your result means for you and your family."
+      },
+      "correct": "Correct.",
+      "notQuite": "Not quite.",
+      "check": "Check my answers",
+      "needAll": "Choose an answer for each question first.",
+      "score": "{score} of {total} correct.",
+      "wellDone": "Well done.",
+      "askCounsellor": "A genetic counsellor can go through anything that feels unclear.",
+      "again": "Start again"
+    },
+    "actions": {
+      "talk": "Talk to a counsellor",
+      "explore": "Explore options",
+      "share": "Share with my partner"
+    }
+  },
+
+  "couple": {
+    "header": {
+      "title": "Couple view",
+      "manage": "Manage sharing"
+    },
+    "subtitle": {
+      "agreed": "{first} and {second} · Both of you agreed to share result summaries on {date}",
+      "paused": "{first} and {second} · Sharing is paused for at least one of you"
+    },
+    "chip": {
+      "statusAria": "Sharing status",
+      "agreed": "{name} agreed · summary only",
+      "paused": "{name} paused sharing"
+    },
+    "main": {
+      "title": "Your shared chances, for each pregnancy",
+      "subtitle": "You are both carriers of sickle cell trait (HbAS).",
+      "notice": "These chances are the same for <b>every</b> pregnancy. Having one affected child doesn’t make the next one less or more likely.",
+      "info": "This is information, not a recommendation. Every option is valid, and the decision is yours.",
+      "pausedTitle": "Couple view is paused",
+      "pausedBody": "Shared chances show once both of you are sharing result summaries. You can change this at any time."
+    },
+    "figures": {
+      "affected": "Sickle cell disease",
+      "carrier": "Carrier, healthy",
+      "unchanged": "No changed copy",
+      "aria": "Four possible outcomes: one child with sickle cell disease, two healthy carriers, one with no changed copy"
+    },
+    "outcomes": {
+      "scd": "Child has sickle cell disease",
+      "carrier": "Child is a healthy carrier",
+      "none": "Child has no changed copy"
+    },
+    "actions": {
+      "navAria": "Next steps",
+      "simulator": { "title": "See how it works", "description": "Simulate pregnancies in the inheritance simulator." },
+      "options": { "title": "Explore your options", "description": "Every path, shown equally." },
+      "session": { "title": "Talk it through together", "description": "Book a couple session with a counsellor." }
+    },
+    "toast": {
+      "simulator": "Opening the inheritance simulator…",
+      "options": "Opening your options…",
+      "session": "Opening couple session booking…"
+    },
+    "dialog": {
+      "title": "Manage sharing",
+      "description": "Each of you controls your own result summary. Only summaries are shared, never full results.",
+      "close": "Close",
+      "sharing": "Sharing result summary",
+      "pausedState": "Sharing paused",
+      "done": "Done"
+    }
+  }
+}

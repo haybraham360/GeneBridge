@@ -85,6 +85,9 @@
     @apply bg-bg font-sans text-ink antialiased;
   }
 
+  button {
+    cursor: pointer;
+  }
   /* Anchored sections land below the top edge, not flush against it. */
   [id] {
     scroll-margin-top: 24px;

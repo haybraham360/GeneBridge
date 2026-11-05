@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import type { ComponentType, ReactNode } from "react";
 import {
   Calendar,
@@ -12,6 +13,7 @@ import {
   Shield,
   X,
 } from "lucide-react";
+import { useTranslations } from "next-intl";  
 
 /* -------------------------------------------------------------------------- */
 /*  Types                                                                     */
@@ -25,12 +27,18 @@ interface Partner {
   sharing: boolean;
 }
 
+// interface Outcome {
+//   id: string;
+//   variant: FigureVariant;
+//   figureLabel: string;
+//   percent: number;
+//   percentLabel: string;
+//   percentClass: string;
+// }
 interface Outcome {
-  id: string;
+  id: "scd" | "carrier" | "none";
   variant: FigureVariant;
-  figureLabel: string;
   percent: number;
-  percentLabel: string;
   percentClass: string;
 }
 
@@ -41,6 +49,7 @@ interface ActionCardData {
   title: string;
   description: string;
   icon: ComponentType<{ className?: string; "aria-hidden"?: boolean }>;
+  href: string;
 }
 
 export interface CoupleViewProps {
@@ -64,35 +73,41 @@ const OUTCOMES: Outcome[] = [
   {
     id: "scd",
     variant: "affected",
-    figureLabel: "Sickle cell disease",
     percent: 25,
-    percentLabel: "Child has sickle cell disease",
     percentClass: "text-[#9f1239]",
+    // figureLabel: "Sickle cell disease",
+    // percentLabel: "Child has sickle cell disease",
   },
   {
     id: "carrier",
     variant: "carrier",
-    figureLabel: "Carrier, healthy",
     percent: 50,
-    percentLabel: "Child is a healthy carrier",
     percentClass: "text-[#b9420f]",
+    // figureLabel: "Carrier, healthy",
+    // percentLabel: "Child is a healthy carrier",
   },
   {
     id: "none",
     variant: "unchanged",
-    figureLabel: "No changed copy",
     percent: 25,
-    percentLabel: "Child has no changed copy",
     percentClass: "text-[#15803d]",
+    // figureLabel: "No changed copy",
+    // percentLabel: "Child has no changed copy",
   },
 ];
 
 /** Four figures: 1 affected, 2 carriers, 1 unchanged (Punnett square for AS x AS). */
-const FIGURES: { id: string; variant: FigureVariant; label: string }[] = [
-  { id: "f1", variant: "affected", label: "Sickle cell disease" },
-  { id: "f2", variant: "carrier", label: "Carrier, healthy" },
-  { id: "f3", variant: "carrier", label: "Carrier, healthy" },
-  { id: "f4", variant: "unchanged", label: "No changed copy" },
+// const FIGURES: { id: string; variant: FigureVariant; label: string }[] = [
+//   { id: "f1", variant: "affected", label: "Sickle cell disease" },
+//   { id: "f2", variant: "carrier", label: "Carrier, healthy" },
+//   { id: "f3", variant: "carrier", label: "Carrier, healthy" },
+//   { id: "f4", variant: "unchanged", label: "No changed copy" },
+// ];
+const FIGURES: { id: string; variant: FigureVariant }[] = [
+  { id: "f1", variant: "affected" },
+  { id: "f2", variant: "carrier" },
+  { id: "f3", variant: "carrier" },
+  { id: "f4", variant: "unchanged" },
 ];
 
 const ACTIONS: ActionCardData[] = [
@@ -101,18 +116,21 @@ const ACTIONS: ActionCardData[] = [
     title: "See how it works",
     description: "Simulate pregnancies in the inheritance simulator.",
     icon: Layers,
+    href: '/dashboard/simulator'
   },
   {
     key: "options",
     title: "Explore your options",
     description: "Every path, shown equally.",
     icon: Compass,
+    href: '/dashboard/options'
   },
   {
     key: "session",
     title: "Talk it through together",
     description: "Book a couple session with a counsellor.",
     icon: Calendar,
+    href: '/dashboard/counsellor'
   },
 ];
 
@@ -155,6 +173,8 @@ function Figure({ variant }: { variant: FigureVariant }) {
 /* -------------------------------------------------------------------------- */
 
 function ConsentChip({ partner }: { partner: Partner }) {
+  const t = useTranslations("dashboard.couple.chip");
+
   return (
     <li
       className={`inline-flex items-center gap-1.5 rounded-full border bg-white px-3 py-1.5 text-xs font-semibold ${
@@ -168,9 +188,12 @@ function ConsentChip({ partner }: { partner: Partner }) {
       ) : (
         <Minus className="size-3.5 text-[#8a7f76]" strokeWidth={2.5} aria-hidden />
       )}
-      {partner.sharing
+      {/* {partner.sharing
         ? `${partner.name} agreed · summary only`
-        : `${partner.name} paused sharing`}
+        : `${partner.name} paused sharing`} */}
+        {partner.sharing
+          ? t("agreed", { name: partner.name })
+          : t("paused", { name: partner.name })}
     </li>
   );
 }
@@ -178,6 +201,7 @@ function ConsentChip({ partner }: { partner: Partner }) {
 /* -------------------------------------------------------------------------- */
 /*  Action card                                                               */
 /* -------------------------------------------------------------------------- */
+
 
 function ActionCard({
   data,
@@ -187,16 +211,29 @@ function ActionCard({
   onSelect: (key: ActionKey) => void;
 }) {
   const Icon = data.icon;
+  const router = useRouter();
+  const href = data.href;
+  const t = useTranslations("dashboard.couple.actions");
+  const copy = {
+    simulator: { title: t("simulator.title"), description: t("simulator.description") },
+    options: { title: t("options.title"), description: t("options.description") },
+    session: { title: t("session.title"), description: t("session.description") },
+  }[data.key];
+
   return (
     <button
       type="button"
-      onClick={() => onSelect(data.key)}
+      onClick={() => {
+        onSelect(data.key)
+        if (href) setTimeout(() => router.push(href), 1500);
+      }}
       className="group block w-full rounded-2xl border border-[#f6e9df] bg-white p-4 text-left shadow-[0_1px_2px_rgba(120,60,20,0.04),0_4px_14px_rgba(120,60,20,0.04)] transition hover:border-[#f0c9b0] hover:shadow-[0_6px_20px_rgba(194,65,12,0.10)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c2410c]"
     >
       <Icon className="size-4.5 text-[#e8531c]" aria-hidden />
-      <h3 className="mt-3 text-sm font-bold text-[#16110d]">{data.title}</h3>
+      <h3 className="mt-3 text-sm font-bold text-[#16110d]">{copy.title}</h3>
       <p className="mt-1.5 text-xs leading-snug text-[#6b6159]">
-        {data.description}
+        {/* {data.description} */}
+        {copy.description}
       </p>
     </button>
   );
@@ -228,7 +265,7 @@ function Switch({
     >
       <span
         className={`absolute top-0.5 left-0.5 size-5 rounded-full bg-white shadow transition-transform ${
-          checked ? "translate-x-5" : "translate-x-0"
+          checked ? "translate-x-5 rtl:-translate-x-5" : "translate-x-0"
         }`}
       />
     </button>
@@ -247,6 +284,7 @@ function ManageSharingDialog({
   const titleId = useId();
   const descId = useId();
   const closeRef = useRef<HTMLButtonElement>(null);
+  const t = useTranslations("dashboard.couple.dialog");
 
   useEffect(() => {
     const previouslyFocused = document.activeElement as HTMLElement | null;
@@ -281,18 +319,21 @@ function ManageSharingDialog({
         <div className="flex items-start justify-between gap-4">
           <div>
             <h2 id={titleId} className="text-lg font-bold text-[#16110d]">
-              Manage sharing
+              {/* Manage sharing */}
+              {t("title")}
             </h2>
             <p id={descId} className="mt-1 text-sm text-[#6b6159]">
-              Each of you controls your own result summary. Only summaries are
-              shared, never full results.
+              {/* Each of you controls your own result summary. Only summaries are
+              shared, never full results. */}
+              {t("description")}
             </p>
           </div>
           <button
             ref={closeRef}
             type="button"
             onClick={onClose}
-            aria-label="Close"
+            // aria-label="Close"
+            aria-label={t("close")}
             className="rounded-full p-1.5 text-[#6b6159] transition hover:bg-[#fff4ec] focus-visible:outline-2 focus-visible:outline-[#c2410c]"
           >
             <X className="size-4" aria-hidden />
@@ -312,7 +353,8 @@ function ManageSharingDialog({
                     {p.name}
                   </p>
                   <p className="text-xs text-[#6b6159]">
-                    {p.sharing ? "Sharing result summary" : "Sharing paused"}
+                    {/* {p.sharing ? "Sharing result summary" : "Sharing paused"} */}
+                     {p.sharing ? t("sharing") : t("pausedState")}
                   </p>
                 </div>
                 <Switch
@@ -331,7 +373,8 @@ function ManageSharingDialog({
             onClick={onClose}
             className="rounded-full bg-[#16110d] px-5 py-2 text-sm font-semibold text-white transition hover:bg-[#2c2420] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c2410c]"
           >
-            Done
+            {/* Done */}
+            {t("done")}
           </button>
         </div>
       </div>
@@ -374,14 +417,31 @@ export default function CoupleView({
   const [partners, setPartners] = useState<Partner[]>(initialPartners);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  const t = useTranslations("dashboard.couple");
+
+  const figureLabels: Record<FigureVariant, string> = {
+    affected: t("figures.affected"),
+    carrier: t("figures.carrier"),
+    unchanged: t("figures.unchanged"),
+  };
+  const outcomeLabels = {
+    scd: t("outcomes.scd"),
+    carrier: t("outcomes.carrier"),
+    none: t("outcomes.none"),
+  };
+  const toastMessages: Record<ActionKey, string> = {
+    simulator: t("toast.simulator"),
+    options: t("toast.options"),
+    session: t("toast.session"),
+  };
 
   const bothSharing = partners.every((p) => p.sharing);
   const [first, second] = partners;
 
   useEffect(() => {
     if (!toast) return;
-    const t = window.setTimeout(() => setToast(null), 2400);
-    return () => window.clearTimeout(t);
+    const timer = window.setTimeout(() => setToast(null), 2400);
+    return () => window.clearTimeout(timer);
   }, [toast]);
 
   const handleToggle = (id: string, next: boolean) => {
@@ -394,7 +454,8 @@ export default function CoupleView({
 
   const handleAction = (key: ActionKey) => {
     if (onAction) onAction(key);
-    else setToast(ACTION_MESSAGES[key]);
+    // else setToast(ACTION_MESSAGES[key]);
+    else setToast(toastMessages[key]);
   };
 
   return (
@@ -404,12 +465,17 @@ export default function CoupleView({
         <header className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <h1 className="text-[28px] leading-tight font-extrabold tracking-tight">
-              Couple view
+              {/* Couple view */}
+              {t("header.title")}
             </h1>
             <p className="mt-1 text-[13px] text-[#6b6159]">
-              {bothSharing
+              {/* {bothSharing
                 ? `${first.name} and ${second.name} · Both of you agreed to share result summaries on ${agreedOn}`
-                : `${first.name} and ${second.name} · Sharing is paused for at least one of you`}
+                : `${first.name} and ${second.name} · Sharing is paused for at least one of you`} */}
+              {bothSharing
+                ? t("subtitle.agreed", { first: first.name, second: second.name, date: agreedOn })
+                : t("subtitle.paused", { first: first.name, second: second.name })}
+
             </p>
           </div>
           <button
@@ -418,12 +484,13 @@ export default function CoupleView({
             className="inline-flex items-center gap-2 rounded-full border border-[#f0e2d8] bg-white px-5 py-2.5 text-sm font-semibold shadow-[0_1px_2px_rgba(120,60,20,0.05)] transition hover:border-[#e8c9b4] hover:bg-[#fffaf6] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c2410c]"
           >
             <Shield className="size-4" aria-hidden />
-            Manage sharing
+            {/* Manage sharing */}
+            {t("header.manage")} 
           </button>
         </header>
 
         {/* Consent chips */}
-        <ul className="mt-5 flex flex-wrap gap-2" aria-label="Sharing status">
+        <ul className="mt-5 flex flex-wrap gap-2" aria-label={t("chip.statusAria")}>
           {partners.map((p) => (
             <ConsentChip key={p.id} partner={p} />
           ))}
@@ -442,16 +509,19 @@ export default function CoupleView({
                   id="shared-chances-title"
                   className="text-base font-bold tracking-tight"
                 >
-                  Your shared chances, for each pregnancy
+                  {/* Your shared chances, for each pregnancy */}
+                  {t("main.title")}
                 </h2>
                 <p className="mt-1.5 text-[13px] text-[#6b6159]">
-                  You are both carriers of sickle cell trait (HbAS).
+                  {/* You are both carriers of sickle cell trait (HbAS). */}
+                  {t("main.subtitle")}
                 </p>
 
                 {/* Figures panel */}
                 <div
                   role="img"
-                  aria-label="Four possible outcomes: one child with sickle cell disease, two healthy carriers, one with no changed copy"
+                  // aria-label="Four possible outcomes: one child with sickle cell disease, two healthy carriers, one with no changed copy"
+                  aria-label={t("figures.aria")}
                   className="mt-5 grid grid-cols-4 gap-2 rounded-2xl bg-[#fff3ea] px-3 pt-5 pb-4"
                 >
                   {FIGURES.map((f) => (
@@ -461,7 +531,8 @@ export default function CoupleView({
                     >
                       <Figure variant={f.variant} />
                       <span className="text-xs leading-tight font-bold">
-                        {f.label}
+                        {/* {f.label} */}
+                        {figureLabels[f.variant]}
                       </span>
                     </div>
                   ))}
@@ -477,7 +548,8 @@ export default function CoupleView({
                         {o.percent}%
                       </dd>
                       <dt className="order-2 mt-2 text-xs text-[#6b6159]">
-                        {o.percentLabel}
+                        {/* {o.percentLabel} */}
+                        {outcomeLabels[o.id]}
                       </dt>
                     </div>
                   ))}
@@ -490,15 +562,17 @@ export default function CoupleView({
                     aria-hidden
                   />
                   <p className="text-[13px] leading-relaxed">
-                    These chances are the same for <strong>every</strong>{" "}
+                    {/* These chances are the same for <strong>every</strong>{" "}
                     pregnancy. Having one affected child doesn&rsquo;t make the
-                    next one less or more likely.
+                    next one less or more likely. */}
+                    {t.rich("main.notice", { b: (c) => <strong>{c}</strong> })}
                   </p>
                 </div>
 
                 <p className="mt-5 text-xs text-[#6b6159]">
-                  This is information, not a recommendation. Every option is
-                  valid, and the decision is yours.
+                  {/* This is information, not a recommendation. Every option is
+                  valid, and the decision is yours. */}
+                  {t("main.info")}
                 </p>
               </>
             ) : (
@@ -510,25 +584,27 @@ export default function CoupleView({
                   id="shared-chances-title"
                   className="mt-4 text-base font-bold tracking-tight"
                 >
-                  Couple view is paused
+                  {/* Couple view is paused */}
+                  {t("main.pausedTitle")}
                 </h2>
                 <p className="mt-1.5 max-w-xs text-[13px] leading-relaxed text-[#6b6159]">
-                  Shared chances show once both of you are sharing result
-                  summaries. You can change this at any time.
+                  {/* Shared chances show once both of you are sharing result
+                  summaries. You can change this at any time. */}
+                  {t("main.pausedBody")}
                 </p>
                 <button
                   type="button"
                   onClick={() => setDialogOpen(true)}
                   className="mt-5 rounded-full bg-[#16110d] px-5 py-2 text-sm font-semibold text-white transition hover:bg-[#2c2420] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c2410c]"
                 >
-                  Manage sharing
+                  {t("header.manage")}
                 </button>
               </div>
             )}
           </section>
 
           {/* Side actions */}
-          <nav aria-label="Next steps" className="flex flex-col gap-3 self-start">
+          <nav aria-label={t("actions.navAria")} className="flex flex-col gap-3 self-start">
             {ACTIONS.map((a) => (
               <ActionCard key={a.key} data={a} onSelect={handleAction} />
             ))}

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Check, Volume1 } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 
 /* ---------- content ---------- */
 
@@ -24,39 +25,39 @@ const copy = {
   },
 };
 
-const tiles = [
-  {
-    title: "Sickle cell trait (you)",
-    body: "One changed copy. Healthy, no symptoms. Can pass the copy on.",
-  },
-  {
-    title: "Sickle cell disease",
-    body: "Two changed copies. A lifelong condition that needs medical care.",
-  },
-];
+// const tiles = [
+//   {
+//     title: "Sickle cell trait (you)",
+//     body: "One changed copy. Healthy, no symptoms. Can pass the copy on.",
+//   },
+//   {
+//     title: "Sickle cell disease",
+//     body: "Two changed copies. A lifelong condition that needs medical care.",
+//   },
+// ];
 
-const questions = [
-  {
-    q: "1. Does a carrier result mean you are ill?",
-    options: ["Yes", "No"],
-    answer: 1,
-    explain: "A carrier result does not mean you are ill. You are healthy.",
-  },
-  {
-    q: "2. Is the chance the same for every pregnancy?",
-    options: ["Yes", "No"],
-    answer: 0,
-    explain:
-      "Each pregnancy has the same chance, no matter what happened in earlier ones.",
-  },
-  {
-    q: "3. Who can explain what your result means for your family?",
-    options: ["A genetic counsellor", "The AI assistant"],
-    answer: 0,
-    explain:
-      "A genetic counsellor can explain what your result means for you and your family.",
-  },
-];
+// const questions = [
+//   {
+//     q: "1. Does a carrier result mean you are ill?",
+//     options: ["Yes", "No"],
+//     answer: 1,
+//     explain: "A carrier result does not mean you are ill. You are healthy.",
+//   },
+//   {
+//     q: "2. Is the chance the same for every pregnancy?",
+//     options: ["Yes", "No"],
+//     answer: 0,
+//     explain:
+//       "Each pregnancy has the same chance, no matter what happened in earlier ones.",
+//   },
+//   {
+//     q: "3. Who can explain what your result means for your family?",
+//     options: ["A genetic counsellor", "The AI assistant"],
+//     answer: 0,
+//     explain:
+//       "A genetic counsellor can explain what your result means for you and your family.",
+//   },
+// ];
 
 const pillBtn =
   "flex cursor-pointer items-center gap-1.75 rounded-full border border-neutral-200 bg-white px-6.5 py-3 text-[15px] font-bold text-ink shadow-card hover:bg-brand/5";
@@ -68,24 +69,60 @@ const actionBase =
 
 export default function ResultPage() {
   const [simple, setSimple] = useState(false);
+  const [checked, setChecked] = useState(false);
+  const [needsAll, setNeedsAll] = useState(false);
+  const t = useTranslations("dashboard.result");
+  const tShared = useTranslations("dashboard.shared");
+  const locale = useLocale();
+
+  const questions = [
+    { q: t("quiz.q1.question"), options: [t("quiz.yes"), t("quiz.no")], answer: 1, explain: t("quiz.q1.explain") },
+    { q: t("quiz.q2.question"), options: [t("quiz.yes"), t("quiz.no")], answer: 0, explain: t("quiz.q2.explain") },
+    { q: t("quiz.q3.question"), options: [t("quiz.q3.counsellor"), t("quiz.q3.ai")], answer: 0, explain: t("quiz.q3.explain") },
+  ];
+
+  const tiles = [
+    { title: t("risk.trait.title"), body: t("risk.trait.body") },
+    { title: t("risk.disease.title"), body: t("risk.disease.body") },
+  ];
+
   const [answers, setAnswers] = useState<(number | null)[]>(
     questions.map(() => null),
   );
-  const [checked, setChecked] = useState(false);
-  const [needsAll, setNeedsAll] = useState(false);
 
-  const c = simple ? copy.simple : copy.standard;
-  const score = answers.filter((a, i) => a === questions[i].answer).length;
+  const bold = (chunks: React.ReactNode) => (
+    <strong className="font-semibold text-ink">{chunks}</strong>
+  );
+  const bodyRich = simple
+    ? t.rich("hero.simple.body", { b: bold })
+    : t.rich("hero.standard.body", { b: bold });
+  const bodyPlain = simple
+    ? t.markup("hero.simple.body", { b: (c) => c })
+    : t.markup("hero.standard.body", { b: (c) => c });
+  const small = simple ? t("hero.simple.small") : t("hero.standard.small");
 
   const listen = () => {
     if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
     window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(
-      new SpeechSynthesisUtterance(
-        `${HEADING} ${c.before}${c.bold}${c.after} ${c.small}`,
-      ),
+    const u = new SpeechSynthesisUtterance(
+      `${t("hero.heading")} ${bodyPlain} ${small}`,
     );
+    u.lang = locale; // lets the browser pick an Arabic voice
+    window.speechSynthesis.speak(u);
   };
+
+  const c = simple ? copy.simple : copy.standard;
+  const score = answers.filter((a, i) => a === questions[i].answer).length;
+
+  // const listen = () => {
+  //   if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+  //   window.speechSynthesis.cancel();
+  //   window.speechSynthesis.speak(
+  //     new SpeechSynthesisUtterance(
+  //       `${HEADING} ${c.before}${c.bold}${c.after} ${c.small}`,
+  //     ),
+  //   );
+  // };
 
   const choose = (qi: number, oi: number) => {
     if (checked) return;
@@ -114,17 +151,20 @@ export default function ResultPage() {
         <header className="flex items-start justify-between gap-4">
           <div>
             <h1 className="text-[32px] font-extrabold leading-8.5 tracking-[-0.01em] text-ink">
-              Your result, explained
+              {/* Your result, explained */}
+              {t("header.title")}
             </h1>
             <p className="mt-2 text-[15px] leading-5 text-neutral-500">
-              Sickle cell screening · Reported 28 Oct 2026 · [Screening centre]
+              {/* Sickle cell screening · Reported 28 Oct 2026 · [Screening centre] */}
+              {t("header.subtitle", { centre: "[Screening centre]" })}
             </p>
           </div>
 
           <div className="mt-2 flex shrink-0 items-center gap-3">
             <button type="button" onClick={listen} className={pillBtn}>
               <Volume1 className="h-4 w-4" strokeWidth={2.75} />
-              Listen
+              {/* Listen */}
+              {tShared("listen")}
             </button>
             <button
               type="button"
@@ -142,7 +182,8 @@ export default function ResultPage() {
               >
                 {simple && <Check className="h-3 w-3" strokeWidth={3} />}
               </span>
-              Read it simpler
+              {/* Read it simpler */}
+              {t("header.simpler")}
             </button>
           </div>
         </header>
@@ -151,24 +192,29 @@ export default function ResultPage() {
         <section className="flex flex-col gap-8 rounded-2xl bg-white p-11 shadow-card lg:flex-row lg:items-center lg:justify-between">
           <div className="max-w-160 flex-1">
             <span className="inline-block rounded-full bg-[#FFEDE2] px-3 py-1 text-[12px] font-bold leading-none text-[#9A3412]">
-              Carrier
+              {/* Carrier */}
+              {t("hero.badge")}
             </span>
             <h2 className="mt-4 max-w-150 text-[36px] font-extrabold leading-[1.18] tracking-[-0.02em] text-ink">
-              {HEADING}
+              {/* {HEADING} */}
+              {t("hero.heading")}
             </h2>
             <p className="mt-4 text-[17px] leading-7 text-neutral-800">
-              {c.before}
+              {/* {c.before}
               <strong className="font-semibold text-ink">{c.bold}</strong>
-              {c.after}
+              {c.after} */}
+              {bodyRich}
             </p>
             <p className="mt-3 max-w-150 text-[15px] leading-5.25 text-neutral-500">
-              {c.small}
+              {/* {c.small} */}
+              {small}
             </p>
           </div>
 
           <div
             role="img"
-            aria-label="Two gene copies: one typical copy (A) and one changed copy (S)"
+            // aria-label="Two gene copies: one typical copy (A) and one changed copy (S)"
+            aria-label={t("hero.geneAria")}
             className="flex shrink-0 items-start justify-center gap-8 rounded-2xl bg-brand/5 px-8 py-6 lg:w-[36%]"
           >
             <div className="flex flex-col items-center gap-3">
@@ -176,7 +222,8 @@ export default function ResultPage() {
                 A
               </span>
               <span className="text-[13px] font-bold text-ink">
-                Typical copy
+                {/* Typical copy */}
+                {t("hero.typical")}
               </span>
             </div>
             <div className="flex flex-col items-center gap-3">
@@ -184,7 +231,8 @@ export default function ResultPage() {
                 S
               </span>
               <span className="text-[13px] font-bold text-ink">
-                Changed copy
+                {/* Changed copy */}
+                {t("hero.changed")}
               </span>
             </div>
           </div>
@@ -194,7 +242,8 @@ export default function ResultPage() {
         <section className="grid gap-5 lg:grid-cols-2">
           <article className="rounded-2xl bg-white p-7 shadow-card">
             <h2 className="text-[20px] font-extrabold leading-none text-ink">
-              A risk is not a diagnosis
+              {/* A risk is not a diagnosis */}
+              {t("risk.title")}
             </h2>
             <div className="mt-4 grid grid-cols-2 gap-3">
               {tiles.map((t) => (
@@ -212,17 +261,20 @@ export default function ResultPage() {
 
           <article className="rounded-2xl bg-white p-7 shadow-card">
             <h2 className="text-[20px] font-extrabold leading-none text-ink">
-              Everyone carries something
+              {/* Everyone carries something */}
+              {t("everyone.title")}
             </h2>
             <p className="mt-3.5 text-[15px] leading-[1.7] text-neutral-500">
-              Most people carry a few gene changes without ever knowing. Finding
-              yours means you can plan with information instead of worry.
+              {/* Most people carry a few gene changes without ever knowing. Finding
+              yours means you can plan with information instead of worry. */}
+              {t("everyone.body")}
             </p>
             <a
               href="/dashboard/simulator"
               className="mt-4 inline-flex rounded-full border border-neutral-300 bg-white px-6 py-3 text-[15px] font-semibold text-ink hover:bg-brand/5"
             >
-              What could this mean for children?
+              {/* What could this mean for children? */}
+              {t("everyone.cta")}
             </a>
           </article>
         </section>
@@ -231,10 +283,12 @@ export default function ResultPage() {
         <section className="rounded-2xl bg-white p-7 shadow-card">
           <div className="flex items-baseline justify-between gap-4">
             <h2 className="text-[20px] font-extrabold leading-none text-ink">
-              Check your understanding
+              {/* Check your understanding */}
+              {t("quiz.title")}
             </h2>
             <span className="text-[14px] text-neutral-500">
-              3 quick questions · not a test
+              {/* 3 quick questions · not a test */}
+              {t("quiz.subtitle")}
             </span>
           </div>
 
@@ -247,7 +301,8 @@ export default function ResultPage() {
                     id={`cu-q${qi}`}
                     className="text-[15px] font-bold leading-5 text-ink"
                   >
-                    {q.q}
+                    {/* {q.q} */}
+                    {qi + 1}. {q.q}
                   </p>
 
                   <div className="mt-2.5 flex flex-col gap-2.5">
@@ -315,16 +370,22 @@ export default function ResultPage() {
               disabled={checked}
               className="rounded-full bg-ink px-6 py-3 text-[15px] font-bold text-white enabled:cursor-pointer disabled:opacity-60"
             >
-              Check my answers
+              {/* Check my answers */}
+              {t("quiz.check")}
             </button>
             <p role="status" className="text-[14px] text-neutral-600">
-              {needsAll && "Choose an answer for each question first."}
-              {checked &&
+              {/* {needsAll && "Choose an answer for each question first."} */}
+              {needsAll && t("quiz.needAll")}
+              {/* {checked &&
                 `${score} of 3 correct. ${
                   score === 3
                     ? "Well done."
                     : "A genetic counsellor can go through anything that feels unclear."
-                }`}
+                }`} */}
+                {checked &&
+                  `${t("quiz.score", { score, total: questions.length })} ${
+                    score === questions.length ? t("quiz.wellDone") : t("quiz.askCounsellor")
+                  }`}
             </p>
             {checked && (
               <button
@@ -332,7 +393,8 @@ export default function ResultPage() {
                 onClick={reset}
                 className="cursor-pointer text-[14px] font-semibold text-[#C2410C] hover:underline"
               >
-                Start again
+                {/* Start again */}
+                {t("quiz.again")}
               </button>
             )}
           </div>
@@ -344,19 +406,22 @@ export default function ResultPage() {
             href="/dashboard/counsellor"
             className={`${actionBase} bg-brand hover:brightness-95`}
           >
-            Talk to a counsellor
+            {/* Talk to a counsellor */}
+            {t("actions.talk")}
           </a>
           <a
             href="/dashboard/options"
             className={`${actionBase} border border-neutral-200 bg-white hover:bg-brand/5`}
           >
-            Explore options
+            {/* Explore options */}
+            {t("actions.explore")}
           </a>
           <a
             href="/dashboard/couple"
             className={`${actionBase} border border-neutral-200 bg-white hover:bg-brand/5`}
           >
-            Share with my partner
+            {/* Share with my partner */}
+            {t("actions.share")}
           </a>
         </section>
       </div>

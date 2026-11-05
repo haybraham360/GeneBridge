@@ -1,15 +1,8 @@
 import { Check } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 type Status = "done" | "current" | "upcoming" | "optional";
 
-const steps: { title: string; meta: string; status: Status }[] = [
-  { title: "Screening done", meta: "28 Oct", status: "done" },
-  { title: "Result understood", meta: "29 Oct", status: "done" },
-  { title: "Counselling booked", meta: "Thu 12 Nov, 10:00", status: "current" },
-  { title: "Counselling session", meta: "Upcoming", status: "upcoming" },
-  { title: "Confirmatory test", meta: "If advised", status: "upcoming" },
-  { title: "Specialist", meta: "Only if needed", status: "optional" },
-];
 
 function Marker({ status }: { status: Status }) {
   const base = "flex h-9 w-9 items-center justify-center rounded-full";
@@ -34,13 +27,25 @@ function Marker({ status }: { status: Status }) {
 }
 
 export default function CareJourney() {
+
+  const t = useTranslations("dashboard.careJourney");
+
+  const steps: { title: string; meta: string; status: Status }[] = [
+    { title: t("steps.screening.title"), meta: t("steps.screening.meta"), status: "done" },
+    { title: t("steps.understood.title"), meta: t("steps.understood.meta"), status: "done" },
+    { title: t("steps.booked.title"), meta: t("steps.booked.meta"), status: "current" },
+    { title: t("steps.session.title"), meta: t("steps.session.meta"), status: "upcoming" },
+    { title: t("steps.test.title"), meta: t("steps.test.meta"), status: "upcoming" },
+    { title: t("steps.specialist.title"), meta: t("steps.specialist.meta"), status: "optional" },
+  ];
+
   return (
     <section className="rounded-2xl bg-white px-7 py-7 shadow-card">
       <div className="flex items-baseline justify-between">
         <h2 className="text-[20px] font-extrabold leading-none">
-          Your care journey
+          {t("title")}
         </h2>
-        <span className="text-[14px] text-neutral-500">Step 3 of 6</span>
+        <span className="text-[14px] text-neutral-500">{t("progress", { current: 3, total: 6 })}</span>
       </div>
 
       <ol className="mt-5 grid grid-cols-[repeat(6,1fr)]">
