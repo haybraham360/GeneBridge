@@ -131,7 +131,7 @@ export default function PrivacyPage({
     );
 
   return (
-    <div className="min-w-0 px-10 pb-10 pt-9">
+    <div className="min-w-0 px-[clamp(16px,3vw,40px)] pb-10 pt-7 sm:pt-9">
       <div className="mx-auto flex flex-col gap-5">
         {/* Header */}
         <header>

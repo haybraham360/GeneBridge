@@ -43,8 +43,8 @@ export async function DashboardBody({ filters }: { filters: Filters }) {
     <>
       <KpiTiles current={data.current} previous={data.previous} range={filters.range} />
       <div className="flex flex-wrap gap-5">
-        <FunnelPanel funnel={data.funnel} className="flex-[3_1_460px] motion-safe:animate-fade-up" />
-        <ModesPanel modes={data.modes} className="flex-[2_1_300px] motion-safe:animate-fade-up" />
+        <FunnelPanel funnel={data.funnel} className="min-w-0 flex-[3_1_460px] motion-safe:animate-fade-up" />
+        <ModesPanel modes={data.modes} className="min-w-0 flex-[2_1_300px] motion-safe:animate-fade-up" />
       </div>
       <EquityPanel rows={data.equity} overall={data.overall} />
       <ExploringPanel data={data.exploring} className="motion-safe:animate-fade-up" />

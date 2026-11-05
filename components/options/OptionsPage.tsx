@@ -148,10 +148,10 @@ export default function OptionsPage({ sharedCondition = null }: { sharedConditio
   };
 
   return (
-    <div className="min-w-0 px-10 pb-10 pt-9">
+    <div className="min-w-0 px-[clamp(16px,3vw,40px)] pb-10 pt-7 sm:pt-9">
       <div className="mx-auto flex flex-col gap-5">
         {/* Header */}
-        <header className="flex items-start justify-between gap-4">
+        <header className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <h1 className="text-[32px] font-extrabold leading-8.5 tracking-[-0.01em] text-ink">
               {/* Your options */}

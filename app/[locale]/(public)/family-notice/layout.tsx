@@ -34,12 +34,12 @@ export default async function NoticeLayout({ children, params }: LayoutProps<'/[
   return (
     <NextIntlClientProvider messages={clientMessages}>
       <div className="flex min-h-screen flex-col bg-bg text-ink">
-        <header className="mx-auto flex w-full max-w-[1000px] items-center justify-between gap-4 p-6">
+        <header className="mx-auto flex w-full max-w-[1000px] flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-5 sm:p-6">
           <Logo />
           <LanguageSwitch className="rounded-full border border-line-strong bg-surface px-3.5 font-bold text-ink hover:bg-brand-tint-soft" />
         </header>
         <div className="flex-1">{children}</div>
-        <footer className="mx-auto flex w-full max-w-[1000px] flex-wrap justify-between gap-3 border-t border-[#EADBD0] p-6 text-sm text-muted">
+        <footer className="mx-auto flex w-full max-w-[1000px] flex-wrap justify-between gap-3 border-t border-[#EADBD0] px-4 py-6 sm:p-6 text-sm text-muted">
           <span>{t('copyright')}</span>
           <Link href="/" prefetch={false} className="inline-flex min-h-11 items-center text-muted underline underline-offset-2">
             {t('about')}

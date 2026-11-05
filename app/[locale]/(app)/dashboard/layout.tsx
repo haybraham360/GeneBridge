@@ -38,7 +38,7 @@ export default async function DashboardLayout({
     path.path === "exploring" ? (path.focus ? conditionGuideHref(path.focus.conditionId) : "/dashboard") : null;
 
   return (
-    <div className="fixed inset-0 flex overflow-hidden">
+    <div className="fixed inset-0 flex flex-col overflow-hidden lg:flex-row">
       <Sidebar name={person.firstName} initial={person.initial} conditionsHref={conditionsHref} />
       <main className="min-w-0 flex-1 overflow-y-auto">{children}</main>
     </div>

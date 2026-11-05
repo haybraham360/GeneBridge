@@ -13,9 +13,11 @@ import {
   Search,
   MapPin,
   ArrowRight,
+  Menu,
+  X,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { useLayoutEffect, useRef, useState, type ComponentType, type CSSProperties } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type ComponentType, type CSSProperties } from "react";
 import { Logo } from "../ui/Logo";
 import { LanguageSwitch } from "../marketing/LanguageSwitch";
 import { useTranslations } from "next-intl";
@@ -111,7 +113,71 @@ type SidebarProps = {
   conditionsHref?: string | null;
 };
 
-export default function Sidebar({ name, initial, conditionsHref = null }: SidebarProps) {
+/**
+ * The side menu. From 1024px wide it sits beside the page as designed; below
+ * that it becomes a top bar whose menu button opens the same menu in a
+ * drawer (a modal <dialog>, so focus stays inside and Escape closes it).
+ */
+export default function Sidebar(props: SidebarProps) {
+  const t = useTranslations("dashboard.sidebar");
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const [open, setOpen] = useState(false);
+
+  const show = () => {
+    // Open before rendering, so the menu can measure its links for the pill.
+    dialogRef.current?.showModal();
+    setOpen(true);
+  };
+  const close = () => dialogRef.current?.close();
+
+  // A drawer left open while the window widens would cover the real sidebar.
+  useEffect(() => {
+    const wide = window.matchMedia("(min-width: 1024px)");
+    const onChange = () => wide.matches && dialogRef.current?.close();
+    wide.addEventListener("change", onChange);
+    return () => wide.removeEventListener("change", onChange);
+  }, []);
+
+  return (
+    <>
+      <header className="flex shrink-0 items-center justify-between gap-3 border-b border-line bg-white px-4 py-2 lg:hidden">
+        <Logo size="sm" />
+        <button
+          type="button"
+          onClick={show}
+          aria-haspopup="dialog"
+          aria-expanded={open}
+          aria-label={t("openMenu")}
+          className="inline-flex size-11 cursor-pointer items-center justify-center rounded-full bg-ink text-white hover:bg-[#2E2A27]"
+        >
+          <Menu aria-hidden="true" className="size-5" />
+        </button>
+      </header>
+
+      <dialog
+        ref={dialogRef}
+        aria-label={t("label")}
+        onClose={() => setOpen(false)}
+        onClick={(e) => e.target === e.currentTarget && close()}
+        className="fixed inset-y-0 start-0 end-auto m-0 h-dvh max-h-none w-[min(20rem,88vw)] max-w-none border-0 bg-white p-0 shadow-[0_8px_40px_rgba(20,20,20,0.25)] backdrop:bg-ink/40 lg:hidden"
+      >
+        <SidebarBody {...props} visible={open} onClose={close} />
+      </dialog>
+
+      <aside className="hidden h-screen w-66 shrink-0 border-e border-line bg-white lg:block">
+        <SidebarBody {...props} visible />
+      </aside>
+    </>
+  );
+}
+
+function SidebarBody({
+  name,
+  initial,
+  conditionsHref = null,
+  visible,
+  onClose,
+}: SidebarProps & { visible: boolean; onClose?: () => void }) {
   const t = useTranslations("dashboard.sidebar");
   const pathname = usePathname();
   // The path without the locale prefix ("/en/dashboard" → "/dashboard").
@@ -146,18 +212,31 @@ export default function Sidebar({ name, initial, conditionsHref = null }: Sideba
         el ? { top: el.offsetTop, height: el.offsetHeight, ready: prev !== null } : null,
       );
     };
+    if (!visible) return;
     place();
     window.addEventListener("resize", place);
     return () => window.removeEventListener("resize", place);
-  }, [activeKey]);
+  }, [activeKey, visible]);
 
   let index = 0;
 
   return (
     // Scrolls when the screen is short, so Sign out is always reachable.
-    <aside className="flex h-screen w-66 shrink-0 flex-col overflow-y-auto border-e border-line bg-white bg-sidebar pb-5">
-      <div className="flex items-center justify-center px-6 pt-6 pb-5 transition-transform duration-300 hover:scale-105">
-        <Logo size="sm" />
+    <div className="flex h-full flex-col overflow-y-auto bg-sidebar pb-5">
+      <div className="flex items-center justify-between gap-2 px-6 pt-6 pb-5">
+        <div className={`transition-transform duration-300 hover:scale-105 ${onClose ? "" : "mx-auto"}`}>
+          <Logo size="sm" />
+        </div>
+        {onClose && (
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label={t("closeMenu")}
+            className="inline-flex size-11 cursor-pointer items-center justify-center rounded-full border border-line-strong bg-surface text-ink hover:bg-brand-tint-soft"
+          >
+            <X aria-hidden="true" className="size-5" />
+          </button>
+        )}
       </div>
 
       <nav aria-label={t("label")} className="relative flex flex-col px-3.25">
@@ -190,6 +269,7 @@ export default function Sidebar({ name, initial, conditionsHref = null }: Sideba
                     else linkRefs.current.delete(short);
                   }}
                   aria-current={active ? "page" : undefined}
+                  onClick={onClose}
                   style={{ "--i": index++ } as CSSProperties}
                   className={`nav-in group relative flex min-h-10 items-center gap-3 rounded-xl px-4 py-2 text-[14px] leading-none transition-colors duration-300 ${
                     active
@@ -216,6 +296,7 @@ export default function Sidebar({ name, initial, conditionsHref = null }: Sideba
       <div className="mt-auto flex flex-col gap-3 pt-6">
         <Link
           href="/dashboard/assistant"
+          onClick={onClose}
           className="group mx-3.25 block rounded-2xl bg-brand/10 p-3.5 transition-all duration-300 hover:-translate-y-0.5 hover:bg-brand/15 hover:shadow-card"
         >
           <span className="flex items-center gap-1.5 text-[13px] font-bold">
@@ -249,6 +330,6 @@ export default function Sidebar({ name, initial, conditionsHref = null }: Sideba
 
         <SignOutButton className="px-3.25" />
       </div>
-    </aside>
+    </div>
   );
 }

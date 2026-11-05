@@ -66,18 +66,18 @@ export default async function Page({ params, searchParams }: PageProps<'/[locale
   const userId = claims?.claims?.sub;
 //   return <PlaceholderPage locale={locale} screen="dashboard" />;
   return (
-        <main className="min-w-0 min-h-0 overflow-auto flex-1 px-10 pb-10 pt-9">
+        <main className="min-w-0 min-h-0 overflow-auto flex-1 px-[clamp(16px,3vw,40px)] pb-10 pt-7 sm:pt-9">
             <div className="mx-auto">
-            <header className="flex items-start justify-between">
+            <header className="flex flex-wrap items-start justify-between gap-4">
                 <div>
-                <h1 className="text-[32px] text-ink font-extrabold leading-7.5 tracking-[-0.01em]">
+                <h1 className="text-[28px] sm:text-[32px] text-ink font-extrabold leading-tight tracking-[-0.01em]">
                     {person.firstName ? t("home.greeting", { name: person.firstName }) : t("home.greetingNoName")}
                 </h1>
-                <p className="mt-3.5 text-[15px] leading-3.5 text-neutral-500">
+                <p className="mt-2 text-[15px] leading-snug text-neutral-500">
                     {t("home.subtitle")}
                 </p>
                 </div>
-                <button className="mt-3.5 flex items-center gap-1.75 rounded-full border border-neutral-200 bg-white px-6.5 py-3 text-[15px] font-bold shadow-card cursor-pointer hover:bg-brand/5">
+                <button className="flex shrink-0 items-center gap-1.75 rounded-full border border-neutral-200 bg-white px-6.5 py-3 text-[15px] font-bold shadow-card cursor-pointer hover:bg-brand/5">
                 <Volume1 className="h-4 w-4" strokeWidth={2.75} />
                     {t("shared.listen")}
                 </button>
@@ -87,7 +87,7 @@ export default async function Page({ params, searchParams }: PageProps<'/[locale
                 {userId ? <PatientNotifications items={notifications} userId={userId} /> : null}
                 <CareJourney steps={care.steps} current={care.current} />
                 <SummaryCards summary={summary} catalogue={catalogue} />
-                <div className="grid grid-cols-[1.75fr_1fr] gap-5">
+                <div className="grid gap-5 lg:grid-cols-[1.75fr_1fr]">
                 <AskGeneBridge canUseFollowed={path.followed.length > 0} />
                 <ExplorePanel />
                 </div>

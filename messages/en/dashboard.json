@@ -21,6 +21,8 @@
       "cta": "Ask a question"
     },
     "account": "Your account",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
     "label": "Main menu",
     "groups": { "understand": "Understand", "family": "Partner & family", "care": "Choices & care" }
   },

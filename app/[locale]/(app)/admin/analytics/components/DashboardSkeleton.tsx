@@ -59,8 +59,8 @@ export function DashboardSkeleton() {
           ))}
         </ul>
         <div className="flex flex-wrap gap-5">
-          <PanelShell rows={6} className="flex-[3_1_460px]" />
-          <PanelShell rows={3} className="flex-[2_1_300px]" footer />
+          <PanelShell rows={6} className="min-w-0 flex-[3_1_460px]" />
+          <PanelShell rows={3} className="min-w-0 flex-[2_1_300px]" footer />
         </div>
         <div className={cn(cardClasses, 'flex flex-col gap-3.5 p-6')}>
           <div className="flex items-center justify-between">
