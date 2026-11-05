@@ -517,6 +517,16 @@
   },
 
   "privacy": {
+    "accessLogLine": "{name} viewed your {resource}",
+    "accessLogEmpty": "No one has viewed your shared information yet.",
+    "resources": {
+      "result": "result",
+      "resultFull": "full report",
+      "values_summary": "values summary",
+      "questions": "questions",
+      "ai_summary": "Ask GeneBridge summary",
+      "family_map": "family map"
+    },
     "header": {
       "title": "Privacy & consent",
       "subtitle": "You decide who sees what. Changes take effect immediately."
@@ -590,5 +600,50 @@
         "c": "3 Nov 2026"
       }
     }
+  },
+  "careMeta": {
+    "notYet": "Not yet",
+    "booked": "{date}",
+    "attended": "Attended {date}",
+    "ordered": "Ordered {date}",
+    "scheduled": "Scheduled",
+    "done": "Done {date}",
+    "cancelled": "Cancelled"
+  },
+  "notifications": {
+    "title": "Updates from your counsellor",
+    "accessRequest": "{name} asked to see your {resource} before your session. Share it?",
+    "share": "Share",
+    "notNow": "Not now",
+    "shared": "Shared with {name}. You can stop sharing any time in Privacy & consent.",
+    "declined": "Not shared. {name} can still talk it through with you in your session.",
+    "referralCreated": {
+      "confirmatory_test": "{name} ordered a confirmatory test for you. It's now in your care journey.",
+      "specialist": "{name} referred you to a specialist service ({service}). It's now in your care journey."
+    },
+    "referralUpdated": "Your {step} is now: {status}.",
+    "steps": {
+      "confirmatory_test": "confirmatory test",
+      "specialist": "specialist referral"
+    },
+    "statuses": {
+      "ordered": "ordered",
+      "scheduled": "scheduled",
+      "done": "done",
+      "cancelled": "cancelled"
+    },
+    "resources": {
+      "result": "full report",
+      "values_summary": "values summary",
+      "questions": "questions",
+      "ai_summary": "Ask GeneBridge summary",
+      "family_map": "family map"
+    },
+    "dismiss": "Dismiss",
+    "error": "That didn't work. Please try again."
+  },
+  "booking": {
+    "fullReport": "My full report",
+    "fullReportHint": "Suggested for your result, so your counsellor can prepare. Nothing is shared until you confirm."
   }
 }

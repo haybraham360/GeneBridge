@@ -59,7 +59,16 @@ const cardTitle = "text-[18px] font-extrabold leading-none text-ink";
 
 /* ---------- page ---------- */
 
-export default function PrivacyPage() {
+type LogItem = { text: string; when: string };
+
+type Props = {
+  /** Real reads of the patient's shared data, from access_log (task 07). */
+  accessLog?: LogItem[];
+  /** Shown when accessLog is empty. */
+  accessLogEmpty?: string;
+};
+
+export default function PrivacyPage({ accessLog: liveLog, accessLogEmpty }: Props = {}) {
   const [access, setAccess] = useState<Access[]>(initialAccess);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const t = useTranslations("dashboard.privacy");
@@ -218,7 +227,8 @@ export default function PrivacyPage() {
           {/* <TimelineCard
             title="Access log"
             subtitle="Every time someone opens your result."
-            items={accessLog}
+            items={liveLog ?? accessLog}
+            empty={accessLogEmpty}
           />
           <TimelineCard
             title="Family notifications"
@@ -309,10 +319,12 @@ function TimelineCard({
   title,
   subtitle,
   items,
+  empty,
 }: {
   title: string;
   subtitle?: string;
   items: { text: string; when: string }[];
+  empty?: string;
 }) {
   return (
     <section className={card}>
@@ -320,10 +332,13 @@ function TimelineCard({
       {subtitle && (
         <p className="mt-2 text-[12px] leading-4 text-neutral-500">{subtitle}</p>
       )}
-      <ul className={subtitle ? "mt-3" : "mt-4"}>
+      {items.length === 0 && empty ? (
+        <p className="mt-3 border-t border-neutral-200 pt-3 text-[13px] text-neutral-600">{empty}</p>
+      ) : null}
+      <ul className={subtitle ? "mt-3" : "mt-4"} data-testid={empty ? "access-log" : undefined}>
         {items.map((it, i) => (
           <li
-            key={it.text}
+            key={`${i}-${it.text}`}
             className={`flex gap-3 py-2.5 ${i > 0 || subtitle ? "border-t border-neutral-200" : ""} ${
               !subtitle && i === 0 ? "border-t" : ""
             }`}

@@ -5,6 +5,7 @@ import {
   IDLE_LIMIT_MS,
   IDLE_REASON,
   isAnalystPath,
+  isCounsellorPath,
   isProtectedPath,
   LAST_ACTIVE_COOKIE,
 } from './lib/auth/routes';
@@ -119,6 +120,19 @@ export default async function proxy(request: NextRequest) {
   if (signedIn && isAnalystPath(path)) {
     const { data: analyst, error } = await supabase.rpc('analytics_is_analyst');
     if (error || analyst !== true) {
+      const notFound = NextResponse.rewrite(new URL(`/${locale}/admin/not-found`, request.url), {
+        status: 404,
+      });
+      response.cookies.getAll().forEach((cookie) => notFound.cookies.set(cookie));
+      return notFound;
+    }
+  }
+
+  // 6. Counsellor workspace (task 07): counsellors only, same 404 rule. The
+  // layout and every database function check again.
+  if (signedIn && isCounsellorPath(path)) {
+    const { data: counsellor, error } = await supabase.rpc('pro_is_counsellor');
+    if (error || counsellor !== true) {
       const notFound = NextResponse.rewrite(new URL(`/${locale}/admin/not-found`, request.url), {
         status: 404,
       });

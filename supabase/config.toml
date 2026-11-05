@@ -35,6 +35,9 @@ max_frequency = "30s"
 971500000003 = "123456" # Patient R.
 971500000004 = "123456" # Dr. Amaka Okoro
 971500000005 = "123456" # Programme analyst (dashboard)
+971500000006 = "123456" # Dr. Layla Haddad (second facility, task 07)
+971500000007 = "123456" # Patient L. (counsellor queue demo)
+971500000008 = "123456" # Patient S. (counsellor queue demo)
 971500000009 = "123456" # spare number for trying sign-up
 
 # A provider block must exist for phone auth to be enabled locally; the test

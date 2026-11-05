@@ -1,0 +1,327 @@
+{
+  "meta": {
+    "title": "Counsellor workspace · GeneBridge"
+  },
+  "nav": {
+    "label": "Counsellor",
+    "workspace": "Counsellor workspace",
+    "queue": "Queue",
+    "sessions": "Today's sessions",
+    "patients": "Patients",
+    "referrals": "Referrals",
+    "notes": "Session notes",
+    "synthetic": "Synthetic demo data"
+  },
+  "labels": {
+    "patient": "Patient {initial}.",
+    "couple": "{first} and {second}",
+    "listSeparator": ", ",
+    "or": " or "
+  },
+  "queue": {
+    "title": "Your queue",
+    "subtitle": "You see only what each patient chose to share. Priority cases come first.",
+    "filtersLabel": "Filter the queue",
+    "filters": {
+      "all": "All ({count})",
+      "priority": "Priority ({count})",
+      "today": "Today ({count})"
+    },
+    "listLabel": "Queue",
+    "keyboardHint": "Use the up and down arrow keys to move through the queue, and Enter to open a request.",
+    "empty": "No requests match this filter.",
+    "emptyAll": "Your queue is clear. New requests appear here as they arrive.",
+    "chooseRequest": "Choose a request to see what the patient shared.",
+    "chooseRequestHint": "Opening a request is logged and visible to the patient.",
+    "new": "New",
+    "newArrived": "New request: {label}",
+    "tags": {
+      "priority": "Priority",
+      "today": "Today {time}",
+      "standard": "Standard"
+    },
+    "ago": {
+      "minute": "{value, plural, =0 {Just now} other {# min ago}}",
+      "hour": "{value} h ago",
+      "day": "{value, plural, one {Yesterday} other {# days ago}}"
+    },
+    "back": "Back to queue",
+    "showing": "Showing {label}",
+    "loading": "Opening…",
+    "loadError": "This request couldn't be opened. A colleague may have picked it up."
+  },
+  "card": {
+    "flagged": "Flagged result. Details stay hidden until the patient shares them.",
+    "flaggedWith": "Flagged result: {reason}.",
+    "notBooked": "Not yet booked.",
+    "fromAssistant": "From Ask GeneBridge: {topic}.",
+    "coupleSession": "Couple session.",
+    "individualSession": "Individual session.",
+    "shared": "Shared: {list}.",
+    "nothingShared": "Nothing shared yet.",
+    "patientAsked": {
+      "after_options": "Asked to speak to a person after reading about options.",
+      "other": "Asked to speak to a person."
+    }
+  },
+  "topics": {
+    "flagged_result": "flagged result",
+    "pregnancy": "currently pregnant, asking about the baby's risk",
+    "x_linked_or_dominant": "an X-linked or dominant condition in the family",
+    "major_decision": "wants to talk through a major decision",
+    "outside_library": "a question outside the content library",
+    "distress": "needs support",
+    "asked_for_person": "asked to talk to a person",
+    "couple_session": "couple session",
+    "individual_session": "individual session",
+    "after_options": "after reading about options"
+  },
+  "flagReasons": {
+    "vus": "variant of uncertain significance",
+    "severe": "severe condition",
+    "x_linked": "X-linked condition",
+    "conflicting": "conflicting results"
+  },
+  "resources": {
+    "result": "result summary",
+    "results": "result summaries",
+    "fullReport": "full report",
+    "values_summary": "values",
+    "questions": "questions",
+    "ai_summary": "Ask GeneBridge summary",
+    "family_map": "family map"
+  },
+  "conditions": {
+    "sickle_cell": {
+      "name": "sickle cell disease",
+      "carrier": "sickle cell trait"
+    },
+    "beta_thalassemia": {
+      "name": "beta thalassaemia",
+      "carrier": "beta thalassaemia trait"
+    },
+    "alpha_thalassemia": {
+      "name": "alpha thalassaemia",
+      "carrier": "alpha thalassaemia trait"
+    },
+    "cystic_fibrosis": {
+      "name": "cystic fibrosis",
+      "carrier": "cystic fibrosis carrier"
+    },
+    "g6pd_deficiency": {
+      "name": "G6PD deficiency",
+      "carrier": "G6PD deficiency carrier"
+    },
+    "gjb2_hearing_loss": {
+      "name": "GJB2 hearing loss",
+      "carrier": "GJB2 hearing loss carrier"
+    },
+    "phenylketonuria": {
+      "name": "phenylketonuria (PKU)",
+      "carrier": "PKU carrier"
+    },
+    "spinal_muscular_atrophy": {
+      "name": "spinal muscular atrophy",
+      "carrier": "SMA carrier"
+    }
+  },
+  "result": {
+    "carrier": "Carrier, {condition}",
+    "affected": "Affected, {condition}",
+    "no_variant": "No changed copy found ({condition})",
+    "uncertain": "Variant of uncertain significance ({condition})",
+    "genotype": "{line} ({genotype})"
+  },
+  "detail": {
+    "coupleSession": "Couple session",
+    "individualSession": "Individual session",
+    "notBooked": "Not yet booked",
+    "formats": {
+      "video": "Video",
+      "in_person": "In person"
+    },
+    "languages": {
+      "ar": "Arabic",
+      "en": "English",
+      "ur": "Urdu",
+      "hi": "Hindi",
+      "tl": "Tagalog"
+    },
+    "consent": {
+      "both": "Both consented to share",
+      "one": "Shared by {name} only",
+      "patient": "The patient shared with you",
+      "none": "Nothing shared yet"
+    },
+    "summaryLabel": "{name} · Summary",
+    "fullLabel": "{name} · Full report",
+    "reported": "Reported {date}",
+    "understood": "understanding check {count}/3",
+    "flaggedNote": "Flagged for counsellor review",
+    "noResult": "Shared, but no result is connected to the account yet.",
+    "questionsTitle": "Their questions",
+    "valuesTitle": "Values summary",
+    "aiTitle": "Ask GeneBridge summary",
+    "familyTitle": "Family map",
+    "familyShared": "Shared by {name}. The family map viewer arrives with the family map screen.",
+    "sharedBy": "(shared by {name})",
+    "sharedByBoth": "(shared by both)",
+    "values": {
+      "both": "Both: {band}",
+      "differ": "Differ: worth discussing",
+      "single": "{name}: {band}"
+    },
+    "bands": {
+      "very_important": "very important",
+      "important": "important",
+      "somewhat_important": "somewhat important",
+      "less_important": "less important"
+    },
+    "valueQuestions": {
+      "biological_children": "Having biological children",
+      "religious_guidance": "Following religious guidance",
+      "avoid_procedures": "Avoiding medical procedures",
+      "cost": "Cost of treatment",
+      "family_views": "Family's views"
+    },
+    "notShared": "Not shared with you: {list}.",
+    "missingFor": "{item} ({name})",
+    "logged": {
+      "couple": "Your access is logged and visible to both patients.",
+      "single": "Your access is logged and visible to the patient."
+    },
+    "requestAccess": "Request access",
+    "requestAccessTitle": "Ask to see what isn't shared yet",
+    "requestAccessBody": "The patient gets an in-app notification and chooses whether to share. Nothing changes until they do.",
+    "ask": "Ask {name}",
+    "requested": "Requested · waiting for {name}",
+    "requestSent": "Request sent to {name}.",
+    "alreadyShared": "{name} has already shared this.",
+    "note": {
+      "label": "Session note",
+      "placeholder": "Private to you and your facility",
+      "saving": "Saving…",
+      "saved": "Saved",
+      "error": "Couldn't save. Trying again."
+    },
+    "actions": {
+      "label": "Actions",
+      "start": "Start video session",
+      "join": "Join video session",
+      "markDone": "Mark session done",
+      "attended": "Session attended",
+      "confirmatory": "Order confirmatory test",
+      "confirmatoryOrdered": "Confirmatory test ordered",
+      "specialist": "Refer to specialist",
+      "close": "Close request",
+      "error": "That didn't work. Please try again.",
+      "sessionStarted": "Session started. The video room opened in a new tab.",
+      "attendedDone": "Session marked as attended.",
+      "confirmatoryDone": "Confirmatory test ordered. The patient's care journey is updated."
+    },
+    "referralsTitle": "Referrals on this request",
+    "referralLine": "{step} for {name}: {status}",
+    "steps": {
+      "confirmatory_test": "Confirmatory test",
+      "specialist": "Specialist referral"
+    },
+    "statuses": {
+      "ordered": "Ordered",
+      "scheduled": "Scheduled",
+      "done": "Done",
+      "cancelled": "Cancelled"
+    }
+  },
+  "specialist": {
+    "title": "Refer to a specialist service",
+    "body": "The referral appears in the patient's care journey straight away.",
+    "legend": "Service",
+    "kinds": {
+      "confirmatory_testing": "Confirmatory testing",
+      "haematology": "Haematology",
+      "ivf_embryo_testing": "IVF and embryo testing"
+    },
+    "submit": "Create referral",
+    "cancel": "Cancel",
+    "required": "Choose a service.",
+    "created": "Referral created. The patient's care journey is updated."
+  },
+  "close": {
+    "title": "Close this request",
+    "body": "Record what happened. Only the category is stored, never anything about personal or family decisions.",
+    "legend": "Outcome",
+    "outcomes": {
+      "information_given": "Information given",
+      "follow_up_booked": "Follow-up booked",
+      "referred_confirmatory_test": "Referred for confirmatory test",
+      "referred_specialist": "Referred to specialist",
+      "patient_withdrew": "Patient withdrew"
+    },
+    "followUp": "Follow-up date (optional)",
+    "submit": "Close request",
+    "cancel": "Cancel",
+    "required": "Choose an outcome to close the request.",
+    "closed": "Request closed."
+  },
+  "status": {
+    "open": "Open",
+    "booked": "Booked",
+    "in_session": "In session",
+    "closed": "Closed"
+  },
+  "sessions": {
+    "title": "Today's sessions",
+    "subtitle": "Today's bookings in time order. Times are in Abu Dhabi time.",
+    "empty": "No sessions booked for today.",
+    "join": "Join",
+    "attended": "Attended",
+    "open": "Open request"
+  },
+  "patients": {
+    "title": "Patients",
+    "subtitle": "Patients you've seen, with their latest request.",
+    "searchLabel": "Search by name",
+    "searchHint": "Only couples who shared their names can be found by name.",
+    "search": "Search",
+    "clear": "Clear",
+    "empty": "No patients yet.",
+    "noMatch": "No one matches “{query}”.",
+    "columns": {
+      "patient": "Patient",
+      "request": "Latest request",
+      "status": "Status",
+      "date": "Received"
+    },
+    "closedWith": "Closed: {outcome}"
+  },
+  "referrals": {
+    "title": "Referrals",
+    "subtitle": "Referrals you created. Changing a status updates the patient's care journey.",
+    "empty": "You haven't created any referrals yet.",
+    "columns": {
+      "patient": "Patient",
+      "referral": "Referral",
+      "status": "Status",
+      "updated": "Updated"
+    },
+    "statusLabel": "Status for {name}",
+    "saved": "Status updated.",
+    "error": "The status couldn't be updated."
+  },
+  "notes": {
+    "title": "Session notes",
+    "subtitle": "Your notes, newest first. Private to you and your facility; patients never see them.",
+    "empty": "No session notes yet.",
+    "open": "Open request",
+    "updated": "Updated {date}",
+    "emptyNote": "(empty note)",
+    "unknownRequest": "Request no longer in your queue"
+  },
+  "video": {
+    "title": "Video session (demo)",
+    "body": "This is a placeholder room for the demo. The real video provider connects here.",
+    "back": "Back to the queue",
+    "markDone": "Mark session done",
+    "done": "Session marked as attended."
+  }
+}

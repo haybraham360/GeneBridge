@@ -8,7 +8,7 @@ import { useLocale, useTranslations } from "next-intl";
 
 type DayId = "wed11" | "thu12" | "sun15";
 type SessionId = "video" | "inPerson";
-type ShareId = "result" | "values" | "family";
+type ShareId = "fullReport" | "result" | "values" | "family";
 type StepId = "received" | "booked" | "session" | "test" | "specialist";
 
 // const counsellors = [
@@ -71,7 +71,10 @@ const SHARE_ITEMS: ShareId[] = ["result", "values", "family"];
 //   { title: "Specialist referral", meta: "Only if needed", status: "optional" },
 // ];
 
-type Step = { id: StepId; status: "done" | "current" | "upcoming" | "optional" };
+type StepStatus = "done" | "current" | "upcoming" | "optional";
+type Step = { id: StepId; status: StepStatus };
+/** A referral-path step from the patient's own data (lib/care), already translated. */
+type LiveStep = { title: string; meta: string; status: StepStatus };
 const PATH: Step[] = [
   { id: "received", status: "done" },
   { id: "booked", status: "done" },
@@ -89,9 +92,18 @@ const selectBtn = (on: boolean) =>
 
 /* ---------- page ---------- */
 
-export default function CounsellorPage() {
+type Props = {
+  /** The referral path from the patient's own data (lib/care). Falls back to the demo path. */
+  path?: LiveStep[];
+  /** Flagged result: "My full report" is suggested and pre-ticked (task 07). */
+  flagged?: boolean;
+};
+
+export default function CounsellorPage({ path: livePath, flagged = false }: Props = {}) {
   const t = useTranslations("dashboard.counsellor");
+  const tBooking = useTranslations("dashboard.booking");
   const locale = useLocale();
+  const shareOptions: ShareId[] = flagged ? ["fullReport", ...SHARE_ITEMS] : SHARE_ITEMS;
   
   // const [counsellor, setCounsellor] = useState("amaka");
   // const [day, setDay] = useState("Thu 12");
@@ -106,7 +118,13 @@ export default function CounsellorPage() {
   const [day, setDay] = useState<DayId>("thu12");
   const [time, setTime] = useState("10:00");
   const [session, setSession] = useState<SessionId>("video");
-  const [share, setShare] = useState<ShareId[]>(["result", "values"]);
+  // Pre-ticked for flagged results, but nothing is shared until the patient
+  // confirms the booking, and they can untick it.
+  const [share, setShare] = useState<ShareId[]>([
+    ...(flagged ? (["fullReport"] as ShareId[]) : []),
+    "result",
+    "values",
+  ]);
   const [confirmed, setConfirmed] = useState(false);
 
   const current = counsellors.find((c) => c.id === counsellor)!;
@@ -132,6 +150,7 @@ export default function CounsellorPage() {
     video: t("book.video"), inPerson: t("book.inPerson"),
   };
   const shareLabel: Record<ShareId, string> = {
+    fullReport: tBooking("fullReport"),
     result: t("book.share.result"), values: t("book.share.values"), family: t("book.share.family"),
   };
   const stepText: Record<StepId, { title: string; meta: string }> = {
@@ -141,6 +160,9 @@ export default function CounsellorPage() {
     test: { title: t("referral.steps.test.title"), meta: t("referral.steps.test.meta") },
     specialist: { title: t("referral.steps.specialist.title"), meta: t("referral.steps.specialist.meta") },
   };
+
+  const steps: LiveStep[] =
+    livePath ?? PATH.map((s) => ({ ...stepText[s.id], status: s.status }));
 
   // language names in the user's language, no message keys needed
   const langName = useMemo(() => {
@@ -251,10 +273,10 @@ export default function CounsellorPage() {
               </h2>
 
               <ol className="mt-5">
-                {PATH.map((s, i) => {
-                  const last = i === PATH.length - 1;
+                {steps.map((s, i) => {
+                  const last = i === steps.length - 1;
                   return (
-                    <li key={s.id} className="relative flex gap-3.5 pb-4 last:pb-0">
+                    <li key={s.title} className="relative flex gap-3.5 pb-4 last:pb-0" data-status={s.status}>
                       {!last && (
                         <span
                           aria-hidden
@@ -265,11 +287,11 @@ export default function CounsellorPage() {
                       <div>
                         <p className="text-[14px] font-bold leading-4.5 text-ink">
                           {/* {s.title} */}
-                          {stepText[s.id].title}
+                          {s.title}
                         </p>
                         <p className="text-[12px] leading-4 text-neutral-500">
                           {/* {s.meta} */}
-                          {stepText[s.id].meta}
+                          {s.meta}
                         </p>
                       </div>
                     </li>
@@ -355,12 +377,12 @@ export default function CounsellorPage() {
                 {t("book.shareLegend")}
               </p>
               <div className="mt-3 flex flex-col gap-3">
-                {SHARE_ITEMS.map((item) => {
+                {shareOptions.map((item) => {
                   const on = share.includes(item);
                   return (
                     <label
                       key={item}
-                      className="flex cursor-pointer items-center gap-3 text-[13px] text-neutral-800"
+                      className="flex cursor-pointer flex-wrap items-center gap-3 text-[13px] text-neutral-800"
                     >
                       <input
                         type="checkbox"
@@ -383,6 +405,11 @@ export default function CounsellorPage() {
                       </span>
                       {/* {item} */}
                       {shareLabel[item]}
+                      {item === "fullReport" ? (
+                        <span className="basis-full ps-7 text-[12px] text-neutral-600">
+                          {tBooking("fullReportHint")}
+                        </span>
+                      ) : null}
                     </label>
                   );
                 })}

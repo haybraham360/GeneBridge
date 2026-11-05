@@ -13,6 +13,7 @@ const hintKey = {
   khalid: 'identityHint',
   patientR: 'identityHint',
   amaka: 'identityHintCounsellor',
+  layla: 'identityHintCounsellor',
   analyst: 'identityHintAnalyst',
 } as const;
 

@@ -13,7 +13,7 @@ import { demoUsers } from './demoUsers';
  *
  * Disabled unless DEMO_UAE_PASS_ENABLED=true.
  */
-export const uaePassIdentities = ['mariam', 'khalid', 'patientR', 'amaka', 'analyst'] as const;
+export const uaePassIdentities = ['mariam', 'khalid', 'patientR', 'amaka', 'layla', 'analyst'] as const;
 export type UaePassIdentity = (typeof uaePassIdentities)[number];
 
 export function isUaePassIdentity(value: unknown): value is UaePassIdentity {

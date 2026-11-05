@@ -516,6 +516,16 @@
   },
 
   "privacy": {
+    "accessLogLine": "اطّلع {name} على {resource}",
+    "accessLogEmpty": "لم يطّلع أحد على معلوماتك المُشارَكة بعد.",
+    "resources": {
+      "result": "نتيجتك",
+      "resultFull": "تقريرك الكامل",
+      "values_summary": "ملخص قيمك",
+      "questions": "أسئلتك",
+      "ai_summary": "ملخص Ask GeneBridge",
+      "family_map": "خريطة عائلتك"
+    },
     "header": {
       "title": "الخصوصية والموافقة",
       "subtitle": "أنت من يقرر من يرى ماذا. تسري التغييرات فورًا."
@@ -589,5 +599,50 @@
         "c": "3 نوفمبر 2026"
       }
     }
+  },
+  "careMeta": {
+    "notYet": "ليس بعد",
+    "booked": "{date}",
+    "attended": "تمت في {date}",
+    "ordered": "طُلب في {date}",
+    "scheduled": "تم تحديد موعد",
+    "done": "تم في {date}",
+    "cancelled": "أُلغي"
+  },
+  "notifications": {
+    "title": "تحديثات من مستشارك",
+    "accessRequest": "طلب {name} الاطلاع على {resource} قبل جلستك. هل تريد مشاركته؟",
+    "share": "مشاركة",
+    "notNow": "ليس الآن",
+    "shared": "تمت المشاركة مع {name}. يمكنك إيقاف المشاركة في أي وقت من صفحة الخصوصية والموافقة.",
+    "declined": "لم تتم المشاركة. يمكن لـ{name} مناقشة الأمر معك خلال الجلسة.",
+    "referralCreated": {
+      "confirmatory_test": "طلب {name} فحصاً تأكيدياً لك. أصبح الآن ضمن رحلة الرعاية الخاصة بك.",
+      "specialist": "أحالك {name} إلى خدمة متخصصة ({service}). أصبحت الآن ضمن رحلة الرعاية الخاصة بك."
+    },
+    "referralUpdated": "حالة {step} الآن: {status}.",
+    "steps": {
+      "confirmatory_test": "الفحص التأكيدي",
+      "specialist": "الإحالة إلى أخصائي"
+    },
+    "statuses": {
+      "ordered": "تم الطلب",
+      "scheduled": "تم تحديد موعد",
+      "done": "تم",
+      "cancelled": "أُلغي"
+    },
+    "resources": {
+      "result": "تقريرك الكامل",
+      "values_summary": "ملخص قيمك",
+      "questions": "أسئلتك",
+      "ai_summary": "ملخص Ask GeneBridge",
+      "family_map": "خريطة عائلتك"
+    },
+    "dismiss": "إخفاء",
+    "error": "لم ينجح ذلك. يُرجى المحاولة مرة أخرى."
+  },
+  "booking": {
+    "fullReport": "تقريري الكامل",
+    "fullReportHint": "مقترح لنتيجتك حتى يتمكن مستشارك من الاستعداد. لا تتم مشاركة شيء حتى تؤكد."
   }
 }

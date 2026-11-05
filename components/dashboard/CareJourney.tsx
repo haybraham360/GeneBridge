@@ -26,18 +26,12 @@ function Marker({ status }: { status: Status }) {
   return <span className={`${base} border border-neutral-300 bg-white`} />;
 }
 
-export default function CareJourney() {
+type Step = { key: string; title: string; meta: string; status: Status };
+
+/** The 6-step care journey. Steps come from the patient's own data (lib/care). */
+export default function CareJourney({ steps, current }: { steps: Step[]; current: number }) {
 
   const t = useTranslations("dashboard.careJourney");
-
-  const steps: { title: string; meta: string; status: Status }[] = [
-    { title: t("steps.screening.title"), meta: t("steps.screening.meta"), status: "done" },
-    { title: t("steps.understood.title"), meta: t("steps.understood.meta"), status: "done" },
-    { title: t("steps.booked.title"), meta: t("steps.booked.meta"), status: "current" },
-    { title: t("steps.session.title"), meta: t("steps.session.meta"), status: "upcoming" },
-    { title: t("steps.test.title"), meta: t("steps.test.meta"), status: "upcoming" },
-    { title: t("steps.specialist.title"), meta: t("steps.specialist.meta"), status: "optional" },
-  ];
 
   return (
     <section className="rounded-2xl bg-white px-7 py-7 shadow-card">
@@ -45,12 +39,12 @@ export default function CareJourney() {
         <h2 className="text-[20px] font-extrabold leading-none">
           {t("title")}
         </h2>
-        <span className="text-[14px] text-neutral-500">{t("progress", { current: 3, total: 6 })}</span>
+        <span className="text-[14px] text-neutral-500">{t("progress", { current, total: steps.length })}</span>
       </div>
 
-      <ol className="mt-5 grid grid-cols-[repeat(6,1fr)]">
+      <ol className="mt-5 grid grid-cols-[repeat(6,1fr)]" data-testid="care-journey">
         {steps.map((s) => (
-          <li key={s.title}>
+          <li key={s.key} data-step={s.key} data-status={s.status}>
             <Marker status={s.status} />
             <div className="mt-3 text-[14px] font-bold leading-3.5">
               {s.title}

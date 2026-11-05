@@ -73,11 +73,44 @@ export async function isValidFacilityCode(code: string): Promise<boolean> {
   const normalised = normaliseFacilityCode(code);
   if (!/^[A-Z0-9-]{4,32}$/.test(normalised)) return false;
   const { data } = await createAdminClient()
-    .from('counsellors')
+    .from('facilities')
     .select('id')
-    .eq('facility_code', normalised)
+    .eq('code', normalised)
     .maybeSingle();
   return Boolean(data);
+}
+
+/**
+ * Makes the signed-in user a counsellor at the facility with this code
+ * (task 07): sets the role and creates (or moves) their counsellors row, so
+ * they see that facility's queue. Service role; the code was checked first.
+ * Used by sign-in and by the onboarding "I'm a health professional" choice.
+ */
+export async function joinFacility(user: { id: string; email?: string; user_metadata?: Record<string, unknown> }, code: string) {
+  const admin = createAdminClient();
+  const { data: facility } = await admin
+    .from('facilities')
+    .select('id')
+    .eq('code', normaliseFacilityCode(code))
+    .maybeSingle();
+  if (!facility) throw new Error('Could not apply facility code');
+
+  const { error } = await admin.from('profiles').update({ role: 'counsellor' }).eq('user_id', user.id);
+  if (error) throw new Error('Could not apply facility code');
+
+  const { data: profile } = await admin.from('profiles').select('display_name, locale').eq('user_id', user.id).maybeSingle();
+  const name =
+    (profile?.display_name as string | null) ||
+    (typeof user.user_metadata?.display_name === 'string' ? user.user_metadata.display_name : null) ||
+    user.email?.split('@')[0] ||
+    'Counsellor';
+  const { error: counsellorError } = await admin
+    .from('counsellors')
+    .upsert(
+      { user_id: user.id, name, languages: [profile?.locale ?? 'ar'], facility_id: facility.id },
+      { onConflict: 'user_id' },
+    );
+  if (counsellorError) throw new Error('Could not apply facility code');
 }
 
 export type FinishResult =
@@ -140,11 +173,7 @@ export async function finishSignIn(
   // The browser only ever sends a facility code, never a role. The code is
   // re-checked here and the role is set with the service role.
   if (pending?.facilityCode && (await isValidFacilityCode(pending.facilityCode))) {
-    const { error } = await createAdminClient()
-      .from('profiles')
-      .update({ role: 'counsellor' })
-      .eq('user_id', user.id);
-    if (error) throw new Error('Could not apply facility code');
+    await joinFacility(user, pending.facilityCode);
   }
 
   await logEvents(supabase, user.id, events);

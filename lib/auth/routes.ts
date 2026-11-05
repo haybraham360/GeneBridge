@@ -26,6 +26,11 @@ export function isAnalystPath(path: string): boolean {
   return path === '/admin' || path.startsWith('/admin/');
 }
 
+/** Paths only counsellors may open (task 07). Everyone else gets a 404. */
+export function isCounsellorPath(path: string): boolean {
+  return path === '/pro' || path.startsWith('/pro/');
+}
+
 /**
  * Only same-site, protected app paths are accepted as a return address, so
  * `?next=` can't be used to bounce people to another site.
@@ -50,6 +55,9 @@ export const FINISHED_ONBOARDING_STEP = 8;
 
 type DestinationProfile = { role: string; onboarding_step: number } | null;
 
+/** The counsellor workspace (task 07): a counsellor's dashboard. */
+export const COUNSELLOR_HOME = '/pro';
+
 /** The analyst's only screen (task 05). */
 export const ANALYST_HOME = '/admin/analytics';
 
@@ -60,7 +68,7 @@ export function isInvitePath(path: string | null): boolean {
 
 /** Where to send someone after they sign in (section 3 of task 03). */
 export function destinationFor(profile: DestinationProfile, next: string | null): string {
-  if (profile?.role === 'counsellor') return next ?? '/pro';
+  if (profile?.role === 'counsellor') return next?.startsWith(COUNSELLOR_HOME) ? next : COUNSELLOR_HOME;
   if (profile?.role === 'analyst') return next?.startsWith('/admin') ? next : ANALYST_HOME;
   // An invite is accepted first; the invite page then sends them on.
   if (isInvitePath(next)) return next as string;

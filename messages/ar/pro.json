@@ -1,0 +1,303 @@
+{
+  "meta": {
+    "title": "مساحة عمل المستشار · GeneBridge"
+  },
+  "nav": {
+    "label": "المستشار",
+    "workspace": "مساحة عمل المستشار",
+    "queue": "قائمة الطلبات",
+    "sessions": "جلسات اليوم",
+    "patients": "المرضى",
+    "referrals": "الإحالات",
+    "notes": "ملاحظات الجلسات",
+    "synthetic": "بيانات عرض تجريبية"
+  },
+  "labels": {
+    "patient": "المريض {initial}.",
+    "couple": "{first} و{second}",
+    "listSeparator": "، ",
+    "or": " أو "
+  },
+  "queue": {
+    "title": "قائمة طلباتك",
+    "subtitle": "ترى فقط ما اختار كل مريض مشاركته. الحالات ذات الأولوية تظهر أولاً.",
+    "filtersLabel": "تصفية القائمة",
+    "filters": {
+      "all": "الكل ({count})",
+      "priority": "أولوية ({count})",
+      "today": "اليوم ({count})"
+    },
+    "listLabel": "قائمة الطلبات",
+    "keyboardHint": "استخدم مفتاحي السهم لأعلى ولأسفل للتنقل في القائمة، ومفتاح الإدخال لفتح طلب.",
+    "empty": "لا توجد طلبات تطابق هذا التصنيف.",
+    "emptyAll": "قائمتك فارغة. تظهر الطلبات الجديدة هنا فور وصولها.",
+    "chooseRequest": "اختر طلباً لترى ما شاركه المريض.",
+    "chooseRequestHint": "يُسجَّل فتح الطلب ويمكن للمريض الاطلاع عليه.",
+    "new": "جديد",
+    "newArrived": "طلب جديد: {label}",
+    "tags": {
+      "priority": "أولوية",
+      "today": "اليوم {time}",
+      "standard": "عادي"
+    },
+    "ago": {
+      "minute": "{value, plural, =0 {الآن} one {قبل دقيقة} two {قبل دقيقتين} few {قبل # دقائق} many {قبل # دقيقة} other {قبل # دقيقة}}",
+      "hour": "قبل {value} س",
+      "day": "{value, plural, one {أمس} two {قبل يومين} few {قبل # أيام} many {قبل # يوماً} other {قبل # يوم}}"
+    },
+    "back": "العودة إلى القائمة",
+    "showing": "يُعرض الآن: {label}",
+    "loading": "جارٍ الفتح…",
+    "loadError": "تعذّر فتح هذا الطلب. ربما تولّاه زميل لك."
+  },
+  "card": {
+    "flagged": "نتيجة مُعلَّمة. تبقى التفاصيل مخفية إلى أن يشاركها المريض.",
+    "flaggedWith": "نتيجة مُعلَّمة: {reason}.",
+    "notBooked": "لم يُحجز موعد بعد.",
+    "fromAssistant": "من Ask GeneBridge: {topic}.",
+    "coupleSession": "جلسة للزوجين.",
+    "individualSession": "جلسة فردية.",
+    "shared": "تمت مشاركة: {list}.",
+    "nothingShared": "لم تتم مشاركة شيء بعد.",
+    "patientAsked": {
+      "after_options": "طلب التحدث إلى شخص بعد القراءة عن الخيارات.",
+      "other": "طلب التحدث إلى شخص."
+    }
+  },
+  "topics": {
+    "flagged_result": "نتيجة مُعلَّمة",
+    "pregnancy": "حامل حالياً وتسأل عن احتمال تأثّر الجنين",
+    "x_linked_or_dominant": "حالة مرتبطة بالكروموسوم X أو سائدة في العائلة",
+    "major_decision": "يرغب في مناقشة قرار مهم",
+    "outside_library": "سؤال خارج مكتبة المحتوى",
+    "distress": "يحتاج إلى دعم",
+    "asked_for_person": "طلب التحدث إلى شخص",
+    "couple_session": "جلسة للزوجين",
+    "individual_session": "جلسة فردية",
+    "after_options": "بعد القراءة عن الخيارات"
+  },
+  "flagReasons": {
+    "vus": "متغيّر غير مؤكد الأهمية",
+    "severe": "حالة شديدة",
+    "x_linked": "حالة مرتبطة بالكروموسوم X",
+    "conflicting": "نتائج متعارضة"
+  },
+  "resources": {
+    "result": "ملخص النتيجة",
+    "results": "ملخصات النتائج",
+    "fullReport": "التقرير الكامل",
+    "values_summary": "القيم",
+    "questions": "الأسئلة",
+    "ai_summary": "ملخص Ask GeneBridge",
+    "family_map": "خريطة العائلة"
+  },
+  "conditions": {
+    "sickle_cell": { "name": "مرض فقر الدم المنجلي", "carrier": "سمة الخلية المنجلية" },
+    "beta_thalassemia": { "name": "الثلاسيميا بيتا", "carrier": "سمة الثلاسيميا بيتا" },
+    "alpha_thalassemia": { "name": "الثلاسيميا ألفا", "carrier": "سمة الثلاسيميا ألفا" },
+    "cystic_fibrosis": { "name": "التليّف الكيسي", "carrier": "حامل للتليّف الكيسي" },
+    "g6pd_deficiency": { "name": "نقص إنزيم G6PD", "carrier": "حامل لنقص إنزيم G6PD" },
+    "gjb2_hearing_loss": { "name": "فقدان السمع المرتبط بجين GJB2", "carrier": "حامل لفقدان السمع المرتبط بجين GJB2" },
+    "phenylketonuria": { "name": "بيلة الفينيل كيتون (PKU)", "carrier": "حامل لبيلة الفينيل كيتون" },
+    "spinal_muscular_atrophy": { "name": "ضمور العضلات الشوكي", "carrier": "حامل لضمور العضلات الشوكي" }
+  },
+  "result": {
+    "carrier": "حامل، {condition}",
+    "affected": "مصاب، {condition}",
+    "no_variant": "لم يُعثر على نسخة متغيّرة ({condition})",
+    "uncertain": "متغيّر غير مؤكد الأهمية ({condition})",
+    "genotype": "{line} ({genotype})"
+  },
+  "detail": {
+    "coupleSession": "جلسة للزوجين",
+    "individualSession": "جلسة فردية",
+    "notBooked": "لم يُحجز موعد بعد",
+    "formats": {
+      "video": "مكالمة فيديو",
+      "in_person": "حضورياً"
+    },
+    "languages": {
+      "ar": "العربية",
+      "en": "الإنجليزية",
+      "ur": "الأردية",
+      "hi": "الهندية",
+      "tl": "التاغالوغية"
+    },
+    "consent": {
+      "both": "وافق كلاهما على المشاركة",
+      "one": "شاركت {name} فقط",
+      "patient": "شارك المريض معك",
+      "none": "لم تتم مشاركة شيء بعد"
+    },
+    "summaryLabel": "{name} · ملخص",
+    "fullLabel": "{name} · التقرير الكامل",
+    "reported": "صدرت في {date}",
+    "understood": "اختبار الفهم {count}/3",
+    "flaggedNote": "مُعلَّمة لمراجعة المستشار",
+    "noResult": "تمت المشاركة، لكن لا توجد نتيجة مرتبطة بالحساب بعد.",
+    "questionsTitle": "أسئلتهم",
+    "valuesTitle": "ملخص القيم",
+    "aiTitle": "ملخص Ask GeneBridge",
+    "familyTitle": "خريطة العائلة",
+    "familyShared": "شاركها {name}. يتوفّر عارض خريطة العائلة مع شاشة خريطة العائلة.",
+    "sharedBy": "(شاركه {name})",
+    "sharedByBoth": "(شاركه كلاهما)",
+    "values": {
+      "both": "كلاهما: {band}",
+      "differ": "مختلفان: يستحق النقاش",
+      "single": "{name}: {band}"
+    },
+    "bands": {
+      "very_important": "مهم جداً",
+      "important": "مهم",
+      "somewhat_important": "مهم إلى حد ما",
+      "less_important": "أقل أهمية"
+    },
+    "valueQuestions": {
+      "biological_children": "إنجاب أطفال بيولوجيين",
+      "religious_guidance": "اتباع الإرشاد الديني",
+      "avoid_procedures": "تجنّب الإجراءات الطبية",
+      "cost": "تكلفة العلاج",
+      "family_views": "آراء العائلة"
+    },
+    "notShared": "غير مُشارَك معك: {list}.",
+    "missingFor": "{item} ({name})",
+    "logged": {
+      "couple": "يُسجَّل اطلاعك ويمكن لكلا المريضين رؤيته.",
+      "single": "يُسجَّل اطلاعك ويمكن للمريض رؤيته."
+    },
+    "requestAccess": "طلب الاطلاع",
+    "requestAccessTitle": "اطلب رؤية ما لم تتم مشاركته بعد",
+    "requestAccessBody": "يصل إلى المريض إشعار داخل التطبيق، ويختار ما إذا كان سيشارك. لا يتغيّر شيء حتى يقرّر.",
+    "ask": "اطلب من {name}",
+    "requested": "تم الطلب · بانتظار {name}",
+    "requestSent": "تم إرسال الطلب إلى {name}.",
+    "alreadyShared": "سبق أن شارك {name} هذا.",
+    "note": {
+      "label": "ملاحظة الجلسة",
+      "placeholder": "خاصة بك وبمنشأتك",
+      "saving": "جارٍ الحفظ…",
+      "saved": "تم الحفظ",
+      "error": "تعذّر الحفظ. نعيد المحاولة."
+    },
+    "actions": {
+      "label": "الإجراءات",
+      "start": "بدء جلسة الفيديو",
+      "join": "الانضمام إلى جلسة الفيديو",
+      "markDone": "تأكيد انتهاء الجلسة",
+      "attended": "تمت الجلسة",
+      "confirmatory": "طلب فحص تأكيدي",
+      "confirmatoryOrdered": "تم طلب الفحص التأكيدي",
+      "specialist": "إحالة إلى أخصائي",
+      "close": "إغلاق الطلب",
+      "error": "لم ينجح ذلك. يُرجى المحاولة مرة أخرى.",
+      "sessionStarted": "بدأت الجلسة. فُتحت غرفة الفيديو في علامة تبويب جديدة.",
+      "attendedDone": "تم تأكيد حضور الجلسة.",
+      "confirmatoryDone": "تم طلب الفحص التأكيدي. تم تحديث رحلة الرعاية الخاصة بالمريض."
+    },
+    "referralsTitle": "الإحالات على هذا الطلب",
+    "referralLine": "{step} لـ{name}: {status}",
+    "steps": {
+      "confirmatory_test": "فحص تأكيدي",
+      "specialist": "إحالة إلى أخصائي"
+    },
+    "statuses": {
+      "ordered": "تم الطلب",
+      "scheduled": "تم تحديد موعد",
+      "done": "تم",
+      "cancelled": "أُلغي"
+    }
+  },
+  "specialist": {
+    "title": "الإحالة إلى خدمة متخصصة",
+    "body": "تظهر الإحالة في رحلة الرعاية الخاصة بالمريض فوراً.",
+    "legend": "الخدمة",
+    "kinds": {
+      "confirmatory_testing": "الفحص التأكيدي",
+      "haematology": "أمراض الدم",
+      "ivf_embryo_testing": "أطفال الأنابيب وفحص الأجنّة"
+    },
+    "submit": "إنشاء الإحالة",
+    "cancel": "إلغاء",
+    "required": "اختر خدمة.",
+    "created": "تم إنشاء الإحالة. تم تحديث رحلة الرعاية الخاصة بالمريض."
+  },
+  "close": {
+    "title": "إغلاق هذا الطلب",
+    "body": "سجّل ما حدث. تُحفظ الفئة فقط، ولا يُحفظ أي شيء عن القرارات الشخصية أو العائلية.",
+    "legend": "النتيجة",
+    "outcomes": {
+      "information_given": "تم تقديم المعلومات",
+      "follow_up_booked": "تم حجز متابعة",
+      "referred_confirmatory_test": "أُحيل لإجراء فحص تأكيدي",
+      "referred_specialist": "أُحيل إلى أخصائي",
+      "patient_withdrew": "انسحب المريض"
+    },
+    "followUp": "تاريخ المتابعة (اختياري)",
+    "submit": "إغلاق الطلب",
+    "cancel": "إلغاء",
+    "required": "اختر نتيجة لإغلاق الطلب.",
+    "closed": "تم إغلاق الطلب."
+  },
+  "status": {
+    "open": "مفتوح",
+    "booked": "محجوز",
+    "in_session": "في الجلسة",
+    "closed": "مغلق"
+  },
+  "sessions": {
+    "title": "جلسات اليوم",
+    "subtitle": "حجوزات اليوم مرتبة حسب الوقت. الأوقات بتوقيت أبوظبي.",
+    "empty": "لا توجد جلسات محجوزة اليوم.",
+    "join": "انضمام",
+    "attended": "تمت",
+    "open": "فتح الطلب"
+  },
+  "patients": {
+    "title": "المرضى",
+    "subtitle": "المرضى الذين قابلتهم، مع أحدث طلب لكل منهم.",
+    "searchLabel": "البحث بالاسم",
+    "searchHint": "يمكن البحث بالاسم فقط عن الأزواج الذين شاركوا أسماءهم.",
+    "search": "بحث",
+    "clear": "مسح",
+    "empty": "لا يوجد مرضى بعد.",
+    "noMatch": "لا يوجد من يطابق «{query}».",
+    "columns": {
+      "patient": "المريض",
+      "request": "أحدث طلب",
+      "status": "الحالة",
+      "date": "تاريخ الاستلام"
+    },
+    "closedWith": "مغلق: {outcome}"
+  },
+  "referrals": {
+    "title": "الإحالات",
+    "subtitle": "الإحالات التي أنشأتها. تغيير الحالة يحدّث رحلة الرعاية الخاصة بالمريض.",
+    "empty": "لم تُنشئ أي إحالات بعد.",
+    "columns": {
+      "patient": "المريض",
+      "referral": "الإحالة",
+      "status": "الحالة",
+      "updated": "آخر تحديث"
+    },
+    "statusLabel": "حالة {name}",
+    "saved": "تم تحديث الحالة.",
+    "error": "تعذّر تحديث الحالة."
+  },
+  "notes": {
+    "title": "ملاحظات الجلسات",
+    "subtitle": "ملاحظاتك، الأحدث أولاً. خاصة بك وبمنشأتك، ولا يراها المرضى أبداً.",
+    "empty": "لا توجد ملاحظات جلسات بعد.",
+    "open": "فتح الطلب",
+    "updated": "آخر تحديث {date}",
+    "emptyNote": "(ملاحظة فارغة)",
+    "unknownRequest": "لم يعد الطلب في قائمتك"
+  },
+  "video": {
+    "title": "جلسة فيديو (عرض تجريبي)",
+    "body": "هذه غرفة مؤقتة للعرض التجريبي. يتصل مزوّد الفيديو الفعلي هنا.",
+    "back": "العودة إلى القائمة",
+    "markDone": "تأكيد انتهاء الجلسة",
+    "done": "تم تأكيد حضور الجلسة."
+  }
+}

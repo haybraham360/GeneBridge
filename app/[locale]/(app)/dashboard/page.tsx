@@ -1,14 +1,19 @@
 import { hasLocale } from 'next-intl';
 import { notFound } from 'next/navigation';
-import { PlaceholderPage, placeholderMetadata } from '@/components/PlaceholderPage';
+import { placeholderMetadata } from '@/components/PlaceholderPage';
 import { routing } from '@/i18n/routing';
-import { getTranslations } from "next-intl/server";
+import { getFormatter, getTranslations } from "next-intl/server";
 
 import { Volume1 } from "lucide-react";
 import CareJourney from "@/components/dashboard/CareJourney";
 import SummaryCards from "@/components/dashboard/SummaryCards";
 import AskGeneBridge from "@/components/dashboard/AskGeneBridge";
 import ExplorePanel from "@/components/dashboard/ExplorePanel";
+import { PatientNotifications } from "@/components/notifications/PatientNotifications";
+import { careView } from "@/lib/care/display";
+import { loadCareFacts } from "@/lib/care/tracker";
+import { loadNotifications } from "@/lib/notifications/server";
+import { createClient } from "@/lib/supabase/server";
 
 export async function generateMetadata({ params }: PageProps<'/[locale]/dashboard'>) {
   const { locale } = await params;
@@ -19,6 +24,16 @@ export default async function Page({ params }: PageProps<'/[locale]/dashboard'>)
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
   const t = await getTranslations({ locale, namespace: "dashboard" });
+  const supabase = await createClient();
+  const [format, facts, notifications, { data: claims }] = await Promise.all([
+    getFormatter({ locale }),
+    loadCareFacts(supabase),
+    loadNotifications(supabase),
+    supabase.auth.getClaims(),
+  ]);
+  // Care journey and counsellor updates come from the patient's own data (task 07).
+  const care = careView(facts, t as unknown as Parameters<typeof careView>[1], format);
+  const userId = claims?.claims?.sub;
 //   return <PlaceholderPage locale={locale} screen="dashboard" />;
   return (
         <main className="min-w-0 min-h-0 overflow-auto flex-1 px-10 pb-10 pt-9">
@@ -39,7 +54,8 @@ export default async function Page({ params }: PageProps<'/[locale]/dashboard'>)
             </header>
 
             <div className="mt-4.25 flex flex-col gap-4.5">
-                <CareJourney />
+                {userId ? <PatientNotifications items={notifications} userId={userId} /> : null}
+                <CareJourney steps={care.steps} current={care.current} />
                 <SummaryCards />
                 <div className="grid grid-cols-[1.75fr_1fr] gap-5">
                 <AskGeneBridge />

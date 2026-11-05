@@ -1,11 +1,13 @@
 import { CircleCheck } from 'lucide-react';
 import { hasLocale } from 'next-intl';
-import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
-import { PlaceholderPage, placeholderMetadata } from '@/components/PlaceholderPage';
+import { placeholderMetadata } from '@/components/PlaceholderPage';
 import { routing } from '@/i18n/routing';
 import CounsellorPage from '@/components/counsellor/CounsellorPage';
 import { createClient } from '@/lib/supabase/server';
+import { careView } from '@/lib/care/display';
+import { loadCareFacts } from '@/lib/care/tracker';
 
 export async function generateMetadata({ params }: PageProps<'/[locale]/dashboard/counsellor'>) {
   const { locale } = await params;
@@ -13,8 +15,10 @@ export async function generateMetadata({ params }: PageProps<'/[locale]/dashboar
 }
 
 /**
- * Counsellor & Referral is a later milestone (M7). For now it confirms a
- * request sent from Ask GeneBridge (?request=…), read as the owner (RLS).
+ * Counsellor & Referral. The referral path comes from the patient's own
+ * bookings and referrals (task 07); booking itself is still the demo UI.
+ * Also confirms a request sent from Ask GeneBridge (?request=…), read as the
+ * owner (RLS).
  */
 export default async function Page({ params, searchParams }: PageProps<'/[locale]/dashboard/counsellor'>) {
   const { locale } = await params;
@@ -22,9 +26,19 @@ export default async function Page({ params, searchParams }: PageProps<'/[locale
   setRequestLocale(locale);
   const { request: requestId } = await searchParams;
 
+  const supabase = await createClient();
+  const [tDashboard, format, facts] = await Promise.all([
+    getTranslations({ locale, namespace: 'dashboard' }),
+    getFormatter({ locale }),
+    loadCareFacts(supabase),
+  ]);
+  // The referral path: the care journey without "Result understood" (task 07).
+  const path = careView(facts, tDashboard as unknown as Parameters<typeof careView>[1], format).steps
+    .filter((s) => s.key !== 'understood')
+    .map(({ title, meta, status }) => ({ title, meta, status }));
+
   let banner = null;
   if (typeof requestId === 'string') {
-    const supabase = await createClient();
     const { data } = await supabase
       .from('counsellor_requests')
       .select('reason, urgency, share_summary')
@@ -50,7 +64,7 @@ export default async function Page({ params, searchParams }: PageProps<'/[locale
   return (
     <>
       {banner}
-      <CounsellorPage />
+      <CounsellorPage path={path} flagged={facts.result?.flagged ?? false} />
     </>
   );
 }

@@ -9,7 +9,7 @@
  */
 import { config } from 'dotenv';
 import { createClient, type User } from '@supabase/supabase-js';
-import { DEMO_FACILITY_CODE, demoUsers } from '../lib/auth/demoUsers';
+import { demoFacilities, demoUsers } from '../lib/auth/demoUsers';
 
 config({ path: '.env.local' });
 
@@ -38,6 +38,12 @@ async function allUsers(): Promise<User[]> {
 }
 
 async function main() {
+  // Facilities first (task 07): counsellors belong to one.
+  const { error: facilityError } = await admin
+    .from('facilities')
+    .upsert(demoFacilities.map((f) => ({ code: f.code, name: f.name })), { onConflict: 'code' });
+  if (facilityError) throw new Error(`facilities: ${facilityError.message}`);
+
   const existing = await allUsers();
 
   for (const persona of demoUsers) {
@@ -88,15 +94,16 @@ async function main() {
       if (error) throw new Error(`${persona.displayName} consent: ${error.message}`);
     }
 
-    if (persona.role === 'counsellor') {
+    if (persona.role === 'counsellor' && persona.facilityCode) {
+      // facility_code is mirrored to facility_id by a database trigger.
       const { error } = await admin.from('counsellors').upsert(
         {
           user_id: user.id,
           name: persona.displayName,
           languages: ['en', 'ar'],
-          facility_code: DEMO_FACILITY_CODE,
+          facility_code: persona.facilityCode,
         },
-        { onConflict: 'facility_code' },
+        { onConflict: 'user_id' },
       );
       if (error) throw new Error(`counsellor row: ${error.message}`);
     }
