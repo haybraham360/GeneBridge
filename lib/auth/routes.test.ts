@@ -28,8 +28,13 @@ describe('destinationFor', () => {
     );
   });
 
-  it('sends counsellors to /pro', () => {
+  it('sends counsellors to /pro, never into onboarding or patient screens', () => {
     expect(destinationFor({ role: 'counsellor', onboarding_step: 0 }, null)).toBe('/pro');
+    expect(destinationFor({ role: 'counsellor', onboarding_step: 8 }, '/dashboard')).toBe('/pro');
+    expect(destinationFor({ role: 'counsellor', onboarding_step: 8 }, '/onboarding')).toBe('/pro');
+    expect(destinationFor({ role: 'counsellor', onboarding_step: 8 }, '/pro/patients')).toBe(
+      '/pro/patients',
+    );
   });
 
   it('sends analysts to the dashboard, never into onboarding or patient screens', () => {

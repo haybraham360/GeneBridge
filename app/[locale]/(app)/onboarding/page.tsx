@@ -4,6 +4,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { redirect } from '@/i18n/navigation';
 import { routing } from '@/i18n/routing';
+import { COUNSELLOR_HOME } from '@/lib/auth/routes';
 import { finishFor, hasPrivacyConsent } from '@/lib/onboarding/queries';
 import {
   DONE_STEP,
@@ -39,10 +40,13 @@ export default async function OnboardingPage({ params }: PageProps<'/[locale]/on
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('locale, learning_mode, reason, onboarding_step')
+    .select('locale, learning_mode, reason, onboarding_step, role')
     .eq('user_id', user.id)
     .maybeSingle();
   if (!profile) return redirect({ href: '/auth', locale });
+
+  // Health professionals have their own workspace and skip patient onboarding.
+  if (profile.role === 'counsellor') return redirect({ href: COUNSELLOR_HOME, locale });
 
   // Finished: later visits go straight to the dashboard.
   if (profile.onboarding_step >= DONE_STEP) return redirect({ href: '/dashboard', locale });

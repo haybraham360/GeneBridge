@@ -15,7 +15,7 @@ import {
   resetOnboarding,
   restoreFinished,
 } from '../supabase';
-import type { DemoUser } from '../../lib/auth/demoUsers';
+import { DEMO_FACILITY_CODE, type DemoUser } from '../../lib/auth/demoUsers';
 
 test.skip(!hasSupabase, 'Supabase env vars are not set (see README.md)');
 
@@ -48,9 +48,16 @@ async function expectStep(page: Page, n: number, title: string) {
   await expect(heading(page)).toHaveText(title);
 }
 
+/** Step 1: chooses "For myself or my family" and starts. */
+async function startAsIndividual(page: Page) {
+  await expect(page.getByRole('button', { name: "Let's start" })).toBeDisabled();
+  await page.getByRole('radio', { name: /For myself or my family/ }).click();
+  await page.getByRole('button', { name: "Let's start" }).click();
+}
+
 /** Skips from step 2 to the privacy step and agrees. Ends on step 6. */
 async function quickToConnect(page: Page) {
-  await page.getByRole('button', { name: "Let's start" }).click();
+  await startAsIndividual(page);
   for (const n of [2, 3, 4]) {
     await expect(stepLabel(page, n)).toBeVisible();
     await page.getByRole('button', { name: 'Skip' }).click();
@@ -70,7 +77,7 @@ test('Mariam completes onboarding, claims her result and ends on /dashboard/resu
   // 1. Welcome
   await expectStep(page, 1, 'Welcome to GeneBridge');
   await expect(page.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '1');
-  await page.getByRole('button', { name: "Let's start" }).click();
+  await startAsIndividual(page);
 
   // 2. Language: focus moves to the new heading.
   await expectStep(page, 2, 'Which language do you prefer?');
@@ -207,7 +214,7 @@ test('Patient R. (flagged) ends on the counsellor route with no risk shown', asy
 test('leaving at step 4 and signing in again resumes at step 4', async ({ page, context }) => {
   await resetOnboarding('khalid');
   await signIn(page, 'khalid');
-  await page.getByRole('button', { name: "Let's start" }).click();
+  await startAsIndividual(page);
   await page.getByRole('button', { name: 'Next', exact: true }).click();
   await page.getByRole('radio', { name: /^Listen/ }).click();
   await page.getByRole('button', { name: 'Next', exact: true }).click();
@@ -234,7 +241,7 @@ test('choosing Arabic switches the language and direction straight away', async 
   await resetOnboarding('khalid');
   await signIn(page, 'khalid');
   await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
-  await page.getByRole('button', { name: "Let's start" }).click();
+  await startAsIndividual(page);
   await expectStep(page, 2, 'Which language do you prefer?');
 
   await page.getByRole('radio', { name: /العربية/ }).click();
@@ -278,10 +285,12 @@ test('the screening result is optional: Next moves on without one', async ({ pag
   expect(data).toHaveLength(0);
 });
 
-test('Skip is not offered on the privacy step', async ({ page }) => {
+test('Skip is not offered on the welcome or privacy steps', async ({ page }) => {
   await resetOnboarding('khalid');
   await signIn(page, 'khalid');
-  await page.getByRole('button', { name: "Let's start" }).click();
+  await expectStep(page, 1, 'Welcome to GeneBridge');
+  await expect(page.getByRole('button', { name: 'Skip' })).toHaveCount(0);
+  await startAsIndividual(page);
   for (const n of [2, 3, 4]) {
     await expect(stepLabel(page, n)).toBeVisible();
     await expect(page.getByRole('button', { name: 'Skip' })).toBeVisible();
@@ -350,4 +359,46 @@ test('the invite link connects Mariam and Khalid as active', async ({ browser })
 
   await mariamContext.close();
   await khalidContext.close();
+});
+
+test('choosing "health professional" needs a valid facility code, then opens /pro', async ({ page }) => {
+  const userId = await resetOnboarding('khalid');
+  await signIn(page, 'khalid');
+  await expectStep(page, 1, 'Welcome to GeneBridge');
+
+  await page.getByRole('radio', { name: /health professional/ }).click();
+  const code = page.getByRole('textbox', { name: 'Facility code' });
+  await expect(code).toBeVisible();
+
+  // Choosing the option alone grants nothing.
+  await page.getByRole('button', { name: 'Open my workspace' }).click();
+  await expect(page.getByRole('alert')).toHaveText('Enter your facility code.');
+
+  await code.fill('GB-NOPE-000');
+  await page.getByRole('button', { name: 'Open my workspace' }).click();
+  await expect(page.getByRole('alert')).toHaveText(
+    "That facility code didn't work. Check it and try again.",
+  );
+  const { data: still } = await adminClient()
+    .from('profiles')
+    .select('role')
+    .eq('user_id', userId)
+    .single();
+  expect(still?.role).toBe('individual');
+
+  try {
+    await code.fill(DEMO_FACILITY_CODE.toLowerCase());
+    await page.getByRole('button', { name: 'Open my workspace' }).click();
+    await expect(page).toHaveURL(/\/en\/pro$/);
+    // The role now decides the dashboard: patient screens send them back to /pro.
+    await page.goto('/en/dashboard');
+    await expect(page).toHaveURL(/\/en\/pro$/);
+    await page.goto('/en/onboarding');
+    await expect(page).toHaveURL(/\/en\/pro$/);
+  } finally {
+    const admin = adminClient();
+    await admin.from('counsellors').delete().eq('user_id', userId);
+    await admin.from('profiles').update({ role: 'individual' }).eq('user_id', userId);
+    await admin.from('events').delete().eq('user_id', userId).eq('name', 'facility_code_failed');
+  }
 });

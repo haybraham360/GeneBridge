@@ -19,7 +19,7 @@ describe('onboarding steps', () => {
   });
 
   it('offers Skip everywhere except privacy and the final step', () => {
-    expect([1, 2, 3, 4, 5, 6, 7, 8].filter((s) => canSkip(s as 1))).toEqual([1, 2, 3, 4, 6, 7]);
+    expect([1, 2, 3, 4, 5, 6, 7, 8].filter((s) => canSkip(s as 1))).toEqual([2, 3, 4, 6, 7]);
   });
 
   it('skips the invite step for people already linked to a partner', () => {
