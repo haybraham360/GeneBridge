@@ -15,7 +15,8 @@
       "title": "Ask GeneBridge",
       "description": "General questions about genetics. It won't interpret your personal result.",
       "cta": "Ask a question"
-    }
+    },
+    "account": "Your account"
   },
 
   "shared": {
@@ -23,7 +24,8 @@
   },
   "home": {
     "greeting": "Good morning, {name}",
-    "subtitle": "Here is where you are. Take it one step at a time."
+    "subtitle": "Here is where you are. Take it one step at a time.",
+    "greetingNoName": "Good morning"
   },
   "careJourney": {
     "title": "Your care journey",
@@ -199,7 +201,9 @@
       "sharing": "Sharing result summary",
       "pausedState": "Sharing paused",
       "done": "Done"
-    }
+    },
+    "you": "You",
+    "yourPartner": "Your partner"
   },
 
   "simulator": {
@@ -425,7 +429,9 @@
       "sharedOn": "Shared with your counsellor.",
       "sharedOff": "Sharing stopped.",
       "sent": "Sent to {count, plural, one {# relative} other {# relatives}}. Your result was not included."
-    }
+    },
+    "selfName": "{name} (you)",
+    "selfNoName": "You"
   },
 
   "options": {

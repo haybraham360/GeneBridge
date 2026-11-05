@@ -3,6 +3,8 @@ import { notFound } from 'next/navigation';
 import { placeholderMetadata } from '@/components/PlaceholderPage';
 import { routing } from '@/i18n/routing';
 import FamilyMap from '@/components/family/FamilyMap';
+import { currentPerson } from '@/lib/profile/currentPerson';
+import { createClient } from '@/lib/supabase/server';
 import { sendFamilyNotices } from './actions';
 
 export async function generateMetadata({ params }: PageProps<'/[locale]/dashboard/family'>) {
@@ -16,5 +18,13 @@ export default async function Page({ params, searchParams }: PageProps<'/[locale
   if (!hasLocale(routing.locales, locale)) notFound();
   // Notices are sent server-side (task 08); the map itself stays in the browser.
   // ?notify=1 opens the notify flow directly (from the talk page's relatives guide).
-  return <FamilyMap lang={locale} onNotify={sendFamilyNotices} openNotify={notify === '1'} />;
+  const person = await currentPerson(await createClient());
+  return (
+    <FamilyMap
+      lang={locale}
+      selfName={person.firstName}
+      onNotify={sendFamilyNotices}
+      openNotify={notify === '1'}
+    />
+  );
 }

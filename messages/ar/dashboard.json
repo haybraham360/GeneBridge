@@ -15,14 +15,16 @@
       "title": "اسأل GeneBridge",
       "description": "أسئلة عامة عن علم الوراثة. لن يفسّر نتيجتك الشخصية.",
       "cta": "اطرح سؤالاً"
-    }
+    },
+    "account": "حسابك"
   },
   "shared": {
     "listen": "استمع"
   },
   "home": {
     "greeting": "صباح الخير، {name}",
-    "subtitle": "هذا موقعك الآن. خذ الأمر خطوة بخطوة."
+    "subtitle": "هذا موقعك الآن. خذ الأمر خطوة بخطوة.",
+    "greetingNoName": "صباح الخير"
   },
   "careJourney": {
     "title": "رحلة رعايتك",
@@ -198,7 +200,9 @@
       "sharing": "تتم مشاركة ملخص النتيجة",
       "pausedState": "المشاركة متوقفة",
       "done": "تم"
-    }
+    },
+    "you": "أنت",
+    "yourPartner": "شريك حياتك"
   },
 
   "simulator": {
@@ -424,7 +428,9 @@
       "sharedOn": "تمت المشاركة مع مستشارك.",
       "sharedOff": "تم إيقاف المشاركة.",
       "sent": "أُرسلت إلى {count, plural, one {قريب واحد} two {قريبين} few {# أقارب} many {# قريباً} other {# قريب}}. لم تُضمَّن نتيجتك."
-    }
+    },
+    "selfName": "{name} (أنت)",
+    "selfNoName": "أنت"
   },
 
   "options": {

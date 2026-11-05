@@ -64,9 +64,10 @@ export interface CoupleViewProps {
 /*  Static content                                                            */
 /* -------------------------------------------------------------------------- */
 
+// Names come from the page (the signed-in person and their linked partner).
 const DEFAULT_PARTNERS: [Partner, Partner] = [
-  { id: "mariam", name: "Mariam", sharing: true },
-  { id: "khalid", name: "Khalid", sharing: true },
+  { id: "me", name: "", sharing: true },
+  { id: "partner", name: "", sharing: true },
 ];
 
 const OUTCOMES: Outcome[] = [

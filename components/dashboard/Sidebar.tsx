@@ -10,6 +10,7 @@ import {
   ShieldCheck,
   MessageSquare,
   MessagesSquare,
+  LogOut,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import type { ComponentType } from "react";
@@ -18,6 +19,7 @@ import { Logo } from "../ui/Logo";
 import { LanguageSwitch } from "../marketing/LanguageSwitch";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { signOut } from "@/lib/auth/actions";
 
 type NavKey =
   | "home"
@@ -69,12 +71,19 @@ function FamilyIcon({ className }: { className?: string; strokeWidth?: number })
   );
 }
 
-export default function Sidebar() {
+type SidebarProps = {
+  /** The signed-in person's first name, or null if they haven't given one. */
+  name: string | null;
+  initial: string | null;
+};
+
+export default function Sidebar({ name, initial }: SidebarProps) {
 
   const [activeLink, setActiveLink] = useState("Home");
   const pathname = usePathname();
   const spreadChars = pathname.slice(3); 
   const t = useTranslations('dashboard.sidebar'); 
+  const tc = useTranslations('common');
 
   useEffect(() => {
     const activeItem = nav.find((item) => item.link === pathname);
@@ -133,16 +142,26 @@ export default function Sidebar() {
 
         <div className="flex items-center gap-2.5 px-4.5 pb-0 pt-3">
           <div className="flex h-6 w-6 items-center justify-center rounded-full bg-brand/10 text-[10px] font-medium text-[#9A3412]">
-            M
+            {initial ?? ""}
           </div>
           <div className="leading-tight mt-3">
-            <div className="text-[10px] font-medium">Mariam</div>
+            <div className="text-[10px] font-medium">{name ?? t("account")}</div>
             <div className="-mt-4 text-[8.5px] text-neutral-500">
               {/* English · <span dir="rtl">العربية</span> */}
               <LanguageSwitch />
             </div>
           </div>
         </div>
+
+        <form action={signOut} className="px-3.25 pt-3">
+          <button
+            type="submit"
+            className="flex min-h-11 w-full cursor-pointer items-center gap-3 rounded-xl px-4 text-[14px] font-medium text-ink/85 hover:bg-brand/5"
+          >
+            <LogOut aria-hidden="true" className="h-5 w-5 rtl:-scale-x-100" strokeWidth={1.6} />
+            {tc("signOut")}
+          </button>
+        </form>
       </div>
     </aside>
   );

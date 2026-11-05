@@ -13,6 +13,7 @@ import { PatientNotifications } from "@/components/notifications/PatientNotifica
 import { careView } from "@/lib/care/display";
 import { loadCareFacts } from "@/lib/care/tracker";
 import { loadNotifications } from "@/lib/notifications/server";
+import { currentPerson } from "@/lib/profile/currentPerson";
 import { createClient } from "@/lib/supabase/server";
 
 export async function generateMetadata({ params }: PageProps<'/[locale]/dashboard'>) {
@@ -25,11 +26,12 @@ export default async function Page({ params }: PageProps<'/[locale]/dashboard'>)
   if (!hasLocale(routing.locales, locale)) notFound();
   const t = await getTranslations({ locale, namespace: "dashboard" });
   const supabase = await createClient();
-  const [format, facts, notifications, { data: claims }] = await Promise.all([
+  const [format, facts, notifications, { data: claims }, person] = await Promise.all([
     getFormatter({ locale }),
     loadCareFacts(supabase),
     loadNotifications(supabase),
     supabase.auth.getClaims(),
+    currentPerson(supabase),
   ]);
   // Care journey and counsellor updates come from the patient's own data (task 07).
   const care = careView(facts, t as unknown as Parameters<typeof careView>[1], format);
@@ -41,7 +43,7 @@ export default async function Page({ params }: PageProps<'/[locale]/dashboard'>)
             <header className="flex items-start justify-between">
                 <div>
                 <h1 className="text-[32px] text-ink font-extrabold leading-7.5 tracking-[-0.01em]">
-                    {t("home.greeting", { name: "Mariam" })}
+                    {person.firstName ? t("home.greeting", { name: person.firstName }) : t("home.greetingNoName")}
                 </h1>
                 <p className="mt-3.5 text-[15px] leading-3.5 text-neutral-500">
                     {t("home.subtitle")}

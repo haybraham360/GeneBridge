@@ -4,6 +4,7 @@ import Sidebar from "@/components/dashboard/Sidebar";
 import { redirect } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { COUNSELLOR_HOME } from "@/lib/auth/routes";
+import { currentPerson } from "@/lib/profile/currentPerson";
 import { createClient } from "@/lib/supabase/server";
 
 /**
@@ -29,9 +30,12 @@ export default async function DashboardLayout({
     if (profile?.role === "counsellor") return redirect({ href: COUNSELLOR_HOME, locale });
   }
 
+  // The signed-in person's own name, never a demo persona.
+  const person = await currentPerson(supabase);
+
   return (
     <div className="fixed inset-0 flex overflow-hidden">
-      <Sidebar />
+      <Sidebar name={person.firstName} initial={person.initial} />
       <main className="min-w-0 flex-1 overflow-y-auto">{children}</main>
     </div>
   );

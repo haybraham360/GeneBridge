@@ -84,6 +84,8 @@ export interface FamilyMapProps {
   onNotify?: (payload: Omit<NotifyPayload, "relativeIds">) => Promise<NotifyResult>;
   /** Open "Choose relatives to notify" straight away (e.g. from /dashboard/talk). */
   openNotify?: boolean;
+  /** The signed-in person's first name, from their account (null if not given). */
+  selfName?: string | null;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -166,15 +168,16 @@ export const DEFAULT_DATA: FamilyMapData = {
     { id: "ahmed", name: "Father Ahmed", gender: "male", status: "carrier", origin: "added", gen: 1, x: 159 },
     { id: "huda", name: "Mother Huda", gender: "female", status: "unsure", origin: "added", gen: 1, x: 384 },
     { id: "khalid", name: "Khalid", gender: "male", status: "carrier", statusNote: "shared", origin: "shared", gen: 2, x: 14 },
-    { id: "mariam", name: "Mariam (you)", gender: "female", status: "carrier", origin: "self", gen: 2, x: 217 },
+    // The signed-in person. Their name is filled in from their account (selfName).
+    { id: "self", name: "", gender: "unspecified", status: "carrier", origin: "self", gen: 2, x: 217 },
     { id: "yousef", name: "Brother Yousef", gender: "male", status: "unsure", origin: "added", gen: 2, x: 391 },
   ],
   unions: [
     { id: "u1", partners: ["rashid", "fatima"], children: ["saeed", "ahmed"] },
     { id: "u2", partners: ["ali", "noura"], children: ["huda"] },
     { id: "u3", partners: ["saeed"], children: ["khalid"] },
-    { id: "u4", partners: ["ahmed", "huda"], children: ["mariam", "yousef"] },
-    { id: "u5", partners: ["khalid", "mariam"], children: [], consanguineous: true },
+    { id: "u4", partners: ["ahmed", "huda"], children: ["self", "yousef"] },
+    { id: "u5", partners: ["khalid", "self"], children: [], consanguineous: true },
   ],
 };
 
@@ -1494,8 +1497,15 @@ export default function FamilyMap({
   onShareChange,
   onNotify,
   openNotify = false,
+  selfName = null,
 }: FamilyMapProps) {
-  const [data, setData] = useState<FamilyMapData>(initialData);
+  const tSelf = useTranslations("dashboard.family");
+  // The "you" box shows the person's own name, never a demo persona.
+  const selfLabel = selfName ? tSelf("selfName", { name: selfName }) : tSelf("selfNoName");
+  const [data, setData] = useState<FamilyMapData>(() => ({
+    ...initialData,
+    people: initialData.people.map((p) => (p.origin === "self" && !p.name ? { ...p, name: selfLabel } : p)),
+  }));
   const [selectedId, setSelectedId] = useState("saeed");
   const [dialog, setDialog] = useState<DialogKind>(openNotify ? "notify" : null);
   const [anonymous, setAnonymous] = useState(true);
