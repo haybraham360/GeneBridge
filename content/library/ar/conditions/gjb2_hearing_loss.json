@@ -1,0 +1,34 @@
+{
+  "id": "gjb2_hearing_loss",
+  "kind": "condition",
+  "locale": "ar",
+  "inheritance": "autosomal_recessive",
+  "title": "ضعف السمع الخِلقي (GJB2)",
+  "aliases": [
+    "GJB2",
+    "كونيكسين 26",
+    "ضعف السمع",
+    "الصمم",
+    "الصمم الخلقي"
+  ],
+  "summary": "التغيّرات في جين GJB2 سبب وراثي شائع لضعف السمع الموجود منذ الولادة. قد يتراوح ضعف السمع بين الخفيف والشديد جداً.",
+  "inheritance_plain": "يُورَّث ضعف السمع المرتبط بجين GJB2 عادةً بطريقة جسمية متنحية: يُصاب الطفل فقط إذا ورث نسخة متغيّرة من كلا الوالدين.",
+  "carrier_meaning": "حامل الصفة لديه نسخة متغيّرة واحدة، وسمعه عادةً طبيعي.",
+  "disease_meaning": "الطفل الذي لديه نسختان متغيّرتان لديه ضعف في السمع. يساعد الدعم المبكر، مثل السماعات وزراعة القوقعة ولغة الإشارة، الأطفال على النمو والتواصل.",
+  "screening": "يكتشف فحص السمع لحديثي الولادة ضعف السمع مبكراً مهما كان سببه.",
+  "sources": [
+    {
+      "title": "Nonsyndromic hearing loss",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/nonsyndromic-hearing-loss/"
+    },
+    {
+      "title": "GJB2 gene",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/gene/gjb2/"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-05",
+  "audio": "/audio/ar/conditions/gjb2_hearing_loss.mp3"
+}

@@ -1,0 +1,33 @@
+{
+  "id": "consanguinity",
+  "kind": "general",
+  "locale": "en",
+  "title": "Cousin marriage and inherited risk",
+  "aliases": [
+    "cousin",
+    "cousin marriage",
+    "consanguinity",
+    "consanguineous",
+    "related",
+    "relatives marry",
+    "first cousin",
+    "family marriage"
+  ],
+  "summary": "Marriage between relatives, such as cousins, is common in many families and cultures. It raises the chance of some recessive conditions mainly when both partners carry a changed copy of the same gene, because relatives are more likely to share the same changed genes.",
+  "body": "Most children of cousin couples are born healthy. Screening shows whether both partners carry the same change, and counselling explains what that means for each pregnancy. These services exist to support couples and families with information, not to judge their choices.",
+  "sources": [
+    {
+      "title": "What is a genetic consultation?",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/understanding/consult/consultation/"
+    },
+    {
+      "title": "Thalassaemia and other haemoglobinopathies (report EB118/5)",
+      "publisher": "World Health Organization",
+      "url": "https://apps.who.int/gb/ebwha/pdf_files/eb118/b118_5-en.pdf"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-05",
+  "audio": "/audio/en/general/consanguinity.mp3"
+}

@@ -1,0 +1,27 @@
+{
+  "id": "inheritance_patterns",
+  "kind": "general",
+  "locale": "ar",
+  "title": "كيف تُورَّث الحالات",
+  "aliases": [
+    "الوراثة",
+    "متنحي",
+    "سائد",
+    "مرتبط بالكروموسوم X",
+    "جسمي",
+    "نمط الوراثة",
+    "كيف تورث"
+  ],
+  "summary": "لدى كل منا نسختان من معظم الجينات، واحدة من كل والد. تعتمد طريقة انتقال الحالة من الوالدين إلى الأطفال على نمط وراثتها.",
+  "body": "الجسمي المتنحي: يحتاج الطفل إلى نسخة متغيّرة من كلا الوالدين ليُصاب، ومن لديه نسخة واحدة يكون حاملاً سليماً. الجسمي السائد: تكفي نسخة متغيّرة واحدة لظهور الحالة. المرتبط بالكروموسوم X: الجين على الكروموسوم X، لذا يتأثر الذكور والإناث بشكل مختلف. الاحتمالات هي نفسها في كل حمل، ولا يغيّرها الأطفال السابقون. الأنماط السائدة والمرتبطة بـX أكثر تعقيداً في العائلات، لذا ينبغي أن يناقشها معك مستشار وراثي.",
+  "sources": [
+    {
+      "title": "What are the different ways a genetic condition can be inherited?",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/understanding/inheritance/inheritancepatterns/"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-05",
+  "audio": "/audio/ar/general/inheritance_patterns.mp3"
+}

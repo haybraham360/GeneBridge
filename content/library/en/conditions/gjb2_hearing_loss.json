@@ -1,0 +1,35 @@
+{
+  "id": "gjb2_hearing_loss",
+  "kind": "condition",
+  "locale": "en",
+  "inheritance": "autosomal_recessive",
+  "title": "Congenital hearing loss (GJB2)",
+  "aliases": [
+    "GJB2",
+    "connexin 26",
+    "hearing loss",
+    "deafness",
+    "DFNB1",
+    "congenital deafness"
+  ],
+  "summary": "Changes in the GJB2 gene are a common genetic cause of hearing loss that is present from birth. Hearing loss can range from mild to profound.",
+  "inheritance_plain": "GJB2 hearing loss is usually inherited in an autosomal recessive way: a child is affected only if they get a changed copy from both parents.",
+  "carrier_meaning": "A carrier has one changed copy and usually has typical hearing.",
+  "disease_meaning": "A child with two changed copies has hearing loss. Early support, such as hearing aids, cochlear implants and sign language, helps children develop and communicate.",
+  "screening": "Newborn hearing screening finds hearing loss early, whatever the cause.",
+  "sources": [
+    {
+      "title": "Nonsyndromic hearing loss",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/nonsyndromic-hearing-loss/"
+    },
+    {
+      "title": "GJB2 gene",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/gene/gjb2/"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-05",
+  "audio": "/audio/en/conditions/gjb2_hearing_loss.mp3"
+}

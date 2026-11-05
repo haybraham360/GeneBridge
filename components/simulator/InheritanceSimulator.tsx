@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowDown, Square, Volume1 } from "lucide-react";
+import { calculateInheritance, type ParentStatus } from "@/lib/genetics/inheritance";
 
 /* -------------------------------------------------------------------------- */
 /*  Types & static content                                                    */
@@ -28,6 +29,12 @@ interface SingleResult {
   outcome: OutcomeKey;
 }
 
+/** Expected chances come from the shared inheritance engine (lib/genetics). */
+function expectedFor(p1: ParentStatus, p2: ParentStatus): Record<OutcomeKey, number> {
+  const { chances } = calculateInheritance("autosomal_recessive", p1, p2);
+  return { scd: chances.affected, carrier: chances.carrier, none: chances.unaffected };
+}
+
 const PATTERNS: Pattern[] = [
   {
     id: "both",
@@ -36,7 +43,7 @@ const PATTERNS: Pattern[] = [
     parent2: ["A", "S"],
     parent1Label: "Carrier (AS)",
     parent2Label: "Carrier (AS)",
-    expected: { scd: 25, carrier: 50, none: 25 },
+    expected: expectedFor("carrier", "carrier"),
   },
   {
     id: "one",
@@ -45,7 +52,7 @@ const PATTERNS: Pattern[] = [
     parent2: ["A", "A"],
     parent1Label: "Carrier (AS)",
     parent2Label: "Not a carrier (AA)",
-    expected: { scd: 0, carrier: 50, none: 50 },
+    expected: expectedFor("carrier", "unaffected"),
   },
 ];
 

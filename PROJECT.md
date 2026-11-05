@@ -54,7 +54,7 @@ These come straight from the brief. Breaking one loses points or causes harm. Ch
 2. **No compatibility score, no marriage verdict.** "Couple Compatibility" shows shared chances as information only. Never render a single compatibility number, a traffic light, or "should you marry" language.
 3. **Risk is not diagnosis.** Carrier copy always states the person is healthy. Chances are "for each pregnancy" and "the same every time".
 4. **Flagged results skip the explainer.** If a result is a variant of uncertain significance, a severe or X-linked condition, or conflicting, set `flagged = true`. The app then shows only the counsellor handoff screen, never a risk number or explanation.
-5. **The AI assistant never interprets a personal result.** It answers general genetics questions from the content library only. Any question about "my", "our", or "our baby's" result gets a fixed reply plus a "Book a counsellor" button. Never pass a user's result data into the LLM prompt.
+5. **The AI educates and explains; it never diagnoses, decides or calculates risk itself.** Risk numbers come only from the deterministic inheritance engine. The AI may explain a user's own result only when the user turns on "Use my result in this chat" and the result is not flagged. Flagged, uncertain, severe or emotionally urgent situations are escalated to a qualified professional.
 6. **Consent before sharing, enforced in the database.** Row-level security, not just the UI. The couple view opens only when **both** partners have an active consent row. Revoking takes effect immediately.
 7. **Each person owns their own result.** A partner, relative or counsellor sees only what a `share_grant` allows.
 8. **Family map is private and self-reported.** Never pull in a relative's test result. Family notifications never include the sender's result. Anonymous sending is the default.
@@ -166,15 +166,32 @@ events           (id, user_id, name, props jsonb, created_at)            -- powe
 
 ## 8. Ask GeneBridge (AI assistant) rules
 
-- Server route only. The system prompt restricts answers to general genetics education drawn from `content/library/*.json`.
-- **Never include the user's result, family map or any personal data in the prompt.**
-- A classifier step (regex plus LLM check) detects personal-result questions ("my result", "our baby", "should we", "is it safe for us to marry"). These return a fixed message: *"I can't interpret your personal result. A genetic counsellor can explain what it means for you."* plus a Book button.
-- No medical advice, no recommendations between options, no religious rulings.
+Full detail in `docs/specs/06-ai-assistant.md`. In short:
+
+**Three levels**
+1. **Educate (always on):** explains conditions, inheritance, carrier status, screening, counselling and options in general terms, from the reviewed content library (`content/library/{locale}/`) only, with source chips. No open web. If the library has no entry, it says so and offers a counsellor.
+2. **Personalise and support:** goes deeper on the user's own situation, but every number comes from the deterministic inheritance engine (`lib/genetics/inheritance.ts`) through tools, never from the model. Covers hypotheticals; the user's own result, only when "Use my result in this chat" is on for the session and the result is not flagged; the couple's shared chances, only when both partners consented; family-map patterns and uploaded reports, only when the user shares them into the chat; and decision support that lays out every option against the user's own values without recommending one.
+3. **Escalate:** explains what it safely can, then connects the user to a qualified counsellor through an escalation card and a `counsellor_requests` row.
+
+**Escalation triggers**
+- **Priority:** a flagged result (uncertain, severe, conflicting); a current pregnancy and questions about the baby; an X-linked or dominant pattern in the user's own family.
+- **Standard:** confirmation sought for a major irreversible decision after decision support; a question outside the library or where the model is unsure; the user asks for a person.
+- **Support:** strong distress, hopelessness, family conflict or fear of violence. Warmth first, stop the genetics conversation, show support resources from `config/support-resources.ts`.
+- **Emergency:** medical emergency symptoms. Tell the user to call emergency services now and stop the flow.
+
+**Never:** diagnose; interpret a variant of uncertain significance or a flagged result; recommend an option, say what a couple "should" do or comment on whether to marry; give religious rulings; give medication, treatment or dosing advice; make up or calculate risk numbers itself.
+
+**Safety and privacy**
+- Server route only (`app/api/assistant/route.ts`), streaming; fixed system prompt in `lib/assistant/systemPrompt.ts` that the user cannot change; user content is treated as data (prompt-injection defence).
+- Every message is classified before the model and checked after it (no directive words, no numbers the engine didn't return, no diagnosis or marriage advice); a failed check is replaced with a safe fallback and a counsellor offer.
+- Nothing personal reaches the model without an explicit per-session user action, and then only the minimal summary. Flagged results never reach it.
+- Conversations are owner-only, deleted after 30 days or on request; analytics events carry categories only, never message text.
 - Answers in the user's locale.
-- Demo prompts to keep working:
-  1. "What is sickle cell trait?" → answers
-  2. "Does my result mean our baby will be sick?" → routes to counsellor
-  3. An Arabic general question → answers in Arabic
+
+**Demo prompts to keep working**
+1. "What is sickle cell trait?" → answers with a library source chip
+2. "Does my result mean our baby will be sick?" → with the toggle on (Mariam), explains from her result using engine numbers; Patient R. (flagged) → escalation card, no numbers
+3. An Arabic general question → answers in Arabic
 
 ---
 

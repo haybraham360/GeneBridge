@@ -1,0 +1,30 @@
+{
+  "id": "genetic_counselling",
+  "kind": "general",
+  "locale": "ar",
+  "title": "ما هي الاستشارة الوراثية",
+  "aliases": [
+    "مستشار",
+    "مستشارة",
+    "الاستشارة الوراثية",
+    "المستشار الوراثي",
+    "حجز استشارة"
+  ],
+  "summary": "المستشار الوراثي مختص صحي مدرَّب يشرح نتائج الفحوص الوراثية، وما تعنيه لك ولعائلتك، والخيارات المتاحة.",
+  "body": "الاستشارة حوار وليست فحصاً. يستمع المستشار إلى ما يهمّك، ويشرح احتمالاتك بلغة بسيطة، ويدعم أي قرار تتخذه، ولا يخبرك بما يجب أن تفعل. يمكنك اصطحاب شريكك أو أحد أفراد عائلتك، وطرح أي سؤال، بما في ذلك أسئلة عن الدين والعائلة.",
+  "sources": [
+    {
+      "title": "What is a genetic consultation?",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/understanding/consult/consultation/"
+    },
+    {
+      "title": "About Genetic Counselors",
+      "publisher": "National Society of Genetic Counselors",
+      "url": "https://www.nsgc.org/About/About-Genetic-Counselors"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-05",
+  "audio": "/audio/ar/general/genetic_counselling.mp3"
+}

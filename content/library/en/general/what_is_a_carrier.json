@@ -1,0 +1,30 @@
+{
+  "id": "what_is_a_carrier",
+  "kind": "general",
+  "locale": "en",
+  "title": "What a carrier is",
+  "aliases": [
+    "carrier",
+    "what is a carrier",
+    "carrier status",
+    "trait",
+    "healthy carrier"
+  ],
+  "summary": "A carrier has one typical copy and one changed copy of a gene for a recessive condition. Carriers are healthy. Everyone carries a few changed genes; it is very common and nothing anyone did caused it.",
+  "body": "Being a carrier matters mainly when planning a family. If both partners carry a changed copy of the same gene, each pregnancy has a chance of the child being affected. If only one partner is a carrier, children are not affected by that recessive condition, though some may be carriers too. A carrier result is not a diagnosis.",
+  "sources": [
+    {
+      "title": "What are the different ways a genetic condition can be inherited?",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/understanding/inheritance/inheritancepatterns/"
+    },
+    {
+      "title": "Carrier (glossary)",
+      "publisher": "National Human Genome Research Institute",
+      "url": "https://www.genome.gov/genetics-glossary/Carrier"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-05",
+  "audio": "/audio/en/general/what_is_a_carrier.mp3"
+}

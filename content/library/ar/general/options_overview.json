@@ -1,0 +1,90 @@
+{
+  "id": "options_overview",
+  "kind": "general",
+  "locale": "ar",
+  "title": "خياراتكم جنباً إلى جنب",
+  "aliases": [
+    "الخيارات",
+    "ما هي خياراتنا",
+    "أطفال الأنابيب",
+    "فحص الأجنة",
+    "فحص أثناء الحمل",
+    "ماذا نفعل",
+    "هل يجب"
+  ],
+  "summary": "عندما يحمل الشريكان الحالة نفسها، تتوفر لهما عدة خيارات. لا يوجد خيار مناسب للجميع، وكل خيار مُدرَج بالترتيب الأبجدي (بالإنجليزية) وبالوزن نفسه.",
+  "options": [
+    {
+      "name": "الاستمرار والتخطيط المسبق",
+      "involves": "حمل دون فحوص إضافية، مع التخطيط للرعاية مع الأطباء لاكتشاف أي حالة ودعمها مبكراً.",
+      "timeline": "[Confirm with counsellor]",
+      "cost": "[Programme details]",
+      "questions": [
+        "ما الرعاية المتاحة لطفلنا؟",
+        "ما الدعم المتاح للعائلات؟"
+      ]
+    },
+    {
+      "name": "أطفال الأنابيب مع فحص الأجنة (PGT)",
+      "involves": "علاج أطفال الأنابيب مع فحص الأجنة قبل نقل أحدها إلى الرحم.",
+      "timeline": "[Confirm with counsellor]",
+      "cost": "[Programme details]",
+      "questions": [
+        "كم دورة قد نحتاج؟",
+        "ما نسب النجاح؟"
+      ]
+    },
+    {
+      "name": "التحدث مع مستشار أولاً",
+      "involves": "حوار مع مستشار وراثي قبل اتخاذ أي قرار.",
+      "timeline": "عادةً خلال أيام",
+      "cost": "[Programme details]",
+      "questions": [
+        "ماذا يجب أن نعرف أيضاً عن نتائجنا؟"
+      ]
+    },
+    {
+      "name": "الفحص أثناء الحمل",
+      "involves": "فحص الحمل (مثل خزعة الزغابات المشيمية أو بزل السلى) لمعرفة إن كان الجنين مصاباً.",
+      "timeline": "[Confirm with counsellor]",
+      "cost": "[Programme details]",
+      "questions": [
+        "ما مخاطر الفحص؟",
+        "متى تظهر النتائج؟"
+      ]
+    },
+    {
+      "name": "فحص أفراد العائلة الآخرين",
+      "involves": "يمكن للأقارب اختيار الفحص لفهم احتمالاتهم.",
+      "timeline": "[Confirm with counsellor]",
+      "cost": "[Programme details]",
+      "questions": [
+        "من في عائلتي قد يرغب في الفحص؟"
+      ]
+    },
+    {
+      "name": "الدين والعائلة",
+      "involves": "الحديث مع عائلتك ومع عالم دين تثق به. لا يقدّم GeneBridge فتاوى دينية.",
+      "timeline": "وفق وتيرتك",
+      "cost": "لا يوجد",
+      "questions": [
+        "أين نجد الإرشادات الرسمية؟"
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "title": "Embryo testing and treatments for disease",
+      "publisher": "Human Fertilisation and Embryology Authority (UK)",
+      "url": "https://www.hfea.gov.uk/treatments/embryo-testing-and-treatments-for-disease/"
+    },
+    {
+      "title": "Prenatal testing",
+      "publisher": "MedlinePlus (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/prenataltesting.html"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-05",
+  "audio": "/audio/ar/general/options_overview.mp3"
+}

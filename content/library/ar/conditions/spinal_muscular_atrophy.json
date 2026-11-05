@@ -1,0 +1,32 @@
+{
+  "id": "spinal_muscular_atrophy",
+  "kind": "condition",
+  "locale": "ar",
+  "inheritance": "autosomal_recessive",
+  "title": "ضمور العضلات الشوكي (SMA)",
+  "aliases": [
+    "SMA",
+    "ضمور العضلات الشوكي",
+    "الضمور العضلي الشوكي"
+  ],
+  "summary": "يؤثر ضمور العضلات الشوكي في الخلايا العصبية التي تتحكم في العضلات، مما يسبب ضعف العضلات. تختلف شدّته كثيراً بين أنواعه.",
+  "inheritance_plain": "يُورَّث بطريقة جسمية متنحية: يُصاب الطفل فقط إذا ورث نسخة متغيّرة من جين SMN1 من كلا الوالدين.",
+  "carrier_meaning": "حامل الصفة لديه نسخة متغيّرة واحدة وهو سليم. قد لا تكشف الفحوص المعتادة عدداً قليلاً من حاملي الصفة، ويمكن للمستشار شرح ذلك.",
+  "disease_meaning": "الشخص الذي لديه نسختان متغيّرتان مصاب بضمور العضلات الشوكي. توجد اليوم علاجات جديدة، والتشخيص المبكر مهم، لذا فالرعاية المتخصصة ضرورية.",
+  "screening": "يمكن إجراء فحص حمل الصفة بعيّنة دم.",
+  "sources": [
+    {
+      "title": "Spinal muscular atrophy",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/spinal-muscular-atrophy/"
+    },
+    {
+      "title": "Spinal Muscular Atrophy",
+      "publisher": "GeneReviews (NCBI Bookshelf)",
+      "url": "https://www.ncbi.nlm.nih.gov/books/NBK1352/"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-05",
+  "audio": "/audio/ar/conditions/spinal_muscular_atrophy.mp3"
+}

@@ -1,0 +1,32 @@
+{
+  "id": "genetic_counselling",
+  "kind": "general",
+  "locale": "en",
+  "title": "What genetic counselling is",
+  "aliases": [
+    "counsellor",
+    "counselor",
+    "counselling",
+    "counseling",
+    "genetic counsellor",
+    "what does a counsellor do",
+    "book a counsellor"
+  ],
+  "summary": "A genetic counsellor is a trained health professional who explains genetic test results, what they mean for you and your family, and the choices available.",
+  "body": "Counselling is a conversation, not a test. The counsellor listens to what matters to you, explains your chances in plain language, and supports whatever you decide. They do not tell you what to do. You can bring your partner or a family member, and you can ask anything, including questions about faith and family.",
+  "sources": [
+    {
+      "title": "What is a genetic consultation?",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/understanding/consult/consultation/"
+    },
+    {
+      "title": "About Genetic Counselors",
+      "publisher": "National Society of Genetic Counselors",
+      "url": "https://www.nsgc.org/About/About-Genetic-Counselors"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-05",
+  "audio": "/audio/en/general/genetic_counselling.mp3"
+}

@@ -1,0 +1,31 @@
+{
+  "id": "premarital_screening",
+  "kind": "general",
+  "locale": "en",
+  "title": "What premarital screening covers",
+  "aliases": [
+    "premarital",
+    "premarital screening",
+    "pre-marital",
+    "marriage test",
+    "screening test",
+    "what does screening test"
+  ],
+  "summary": "Premarital screening in the UAE is a set of blood tests before marriage. It checks for some inherited blood conditions, such as thalassaemia and sickle cell, and some infections.",
+  "body": "The genetic part shows whether each partner carries a changed copy of certain genes. In Abu Dhabi, genetic testing for Emirati couples now covers many more conditions; your screening centre can tell you exactly which tests you had. No screening tests for every possible genetic condition. The result is information for the couple: screening does not decide whether a couple can marry. Couples who are both carriers of the same condition are offered genetic counselling.",
+  "sources": [
+    {
+      "title": "DoH integrates genetic testing as an integral component of the premarital screening programme",
+      "publisher": "Department of Health – Abu Dhabi",
+      "url": "https://www.doh.gov.ae/en/news/doh-integrates-genetic-testing-as-an-integral-component-of-the-premarital-screening-programme"
+    },
+    {
+      "title": "Thalassaemia and other haemoglobinopathies (report EB118/5)",
+      "publisher": "World Health Organization",
+      "url": "https://apps.who.int/gb/ebwha/pdf_files/eb118/b118_5-en.pdf"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-05",
+  "audio": "/audio/en/general/premarital_screening.mp3"
+}

@@ -1,0 +1,34 @@
+{
+  "id": "alpha_thalassemia",
+  "kind": "condition",
+  "locale": "en",
+  "inheritance": "complex",
+  "title": "Alpha-thalassaemia",
+  "aliases": [
+    "alpha thalassemia",
+    "alpha-thalassemia",
+    "alpha thal",
+    "HbH",
+    "haemoglobin H"
+  ],
+  "summary": "Alpha-thalassaemia affects how the body makes haemoglobin. Most people with a changed copy are healthy; more serious forms happen when several copies are changed.",
+  "inheritance_plain": "It is more complicated than most recessive conditions because people normally have four copies of the alpha-globin genes. The chances for a child depend on exactly which copies each parent has, so a genetic counsellor works them out from the full report.",
+  "carrier_meaning": "People with one or two changed copies are usually healthy. Some have mild anaemia that does not need treatment.",
+  "disease_meaning": "When three or all four copies are changed, the condition is more serious and needs specialist care.",
+  "screening": "Standard blood tests can miss some carriers, so the result often needs a specialist to interpret it.",
+  "sources": [
+    {
+      "title": "Alpha thalassemia",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/alpha-thalassemia/"
+    },
+    {
+      "title": "Alpha-Thalassemia",
+      "publisher": "GeneReviews (NCBI Bookshelf)",
+      "url": "https://www.ncbi.nlm.nih.gov/books/NBK1435/"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-05",
+  "audio": "/audio/en/conditions/alpha_thalassemia.mp3"
+}

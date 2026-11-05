@@ -1,0 +1,29 @@
+{
+  "id": "premarital_screening",
+  "kind": "general",
+  "locale": "ar",
+  "title": "ماذا يشمل فحص ما قبل الزواج",
+  "aliases": [
+    "فحص ما قبل الزواج",
+    "فحص الزواج",
+    "الفحص الطبي قبل الزواج",
+    "فحص الدم قبل الزواج"
+  ],
+  "summary": "فحص ما قبل الزواج في الإمارات مجموعة فحوص دم قبل الزواج. يكشف عن بعض حالات الدم الوراثية، مثل الثلاسيميا وفقر الدم المنجلي، وبعض أنواع العدوى.",
+  "body": "يُظهر الجزء الوراثي إن كان كل شريك يحمل نسخة متغيّرة من جينات معيّنة. في أبوظبي يشمل الفحص الوراثي للأزواج الإماراتيين الآن حالات أكثر بكثير، ويمكن لمركز الفحص إخبارك بالفحوص التي أُجريت لك تحديداً. لا يوجد فحص يشمل كل الحالات الوراثية الممكنة. النتيجة معلومات للزوجين، والفحص لا يقرّر إن كان بإمكانهما الزواج. يُعرض على الأزواج الحاملين للحالة نفسها الحصول على استشارة وراثية.",
+  "sources": [
+    {
+      "title": "DoH integrates genetic testing as an integral component of the premarital screening programme",
+      "publisher": "Department of Health – Abu Dhabi",
+      "url": "https://www.doh.gov.ae/en/news/doh-integrates-genetic-testing-as-an-integral-component-of-the-premarital-screening-programme"
+    },
+    {
+      "title": "Thalassaemia and other haemoglobinopathies (report EB118/5)",
+      "publisher": "World Health Organization",
+      "url": "https://apps.who.int/gb/ebwha/pdf_files/eb118/b118_5-en.pdf"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-05",
+  "audio": "/audio/ar/general/premarital_screening.mp3"
+}

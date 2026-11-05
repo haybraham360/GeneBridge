@@ -1,0 +1,32 @@
+{
+  "id": "cystic_fibrosis",
+  "kind": "condition",
+  "locale": "en",
+  "inheritance": "autosomal_recessive",
+  "title": "Cystic fibrosis",
+  "aliases": [
+    "CF",
+    "cystic fibrosis",
+    "CFTR"
+  ],
+  "summary": "Cystic fibrosis makes mucus in the body thick and sticky. It mainly affects the lungs and digestion.",
+  "inheritance_plain": "It is inherited in an autosomal recessive way: a child is affected only if they get a changed copy of the CFTR gene from both parents.",
+  "carrier_meaning": "A carrier has one changed copy. Carriers are healthy and usually do not know they are carriers until they are tested.",
+  "disease_meaning": "A person with two changed copies has cystic fibrosis. Treatment has improved greatly and is given by specialist teams.",
+  "screening": "Carrier tests look for the most common changes; they cannot find every possible change.",
+  "sources": [
+    {
+      "title": "Cystic fibrosis",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/cystic-fibrosis/"
+    },
+    {
+      "title": "Cystic Fibrosis",
+      "publisher": "GeneReviews (NCBI Bookshelf)",
+      "url": "https://www.ncbi.nlm.nih.gov/books/NBK1250/"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-05",
+  "audio": "/audio/en/conditions/cystic_fibrosis.mp3"
+}

@@ -13,9 +13,11 @@
     "seed:results": "tsx scripts/seed-results.ts",
     "seed:analytics": "tsx scripts/seed-analytics.ts",
     "clear:synthetic": "tsx scripts/clear-synthetic.ts",
-    "test:sql": "tsx scripts/test-sql.ts"
+    "test:sql": "tsx scripts/test-sql.ts",
+    "eval:assistant": "tsx tests/assistant/eval.ts"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^1.5.0",
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.118.0",
     "jsqr": "^1.4.0",
@@ -24,7 +26,9 @@
     "next-intl": "^4.14.9",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
-    "server-only": "^0.0.1"
+    "server-only": "^0.0.1",
+    "yaml": "^2.9.1",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@playwright/test": "^1.64.1",

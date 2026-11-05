@@ -1,0 +1,36 @@
+{
+  "id": "beta_thalassemia",
+  "kind": "condition",
+  "locale": "en",
+  "inheritance": "autosomal_recessive",
+  "title": "Beta-thalassaemia",
+  "aliases": [
+    "beta thalassemia",
+    "beta-thalassemia",
+    "thalassaemia",
+    "thalassemia",
+    "thalassemia major",
+    "thalassemia minor",
+    "thalassemia trait"
+  ],
+  "summary": "Beta-thalassaemia affects how the body makes haemoglobin. People with the more serious form make too little haemoglobin and can have anaemia that needs regular care.",
+  "inheritance_plain": "It is inherited in an autosomal recessive way: a child is affected only if they get a changed copy of the gene from both parents.",
+  "carrier_meaning": "A carrier (beta-thalassaemia trait or minor) has one changed copy. Carriers are healthy, though some have slightly small red blood cells or mild anaemia that does not need treatment.",
+  "disease_meaning": "A person with two changed copies has beta-thalassaemia. How it affects them varies; some need regular blood transfusions and specialist care.",
+  "screening": "A blood test can show whether someone is a carrier. It is part of premarital screening in the UAE.",
+  "sources": [
+    {
+      "title": "Beta thalassemia",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/beta-thalassemia/"
+    },
+    {
+      "title": "Beta-Thalassemia",
+      "publisher": "GeneReviews (NCBI Bookshelf)",
+      "url": "https://www.ncbi.nlm.nih.gov/books/NBK1426/"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-05",
+  "audio": "/audio/en/conditions/beta_thalassemia.mp3"
+}

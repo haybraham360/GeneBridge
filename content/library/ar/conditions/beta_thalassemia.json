@@ -1,0 +1,35 @@
+{
+  "id": "beta_thalassemia",
+  "kind": "condition",
+  "locale": "ar",
+  "inheritance": "autosomal_recessive",
+  "title": "الثلاسيميا بيتا",
+  "aliases": [
+    "ثلاسيميا",
+    "الثلاسيميا",
+    "ثلاسيميا بيتا",
+    "أنيميا البحر المتوسط",
+    "ثلاسيميا كبرى",
+    "ثلاسيميا صغرى"
+  ],
+  "summary": "تؤثر الثلاسيميا بيتا في طريقة صنع الجسم للهيموغلوبين. الأشخاص المصابون بالشكل الأشد يصنعون كمية قليلة جداً من الهيموغلوبين، وقد يعانون فقر دم يحتاج إلى رعاية منتظمة.",
+  "inheritance_plain": "تُورَّث بطريقة جسمية متنحية: يُصاب الطفل فقط إذا ورث نسخة متغيّرة من الجين من كلا الوالدين.",
+  "carrier_meaning": "حامل الصفة (الثلاسيميا الصغرى) لديه نسخة متغيّرة واحدة. حاملو الصفة أصحاء، وقد تكون لدى بعضهم خلايا دم حمراء أصغر قليلاً أو فقر دم خفيف لا يحتاج إلى علاج.",
+  "disease_meaning": "الشخص الذي لديه نسختان متغيّرتان مصاب بالثلاسيميا بيتا. يختلف تأثيرها من شخص لآخر، ويحتاج بعضهم إلى نقل دم منتظم ورعاية متخصصة.",
+  "screening": "يُظهر فحص الدم إن كان الشخص حاملاً للصفة، وهو جزء من فحص ما قبل الزواج في الإمارات.",
+  "sources": [
+    {
+      "title": "Beta thalassemia",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/beta-thalassemia/"
+    },
+    {
+      "title": "Beta-Thalassemia",
+      "publisher": "GeneReviews (NCBI Bookshelf)",
+      "url": "https://www.ncbi.nlm.nih.gov/books/NBK1426/"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-05",
+  "audio": "/audio/ar/conditions/beta_thalassemia.mp3"
+}

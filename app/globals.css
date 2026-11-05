@@ -61,6 +61,20 @@
     }
   }
 
+  /* Ask GeneBridge: chat messages fade up 8px. Never used on risk or escalation cards. */
+  --animate-msg-in: msg-in 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+
+  @keyframes msg-in {
+    from {
+      opacity: 0;
+      translate: 0 8px;
+    }
+    to {
+      opacity: 1;
+      translate: 0 0;
+    }
+  }
+
   @keyframes rung {
     0%,
     100% {

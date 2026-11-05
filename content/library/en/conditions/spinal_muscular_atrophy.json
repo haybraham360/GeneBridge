@@ -1,0 +1,32 @@
+{
+  "id": "spinal_muscular_atrophy",
+  "kind": "condition",
+  "locale": "en",
+  "inheritance": "autosomal_recessive",
+  "title": "Spinal muscular atrophy (SMA)",
+  "aliases": [
+    "SMA",
+    "spinal muscular atrophy",
+    "SMN1"
+  ],
+  "summary": "Spinal muscular atrophy affects the nerve cells that control muscles, which leads to muscle weakness. How serious it is varies a lot between types.",
+  "inheritance_plain": "It is inherited in an autosomal recessive way: a child is affected only if they get a changed copy of the SMN1 gene from both parents.",
+  "carrier_meaning": "A carrier has one changed copy. Carriers are healthy. A small number of carriers are not picked up by standard tests, which a counsellor can explain.",
+  "disease_meaning": "A person with two changed copies has SMA. New treatments now exist, and early diagnosis matters, so specialist care is important.",
+  "screening": "A carrier test can be done with a blood sample.",
+  "sources": [
+    {
+      "title": "Spinal muscular atrophy",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/spinal-muscular-atrophy/"
+    },
+    {
+      "title": "Spinal Muscular Atrophy",
+      "publisher": "GeneReviews (NCBI Bookshelf)",
+      "url": "https://www.ncbi.nlm.nih.gov/books/NBK1352/"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-05",
+  "audio": "/audio/en/conditions/spinal_muscular_atrophy.mp3"
+}
