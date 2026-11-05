@@ -150,7 +150,7 @@ export default function PrivacyPage({
           {/* <h2 className={cardTitle}>Who can see my result</h2> */}
           <h2 className={cardTitle}>{t("who.title")}</h2>
 
-          <div className="mt-5 overflow-x-auto">
+          <div className="relative mt-5 overflow-x-auto">
             <table className="w-full min-w-140 border-collapse text-start">
               <thead>
                 <tr className="text-[12px] font-medium text-neutral-600">

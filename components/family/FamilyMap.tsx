@@ -1772,7 +1772,7 @@ export default function FamilyMap({
           </p>
         </div>
 
-        <div className="mt-5 grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_254px]">
+        <div className="mt-5 grid grid-cols-1 items-start gap-4 lg:grid-cols-[minmax(0,1fr)_254px]">
           {/* Tree card */}
           <section aria-labelledby="family-title" className={`${cardClass} p-5`}>
             <div className="flex flex-wrap items-baseline justify-between gap-2">
