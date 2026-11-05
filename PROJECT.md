@@ -63,6 +63,7 @@ These come straight from the brief. Breaking one loses points or causes harm. Ch
 11. **Analytics are aggregate only**, with a minimum group size of 10. Marriage outcomes are never collected or measured.
 12. **Every number in the demo is labelled synthetic.** No invented claims about real partners. Placeholders stay in `[BRACKETS]` until confirmed.
 13. **No real company logos** unless a real partnership exists.
+14. **The exploring path is never a diagnosis.** People without a result can follow conditions (family history, "I think I may have it", or learning). Never confirm, deny or estimate whether the person has or carries a condition from what they tell us: no symptom checker and no "your likely risk" numbers for the person themselves. Speak about families in general only ("if a brother or sister has it, there is a real chance you carry it; only a test can tell you"); the AI may explain general inheritance with the engine but must say a test is the only way to know. Every exploring screen shows "This isn't a diagnosis". For "I think I have it" with a dominant, X-linked or `always_escalate` condition, show the counsellor option prominently and suggest a priority counsellor request (with consent).
 
 ---
 
@@ -112,7 +113,7 @@ Follow the design in `design/` exactly (screenshots for layout, `design/screens/
 
 | Route | Screen | Notes |
 |---|---|---|
-| `/` | Landing | Hero, 4 preview cards, partner placeholders, how it works, 6 feature cards, privacy band, for professionals, pricing, FAQ, CTA, footer |
+| `/` | Landing | Hero, 4 preview cards, partner placeholders, how it works, 6 feature cards, privacy band, for professionals, FAQ, CTA, footer (no pricing section) |
 | `/auth` | Sign up / sign in | Tabs, UAE PASS mock, phone OTP, email link, consent checkbox, facility-code link |
 | `/onboarding` | 8 steps | Welcome, language, read/listen, reason, privacy (required), connect result, invite partner, done. One question per screen, progress bar, Skip on all but privacy, resume where left off |
 | `/home` | Home | Care tracker (6 steps), result / couple / appointment cards, Ask GeneBridge chat |
@@ -262,7 +263,7 @@ Landing → Get started → onboarding (show Arabic + listen mode) → Mariam's 
 
 ## 14. Open items (placeholders to confirm)
 
-- `[SCREENING PROGRAMME]` funding line and `[YOUR PRICE]` for clinics
+- `[SCREENING PROGRAMME]` funding line
 - `[RELIGIOUS AUTHORITY]` for official guidance links
 - `[Screening centre]`, `[Hospital partner]`, `[Genomics lab]`, `[IVF clinic]`, `[Health authority]` partner names
 - Real hackathon length (rescale milestone days)

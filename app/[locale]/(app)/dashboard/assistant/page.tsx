@@ -1,3 +1,5 @@
+import { createClient } from '@/lib/supabase/server';
+import { loadUserPath } from '@/lib/user/path';
 import { hasLocale } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
@@ -16,8 +18,10 @@ export async function generateMetadata({ params }: PageProps<'/[locale]/dashboar
 export const dynamic = 'force-dynamic';
 
 /** Ask GeneBridge, full page (task 06). */
-export default async function AssistantPage({ params }: PageProps<'/[locale]/dashboard/assistant'>) {
+export default async function AssistantPage({ params, searchParams }: PageProps<'/[locale]/dashboard/assistant'>) {
   const { locale } = await params;
+  const { q } = await searchParams;
+  const path = await loadUserPath(await createClient());
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: 'assistant' });
@@ -29,7 +33,11 @@ export default async function AssistantPage({ params }: PageProps<'/[locale]/das
         <p className="text-[15px] text-muted">{t('page.subtitle')}</p>
       </header>
       <div className="flex min-h-0 flex-1 flex-col rounded-card border border-line bg-surface p-5 shadow-card">
-        <AssistantChat aiEnabled={aiEnabled()} />
+        <AssistantChat
+          aiEnabled={aiEnabled()}
+          canUseFollowed={path.followed.length > 0}
+          initialQuestion={typeof q === 'string' ? q.slice(0, 500) : undefined}
+        />
       </div>
     </div>
   );

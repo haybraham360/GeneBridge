@@ -19,11 +19,8 @@ const entrance = [
 
 function ProfileCard() {
   const t = useTranslations('landing.preview.profile');
-  const rows = [
-    ['conditionLabel', 'condition'],
-    ['inheritanceLabel', 'inheritance'],
-    ['healthLabel', 'health'],
-  ] as const;
+  // A demo person with two findings (design Main): any condition, not one.
+  const rows = ['a', 'b', 'c', 'd'] as const;
 
   return (
     <Card as="article" className={cn(cardBase, cardMotion, '-rotate-[1.5deg]')}>
@@ -40,11 +37,11 @@ function ProfileCard() {
           {t('status')}
         </span>
       </div>
-      <dl className="flex flex-col gap-2.5 border-t border-line pt-3 text-[13px]">
-        {rows.map(([label, value]) => (
-          <div key={label}>
-            <dt className="font-bold">{t(label)}</dt>
-            <dd className="text-muted">{t(value)}</dd>
+      <dl aria-label={t('rowsLabel')} className="flex flex-col gap-2 border-t border-line pt-3 text-[13px]">
+        {rows.map((row) => (
+          <div key={row} className="flex items-start justify-between gap-3">
+            <dt className="font-bold">{t(`rows.${row}.label`)}</dt>
+            <dd className="text-end text-muted">{t(`rows.${row}.value`)}</dd>
           </div>
         ))}
       </dl>
@@ -100,6 +97,13 @@ function SimulatorCard() {
     <Card as="article" className={cn(cardBase, cardMotion, '-rotate-1')}>
       <h2 className={cardTitle}>{t('title')}</h2>
       <PunnettPreview caption={t('gridLabel')} parentA={t('parentA')} parentB={t('parentB')} />
+      <ul aria-label={t('patternsLabel')} className="flex flex-wrap justify-center gap-1.5">
+        {(['recessive', 'dominant', 'xlinked'] as const).map((p) => (
+          <li key={p} className="rounded-full border border-line bg-surface px-2.5 py-1 text-[11px] font-semibold">
+            {t(`patterns.${p}`)}
+          </li>
+        ))}
+      </ul>
     </Card>
   );
 }

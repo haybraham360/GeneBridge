@@ -55,13 +55,20 @@ async function startAsIndividual(page: Page) {
   await page.getByRole('button', { name: "Let's start" }).click();
 }
 
-/** Skips from step 2 to the privacy step and agrees. Ends on step 6. */
+/**
+ * Skips steps 2 and 3, chooses the screening-result reason on step 4 (so
+ * step 6 connects a result rather than picking conditions, task 11), then
+ * agrees to privacy. Ends on step 6.
+ */
 async function quickToConnect(page: Page) {
   await startAsIndividual(page);
-  for (const n of [2, 3, 4]) {
+  for (const n of [2, 3]) {
     await expect(stepLabel(page, n)).toBeVisible();
     await page.getByRole('button', { name: 'Skip' }).click();
   }
+  await expectStep(page, 4, 'What brings you here?');
+  await page.getByRole('radio', { name: /My premarital screening result/ }).click();
+  await page.getByRole('button', { name: 'Next', exact: true }).click();
   await expectStep(page, 5, 'Your privacy, in three points');
   await page.getByRole('checkbox', { name: 'I understand and agree' }).check();
   await page.getByRole('button', { name: 'I agree' }).click();
@@ -139,7 +146,7 @@ test('Mariam completes onboarding, claims her result and ends on /dashboard/resu
   await expect(page.getByText('Language: English')).toBeVisible();
   await expect(page.getByText('Learning style: Read')).toBeVisible();
   await expect(page.getByText('Result connected', { exact: true })).toBeVisible();
-  await page.getByRole('link', { name: 'See what my result means' }).click();
+  await page.getByRole('link', { name: 'See what my results mean' }).click();
   await expect(page).toHaveURL(/\/en\/dashboard\/results$/);
   const seconds = (Date.now() - started) / 1000;
   console.log(`Mariam onboarding run (automated): ${seconds.toFixed(1)}s`);
@@ -206,7 +213,7 @@ test('Patient R. (flagged) ends on the counsellor route with no risk shown', asy
   await expectStep(page, 8, "You're all set");
   const card = page.locator('main');
   await expect(card).not.toContainText(/risk|%|carrier|uncertain|variant|chance/i);
-  await expect(page.getByRole('link', { name: 'See what my result means' })).toHaveCount(0);
+  await expect(page.getByRole('link', { name: 'See what my results mean' })).toHaveCount(0);
   await page.getByRole('link', { name: 'Talk to a counsellor about your result' }).click();
   await expect(page).toHaveURL(/\/en\/dashboard\/counsellor$/);
 });

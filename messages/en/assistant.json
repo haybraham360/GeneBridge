@@ -29,6 +29,10 @@
     "label": "Use my result in this chat",
     "hint": "When on, the assistant can see your result summary (condition and carrier status), never your raw data."
   },
+  "followedToggle": {
+    "label": "Use the conditions I'm following",
+    "hint": "When on, the assistant sees only which conditions you follow and why. Never a diagnosis, never anything else."
+  },
   "family": {
     "share": "Share my family map with this chat",
     "shared": "Family map shared for this chat",

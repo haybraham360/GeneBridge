@@ -110,12 +110,20 @@ export function autoListens(mode: LearningMode | null): boolean {
 }
 
 /** Step 4. Skipping it counts as "I'm just learning". */
-export const reasons = ['premarital_result', 'family_condition', 'just_learning'] as const;
+export const reasons = ['premarital_result', 'family_condition', 'think_condition', 'just_learning'] as const;
 export type Reason = (typeof reasons)[number];
 export const DEFAULT_REASON: Reason = 'just_learning';
 
 export function isReason(value: unknown): value is Reason {
   return typeof value === 'string' && (reasons as readonly string[]).includes(value);
+}
+
+/**
+ * Step 6 branches (task 11): a screening result connects the result;
+ * every other reason picks conditions to explore instead.
+ */
+export function isExploringReason(reason: Reason | null | undefined): boolean {
+  return reason !== 'premarital_result';
 }
 
 // ---------------------------------------------------------------------------
@@ -153,4 +161,12 @@ export type FinishDestination = '/dashboard/results' | '/dashboard/counsellor' |
 export function finishDestination(result: { connected: boolean; flagged: boolean }): FinishDestination {
   if (!result.connected) return '/dashboard';
   return result.flagged ? '/dashboard/counsellor' : '/dashboard/results';
+}
+
+/** Step 8's wording: result, flagged result, exploring, or a plain home. */
+export type FinishKind = 'results' | 'counsellor' | 'explore' | 'home';
+
+export function finishKind(finish: { resultConnected: boolean; destination: FinishDestination; exploring: string[] | null }): FinishKind {
+  if (finish.resultConnected) return finish.destination === '/dashboard/counsellor' ? 'counsellor' : 'results';
+  return finish.exploring ? 'explore' : 'home';
 }

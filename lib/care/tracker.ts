@@ -60,6 +60,8 @@ export async function loadCareFacts(supabase: SupabaseClient): Promise<CareFacts
       .from('screening_results')
       .select('reported_at, flagged')
       .eq('owner_id', user.id)
+      // Several findings per report (task 10): flagged if any finding is.
+      .order('flagged', { ascending: false })
       .order('claimed_at', { ascending: false })
       .limit(1)
       .maybeSingle(),

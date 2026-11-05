@@ -13,7 +13,6 @@
     "how": "How it works",
     "features": "Features",
     "pros": "For professionals",
-    "pricing": "Pricing",
     "faqs": "FAQs",
     "getStarted": "Get started",
     "openMenu": "Open menu",
@@ -36,20 +35,33 @@
       "title": "Your genetic profile",
       "initial": "M",
       "name": "Mariam",
-      "status": "Carrier (HbAS)",
-      "conditionLabel": "Condition",
-      "condition": "Sickle cell trait",
-      "inheritanceLabel": "Inheritance",
-      "inheritance": "Autosomal recessive",
-      "healthLabel": "Your health",
-      "health": "You are healthy"
+      "status": "Carrier · 2 conditions",
+      "rows": {
+        "a": {
+          "label": "Beta-thalassemia",
+          "value": "Carrier"
+        },
+        "b": {
+          "label": "Spinal muscular atrophy",
+          "value": "Carrier"
+        },
+        "c": {
+          "label": "Everything else screened",
+          "value": "No changes found"
+        },
+        "d": {
+          "label": "Your health",
+          "value": "You are healthy"
+        }
+      },
+      "rowsLabel": "Findings"
     },
     "couple": {
       "title": "Couple compatibility",
       "partnerA": "M",
       "partnerB": "K",
       "partnersLabel": "Mariam and Khalid",
-      "consent": "Both agreed to share",
+      "consent": "1 shared condition: Beta-thalassemia",
       "chanceTitle": "Chance for each pregnancy (example)",
       "affectedValue": "25%",
       "affected": "Affected",
@@ -60,9 +72,15 @@
     },
     "simulator": {
       "title": "Inheritance simulator",
-      "gridLabel": "Punnett square: two carrier parents (AS × AS)",
+      "gridLabel": "Punnett square: two carrier parents (Aa × Aa)",
       "parentA": "Parent 1 gene copies",
-      "parentB": "Parent 2 gene copies"
+      "parentB": "Parent 2 gene copies",
+      "patternsLabel": "Inheritance patterns",
+      "patterns": {
+        "recessive": "Recessive",
+        "dominant": "Dominant",
+        "xlinked": "X-linked"
+      }
     },
     "counsellor": {
       "title": "Talk to a genetic counsellor",
@@ -72,6 +90,13 @@
       "available": "Available today",
       "cta": "Book session"
     }
+  },
+  "conditions": {
+    "title": "One place for any inherited condition",
+    "body": "Whatever your screening finds, GeneBridge explains it: blood, neuromuscular, hearing, metabolic and many more, across recessive, dominant and X-linked inheritance.",
+    "more": "+ every condition in your screening panel",
+    "cta": "Explore conditions A–Z",
+    "listLabel": "Examples of conditions GeneBridge explains"
   },
   "partners": {
     "title": "Built to work alongside",
@@ -102,7 +127,7 @@
     "cta": "Explore all features",
     "results": {
       "title": "Genetic Risk Analysis",
-      "body": "Understand what your results mean, and what they don't, in plain language."
+      "body": "Understand every finding in your screening, for any inherited condition, in plain language."
     },
     "couple": {
       "title": "Couple Compatibility",
@@ -174,26 +199,15 @@
       }
     }
   },
-  "pricing": {
-    "title": "Simple, fair access",
-    "individual": {
-      "name": "Individuals and couples",
-      "price": "Free",
-      "body": "Funded through [SCREENING PROGRAMME]. Results, couple view, simulator, family map and booking.",
-      "cta": "Get started free"
-    },
-    "clinic": {
-      "name": "Clinics and programmes",
-      "price": "[YOUR PRICE]",
-      "body": "Counsellor workspace, referral tracking, programme dashboard and integration support.",
-      "cta": "Talk to us"
-    }
-  },
   "faq": {
     "title": "Questions people ask",
+    "conditions": {
+      "q": "Which conditions does GeneBridge cover?",
+      "a": "Any inherited condition in your screening panel, from blood conditions like the thalassemias and sickle cell disease to SMA, cystic fibrosis, hearing loss, metabolic conditions and more. Recessive, dominant and X-linked inheritance are all explained."
+    },
     "carrier": {
       "q": "Does a carrier result mean I'm sick?",
-      "a": "No. Carriers are healthy. Being a carrier only matters when planning children, and only if your partner carries a change in the same gene."
+      "a": "No. Carriers are healthy. Being a carrier only matters when planning children, and only if your partner carries a change in the same gene. For dominant and X-linked conditions things work differently, and a counsellor will explain."
     },
     "sharing": {
       "q": "Will my partner or family see my result?",

@@ -11,5 +11,5 @@ export async function generateMetadata({ params }: PageProps<'/[locale]/home'>) 
 export default async function Page({ params }: PageProps<'/[locale]/home'>) {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
-  return <PlaceholderPage locale={locale} screen="home" showSignOut />;
+  return <PlaceholderPage locale={locale} screen="home" />;
 }

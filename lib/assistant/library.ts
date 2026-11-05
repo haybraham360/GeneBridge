@@ -28,6 +28,19 @@ export type LibraryEntry = {
   body?: string;
   options?: LibraryOption[];
   sources: { title: string; publisher: string; url: string }[];
+  /** Conditions: 3 questions people often ask (task 11, exploring Home). */
+  suggested_questions?: string[];
+  /** Conditions (design refresh): gene, body area, card text, care, counsellor questions. */
+  gene?: string;
+  area?: 'blood' | 'nerves_muscles' | 'hearing_vision' | 'metabolic' | 'heart' | 'other';
+  card_summary?: string;
+  /** Results page (task 10): carrier and condition names, one line each. */
+  carrier_label?: string;
+  disease_label?: string;
+  carrier_short?: string;
+  disease_short?: string;
+  care?: string;
+  counsellor_questions?: string[];
   reviewed: boolean;
   last_checked: string;
 };

@@ -254,12 +254,17 @@ export async function loadReferrals(supabase: SupabaseClient): Promise<ReferralR
   }));
 }
 
-/** Specialist services for the referral picker (not confirmatory testing). */
+/**
+ * Specialist services for the referral picker. An allow-list, because the
+ * services table also holds patient-directory kinds (screening, counselling).
+ */
+const SPECIALIST_KINDS: ServiceKind[] = ['haematology', 'ivf_embryo_testing'];
+
 export async function loadSpecialistServices(supabase: SupabaseClient): Promise<Service[]> {
   const { data } = await supabase
     .from('services')
     .select('id, kind, name')
-    .neq('kind', 'confirmatory_testing')
+    .in('kind', SPECIALIST_KINDS)
     .order('sort');
   return (data ?? []) as Service[];
 }

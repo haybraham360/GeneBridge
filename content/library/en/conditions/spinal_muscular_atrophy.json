@@ -3,6 +3,8 @@
   "kind": "condition",
   "locale": "en",
   "inheritance": "autosomal_recessive",
+  "gene": "SMN1",
+  "area": "nerves_muscles",
   "title": "Spinal muscular atrophy (SMA)",
   "aliases": [
     "SMA",
@@ -14,6 +16,22 @@
   "carrier_meaning": "A carrier has one changed copy. Carriers are healthy. A small number of carriers are not picked up by standard tests, which a counsellor can explain.",
   "disease_meaning": "A person with two changed copies has SMA. New treatments now exist, and early diagnosis matters, so specialist care is important.",
   "screening": "A carrier test can be done with a blood sample.",
+  "suggested_questions": [
+    "My sister's child has SMA. Could I be a carrier?",
+    "Can SMA skip a generation?",
+    "What does a test for the SMN1 gene involve?"
+  ],
+  "card_summary": "Affects the nerves that control muscles. Carriers are healthy. Treatments now exist.",
+  "carrier_label": "SMA carrier",
+  "disease_label": "Spinal muscular atrophy",
+  "carrier_short": "One changed copy. Healthy. Can pass the copy on.",
+  "disease_short": "Two changed copies. Affects the nerves that control muscles; treatments now exist.",
+  "care": "Neuromuscular clinics, physiotherapy, genetic counselling and family support groups.",
+  "counsellor_questions": [
+    "Which carrier test is right for me?",
+    "If I'm a carrier, could my partner be tested too?",
+    "What treatments exist today?"
+  ],
   "sources": [
     {
       "title": "Spinal muscular atrophy",

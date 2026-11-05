@@ -1,0 +1,45 @@
+{
+  "meta": {
+    "title": "الرعاية والخدمات · GeneBridge"
+  },
+  "title": "الرعاية والخدمات",
+  "subtitle": "الاستشارة والفحص والرعاية المتخصصة والدعم بالقرب منك، بلغتك.",
+  "placeholder": "قوائم تجريبية للعرض. ستأتي الخدمات الحقيقية من [HEALTH AUTHORITY DIRECTORY].",
+  "searchLabel": "ابحث عن الخدمات",
+  "search": "ابحث بالاسم أو المنطقة",
+  "languageLabel": "اللغة",
+  "languageAny": "اللغة: أي لغة",
+  "womenOnly": "طاقم نسائي فقط",
+  "covered": "مغطّاة من [programme]",
+  "typesLabel": "نوع الخدمة",
+  "types": {
+    "all": "الكل",
+    "genetic_counselling": "الاستشارة الوراثية",
+    "confirmatory_testing": "الفحص التأكيدي",
+    "specialist": "العيادات المتخصصة",
+    "ivf_embryo_testing": "أطفال الأنابيب وفحص الأجنة",
+    "support_group": "مجموعات الدعم",
+    "screening": "الفحص"
+  },
+  "count": "{count, plural, =0 {لا توجد خدمات مطابقة} one {خدمة واحدة} two {خدمتان} few {# خدمات} many {# خدمة} other {# خدمة}}",
+  "coverage": {
+    "programme": "مغطّاة من [programme]",
+    "referral": "مغطّاة بإحالة",
+    "free": "مجانية",
+    "details": "[تفاصيل التغطية]"
+  },
+  "cta": {
+    "genetic_counselling": "احجز جلسة",
+    "confirmatory_testing": "اعرف طريقة الحجز",
+    "specialist": "اعرف طريقة الحجز",
+    "ivf_embryo_testing": "احجز جلسة تعريفية",
+    "support_group": "انضم إلى لقاء",
+    "screening": "احجز الفحص"
+  },
+  "call": "اتصل",
+  "callLabel": "اتصل بـ {name}",
+  "phonePending": "رقم الهاتف قيد التأكيد",
+  "areaLabel": "المنطقة",
+  "languagesLabel": "اللغات",
+  "coverageLabel": "التغطية"
+}

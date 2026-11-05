@@ -3,6 +3,8 @@
   "kind": "condition",
   "locale": "en",
   "inheritance": "complex",
+  "gene": "HBA1, HBA2",
+  "area": "blood",
   "title": "Alpha-thalassaemia",
   "aliases": [
     "alpha thalassemia",
@@ -16,6 +18,22 @@
   "carrier_meaning": "People with one or two changed copies are usually healthy. Some have mild anaemia that does not need treatment.",
   "disease_meaning": "When three or all four copies are changed, the condition is more serious and needs specialist care.",
   "screening": "Standard blood tests can miss some carriers, so the result often needs a specialist to interpret it.",
+  "suggested_questions": [
+    "My relative has alpha-thalassaemia. Could I carry it?",
+    "Why is alpha-thalassaemia harder to predict?",
+    "What does a test for alpha-thalassaemia involve?"
+  ],
+  "card_summary": "Affects haemoglobin production. Inheritance involves several gene copies, so a counsellor explains each family's chances.",
+  "carrier_label": "Alpha-thalassaemia trait",
+  "disease_label": "Alpha-thalassaemia (HbH or major)",
+  "carrier_short": "One or two changed copies. Usually healthy; sometimes mild anaemia.",
+  "disease_short": "Several changed copies. Can need regular care; a counsellor explains each family's chances.",
+  "care": "Haematology clinics, genetic counselling and family support groups.",
+  "counsellor_questions": [
+    "Which type of alpha-thalassaemia runs in my family?",
+    "Can a counsellor explain our family's chances?",
+    "What does a carrier test involve?"
+  ],
   "sources": [
     {
       "title": "Alpha thalassemia",

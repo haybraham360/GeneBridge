@@ -3,6 +3,8 @@
   "kind": "condition",
   "locale": "en",
   "inheritance": "autosomal_recessive",
+  "gene": "HBB",
+  "area": "blood",
   "title": "Beta-thalassaemia",
   "aliases": [
     "beta thalassemia",
@@ -18,6 +20,22 @@
   "carrier_meaning": "A carrier (beta-thalassaemia trait or minor) has one changed copy. Carriers are healthy, though some have slightly small red blood cells or mild anaemia that does not need treatment.",
   "disease_meaning": "A person with two changed copies has beta-thalassaemia. How it affects them varies; some need regular blood transfusions and specialist care.",
   "screening": "A blood test can show whether someone is a carrier. It is part of premarital screening in the UAE.",
+  "suggested_questions": [
+    "My brother has beta-thalassaemia. Could I be a carrier?",
+    "Can beta-thalassaemia skip a generation?",
+    "What does a test for beta-thalassaemia involve?"
+  ],
+  "card_summary": "Reduces the body's ability to make haemoglobin. Carriers are healthy; people with two changed copies often need lifelong care.",
+  "carrier_label": "Beta-thalassemia trait",
+  "disease_label": "Beta-thalassemia major",
+  "carrier_short": "One changed copy. Healthy; sometimes mild anaemia. Can pass the copy on.",
+  "disease_short": "Two changed copies. A lifelong blood condition that often needs regular care.",
+  "care": "Haematology clinics, genetic counselling and family support groups.",
+  "counsellor_questions": [
+    "Which carrier test is right for me?",
+    "If I'm a carrier, could my partner be tested too?",
+    "What care is available for children with thalassaemia major?"
+  ],
   "sources": [
     {
       "title": "Beta thalassemia",

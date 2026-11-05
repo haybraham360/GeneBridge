@@ -15,6 +15,8 @@ import {
   autoListens,
   canSkip,
   DONE_STEP,
+  finishKind,
+  isExploringReason,
   isFullyTranslated,
   languageChoices,
   learningModes,
@@ -40,6 +42,8 @@ import {
 } from '../actions';
 import { AccountTypeStep, type FacilityError } from './AccountTypeStep';
 import { ConnectResultStep, type ClaimError } from './ConnectResultStep';
+import { PickConditionStep } from './PickConditionStep';
+import type { CatalogueCondition } from '@/lib/conditions/search';
 import { InviteStep } from './InviteStep';
 import { OptionCards } from './OptionCards';
 import { PrivacyStep } from './PrivacyStep';
@@ -52,17 +56,16 @@ export type OnboardingInitial = {
   privacyAgreed: boolean;
   resultConnected: boolean;
   finish: Finish | null;
+  /** The condition catalogue for step 6's exploring branch (task 11). */
+  conditions: CatalogueCondition[];
+  /** Conditions already chosen (resuming step 6). */
+  followed: string[];
 };
 
 /** Set before a language switch reloads the page, so focus returns to the choice. */
 const FOCUS_LANGUAGE_KEY = 'gb-onboarding-focus-language';
 const HEADING_ID = 'onboarding-title';
 
-const finishKeys = {
-  '/dashboard/results': 'results',
-  '/dashboard/counsellor': 'counsellor',
-  '/dashboard': 'home',
-} as const satisfies Record<Finish['destination'], string>;
 
 /**
  * The 8-step onboarding (design/source/Onboarding.dc.html). One question per
@@ -90,6 +93,8 @@ export function OnboardingFlow({ initial }: { initial: OnboardingInitial }) {
   const [resultConnected, setResultConnected] = useState(initial.resultConnected);
   const [invited, setInvited] = useState(false);
   const [finish, setFinish] = useState<Finish | null>(initial.finish);
+  const [picked, setPicked] = useState<string[]>(initial.followed);
+  const [notSure, setNotSure] = useState(false);
   const [saveError, setSaveError] = useState(false);
   const [speaking, setSpeaking] = useState(false);
 
@@ -104,9 +109,13 @@ export function OnboardingFlow({ initial }: { initial: OnboardingInitial }) {
   }, [learningMode]);
 
   const key = stepKey(step);
-  const title = t(`steps.${key}.title`);
-  const finishKey = finishKeys[finish?.destination ?? '/dashboard'];
-  const body = key === 'done' ? t(`steps.done.body.${finishKey}`) : t(`steps.${key}.body`);
+  // Step 6 branches (task 11): connect a result, or choose conditions to explore.
+  const exploringStep = key === 'connect' && isExploringReason(reason);
+  const textKey = exploringStep ? 'pick' : key;
+  const title = t(`steps.${textKey}.title`);
+  const finishKey = finishKind(finish ?? { resultConnected, destination: '/dashboard', exploring: null });
+  const body =
+    key === 'done' ? t(`steps.done.body.${finishKey}`) : t(`steps.${textKey as Exclude<typeof textKey, 'done'>}.body`);
 
   // ---------------------------------------------------------------- listen
   const stopReading = useCallback(() => {
@@ -183,12 +192,13 @@ export function OnboardingFlow({ initial }: { initial: OnboardingInitial }) {
           accountType: accountType ?? undefined,
           learningMode: learningMode ?? undefined,
           reason: reason ?? undefined,
+          conditions: exploringStep ? picked : undefined,
           agreed: step === PRIVACY_STEP ? agreed : undefined,
         }).catch((): StepResult => ({ status: 'error' }));
         apply(result, 'forward');
       });
     },
-    [accountType, agreed, apply, learningMode, reason, step],
+    [accountType, agreed, apply, exploringStep, learningMode, picked, reason, step],
   );
 
   const back = () => {
@@ -286,6 +296,10 @@ export function OnboardingFlow({ initial }: { initial: OnboardingInitial }) {
           },
         };
       case 'connect':
+        // Exploring: choosing nothing (and not "not sure") counts as skipped.
+        if (exploringStep) {
+          return { label: t('next'), enabled: true, run: () => complete(picked.length === 0 && !notSure) };
+        }
         // Optional: Next always moves on. Without a result it counts as skipped.
         return { label: t('next'), enabled: true, run: () => complete(!resultConnected) };
       case 'invite':
@@ -464,7 +478,19 @@ export function OnboardingFlow({ initial }: { initial: OnboardingInitial }) {
               />
             ) : null}
 
-            {key === 'connect' ? (
+            {exploringStep ? (
+              <PickConditionStep
+                conditions={initial.conditions}
+                selected={picked}
+                notSure={notSure}
+                onChange={(next) => {
+                  setPicked(next.selected);
+                  setNotSure(next.notSure);
+                }}
+              />
+            ) : null}
+
+            {key === 'connect' && !exploringStep ? (
               <ConnectResultStep
                 code={code}
                 onCodeChange={(value) => {
@@ -496,6 +522,17 @@ export function OnboardingFlow({ initial }: { initial: OnboardingInitial }) {
                 </DoneItem>
                 {(finish?.resultConnected ?? resultConnected) ? (
                   <DoneItem>{t('steps.done.resultConnected')}</DoneItem>
+                ) : null}
+                {finish?.exploring ? (
+                  <DoneItem>
+                    {finish.exploring.length
+                      ? t('steps.done.exploring', {
+                          list: finish.exploring
+                            .map((id) => initial.conditions.find((c) => c.id === id)?.title ?? id)
+                            .join(', '),
+                        })
+                      : t('steps.done.exploringNotSure')}
+                  </DoneItem>
                 ) : null}
               </ul>
             ) : null}

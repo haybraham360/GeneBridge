@@ -3,12 +3,13 @@
 import { useState } from 'react';
 import { cn } from '@/lib/cn';
 
-type Copy = 'A' | 'S';
+// Generic gene copies (any condition): A typical, a changed.
+type Copy = 'A' | 'a';
 type Cell = { row: Copy; col: Copy };
 
-const copies: Copy[] = ['A', 'S'];
+const copies: Copy[] = ['A', 'a'];
 
-/** Genotypes are written with the typical copy first: AA, AS, SS. */
+/** Genotypes are written with the typical copy first: AA, Aa, aa. */
 function genotype(row: Copy, col: Copy) {
   return [row, col].sort().join('');
 }
@@ -69,7 +70,7 @@ export function PunnettPreview({
                   onBlur={() => setActive(null)}
                   className={cn(
                     'cursor-default rounded-lg py-3.5 transition-[scale,box-shadow] duration-200',
-                    value === 'SS' ? 'bg-affected-tint' : 'bg-[#F7F2EE]',
+                    value === 'aa' ? 'bg-affected-tint' : 'bg-[#F7F2EE]',
                     on && 'scale-105 shadow-card',
                   )}
                 >

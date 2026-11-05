@@ -18,6 +18,7 @@ const KEYS = {
   conversation: 'gb_assistant_conversation',
   useResult: 'gb_assistant_use_result',
   family: 'gb_assistant_share_family',
+  followed: 'gb_assistant_use_followed',
 } as const;
 
 function session(key: string): string | null {
@@ -43,7 +44,19 @@ type Pending = { message: string; display: string; mode: 'normal' | 'simpler' | 
  * Ask GeneBridge chat (task 06, section 6). Used full-page at
  * /dashboard/assistant and as the compact card on the dashboard home.
  */
-export function AssistantChat({ compact = false, aiEnabled }: { compact?: boolean; aiEnabled: boolean }) {
+export function AssistantChat({
+  compact = false,
+  aiEnabled,
+  canUseFollowed = false,
+  initialQuestion,
+}: {
+  compact?: boolean;
+  aiEnabled: boolean;
+  /** The person follows conditions (task 11): offer "Use the conditions I'm following". */
+  canUseFollowed?: boolean;
+  /** Asked once on arrival, e.g. a suggested question from the exploring Home (?q=). */
+  initialQuestion?: string;
+}) {
   const t = useTranslations('assistant');
   const locale = useLocale() as 'en' | 'ar';
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -52,6 +65,8 @@ export function AssistantChat({ compact = false, aiEnabled }: { compact?: boolea
   const [error, setError] = useState<ErrorCode | null>(null);
   const [useResult, setUseResult] = useState(false);
   const [shareFamily, setShareFamily] = useState(false);
+  const [useFollowed, setUseFollowed] = useState(false);
+  const askedInitial = useRef(false);
   const [reportOpen, setReportOpen] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const conversationRef = useRef<string | null>(null);
@@ -69,6 +84,7 @@ export function AssistantChat({ compact = false, aiEnabled }: { compact?: boolea
     // eslint-disable-next-line react-hooks/set-state-in-effect -- reading browser-only session state once on mount
     setUseResult(session(KEYS.useResult) === '1');
     setShareFamily(session(KEYS.family) === '1');
+    setUseFollowed(session(KEYS.followed) === '1');
     if (!id) return;
     conversationRef.current = id;
     fetch(`/api/assistant/conversation?id=${encodeURIComponent(id)}`)
@@ -108,6 +124,8 @@ export function AssistantChat({ compact = false, aiEnabled }: { compact?: boolea
             locale,
             mode: p.mode,
             useMyResult: useResult,
+            // The server reads the conditions itself; the browser only asks.
+            useFollowedConditions: canUseFollowed && useFollowed,
             family: shareFamily ? demoFamilySnapshot : null,
             reportText: p.reportText ?? null,
             file: p.file ?? null,
@@ -155,8 +173,16 @@ export function AssistantChat({ compact = false, aiEnabled }: { compact?: boolea
         inputRef.current?.focus();
       }
     },
-    [busy, stopped, locale, useResult, shareFamily],
+    [busy, stopped, locale, useResult, shareFamily, canUseFollowed, useFollowed],
   );
+
+  // A suggested question from another page (?q=) is asked once, on arrival.
+  useEffect(() => {
+    const q = initialQuestion?.trim();
+    if (!q || askedInitial.current) return;
+    askedInitial.current = true;
+    void send({ message: q, display: q, mode: 'normal' });
+  }, [initialQuestion, send]);
 
   function submit(e?: React.FormEvent) {
     e?.preventDefault();
@@ -182,6 +208,11 @@ export function AssistantChat({ compact = false, aiEnabled }: { compact?: boolea
         body: JSON.stringify({ name: 'ai_result_toggle_on' }),
       }).catch(() => {});
     }
+  }
+
+  function toggleFollowed(on: boolean) {
+    setUseFollowed(on);
+    setSession(KEYS.followed, on ? '1' : null);
   }
 
   function toggleFamily(on: boolean) {
@@ -311,6 +342,38 @@ export function AssistantChat({ compact = false, aiEnabled }: { compact?: boolea
             </span>
           </div>
         </div>
+        {canUseFollowed ? (
+          <div className="flex items-start gap-3">
+            <button
+              id={`${toggleId}-followed`}
+              type="button"
+              role="switch"
+              aria-checked={useFollowed}
+              aria-describedby={`${hintId}-followed`}
+              onClick={() => toggleFollowed(!useFollowed)}
+              className={cn(
+                'relative mt-0.5 h-7 w-12 flex-none cursor-pointer rounded-full border-2 transition-colors',
+                useFollowed ? 'border-ink bg-ink' : 'border-line-strong bg-surface',
+              )}
+            >
+              <span
+                aria-hidden="true"
+                className={cn(
+                  'absolute top-0.5 size-5 rounded-full transition-[inset-inline-start]',
+                  useFollowed ? 'start-5.5 bg-white' : 'start-0.5 bg-muted',
+                )}
+              />
+            </button>
+            <div className="flex flex-col">
+              <label htmlFor={`${toggleId}-followed`} className="cursor-pointer text-sm font-bold">
+                {t('followedToggle.label')}
+              </label>
+              <span id={`${hintId}-followed`} className="text-xs text-muted">
+                {t('followedToggle.hint')}
+              </span>
+            </div>
+          </div>
+        ) : null}
         {!compact ? (
           <div className="flex flex-wrap items-center gap-2">
             <button

@@ -23,6 +23,7 @@
     }
   },
   "signOut": "Sign out",
+  "signedOut": "You've signed out.",
   "listen": {
     "play": "Listen to this step",
     "stop": "Stop reading"

@@ -77,7 +77,7 @@ describe('isProtectedPath', () => {
   it('matches whole segments only', () => {
     expect(isProtectedPath('/pro')).toBe(true);
     expect(isProtectedPath('/pro/sessions')).toBe(true);
-    expect(isProtectedPath('/pricing')).toBe(false);
+    expect(isProtectedPath('/contact')).toBe(false);
     expect(isProtectedPath('/')).toBe(false);
   });
 });

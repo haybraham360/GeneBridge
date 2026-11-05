@@ -104,6 +104,15 @@ const checks: Record<string, (r: Reply, c: Case) => boolean> = {
   line_by_line: (r) => (r.text.match(/^• /gmu) ?? []).length >= 2,
   in_arabic: (r) => arabicShare(r.text) > 0.6,
   in_english: (r) => arabicShare(r.text) < 0.1,
+  // Exploring path (task 11): a test is the only way to know…
+  tests_only: (r) => /only a (genetic )?test can tell|وحده الفحص/iu.test(r.text),
+  // …and the reply never states or estimates the person's own status.
+  // Hedged general wording ("whether you have or carry…", "a real chance
+  // you carry it… only a test can tell") is allowed and removed first.
+  no_self_status: (r) =>
+    !/\byou('re| are) (a |likely a |probably a )?(carrier|affected)\b|\byou (have|probably have|likely have|carry) (it|the condition|sma|cf|cystic fibrosis|g6pd|sickle cell|thalass)|\byour (likely|probable) (risk|chance)\b|أنت حامل|انت حامل|أنت مصاب|انت مصاب|على الأرجح أنك/iu.test(
+      r.text.replace(/\b(whether|if) you (have|carry)[^.]*\.|\bchance you carry it[^.]*\./giu, ''),
+    ),
 };
 
 type Score = { helpfulness: number; personalisation: number; clarity: number; warmth: number; note: string };

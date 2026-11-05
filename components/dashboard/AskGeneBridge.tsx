@@ -4,7 +4,7 @@ import { AssistantChat } from '@/components/assistant/AssistantChat';
 import { aiEnabled } from '@/lib/assistant/claude';
 
 /** The "Ask GeneBridge" card on the dashboard home: the real chat, compact. */
-export default async function AskGeneBridge() {
+export default async function AskGeneBridge({ canUseFollowed = false }: { canUseFollowed?: boolean }) {
   const t = await getTranslations('assistant');
   return (
     <section aria-labelledby="ask-genebridge-title" className="flex flex-col gap-3 rounded-2xl bg-white px-4 pt-4.5 pb-3 shadow-card">
@@ -17,7 +17,7 @@ export default async function AskGeneBridge() {
           {t('cardBadge')}
         </span>
       </div>
-      <AssistantChat compact aiEnabled={aiEnabled()} />
+      <AssistantChat compact aiEnabled={aiEnabled()} canUseFollowed={canUseFollowed} />
     </section>
   );
 }

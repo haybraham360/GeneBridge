@@ -34,10 +34,20 @@ type Body = {
   family?: unknown;
   reportText?: unknown;
   file?: unknown;
+  useFollowedConditions?: unknown;
 };
 
 function json(body: unknown, status: number) {
   return Response.json(body, { status, headers: { 'Cache-Control': 'no-store' } });
+}
+
+/** "Use the conditions I'm following" (task 11): ids and reasons only, read as the user. */
+async function followedFor(supabase: Awaited<ReturnType<typeof createClient>>, userId: string) {
+  const { data } = await supabase.from('followed_conditions').select('condition_id, reason').eq('user_id', userId).limit(10);
+  return ((data ?? []) as { condition_id: string; reason: string }[])
+    .filter((r): r is { condition_id: string; reason: 'family_history' | 'think_i_have' | 'learning' } =>
+      r.reason === 'family_history' || r.reason === 'think_i_have' || r.reason === 'learning')
+    .map((r) => ({ id: r.condition_id, reason: r.reason }));
 }
 
 export async function POST(request: Request) {
@@ -122,6 +132,7 @@ export async function POST(request: Request) {
         useMyResult: body.useMyResult === true,
         family: parseFamilySnapshot(body.family),
         reportText: reportText || null,
+        followed: body.useFollowedConditions === true ? await followedFor(supabase, user.id) : null,
       },
       respondDeps(supabase, user.id),
     );

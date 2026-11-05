@@ -3,6 +3,8 @@
   "kind": "condition",
   "locale": "en",
   "inheritance": "x_linked",
+  "gene": "G6PD",
+  "area": "blood",
   "title": "G6PD deficiency",
   "aliases": [
     "G6PD",
@@ -14,6 +16,22 @@
   "carrier_meaning": "A woman with one changed copy is often called a carrier. Many have no symptoms; some have mild effects.",
   "disease_meaning": "People with G6PD deficiency usually live normal lives by avoiding known triggers. A doctor gives the list of triggers to avoid.",
   "screening": "Newborn screening in the UAE includes G6PD deficiency.",
+  "suggested_questions": [
+    "Why is G6PD deficiency more common in boys?",
+    "My brother has G6PD deficiency. What could that mean for me?",
+    "What does a test for G6PD involve?"
+  ],
+  "card_summary": "Red blood cells can break down after certain foods or medicines. More common in males; many people never have symptoms.",
+  "carrier_label": "G6PD carrier",
+  "disease_label": "G6PD deficiency",
+  "carrier_short": "A changed copy on one X chromosome. Usually healthy. Can pass it on.",
+  "disease_short": "Red blood cells can break down after certain foods or medicines. Many people never have symptoms.",
+  "care": "Haematology clinics, pharmacist advice and genetic counselling.",
+  "counsellor_questions": [
+    "Which foods and medicines matter for G6PD deficiency?",
+    "How is it passed on in my family?",
+    "What does a test involve?"
+  ],
   "sources": [
     {
       "title": "Glucose-6-phosphate dehydrogenase deficiency",

@@ -152,5 +152,12 @@
       "right": "That's right. Carriers are healthy; being a carrier matters mainly when planning a family.",
       "wrong": "Not quite. Carriers are healthy. Being a carrier matters mainly when planning a family."
     }
+  },
+  "self_status": {
+    "lead": "GeneBridge can't tell whether you have or carry {condition} from what you describe. Only a genetic test can tell you.",
+    "lead_general": "GeneBridge can't tell whether you have or carry a condition from what you describe. Only a genetic test can tell you.",
+    "general": "In general terms: {carrier}",
+    "family": "If a close relative, such as a brother or sister, has it, there is a real chance you carry it too, but only a test can tell you.",
+    "next": "Free, confidential testing is available, and a genetic counsellor can help you decide whether and when to be tested."
   }
 }

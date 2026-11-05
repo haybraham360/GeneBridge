@@ -64,13 +64,16 @@ export async function loadDashboard(
 ): Promise<DashboardData> {
   const args = { p_days: rangeDays(filters.range), p_centre: filters.centre };
 
-  const [kpis, funnel, modes, equity] = await Promise.all([
+  const [kpis, funnel, modes, equity, exploring] = await Promise.all([
     supabase.rpc('analytics_kpis', args),
     supabase.rpc('analytics_funnel', args),
     supabase.rpc('analytics_learning_modes', args),
     supabase.rpc('analytics_equity', args),
+    supabase.rpc('analytics_exploring_to_tested', args),
   ]);
   // Function names only: error details could echo arguments.
+  // "Exploring to tested" (task 11) fails softly: its figures show as hidden
+  // if its function isn't there yet, rather than taking the dashboard down.
   for (const [name, result] of Object.entries({ kpis, funnel, modes, equity })) {
     if (result.error) throw new Error(`analytics ${name} failed`);
   }
@@ -87,6 +90,7 @@ export async function loadDashboard(
   }[];
 
   const all = equityRows.find((r) => r.language === 'all');
+  const exploringRow = ((exploring.error ? [] : (exploring.data ?? [])) as { explorers: unknown; tested: unknown; tested_pct: unknown }[])[0];
 
   return {
     current: kpiSet(kpiRows.find((r) => r.period === 'current')),
@@ -112,6 +116,11 @@ export async function loadDashboard(
       };
     }),
     overall: { gain: figure(all?.gain), uptakePct: figure(all?.uptake_pct) },
+    exploring: {
+      explorers: figure(exploringRow?.explorers),
+      tested: figure(exploringRow?.tested),
+      testedPct: figure(exploringRow?.tested_pct),
+    },
   };
 }
 

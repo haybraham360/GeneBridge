@@ -1,0 +1,80 @@
+{
+  "meta": {
+    "title": "Your results · GeneBridge"
+  },
+  "title": "Your results, explained",
+  "subtitle": "Expanded carrier screening · Reported {date} · {centre}",
+  "subtitleNoDate": "Expanded carrier screening · {centre}",
+  "listen": "Listen",
+  "stop": "Stop",
+  "simpler": "Read it simpler",
+  "summary": {
+    "carrier": "You are healthy. Your screening found you carry {count, plural, one {a change linked to # condition} other {changes linked to # conditions}}.",
+    "carrierBody": "Most people carry a few gene changes without knowing. Being a carrier mainly matters when planning children.",
+    "carrierBodySimple": "Most people carry some gene changes. It mainly matters for having children.",
+    "affected": "Your screening found a result a genetic counsellor will go through with you.",
+    "affectedBody": "Some findings mean more than carrying a gene change. A counsellor explains what they mean for you, in your language.",
+    "none": "Your screening found no changes in the conditions screened.",
+    "noneBody": "This lowers the chance a lot, but no test can rule out every change.",
+    "screened": "{count, plural, one {# condition screened} other {# conditions screened}}",
+    "carriers": "{count, plural, one {# carrier finding} other {# carrier findings}}"
+  },
+  "findings": {
+    "title": "Your findings",
+    "carrier": "Carrier",
+    "affected": "Two changed copies",
+    "patternGene": "{pattern} · gene {gene}",
+    "everythingElse": "Everything else screened",
+    "everythingElseBody": "No changes found. This lowers the chance a lot, but no test can rule out every change.",
+    "select": "Show {condition}"
+  },
+  "detail": {
+    "carrierHeading": "You carry one changed copy of the {gene} gene, which is linked to {condition}.",
+    "carrierHeadingNoGene": "Your screening found a change linked to {condition}.",
+    "affectedHeading": "Your screening found two changed copies linked to {condition}.",
+    "affectedBody": "A genetic counsellor will go through what this means for you, in your language.",
+    "typical": "Typical copy",
+    "changed": "Changed copy",
+    "beadsLabel": "Your two copies of this gene: one typical, one changed",
+    "notDiagnosis": "A carrier result is not a diagnosis",
+    "you": "{label} (you)",
+    "sameGene": "It matters for children only if a partner carries a change in the <b>same gene</b>. If you both agree, your couple view shows any shared results.",
+    "inherited": "See how {condition} is inherited",
+    "learn": "Learn more about {condition}"
+  },
+  "teachback": {
+    "title": "Check your understanding",
+    "meta": "3 quick questions · not a test",
+    "q1": "Does a carrier result mean you are ill?",
+    "q1a": "Yes",
+    "q1b": "No",
+    "q2": "Does a carrier result matter for children if your partner carries a different condition?",
+    "q2a": "Usually not",
+    "q2b": "Yes, always",
+    "q3": "Who can explain what your results mean for your family?",
+    "q3a": "A genetic counsellor",
+    "q3b": "The AI assistant",
+    "check": "Check my answers",
+    "needsAll": "Answer all three questions first.",
+    "right": "That's right.",
+    "notQuite": "Not quite.",
+    "e1": "Carriers are healthy. Being a carrier mainly matters when planning children.",
+    "e2": "A carrier result usually only matters if your partner carries a change in the same gene.",
+    "e3": "A genetic counsellor can explain your results and what they mean for your family."
+  },
+  "actions": {
+    "counsellor": "Talk to a counsellor",
+    "couple": "Check for shared results with my partner",
+    "options": "Explore options"
+  },
+  "flagged": {
+    "title": "A genetic counsellor will explain your result",
+    "body": "Some results, such as uncertain or complex findings, need a specialist to explain them. GeneBridge doesn't show an explanation for them. A counsellor will go through everything with you, in your language.",
+    "cta": "Talk to a counsellor"
+  },
+  "missing": {
+    "title": "Add your screening result",
+    "body": "Connect the reference number from your screening centre, and GeneBridge will explain each finding in plain language.",
+    "cta": "Add your result"
+  }
+}

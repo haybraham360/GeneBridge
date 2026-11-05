@@ -9,7 +9,7 @@
  */
 import type { SupabaseClient, User } from '@supabase/supabase-js';
 import { DEMO_FACILITY_CODE, demoFacilities, demoUsers, type DemoUser } from '../../lib/auth/demoUsers';
-import { demoResults } from '../../lib/onboarding/demoResults';
+import { demoReports } from '../../lib/onboarding/demoResults';
 import { programmeDay } from '../../lib/pro/queue';
 
 type Key = DemoUser['key'];
@@ -81,7 +81,7 @@ export async function seedPro(admin: SupabaseClient): Promise<ProSeed> {
   );
 
   // 2. Each persona's result is connected to their account.
-  for (const r of demoResults) {
+  for (const r of demoReports) {
     check(
       `claim ${r.reference_code}`,
       await admin

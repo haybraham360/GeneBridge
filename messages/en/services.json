@@ -1,0 +1,45 @@
+{
+  "meta": {
+    "title": "Care & services · GeneBridge"
+  },
+  "title": "Care & services",
+  "subtitle": "Counselling, testing, specialist care and support near you, in your language.",
+  "placeholder": "Placeholder listings for the demo. Real services will come from [HEALTH AUTHORITY DIRECTORY].",
+  "searchLabel": "Search services",
+  "search": "Search by name or area",
+  "languageLabel": "Language",
+  "languageAny": "Language: Any",
+  "womenOnly": "Women-only staff",
+  "covered": "Covered by [programme]",
+  "typesLabel": "Service type",
+  "types": {
+    "all": "All",
+    "genetic_counselling": "Genetic counselling",
+    "confirmatory_testing": "Confirmatory testing",
+    "specialist": "Specialist clinics",
+    "ivf_embryo_testing": "IVF and embryo testing",
+    "support_group": "Support groups",
+    "screening": "Screening"
+  },
+  "count": "{count, plural, =0 {No services match} one {# service} other {# services}}",
+  "coverage": {
+    "programme": "Covered by [programme]",
+    "referral": "Covered with referral",
+    "free": "Free",
+    "details": "[Coverage details]"
+  },
+  "cta": {
+    "genetic_counselling": "Book a session",
+    "confirmatory_testing": "See how to book",
+    "specialist": "See how to book",
+    "ivf_embryo_testing": "Book an information session",
+    "support_group": "Join a meeting",
+    "screening": "Book screening"
+  },
+  "call": "Call",
+  "callLabel": "Call {name}",
+  "phonePending": "Phone number to be confirmed",
+  "areaLabel": "Area",
+  "languagesLabel": "Languages",
+  "coverageLabel": "Coverage"
+}

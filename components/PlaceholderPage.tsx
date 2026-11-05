@@ -3,7 +3,6 @@ import { Button } from '@/components/ui/Button';
 import { Chip } from '@/components/ui/Chip';
 import { Logo } from '@/components/ui/Logo';
 import type { Locale } from '@/i18n/routing';
-import { signOut } from '@/lib/auth/actions';
 
 export type PlaceholderScreen =
   | 'auth'
@@ -26,16 +25,12 @@ export type PlaceholderScreen =
 export async function PlaceholderPage({
   locale,
   screen,
-  showSignOut = false,
 }: {
   locale: Locale;
   screen: PlaceholderScreen;
-  /** Temporary sign-out link until the app shell (side menu) exists. */
-  showSignOut?: boolean;
 }) {
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: 'common.placeholder' });
-  const tc = await getTranslations({ locale, namespace: 'common' });
 
   return (
     <div className="mx-auto flex min-h-screen max-w-page flex-col p-6">
@@ -52,16 +47,6 @@ export async function PlaceholderPage({
         <Button href="/" variant="dark">
           {t('back')}
         </Button>
-        {showSignOut ? (
-          <form action={signOut}>
-            <button
-              type="submit"
-              className="min-h-11 cursor-pointer text-sm font-semibold text-brand-text underline hover:text-brand-text-dark"
-            >
-              {tc('signOut')}
-            </button>
-          </form>
-        ) : null}
       </main>
     </div>
   );

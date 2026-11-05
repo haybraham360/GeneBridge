@@ -3,6 +3,8 @@
   "kind": "condition",
   "locale": "en",
   "inheritance": "autosomal_recessive",
+  "gene": "PAH",
+  "area": "metabolic",
   "title": "Phenylketonuria (PKU)",
   "aliases": [
     "PKU",
@@ -14,6 +16,22 @@
   "carrier_meaning": "A carrier has one changed copy and is healthy.",
   "disease_meaning": "A person with two changed copies has PKU. Found early through newborn screening and managed with a special diet led by a specialist team, children can grow and learn well.",
   "screening": "Newborn screening in the UAE includes PKU.",
+  "suggested_questions": [
+    "A cousin has PKU. Could I be a carrier?",
+    "How is PKU found in newborns?",
+    "What does a test for PKU involve?"
+  ],
+  "card_summary": "The body can't break down an amino acid in food. Managed with a special diet from birth.",
+  "carrier_label": "PKU carrier",
+  "disease_label": "Phenylketonuria (PKU)",
+  "carrier_short": "One changed copy. Healthy. Can pass the copy on.",
+  "disease_short": "Two changed copies. Managed with a special diet from birth.",
+  "care": "Metabolic clinics, dietitians and genetic counselling.",
+  "counsellor_questions": [
+    "How is PKU found at birth?",
+    "If I'm a carrier, could my partner be tested too?",
+    "What does the diet involve day to day?"
+  ],
   "sources": [
     {
       "title": "Phenylketonuria",

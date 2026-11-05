@@ -11,7 +11,7 @@
 import { config } from 'dotenv';
 import { createClient } from '@supabase/supabase-js';
 import { demoUsers } from '../lib/auth/demoUsers';
-import { demoResults } from '../lib/onboarding/demoResults';
+import { demoReports, demoResults } from '../lib/onboarding/demoResults';
 
 config({ path: '.env.local' });
 
@@ -40,11 +40,16 @@ async function main() {
     claimed_at: null,
   }));
 
-  const { error } = await admin
-    .from('screening_results')
-    .upsert(rows, { onConflict: 'reference_code' });
-  if (error) throw new Error(`screening_results: ${error.message}`);
-  for (const r of demoResults) console.log(`unclaimed ${r.reference_code}`);
+  // Each demo report is replaced whole: one row per screened condition (task 10).
+  const codes = demoReports.map((r) => r.reference_code);
+  const { error: clearError } = await admin.from('screening_results').delete().in('reference_code', codes);
+  if (clearError) throw new Error(`screening_results: ${clearError.message}`);
+  const { error } = await admin.from('screening_results').insert(rows);
+  if (error) throw new Error(`screening_results: ${error.message}. Apply the task 10 migration first.`);
+  for (const r of demoReports) {
+    const found = Object.keys(r.findings).join(', ');
+    console.log(`unclaimed ${r.reference_code} (${r.persona}: ${found})`);
+  }
 
   // Remove couple links between demo personas so the invite demo starts fresh.
   const { data } = await admin.auth.admin.listUsers({ perPage: 1000 });

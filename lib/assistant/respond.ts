@@ -15,7 +15,7 @@
 import { numbersIn } from '@/lib/genetics/inheritance';
 import { aiEnabled, assistantModel, claudeReply, refineCategory } from './claude';
 import { classifyByRules, lockedCategories } from './classify';
-import { draftText, offlineDraft, pregnancyReply, repliesFor, safetyReply, type Draft } from './offline';
+import { draftText, isSelfStatusQuestion, offlineDraft, pregnancyReply, repliesFor, safetyReply, selfStatusReply, type Draft } from './offline';
 import { findCondition, normalise } from './library';
 import { checkReply } from './outputCheck';
 import { redactReport } from './report';
@@ -49,6 +49,12 @@ export async function respond(input: RespondInput, deps: RespondDeps, options: R
   // Fixed replies first.
   let draft: Draft | null = safetyReply(category, input.locale, ctx);
   if (!draft && category === 'pregnancy') draft = pregnancyReply(input, ctx);
+  // "Do I have it?" without a result to read (task 11): never confirm, deny
+  // or estimate; explain generally and point to testing.
+  if (!draft && category !== 'injection' && isSelfStatusQuestion(input.message)) {
+    const result = input.useMyResult ? await loadMyResult(ctx) : null;
+    if (!result) draft = selfStatusReply(input, ctx);
+  }
   if (!draft && input.useMyResult && (category === 'personal_result' || category === 'report')) {
     const result = await loadMyResult(ctx);
     if (result?.escalate) {

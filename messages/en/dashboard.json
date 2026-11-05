@@ -3,17 +3,21 @@
     "nav": {
       "home": "Home",
       "results": "My results",
+      "myConditions": "My conditions",
+      "conditions": "Conditions A–Z",
       "couple": "Couple view",
       "simulator": "Inheritance simulator",
       "family": "Family map",
       "talk": "Talking to family",
       "options": "Options",
       "counsellor": "Counsellor & referral",
+      "services": "Care & services",
       "privacy": "Privacy & consent"
     },
     "ask": {
       "title": "Ask GeneBridge",
       "description": "General questions about genetics. It won't interpret your personal result.",
+      "cta": "Ask a question",
       "cta": "Ask a question"
     },
     "account": "Your account"
@@ -42,21 +46,53 @@
   "summaryCards": {
     "result": {
       "pill": "Your result",
-      "title": "Carrier of sickle cell trait (HbAS)",
-      "body": "You are healthy. See what this means for you.",
-      "link": "Open explainer"
+      "carrierOne": "Carrier of {condition}",
+      "carrierMany": "Carrier of {count} conditions",
+      "healthy": "{list}. You are healthy.",
+      "healthyOne": "You are healthy. See what this means for you.",
+      "affected": "Your result is ready",
+      "affectedBody": "A genetic counsellor will go through it with you.",
+      "noneFound": "No changes found",
+      "noneFoundBody": "Nothing was found in the conditions you were screened for.",
+      "flagged": "A counsellor will explain your result",
+      "flaggedBody": "Some findings need a specialist to explain them.",
+      "missing": "Add your screening result",
+      "missingBody": "Connect it and GeneBridge will explain it.",
+      "link": "Open explainer",
+      "linkCounsellor": "Talk to a counsellor",
+      "linkAdd": "Add your result"
     },
     "couple": {
-      "pill": "Couple view unlocked",
-      "title": "{partner} joined on 30 Oct",
-      "body": "You both agreed to share result summaries.",
-      "link": "See your shared chances"
+      "pill": "Couple view",
+      "pillUnlocked": "Couple view unlocked",
+      "sharedOne": "1 shared condition found",
+      "sharedMany": "{count} shared conditions found",
+      "sharedBody": "You and {partner} both agreed. Your other results stay private.",
+      "sharedBodyNoName": "You both agreed. Your other results stay private.",
+      "noneShared": "No shared conditions found",
+      "noneSharedBody": "You both agreed. Your other results stay private.",
+      "consent": "Waiting for you both to agree",
+      "consentBody": "Nothing is shared until you both agree.",
+      "noPartner": "Invite your partner",
+      "noPartnerBody": "See shared chances only if you both agree.",
+      "resultMissing": "Waiting for both results",
+      "resultMissingBody": "The couple view needs both of your results.",
+      "flagged": "Talk to a counsellor together",
+      "flaggedBody": "One of your results needs a specialist to explain it.",
+      "link": "See your shared chances",
+      "linkReview": "Review sharing",
+      "linkCounsellor": "Book a couple session"
     },
     "appointment": {
       "pill": "Next appointment",
-      "title": "{doctor}",
-      "body": "Thu 12 Nov, 10:00 · Video call · Arabic or English",
-      "link": "Manage booking"
+      "none": "No appointment yet",
+      "noneBody": "Book a genetic counsellor when you're ready.",
+      "video": "Video call",
+      "in_person": "In person",
+      "body": "{when} · {format}",
+      "counsellorFallback": "Your counsellor",
+      "link": "Manage booking",
+      "linkBook": "Book a counsellor"
     }
   },
   "askGeneBridge": {
@@ -437,7 +473,8 @@
   "options": {
     "header": {
       "title": "Your options",
-      "subtitle": "Every option here is valid. Take your time."
+      "subtitle": "Every option here is valid. Take your time.",
+      "subtitleShared": "For your shared result: {condition}. Every option here is valid. Take your time."
     },
     "notice": "GeneBridge doesn’t recommend an option. Options are listed alphabetically, not ranked. A counsellor can help you think each one through.",
     "cards": {
@@ -448,11 +485,11 @@
       "costValue": "[Programme details]",
       "continue": {
         "title": "Continue and plan ahead",
-        "body": "Go ahead with pregnancy as you planned, with information about early care and newborn screening."
+        "body": "Go ahead with pregnancy as you planned, with information about early care, treatment and newborn screening for the condition."
       },
       "ivf": {
         "title": "IVF with embryo testing (PGT)",
-        "body": "Embryos are tested before transfer so only those without sickle cell disease are used."
+        "body": "Embryos are tested for the shared condition before transfer, so only unaffected embryos are used."
       },
       "counsellor": {
         "title": "Talk it through with a counsellor first",
@@ -460,7 +497,7 @@
       },
       "test": {
         "title": "Test during pregnancy",
-        "body": "A test early in pregnancy shows whether the baby has sickle cell disease, so you can prepare."
+        "body": "A test early in pregnancy shows whether the baby has the condition, so you can prepare."
       },
       "relatives": {
         "title": "Test other family members",
@@ -685,5 +722,123 @@
     "familyJoin": "I'd like a family member to join",
     "familyJoinHint": "Your counsellor will help you plan who joins and what is shared. Nothing about your result is shared with them unless you choose.",
     "bookedFamily": "A family member is invited to join."
+  },
+  "explore": {
+    "welcome": "Welcome, {name}",
+    "welcomeNoName": "Welcome",
+    "subtitle": "Here's what we've put together for you, based on what you want to understand.",
+    "banner": "You're exploring <b>{condition}</b> {reason}. <b>This isn't a diagnosis.</b> Only a genetic test can tell you whether you carry it.",
+    "bannerNone": "You haven't chosen a condition yet. <b>Nothing here is a diagnosis.</b> Choose one to follow, and GeneBridge will shape this page around it.",
+    "reasons": {
+      "family_history": "because it runs in your family",
+      "think_i_have": "because you think you may have it",
+      "learning": "to learn more about it"
+    },
+    "focus": "Focus on",
+    "focusLabel": "Which condition this page focuses on",
+    "path": {
+      "title": "Your path",
+      "pace": "Go at your own pace",
+      "steps": {
+        "learn": {
+          "title": "Learn about it",
+          "meta": "Now"
+        },
+        "counsellor": {
+          "title": "Talk to a counsellor",
+          "meta": "Optional"
+        },
+        "test": {
+          "title": "Get tested",
+          "meta": "Free and confidential"
+        },
+        "result": {
+          "title": "Add your result",
+          "meta": "When you have it"
+        },
+        "next": {
+          "title": "Next steps",
+          "meta": "Based on your result"
+        }
+      }
+    },
+    "tiles": {
+      "understand": {
+        "title": "Understand {condition}",
+        "body": "What it is, how it's passed on, and what being a carrier means."
+      },
+      "passedOn": {
+        "title": "See how it's passed on",
+        "body": "{pattern} inheritance, shown step by step."
+      },
+      "testing": {
+        "title": "Get tested privately",
+        "body": "Find free, confidential screening near you."
+      },
+      "result": {
+        "title": "Already have a result?",
+        "body": "Connect it and GeneBridge will explain it."
+      }
+    },
+    "patterns": {
+      "autosomal_recessive": "Recessive",
+      "autosomal_dominant": "Dominant",
+      "x_linked": "X-linked",
+      "complex": "Complex"
+    },
+    "ask": {
+      "title": "Ask GeneBridge about {condition}",
+      "titleNone": "Ask GeneBridge",
+      "badge": "General education only",
+      "often": "Questions people often ask:",
+      "label": "Your question",
+      "placeholder": "Ask your own question",
+      "send": "Ask"
+    },
+    "following": {
+      "title": "Conditions you're following",
+      "open": "Open",
+      "openLabel": "Open {condition}",
+      "unfollow": "Unfollow",
+      "unfollowLabel": "Stop following {condition}",
+      "pattern": "{pattern} inheritance",
+      "add": "+ Follow another condition",
+      "talk": "Talking to family about it",
+      "none": "You're not following any condition yet.",
+      "pickLabel": "Choose a condition to follow",
+      "search": "Search any condition or gene",
+      "whyLabel": "Why are you interested?",
+      "reasons": {
+        "family_history": "It runs in my family",
+        "think_i_have": "I think I may have it",
+        "learning": "I'm just learning"
+      },
+      "follow": "Follow",
+      "cancel": "Cancel",
+      "followed": "Now following {condition}.",
+      "unfollowed": "Stopped following {condition}.",
+      "error": "That didn't work. Please try again."
+    },
+    "claim": {
+      "title": "Add your screening result",
+      "label": "Screening reference number",
+      "placeholder": "AD-PMS-2026-000000",
+      "submit": "Connect result",
+      "connecting": "Connecting…",
+      "notFound": "We couldn't find that reference. Check the number on your report, or ask your screening centre.",
+      "rateLimited": "Too many attempts. Please wait a while, then try again.",
+      "error": "That didn't work. Please try again.",
+      "cancel": "Cancel"
+    },
+    "resultFollowing": {
+      "title": "Conditions you're following",
+      "body": "Conditions you chose to learn about, besides your results."
+    },
+    "couple": {
+      "title": "Add your result to check for shared results with your partner",
+      "body": "The couple view compares screening results, so it needs your result first. Your result stays private until you both agree to share.",
+      "cta": "Add your result"
+    },
+    "menuConditions": "My conditions"
   }
 }

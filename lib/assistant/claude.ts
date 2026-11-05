@@ -95,6 +95,7 @@ export async function claudeReply(input: RespondInput, ctx: ToolContext, categor
     `<result_toggle>${input.useMyResult ? 'on' : 'off'}</result_toggle>`,
     entries.length ? `<library>${libraryBlock(entries)}</library>` : '<library>[]</library>',
     shared.length ? `<shared_context>${shared.join('')}</shared_context>` : '',
+    input.followed?.length ? `<followed_conditions>${JSON.stringify(input.followed)}</followed_conditions>` : '',
     modeNote[input.mode] ? `<instruction>${modeNote[input.mode]}</instruction>` : '',
     `<user_message>${input.message}</user_message>`,
   ]

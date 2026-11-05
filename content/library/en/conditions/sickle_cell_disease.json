@@ -3,6 +3,8 @@
   "kind": "condition",
   "locale": "en",
   "inheritance": "autosomal_recessive",
+  "gene": "HBB",
+  "area": "blood",
   "title": "Sickle cell disease",
   "aliases": [
     "sickle cell",
@@ -18,6 +20,22 @@
   "carrier_meaning": "A carrier (sickle cell trait, HbAS) has one typical copy and one changed copy. Carriers are healthy and usually have no symptoms. They can pass the changed copy to their children.",
   "disease_meaning": "A person with sickle cell disease (for example HbSS) has two changed copies. Care has improved a lot, and many people live full lives with regular treatment from a specialist team.",
   "screening": "Premarital and newborn screening can find carriers and affected babies early.",
+  "suggested_questions": [
+    "My uncle has sickle cell disease. Could I be a carrier?",
+    "What is the difference between sickle cell trait and the disease?",
+    "What does a test for sickle cell involve?"
+  ],
+  "card_summary": "Red blood cells change shape, which can cause pain and anaemia. Carriers (sickle cell trait) are usually healthy.",
+  "carrier_label": "Sickle cell trait",
+  "disease_label": "Sickle cell disease",
+  "carrier_short": "One changed copy. Healthy; no treatment needed. Can pass the copy on.",
+  "disease_short": "Two changed copies. A lifelong blood condition that needs regular care.",
+  "care": "Haematology clinics, genetic counselling and family support groups.",
+  "counsellor_questions": [
+    "Which carrier test is right for me?",
+    "If I'm a carrier, could my partner be tested too?",
+    "What care is available for children with sickle cell disease?"
+  ],
   "sources": [
     {
       "title": "Sickle cell disease",

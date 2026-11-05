@@ -10,24 +10,27 @@ import {
   ShieldCheck,
   MessageSquare,
   MessagesSquare,
-  LogOut,
+  Search,
+  MapPin,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import type { ComponentType } from "react";
-import { useState, useEffect } from "react";
 import { Logo } from "../ui/Logo";
 import { LanguageSwitch } from "../marketing/LanguageSwitch";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { signOut } from "@/lib/auth/actions";
+import { SignOutButton } from "@/components/auth/SignOutButton";
 
 type NavKey =
   | "home"
   | "results"
+  | "myConditions"
   | "couple"
   | "simulator"
   | "family"
   | "talk"
+  | "conditions"
+  | "services"
   | "options"
   | "counsellor"
   | "privacy";
@@ -43,12 +46,14 @@ type NavItem = {
 const nav: NavItem[] = [
   { label: "Home", icon: Home, link: "/dashboard", short: "home" },
   { label: "My results", icon: BarChart3, link: "/dashboard/results", short: "results" },
+  { label: "Conditions A–Z", icon: Search, link: "/dashboard/conditions", short: "conditions" },
   { label: "Couple view", icon: Users, link: "/dashboard/couple", short: "couple" },
   { label: "Inheritance simulator", icon: Layers, link: "/dashboard/simulator", short: "simulator"  },
   { label: "Family map", icon: FamilyIcon, link: "/dashboard/family", short: "family"  },
   { label: "Talking to family", icon: MessagesSquare, link: "/dashboard/talk", short: "talk" },
   { label: "Options", icon: Compass, link: "/dashboard/options", short: "options"  },
   { label: "Counsellor & referral", icon: Calendar, link: "/dashboard/counsellor", short: "counsellor"  },
+  { label: "Care & services", icon: MapPin, link: "/dashboard/services", short: "services" },
   { label: "Privacy & consent", icon: ShieldCheck, link: "/dashboard/privacy", short: "privacy"  },
 ];
 
@@ -75,36 +80,37 @@ type SidebarProps = {
   /** The signed-in person's first name, or null if they haven't given one. */
   name: string | null;
   initial: string | null;
+  /**
+   * Exploring path (task 11): "My results" becomes "My conditions", linking
+   * to the focused condition's guide. Null on the result path.
+   */
+  conditionsHref?: string | null;
 };
 
-export default function Sidebar({ name, initial }: SidebarProps) {
+export default function Sidebar({ name, initial, conditionsHref = null }: SidebarProps) {
+  const items: NavItem[] = conditionsHref
+    ? nav.map((item) => (item.short === "results" ? { ...item, short: "myConditions", link: conditionsHref } : item))
+    : nav;
 
-  const [activeLink, setActiveLink] = useState("Home");
   const pathname = usePathname();
-  const spreadChars = pathname.slice(3); 
-  const t = useTranslations('dashboard.sidebar'); 
-  const tc = useTranslations('common');
-
-  useEffect(() => {
-    const activeItem = nav.find((item) => item.link === pathname);
-    if (activeItem) {
-      setActiveLink(activeItem.label);
-    }
-  }, [usePathname()]);
+  // The path without the locale prefix ("/en/dashboard" → "/dashboard").
+  const spreadChars = pathname.slice(3);
+  const t = useTranslations('dashboard.sidebar');
 
   return (
-    <aside className="flex h-screen pb-8 bg-white w-66 border-r border-slate-200 shrink-0 flex-col bg-sidebar">
-      <div className="px-6 pb-6 pt-8 flex items-center justify-center scale-110">
+    // Scrolls when the screen is short, so Sign out is always reachable.
+    <aside className="flex h-screen w-66 shrink-0 flex-col overflow-y-auto border-r border-slate-200 bg-white bg-sidebar pb-5">
+      <div className="flex items-center justify-center px-6 pt-6 pb-4 scale-110">
         <Logo size="sm" />
       </div>
 
-      <nav className="flex flex-col gap-1.5 px-3.25">
-        {nav.map(({ label, icon: Icon, link, short }) => (
+      <nav className="flex flex-col gap-1 px-3.25">
+        {items.map(({ label, icon: Icon, link, short }) => (
           <a
             key={label}
             href={link || "#"}
             aria-current={spreadChars === link ? "page" : undefined}
-            className={`flex items-center gap-3 rounded-xl px-4 py-2.5 text-[14px] font-medium leading-none ${
+            className={`flex min-h-10 items-center gap-3 rounded-xl px-4 py-2 text-[14px] font-medium leading-none ${
               spreadChars === link
                 ? " bg-black text-white"
                 : "text-ink/85 hover:bg-brand/5"
@@ -117,7 +123,7 @@ export default function Sidebar({ name, initial }: SidebarProps) {
         ))}
       </nav>
 
-      <div className="mt-auto">
+      <div className="mt-auto flex flex-col gap-3 pt-4">
         <div className="mx-3.25 rounded-2xl bg-brand/10 p-2.75 pb-3.25">
           <div className="flex items-center gap-1.5 text-[11px] font-semibold">
             <MessageSquare
@@ -136,32 +142,22 @@ export default function Sidebar({ name, initial }: SidebarProps) {
             href="/dashboard/assistant"
             className="mt-2.75 inline-block text-[10px] font-medium text-ink cursor-pointer hover:bg-brand/15 p-3 rounded-2xl"
           >
-            Ask a question
+            {t("ask.cta")}
           </Link>
         </div>
 
-        <div className="flex items-center gap-2.5 px-4.5 pb-0 pt-3">
-          <div className="flex h-6 w-6 items-center justify-center rounded-full bg-brand/10 text-[10px] font-medium text-[#9A3412]">
+        {/* The signed-in person, their language, and Sign out (design: under the name). */}
+        <div className="flex items-center gap-3 px-4.5">
+          <div aria-hidden="true" className="flex size-10 flex-none items-center justify-center rounded-full bg-[#FFE3D3] text-sm font-extrabold text-[#9A3412]">
             {initial ?? ""}
           </div>
-          <div className="leading-tight mt-3">
-            <div className="text-[10px] font-medium">{name ?? t("account")}</div>
-            <div className="-mt-4 text-[8.5px] text-neutral-500">
-              {/* English · <span dir="rtl">العربية</span> */}
-              <LanguageSwitch />
-            </div>
+          <div className="flex min-w-0 flex-col">
+            <span className="truncate text-sm font-bold">{name ?? t("account")}</span>
+            <LanguageSwitch className="text-xs text-neutral-500" />
           </div>
         </div>
 
-        <form action={signOut} className="px-3.25 pt-3">
-          <button
-            type="submit"
-            className="flex min-h-11 w-full cursor-pointer items-center gap-3 rounded-xl px-4 text-[14px] font-medium text-ink/85 hover:bg-brand/5"
-          >
-            <LogOut aria-hidden="true" className="h-5 w-5 rtl:-scale-x-100" strokeWidth={1.6} />
-            {tc("signOut")}
-          </button>
-        </form>
+        <SignOutButton className="px-3.25" />
       </div>
     </aside>
   );

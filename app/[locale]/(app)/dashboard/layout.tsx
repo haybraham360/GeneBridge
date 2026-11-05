@@ -4,7 +4,9 @@ import Sidebar from "@/components/dashboard/Sidebar";
 import { redirect } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { COUNSELLOR_HOME } from "@/lib/auth/routes";
+import { conditionGuideHref } from "@/lib/conditions/links";
 import { currentPerson } from "@/lib/profile/currentPerson";
+import { loadUserPath } from "@/lib/user/path";
 import { createClient } from "@/lib/supabase/server";
 
 /**
@@ -31,11 +33,13 @@ export default async function DashboardLayout({
   }
 
   // The signed-in person's own name, never a demo persona.
-  const person = await currentPerson(supabase);
+  const [person, path] = await Promise.all([currentPerson(supabase), loadUserPath(supabase)]);
+  const conditionsHref =
+    path.path === "exploring" ? (path.focus ? conditionGuideHref(path.focus.conditionId) : "/dashboard") : null;
 
   return (
     <div className="fixed inset-0 flex overflow-hidden">
-      <Sidebar name={person.firstName} initial={person.initial} />
+      <Sidebar name={person.firstName} initial={person.initial} conditionsHref={conditionsHref} />
       <main className="min-w-0 flex-1 overflow-y-auto">{children}</main>
     </div>
   );

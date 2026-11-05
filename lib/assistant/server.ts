@@ -10,16 +10,17 @@ import type { CoupleSummary, RespondDeps, ResultSummary } from './types';
 export function respondDeps(supabase: SupabaseClient, userId: string): RespondDeps {
   return {
     async getMyResult(): Promise<ResultSummary | null> {
-      const { data } = await supabase
+      const { data: rows } = await supabase
         .from('screening_results')
         .select('condition_code, status, flagged')
         .eq('owner_id', userId)
-        .order('claimed_at', { ascending: false })
-        .limit(1)
-        .maybeSingle();
-      if (!data) return null;
-      // Flagged or uncertain: nothing about the result leaves this function.
-      if (data.flagged || data.status === 'uncertain') return { escalate: true };
+        .order('claimed_at', { ascending: false });
+      const findings = (rows ?? []) as { condition_code: string; status: string; flagged: boolean }[];
+      if (!findings.length) return null;
+      // Flagged or uncertain anywhere on the report: nothing leaves this function.
+      if (findings.some((f) => f.flagged || f.status === 'uncertain')) return { escalate: true };
+      // Several findings (task 10): the first change found, else "no variant".
+      const data = findings.find((f) => f.status === 'carrier' || f.status === 'affected') ?? findings[0];
       return {
         escalate: false,
         condition: data.condition_code as string,

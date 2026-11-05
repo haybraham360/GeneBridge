@@ -8,7 +8,10 @@
     "overview": "Overview",
     "equity": "Equity",
     "engagement": "Engagement",
-    "export": "Export"
+    "export": "Export",
+    "analystRole": "Programme analyst",
+    "analystOrg": "[Health authority]",
+    "analystInitials": "HA"
   },
   "privacyNote": "Aggregated, anonymised data only. Groups under 10 people are hidden.",
   "header": {
@@ -159,5 +162,13 @@
     "group": "Group",
     "note": "Note",
     "thisPeriod": "This period"
+  },
+  "exploring": {
+    "title": "Exploring to tested",
+    "subtitle": "People who started without a result and later added one",
+    "explorers": "Started exploring",
+    "tested": "Later added a result",
+    "pct": "Share who added a result",
+    "how": "People who began on the exploring path (no screening result, following conditions to learn about), and how many later connected a screening result. A direct measure of improved access. Groups under 10 are hidden."
   }
 }

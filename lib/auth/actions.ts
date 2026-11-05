@@ -1,5 +1,7 @@
 'use server';
 
+import { logEvents } from './events';
+
 import { getLocale } from 'next-intl/server';
 import { redirect } from '@/i18n/navigation';
 import { createClient } from '@/lib/supabase/server';
@@ -94,8 +96,18 @@ export async function skipPassword(next: string | null) {
   redirect({ href: destinationFor(profile, safeNextPath(next)), locale });
 }
 
+/**
+ * Sign out from any side menu (task 11): ends the Supabase session and lands
+ * on the home page, which shows "You've signed out." The button clears the
+ * tab's session storage first (components/auth/SignOutButton).
+ */
 export async function signOut() {
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  // Counted before the session ends; no details.
+  if (user) await logEvents(supabase, user.id, [{ name: 'signed_out' }]);
   await supabase.auth.signOut();
-  redirect({ href: '/auth', locale: await getLocale() });
+  redirect({ href: '/?signed_out=1', locale: await getLocale() });
 }

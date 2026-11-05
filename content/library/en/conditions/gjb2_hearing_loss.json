@@ -3,6 +3,8 @@
   "kind": "condition",
   "locale": "en",
   "inheritance": "autosomal_recessive",
+  "gene": "GJB2",
+  "area": "hearing_vision",
   "title": "Congenital hearing loss (GJB2)",
   "aliases": [
     "GJB2",
@@ -17,6 +19,22 @@
   "carrier_meaning": "A carrier has one changed copy and usually has typical hearing.",
   "disease_meaning": "A child with two changed copies has hearing loss. Early support, such as hearing aids, cochlear implants and sign language, helps children develop and communicate.",
   "screening": "Newborn hearing screening finds hearing loss early, whatever the cause.",
+  "suggested_questions": [
+    "My brother has hearing loss. Could I be a carrier?",
+    "Can hearing loss skip a generation?",
+    "What does a test for GJB2 involve?"
+  ],
+  "card_summary": "A common inherited cause of hearing loss from birth. Carriers have normal hearing.",
+  "carrier_label": "GJB2 carrier",
+  "disease_label": "Hereditary hearing loss (GJB2)",
+  "carrier_short": "One changed copy. Normal hearing. Can pass the copy on.",
+  "disease_short": "Two changed copies. Hearing loss, usually from birth, from mild to profound.",
+  "care": "Audiology and hearing clinics, genetic counselling and family support groups.",
+  "counsellor_questions": [
+    "Which carrier test is right for me?",
+    "If I'm a carrier, could my partner be tested too?",
+    "What support exists for children born with hearing loss?"
+  ],
   "sources": [
     {
       "title": "Nonsyndromic hearing loss",

@@ -95,6 +95,10 @@
           "label": "A condition runs in my family",
           "sub": "I want to understand my family's risk"
         },
+        "think_condition": {
+          "label": "I think I may have a condition",
+          "sub": "I'd like to understand it better"
+        },
         "just_learning": {
           "label": "I'm just learning",
           "sub": "No result yet"
@@ -159,16 +163,30 @@
       "body": {
         "results": "Your next step is to see what your result means. Take your time.",
         "counsellor": "Your next step is to talk with a genetic counsellor, who will go through your result with you. Take your time.",
-        "home": "Your home page is ready whenever you are. Take your time."
+        "home": "Your home page is ready whenever you are. Take your time.",
+        "explore": "Your next step is to learn about it at your own pace. Take your time."
       },
       "language": "Language: <lang>{value}</lang>",
       "learning": "Learning style: {value}",
       "resultConnected": "Result connected",
       "cta": {
-        "results": "See what my result means",
+        "results": "See what my results mean",
         "counsellor": "Talk to a counsellor about your result",
-        "home": "Go to my home"
-      }
+        "home": "Go to my home",
+        "explore": "Start learning"
+      },
+      "exploring": "Exploring: {list}",
+      "exploringNotSure": "Exploring: not sure yet"
+    },
+    "pick": {
+      "title": "Which condition would you like to understand?",
+      "body": "Choose one or more. Everything in GeneBridge will be shaped around them. You can change this any time.",
+      "searchLabel": "Search conditions",
+      "searchPlaceholder": "Search any condition or gene",
+      "notSure": "I'm not sure yet",
+      "note": "Choosing a condition doesn't mean you have it. Only a genetic test can tell you. You can add a result later.",
+      "noMatches": "No condition matches that yet. Try another name, or choose “I'm not sure yet”.",
+      "chosen": "{count, plural, =0 {Nothing chosen yet} one {# condition chosen} other {# conditions chosen}}"
     }
   },
   "invitePage": {

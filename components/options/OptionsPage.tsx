@@ -86,7 +86,8 @@ const linkCls =
 
 /* ---------- page ---------- */
 
-export default function OptionsPage() {
+/** `sharedCondition`: the couple's shared condition name, from their own data (null if none). */
+export default function OptionsPage({ sharedCondition = null }: { sharedCondition?: string | null } = {}) {
   const t = useTranslations("dashboard.options");
   const tShared = useTranslations("dashboard.shared");
   const locale = useLocale();
@@ -158,7 +159,7 @@ export default function OptionsPage() {
             </h1>
             <p className="mt-2 text-[15px] leading-5 text-neutral-500">
               {/* Every option here is valid. Take your time. */}
-              {t("header.subtitle")} 
+              {sharedCondition ? t("header.subtitleShared", { condition: sharedCondition }) : t("header.subtitle")}
             </p>
           </div>
           <button type="button" onClick={listen} className={`${pillBtn} mt-2`}>

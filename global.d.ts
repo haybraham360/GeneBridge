@@ -9,6 +9,10 @@ import type assistant from '@/messages/en/assistant.json';
 import type pro from '@/messages/en/pro.json';
 import type notice from '@/messages/en/notice.json';
 import type talk from '@/messages/en/talk.json';
+import type conditions from '@/messages/en/conditions.json';
+import type services from '@/messages/en/services.json';
+import type results from '@/messages/en/results.json';
+import type couple from '@/messages/en/couple.json';
 
 declare module 'next-intl' {
   interface AppConfig {
@@ -24,6 +28,10 @@ declare module 'next-intl' {
       pro: typeof pro;
       notice: typeof notice;
       talk: typeof talk;
+      conditions: typeof conditions;
+      services: typeof services;
+      results: typeof results;
+      couple: typeof couple;
     };
   }
 }

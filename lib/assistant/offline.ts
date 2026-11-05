@@ -371,6 +371,40 @@ export function pregnancyReply(input: RespondInput, ctx: ToolContext): Draft {
   return draft(3, t.lead, entry ? fill(t.general, { summary: entry.summary }) : '', t.no_numbers);
 }
 
+// ---------------------------------------------------------------------------
+// "Do I have it?" / "Am I a carrier?" without a result (task 11, exploring
+// path). Never confirms, denies or estimates the person's own status: a
+// general explanation, then "only a test can tell you", testing and a
+// counsellor. Used in both modes, like the pregnancy reply.
+// ---------------------------------------------------------------------------
+const selfStatus =
+  /\b(do i have|have i got|am i (a )?carrier|am i affected|could i (have|be a carrier|be affected|carry)|might i (have|carry)|do i carry|i think i (have|may have|might have)|i might have|i may have)\b|هل انا مصاب|هل أنا مصاب|هل انا حامل|هل أنا حامل|هل احمل|هل أحمل|اظن انني مصاب|أظن أنني مصاب|اظن اني مصاب|أعتقد أنني مصاب|اعتقد انني مصاب|هل يمكن ان اكون حامل|هل يمكن أن أكون حامل/iu;
+
+export function isSelfStatusQuestion(message: string): boolean {
+  return selfStatus.test(message);
+}
+
+export function selfStatusReply(input: RespondInput, ctx: ToolContext): Draft {
+  const t = replies[input.locale].self_status;
+  const followedFirst = input.followed?.[0]?.id ? getEntry(input.followed[0].id, input.locale) : null;
+  const entry = findCondition(input.message, input.locale) ?? followedFirst;
+  if (entry) ctx.sources.set(entry.id, chip(entry));
+  const carrier = entry?.carrier_meaning ?? getEntry('what_is_a_carrier', input.locale)?.summary ?? '';
+  const pattern = entry?.inheritance;
+  // A condition they think they may have that is X-linked or dominant: a
+  // priority counsellor request (shown as a card; they choose to send it).
+  if (pattern === 'x_linked' || pattern === 'autosomal_dominant') addEscalation(ctx, 'x_linked_or_dominant', 'priority');
+  const reply = draft(
+    1,
+    entry ? fill(t.lead, { condition: entry.title }) : t.lead_general,
+    carrier ? fill(t.general, { carrier }) : '',
+    t.family,
+    t.next,
+  );
+  reply.actions = ['book_counsellor'];
+  return reply;
+}
+
 export async function offlineDraft(category: Category, input: RespondInput, ctx: ToolContext): Promise<Draft> {
   const t = replies[input.locale];
   const safety = safetyReply(category, input.locale, ctx);

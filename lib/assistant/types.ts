@@ -108,6 +108,11 @@ export type RespondInput = {
   /** Shared into this chat by an explicit user action, this session only. */
   family?: FamilySnapshot | null;
   reportText?: string | null;
+  /**
+   * "Use the conditions I'm following" (task 11): condition ids and why the
+   * person follows them. Nothing else. Off by default.
+   */
+  followed?: { id: string; reason: 'family_history' | 'think_i_have' | 'learning' }[] | null;
 };
 
 /** Data access the responder may use. Injected so tests and the eval can fake it. */

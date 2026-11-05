@@ -3,7 +3,7 @@ import { useTranslations } from 'next-intl';
 import { Card } from '@/components/ui/Card';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 
-const questions = ['carrier', 'sharing', 'marriage', 'ai'] as const;
+const questions = ['conditions', 'carrier', 'sharing', 'marriage', 'ai'] as const;
 
 export function Faq() {
   const t = useTranslations('landing.faq');

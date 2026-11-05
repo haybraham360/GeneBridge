@@ -1,0 +1,85 @@
+{
+  "meta": {
+    "title": "Conditions A–Z · GeneBridge"
+  },
+  "list": {
+    "title": "Conditions A–Z",
+    "subtitle": "Plain-language guides to inherited conditions, whatever your screening finds.",
+    "draft": "Draft content for the demo, written from public sources. To be reviewed by a genetic counsellor before launch.",
+    "searchLabel": "Search conditions",
+    "search": "Search a condition or gene, e.g. thalassemia, SMN1",
+    "pattern": "Pattern",
+    "area": "Area",
+    "all": "All",
+    "count": "{shown} of {total} conditions shown · more are added as your screening panel grows",
+    "none": "No condition matches. Try another name or gene.",
+    "inResults": "In your results",
+    "following": "Following",
+    "familyNote": "If this runs in your family, talk to a counsellor.",
+    "readMore": "Read more",
+    "readMoreLabel": "Read more about {condition}",
+    "howInherited": "How it's inherited",
+    "howInheritedLabel": "How {condition} is inherited",
+    "footer": "Can't find a condition from your report? <ask>Ask GeneBridge</ask> or <counsellor>talk to a counsellor</counsellor>."
+  },
+  "patterns": {
+    "autosomal_recessive": "Autosomal recessive",
+    "autosomal_dominant": "Autosomal dominant",
+    "x_linked": "X-linked",
+    "complex": "Varies"
+  },
+  "patternFilters": {
+    "autosomal_recessive": "Recessive",
+    "autosomal_dominant": "Dominant",
+    "x_linked": "X-linked"
+  },
+  "areas": {
+    "blood": "Blood",
+    "nerves_muscles": "Nerves and muscles",
+    "hearing_vision": "Hearing and vision",
+    "metabolic": "Metabolic",
+    "heart": "Heart",
+    "other": "Other"
+  },
+  "gene": "Gene {gene}",
+  "detail": {
+    "subtitle": "A plain-language guide, shaped around what you told us.",
+    "follow": "Follow this condition",
+    "following": "Following",
+    "unfollowLabel": "Stop following {condition}",
+    "banner": {
+      "carrier": "<b>This is in your results.</b> You're a carrier, which means you're healthy.",
+      "carrierLink": "See your results",
+      "affected": "<b>This is in your results.</b> A genetic counsellor will go through what it means for you.",
+      "affectedLink": "See your results",
+      "family_history": "You're exploring <b>{condition}</b> because it runs in your family. <b>This isn't a diagnosis.</b> Only a genetic test can tell you whether you carry it.",
+      "think_i_have": "You told us you think you may have this condition. <b>GeneBridge can't diagnose it.</b> A doctor or genetic counsellor can arrange the right test.",
+      "thinkCta": "Talk to a counsellor"
+    },
+    "whatItIs": "What it is",
+    "passedOn": "How it's passed on",
+    "simulator": "See it in the simulator",
+    "carrier": "Being a carrier",
+    "having": "Having the condition",
+    "couldI": {
+      "title": "Could I be a carrier?",
+      "autosomal_recessive": "If a brother or sister has this condition, there is a real chance you carry a changed copy. Only a genetic test can tell you, and it's free and confidential.",
+      "autosomal_dominant": "With a dominant condition, one changed copy is enough to have it. If a parent has it, a genetic counsellor can explain what that means for you. Only a genetic test can tell you.",
+      "x_linked": "With an X-linked condition, women can carry a changed copy and men are more often affected. If a relative has it, a genetic counsellor can explain what that means for you. Only a genetic test can tell you.",
+      "complex": "Inheritance involves several gene copies, so a counsellor explains each family's chances. Only a genetic test can tell you.",
+      "testing": "Find testing near me",
+      "counsellor": "Talk to a counsellor first"
+    },
+    "questions": "Questions to ask a counsellor",
+    "care": "Care and support",
+    "services": "See services",
+    "ask": "Ask about this condition",
+    "askCta": "Ask GeneBridge",
+    "sources": "Sources",
+    "review": "Draft content · not yet reviewed by a counsellor · last checked {date}",
+    "reviewed": "Reviewed by a genetic counsellor · last checked {date}",
+    "listenLabel": "Listen to this guide"
+  },
+  "listen": "Listen",
+  "stop": "Stop"
+}

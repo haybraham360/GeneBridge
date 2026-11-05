@@ -11,6 +11,7 @@ import {
   DEFAULT_REASON,
   DONE_STEP,
   INVITE_STEP,
+  isExploringReason,
   isLanguageChoice,
   isLearningMode,
   isReason,
@@ -21,10 +22,13 @@ import {
   PRIVACY_STEP,
   resumeStep,
   uiLocaleFor,
+  type Reason,
   type StepNumber,
 } from '@/lib/onboarding/steps';
 import { finishFor, hasPrivacyConsent, isLinkedToPartner, type Finish } from '@/lib/onboarding/queries';
+import { isConditionId } from '@/lib/conditions/catalogue';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { followReasonFor, type FollowReason } from '@/lib/user/pathRules';
 import { createClient } from '@/lib/supabase/server';
 
 /*
@@ -51,6 +55,7 @@ async function signedIn() {
 
 type Profile = {
   onboarding_step: number;
+  reason: string | null;
   onboarding_started_at: string | null;
   onboarding_completed_at: string | null;
 };
@@ -58,7 +63,7 @@ type Profile = {
 async function loadProfile(supabase: SupabaseClient, userId: string): Promise<Profile | null> {
   const { data } = await supabase
     .from('profiles')
-    .select('onboarding_step, onboarding_started_at, onboarding_completed_at')
+    .select('onboarding_step, reason, onboarding_started_at, onboarding_completed_at')
     .eq('user_id', userId)
     .maybeSingle();
   return data;
@@ -74,6 +79,8 @@ type StepInput = {
   step: number;
   skipped: boolean;
   accountType?: string;
+  /** Step 6, exploring path: library condition ids ([] for "not sure yet"). */
+  conditions?: string[];
   learningMode?: string;
   reason?: string;
   agreed?: boolean;
@@ -137,6 +144,16 @@ export async function completeStep(input: StepInput): Promise<StepResult> {
     return { status: 'moved', step: PRIVACY_STEP };
   }
 
+  // Step 6 on the exploring path (task 11): save the chosen conditions,
+  // privately (owner-only), with why they follow them. Never a diagnosis.
+  if (step === INVITE_STEP - 1 && isExploringReason(profile.reason as Reason | null) && !skipped) {
+    const chosen = Array.isArray(input.conditions)
+      ? [...new Set(input.conditions.filter(isConditionId))].slice(0, 10)
+      : [];
+    const ok = await syncFollowed(supabase, userId, chosen, followReasonFor(profile.reason), events);
+    if (!ok) return { status: 'error' };
+  }
+
   const skipInvite = step === INVITE_STEP - 1 ? await isLinkedToPartner(supabase) : false;
   const target = nextStep(step, { skipInvite });
   update.onboarding_step = target;
@@ -156,6 +173,7 @@ export async function completeStep(input: StepInput): Promise<StepResult> {
       const seconds = Math.max(0, Math.round((now.getTime() - started) / 1000));
       events.push({ name: 'onboarding_completed', props: { seconds } });
     }
+    events.push({ name: 'user_path_set', props: { path: finish.resultConnected ? 'result' : 'exploring' } });
   }
 
   const { error } = await supabase.from('profiles').update(update).eq('user_id', userId);
@@ -332,4 +350,46 @@ export async function joinAsProfessional(rawCode: string): Promise<ProfessionalR
     { name: 'onboarding_account_type_set', props: { type: 'professional' } },
   ] satisfies OnboardingEvent[]);
   return { status: 'ok', redirectTo: COUNSELLOR_HOME };
+}
+
+/**
+ * Makes the person's followed conditions exactly `chosen` (step 6 can be
+ * revisited). Logs condition_followed / condition_unfollowed with the
+ * condition id and reason only.
+ */
+async function syncFollowed(
+  supabase: SupabaseClient,
+  userId: string,
+  chosen: string[],
+  reason: FollowReason,
+  events: OnboardingEvent[],
+): Promise<boolean> {
+  const { data: existing, error } = await supabase.from('followed_conditions').select('condition_id').eq('user_id', userId);
+  if (error) {
+    logFailure('followed read', error);
+    return false;
+  }
+  const had = new Set(((existing ?? []) as { condition_id: string }[]).map((r) => r.condition_id));
+  const removed = [...had].filter((id) => !chosen.includes(id));
+  const added = chosen.filter((id) => !had.has(id));
+
+  if (removed.length) {
+    const { error: deleteError } = await supabase.from('followed_conditions').delete().eq('user_id', userId).in('condition_id', removed);
+    if (deleteError) {
+      logFailure('followed delete', deleteError);
+      return false;
+    }
+  }
+  if (added.length) {
+    const { error: insertError } = await supabase
+      .from('followed_conditions')
+      .insert(added.map((condition_id) => ({ user_id: userId, condition_id, reason })));
+    if (insertError) {
+      logFailure('followed insert', insertError);
+      return false;
+    }
+  }
+  for (const condition of added) events.push({ name: 'condition_followed', props: { condition, reason } });
+  for (let i = 0; i < removed.length; i++) events.push({ name: 'condition_unfollowed', props: {} });
+  return true;
 }

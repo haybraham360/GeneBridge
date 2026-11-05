@@ -1,0 +1,117 @@
+{
+  "meta": {
+    "title": "Couple view · GeneBridge",
+    "consentTitle": "Unlock your couple view · GeneBridge"
+  },
+  "title": "Couple view",
+  "subtitle": "{me} and {partner} · You both agreed on {date} to check for shared results",
+  "subtitleNoDate": "{me} and {partner} · You both agreed to check for shared results",
+  "you": "You",
+  "yourPartner": "Your partner",
+  "consentSettings": "Consent settings",
+  "manageSharing": "Manage sharing",
+  "agreedChip": "{name} agreed · {level}",
+  "levels": {
+    "shared_only": "shared results only",
+    "summary": "summary",
+    "full": "full report"
+  },
+  "sharedCount": "{count, plural, one {# shared condition} other {# shared conditions}}",
+  "chancesTitle": "{condition}: your shared chances, for each pregnancy",
+  "bothCarry": "You both carry a change in the {gene} gene.",
+  "bothCarryNoGene": "You both carry a change linked to this condition.",
+  "children": "Four example children: {affected} with {condition}, {carrier} healthy carriers, {unaffected} with no changed copy",
+  "childAffected": "{label}",
+  "childCarrier": "Carrier, healthy",
+  "childUnaffected": "No changed copy",
+  "statAffected": "Child has {label}",
+  "statCarrier": "Child is a healthy carrier",
+  "statUnaffected": "Child has no changed copy",
+  "same": "These chances are the same for <b>every</b> pregnancy. Having one affected child doesn't make the next one less or more likely.",
+  "counsellorOnly": "For this condition, chances depend on more than two results. A genetic counsellor will go through them with you.",
+  "noneShared": "No shared conditions were found",
+  "noneSharedBody": "You don't carry a change in the same gene, so your children aren't expected to have these conditions from you both.",
+  "elseTitle": "Everything else you were both screened for",
+  "elseBody": "No other shared results were found. <b>Your individual results for other conditions stay private, even from each other.</b>",
+  "background": "A small background chance of an inherited condition exists for every couple, because no screening covers every gene change.",
+  "partnerShared": "{partner} also chose to share: carrier of {list}.",
+  "links": {
+    "simulator": {
+      "title": "See how it works",
+      "body": "Simulate pregnancies in the inheritance simulator."
+    },
+    "options": {
+      "title": "Explore your options",
+      "body": "Every path, shown equally."
+    },
+    "counsellor": {
+      "title": "Talk it through together",
+      "body": "Book a couple session with a counsellor."
+    }
+  },
+  "footer": "This is information, not a recommendation. Every option is valid, and the decision is yours.",
+  "states": {
+    "no_partner": {
+      "title": "Invite your partner",
+      "body": "The couple view checks for shared results only when you both agree. Invite your partner to start.",
+      "cta": "Invite your partner"
+    },
+    "consent_missing": {
+      "title": "Nothing is shared until you both agree",
+      "body": "Choose what you'd like to share. Your partner chooses separately.",
+      "cta": "Review and agree"
+    },
+    "result_missing": {
+      "title": "Waiting for both results",
+      "body": "The couple view needs both of your screening results. Once you've both added them, shared results appear here.",
+      "cta": "Add your result"
+    },
+    "flagged": {
+      "title": "Talk it through with a counsellor together",
+      "body": "One of your results needs a specialist to explain it, so the couple view doesn't show chances. A counsellor will go through everything with you both.",
+      "cta": "Book a couple session"
+    }
+  },
+  "consent": {
+    "title": "Unlock your couple view",
+    "subtitle": "Nothing is shared until you both agree. You can change your mind at any time.",
+    "whatSee": "What {partner} will see",
+    "whatSeeBody": "Choose how much of your result to share. {partner} chooses separately.",
+    "options": {
+      "shared_only": {
+        "title": "Shared results only",
+        "body": "{partner} sees only conditions you both carry. Your other results stay private, even from them."
+      },
+      "summary": {
+        "title": "Summary",
+        "body": "Every condition you carry and your carrier status, for example “Carrier: beta-thalassemia, SMA”."
+      },
+      "full": {
+        "title": "Full report",
+        "body": "Everything in the summary, plus the details of your screening report."
+      }
+    },
+    "bothSee": "You will both see",
+    "bothSee1": "Any condition you both carry, and your chances for each pregnancy",
+    "bothSee2": "Links to options and counselling",
+    "private": "Always stays private",
+    "private1": "Your family map",
+    "private2": "Your values answers",
+    "private3": "Your Ask GeneBridge chats",
+    "agree": "I agree to unlock our couple view",
+    "update": "Save my choice",
+    "notNow": "Not now",
+    "withdraw": "Withdraw my agreement",
+    "note": "You can withdraw at any time in Privacy & consent. Withdrawing closes the couple view for both of you straight away.",
+    "status": "Agreement status",
+    "notYet": "Not yet",
+    "waiting": "Waiting",
+    "agreed": "Agreed",
+    "why": "Why we ask you both",
+    "whyBody": "Your result belongs to you. A couple view only makes sense when both of you choose it, so neither of you can see the other's information without permission.",
+    "saved": "Saved. Nothing is shared until you both agree.",
+    "withdrawn": "Withdrawn. The couple view is closed for both of you.",
+    "error": "That didn't work. Please try again.",
+    "noPartner": "Invite your partner first. Once you're linked, you can each choose what to share."
+  }
+}

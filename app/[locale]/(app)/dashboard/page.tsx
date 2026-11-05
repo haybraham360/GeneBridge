@@ -15,24 +15,52 @@ import { loadCareFacts } from "@/lib/care/tracker";
 import { loadNotifications } from "@/lib/notifications/server";
 import { currentPerson } from "@/lib/profile/currentPerson";
 import { createClient } from "@/lib/supabase/server";
+import { ExploreHome } from "@/components/home/ExploreHome";
+import { FollowingCard } from "@/components/home/FollowingCard";
+import { listConditions } from "@/lib/conditions/catalogue";
+import { loadUserPath } from "@/lib/user/path";
+import { loadHomeSummary } from "@/lib/home/summary";
 
 export async function generateMetadata({ params }: PageProps<'/[locale]/dashboard'>) {
   const { locale } = await params;
   return hasLocale(routing.locales, locale) ? placeholderMetadata(locale, 'dashboard') : {};
 }
 
-export default async function Page({ params }: PageProps<'/[locale]/dashboard'>) {
+export default async function Page({ params, searchParams }: PageProps<'/[locale]/dashboard'>) {
   const { locale } = await params;
+  const { addResult } = await searchParams;
   if (!hasLocale(routing.locales, locale)) notFound();
   const t = await getTranslations({ locale, namespace: "dashboard" });
   const supabase = await createClient();
-  const [format, facts, notifications, { data: claims }, person] = await Promise.all([
+  const [format, facts, notifications, { data: claims }, person, path] = await Promise.all([
     getFormatter({ locale }),
     loadCareFacts(supabase),
     loadNotifications(supabase),
     supabase.auth.getClaims(),
     currentPerson(supabase),
+    loadUserPath(supabase),
   ]);
+  const catalogue = listConditions(locale);
+
+  // Exploring path (task 11): no result yet; Home is shaped by the
+  // conditions they follow, and never presents one as a diagnosis.
+  if (path.path === "exploring") {
+    return (
+      <ExploreHome
+        locale={locale}
+        firstName={person.firstName}
+        path={path}
+        catalogue={catalogue}
+        openClaim={addResult === "1"}
+      />
+    );
+  }
+  const summary = await loadHomeSummary(supabase, path);
+  const byId = new Map(catalogue.map((c) => [c.id, c]));
+  const followedItems = path.followed.flatMap((f) => {
+    const c = byId.get(f.conditionId);
+    return c ? [{ id: c.id, title: c.title, pattern: c.inheritance ? t(`explore.patterns.${c.inheritance}`) : null, reason: f.reason }] : [];
+  });
   // Care journey and counsellor updates come from the patient's own data (task 07).
   const care = careView(facts, t as unknown as Parameters<typeof careView>[1], format);
   const userId = claims?.claims?.sub;
@@ -58,11 +86,19 @@ export default async function Page({ params }: PageProps<'/[locale]/dashboard'>)
             <div className="mt-4.25 flex flex-col gap-4.5">
                 {userId ? <PatientNotifications items={notifications} userId={userId} /> : null}
                 <CareJourney steps={care.steps} current={care.current} />
-                <SummaryCards />
+                <SummaryCards summary={summary} catalogue={catalogue} />
                 <div className="grid grid-cols-[1.75fr_1fr] gap-5">
-                <AskGeneBridge />
+                <AskGeneBridge canUseFollowed={path.followed.length > 0} />
                 <ExplorePanel />
                 </div>
+                {followedItems.length ? (
+                  <FollowingCard
+                    followed={followedItems}
+                    catalogue={catalogue}
+                    focusId={path.focus?.conditionId ?? null}
+                    title={t("explore.resultFollowing.title")}
+                  />
+                ) : null}
             </div>
             </div>
         </main>

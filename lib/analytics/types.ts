@@ -57,4 +57,6 @@ export type DashboardData = {
   modes: LearningModeRow[];
   equity: EquityRow[];
   overall: EquityOverall;
+  /** Task 11: exploring users who later added a result. Hidden under 10. */
+  exploring: { explorers: Figure; tested: Figure; testedPct: Figure };
 };

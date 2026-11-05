@@ -5,7 +5,8 @@ import { notFound } from 'next/navigation';
 import { redirect } from '@/i18n/navigation';
 import { routing } from '@/i18n/routing';
 import { COUNSELLOR_HOME } from '@/lib/auth/routes';
-import { finishFor, hasPrivacyConsent } from '@/lib/onboarding/queries';
+import { listConditions } from '@/lib/conditions/catalogue';
+import { finishFor, followedConditionIds, hasPrivacyConsent } from '@/lib/onboarding/queries';
 import {
   DONE_STEP,
   isLanguageChoice,
@@ -57,9 +58,10 @@ export default async function OnboardingPage({ params }: PageProps<'/[locale]/on
     return redirect({ href: '/onboarding', locale: preferred });
   }
 
-  const [privacyAgreed, finish] = await Promise.all([
+  const [privacyAgreed, finish, followed] = await Promise.all([
     hasPrivacyConsent(supabase),
     finishFor(supabase, user.id),
+    followedConditionIds(supabase, user.id),
   ]);
 
   return (
@@ -72,6 +74,8 @@ export default async function OnboardingPage({ params }: PageProps<'/[locale]/on
         privacyAgreed,
         resultConnected: finish.resultConnected,
         finish,
+        conditions: listConditions(locale),
+        followed,
       }}
     />
   );
