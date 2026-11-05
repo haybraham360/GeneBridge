@@ -150,7 +150,7 @@ test('a wrong password and an unknown email get the same message', async ({ page
   await expect(page.getByLabel('Password', { exact: true })).toHaveCount(0);
 });
 
-test('a returning user signs in by email and lands on /home', async ({ page }) => {
+test('a returning user signs in by email and lands on /dashboard', async ({ page }) => {
   await page.goto('/en/auth');
   await page.getByRole('tab', { name: 'Sign in' }).click();
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Welcome back');
@@ -159,15 +159,16 @@ test('a returning user signs in by email and lands on /home', async ({ page }) =
   await resetPasswordState(persona('mariam').email, { dismissed: false });
   await requestEmailLink(page, persona('mariam').email);
   await openMagicLink(page, persona('mariam').email);
-  await expect(page).toHaveURL(/\/en\/auth\/password\?next=%2Fhome$/);
+  await expect(page).toHaveURL(/\/en\/auth\/password\?next=%2Fdashboard$/);
   await page.getByRole('button', { name: 'Skip for now' }).click();
-  await expect(page).toHaveURL(/\/en\/home$/);
+  await expect(page).toHaveURL(/\/en\/dashboard$/);
 
   // Signed-in users visiting /auth are sent on.
   await page.goto('/en/auth');
-  await expect(page).toHaveURL(/\/en\/home$/);
+  await expect(page).toHaveURL(/\/en\/dashboard$/);
 
-  // Sign out from the placeholder home page.
+  // Sign out from the placeholder home page (it still has the button).
+  await page.goto('/en/home');
   await page.getByRole('button', { name: 'Sign out' }).click();
   await expect(page).toHaveURL(/\/en\/auth$/);
   await page.goto('/en/home');
@@ -181,7 +182,7 @@ test('the UAE PASS mock signs in as a seeded user', async ({ page }) => {
   const dialog = page.getByRole('dialog', { name: 'Demo: UAE PASS' });
   await expect(dialog).toBeVisible();
   await dialog.getByRole('button', { name: /Khalid/ }).click();
-  await expect(page).toHaveURL(/\/en\/home$/);
+  await expect(page).toHaveURL(/\/en\/dashboard$/);
 });
 
 test('the UAE PASS mock offers every persona; the counsellor lands on /pro', async ({ page }) => {
@@ -204,7 +205,7 @@ test('a sign-in link that lands on the home page still signs in', async ({ page 
   });
   if (error) throw error;
   await page.goto(`/en?token_hash=${data.properties.hashed_token}&type=magiclink`);
-  await expect(page).toHaveURL(/\/en\/home$/);
+  await expect(page).toHaveURL(/\/en\/dashboard$/);
 });
 
 test('the Google button only shows when the provider is on', async ({ page, request }) => {
@@ -285,12 +286,12 @@ test.describe('phone sign-in', () => {
     await expect(page).toHaveURL(/\/en\/onboarding$/);
   });
 
-  test('a returning user signs in with their phone and lands on /home', async ({ page }) => {
+  test('a returning user signs in with their phone and lands on /dashboard', async ({ page }) => {
     await page.goto('/en/auth');
     await page.getByRole('tab', { name: 'Sign in' }).click();
     await page.getByLabel('Mobile number').fill(national(persona('mariam').phone));
     await page.getByRole('button', { name: 'Send verification code' }).click();
     await page.getByLabel('Digit 1 of 6').fill(DEMO_OTP);
-    await expect(page).toHaveURL(/\/en\/home$/);
+    await expect(page).toHaveURL(/\/en\/dashboard$/);
   });
 });

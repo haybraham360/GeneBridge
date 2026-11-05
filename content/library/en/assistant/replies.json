@@ -1,0 +1,156 @@
+{
+  "general": {
+    "lead": "{summary}",
+    "more": "{detail}",
+    "next_condition": "Next step: if you'd like, I can work out the chances for a couple where both partners carry {condition}.",
+    "next_general": "Next step: ask me about any condition in the library, or how screening works."
+  },
+  "simpler_prefix": "In simple words:",
+  "detail_prefix": "In more detail:",
+  "not_in_library": "I don't have reviewed information about that in my library, so I won't guess. A genetic counsellor can answer it properly.",
+  "risk": {
+    "need_details": "I can work out the chances with GeneBridge's inheritance engine. Tell me the condition and whether each parent is a carrier, affected, or neither. For example: \"both parents are carriers of beta-thalassaemia\".",
+    "intro": "For each pregnancy, when {p1} and {p2}, the chances for {condition} are:",
+    "intro_both": "For each pregnancy, when {both}, the chances for {condition} are:",
+    "affected": "{n}% the child has {condition}",
+    "carrier": "{n}% the child is a healthy carrier",
+    "unaffected": "{n}% the child has no changed copy",
+    "same": "These chances are the same for every pregnancy. Earlier children don't change them.",
+    "sons": "For a son: {a}% affected, {u}% not affected.",
+    "daughters": "For a daughter: {a}% affected, {c}% a carrier, {u}% no changed copy.",
+    "xl_dom_note": "Because this condition is {pattern}, the chances in a real family depend on details a genetic counsellor checks. I've added a way to talk to one.",
+    "complex": "{condition} is more complicated than most inherited conditions, because people have four copies of the alpha-globin genes. The chances depend on exactly which copies each parent has, so a genetic counsellor works them out from your full reports. I won't give a number that could be wrong.",
+    "parent": {
+      "carrier": "one parent is a carrier",
+      "affected": "one parent is affected",
+      "unaffected": "one parent has no changed copy"
+    },
+    "both": {
+      "carrier": "both parents are carriers",
+      "affected": "both parents are affected",
+      "unaffected": "neither parent has a changed copy"
+    },
+    "xl_mother": {
+      "carrier": "the mother is a carrier",
+      "affected": "the mother is affected",
+      "unaffected": "the mother has no changed copy"
+    },
+    "xl_father": {
+      "affected": "the father is affected",
+      "unaffected": "the father is not affected"
+    },
+    "pattern_names": {
+      "autosomal_dominant": "dominant",
+      "x_linked": "X-linked"
+    }
+  },
+  "result": {
+    "off": "I can explain your own result if you turn on \"Use my result in this chat\" above the message box. I would then see only your condition and carrier status, never your raw data. For now, here's the general picture.",
+    "none": "I couldn't find a connected result on your account. You can connect one with your reference number from your report.",
+    "flagged": "Your result needs a genetic counsellor to explain it. It includes a finding that an app can't explain safely, and a counsellor can look at your full situation. I've marked this as a priority request, and the chat stays open for general questions.",
+    "carrier": "Your result shows you are a healthy carrier of {condition}. You have one typical copy and one changed copy of the gene. Carriers are healthy, and this is not a diagnosis.",
+    "no_variant": "Your result shows no changed copy was found for {condition} in the genes that were tested.",
+    "affected": "Your result shows two changed copies for {condition}. Your own care team is the right place for questions about your health. Here I can explain what it means for children.",
+    "couple_both": "You and {partner} both carry a changed copy of the gene for {condition}.",
+    "couple_one": "{partner}'s result shows no changed copy for {condition}.",
+    "couple_not_shared": "I can't see your partner's result. Both of you need to agree to the couple view before I can use it. Here is what it would mean if your partner is also a carrier:",
+    "turn_on_hint": "Turn on \"Use my result in this chat\" to get an answer about your own result."
+  },
+  "decision": {
+    "lead": "There isn't one right answer, and I won't choose for you. Here are the options couples in your situation have, in alphabetical order:",
+    "option": "{name}: {involves} Timeline: {timeline}. Cost: {cost}. A question to ask: {question}",
+    "values": "What matters most to you both? For example: having biological children, following religious guidance, avoiding medical procedures, cost, or your family's views.",
+    "close": "If it helps, the values exercise lets you each rate these privately. A genetic counsellor can also talk it through with you, whenever you're ready.",
+    "reflect": "You mentioned that {values} matter to you. That's an important thing to bring to any decision, and only you can weigh it.",
+    "decided": "It sounds like you've thought carefully about this. I can't confirm a decision for you, but a genetic counsellor can go through it with you before you take the next step. I've added a way to reach one.",
+    "value_words": {
+      "children": "having biological children",
+      "faith": "faith and religious guidance",
+      "procedures": "avoiding medical procedures",
+      "cost": "cost",
+      "family": "your family's views"
+    }
+  },
+  "pregnancy": {
+    "lead": "Thank you for telling me. Questions about a current pregnancy need a genetic counsellor, who can look at your full situation and talk about testing options in good time. I've marked this as a priority request.",
+    "general": "In general terms: {summary}",
+    "no_numbers": "I won't give chances for this pregnancy here; the counsellor will go through them with you."
+  },
+  "family": {
+    "lead": "From the family map you shared, {condition} is seen on {sides}.",
+    "pattern_recessive": "Because it is inherited in a recessive way, other relatives on that side may also be carriers, even if they are healthy.",
+    "pattern_other": "Because it is {pattern}, relatives on that side may be affected differently. A genetic counsellor should go through your family with you; I've marked this as a priority request.",
+    "consider": "People who may want to consider testing, if they choose: {relatives}. It's their decision, and they never need to know your result.",
+    "cousin": "Your map shows a marriage between relatives. That raises the chance of a recessive condition mainly when both partners carry the same change, which screening can show.",
+    "offer": "Would you like help drafting an anonymous message to relatives? It won't include your result.",
+    "not_shared": "I can't see your family map. Use \"Share my family map with this chat\" above the message box if you'd like me to look at it for this conversation only.",
+    "sides": {
+      "father": "your father's side",
+      "mother": "your mother's side",
+      "own": "your brothers and sisters",
+      "partner": "your partner"
+    },
+    "relations": {
+      "father": "your father",
+      "mother": "your mother",
+      "uncle": "your uncle",
+      "aunt": "your aunt",
+      "brother": "your brother",
+      "sister": "your sister",
+      "cousin": "your cousin",
+      "grandfather": "your grandfather",
+      "grandmother": "your grandmother",
+      "partner": "your partner"
+    }
+  },
+  "prep": {
+    "lead": "Here are some questions you might bring to your counselling session:",
+    "q_general": [
+      "What does my result mean for each pregnancy?",
+      "Which options are available to us here, and what do they involve?",
+      "Is there anyone in my family who may want testing?",
+      "What support is available while we decide?"
+    ],
+    "summary_title": "My summary for the counsellor",
+    "summary_lines": {
+      "result": "Result: {status} for {condition}.",
+      "partner": "Partner: {status}.",
+      "questions": "Questions I'd like to ask:"
+    },
+    "summary_note": "I've drafted a one-page summary below. You can edit it before you share it; nothing is sent unless you choose to.",
+    "after": "Here's a plain explanation of that:",
+    "after_unknown": "I'm not sure what the counsellor meant by that, and I don't want to guess. It's completely fine to ask them to explain it again; that's what they're there for."
+  },
+  "statuses": {
+    "carrier": "healthy carrier",
+    "affected": "two changed copies",
+    "no_variant": "no changed copy found"
+  },
+  "person": "Of course. A genetic counsellor can talk this through with you. Use the button below to book.",
+  "distress": "I'm really sorry you're going through this. What you're feeling matters, and you don't have to deal with it alone. I'll pause the genetics questions for now. If you'd like, I can connect you with a counsellor, and the people below can talk with you today.",
+  "emergency": "This sounds like a medical emergency. Please call {number} now, or go to the nearest emergency department. I'll stop here so you can get help.",
+  "injection": "I can't change how I work, share my instructions, or act as a doctor. I'm here to explain genetics and inheritance, and to connect you with a counsellor for anything about your own situation. What would you like to know?",
+  "off_topic": "I can only help with genetics, inheritance, screening and counselling. Is there something about those I can explain?",
+  "report": {
+    "lead": "Here's your report, line by line:",
+    "line_unknown": "Nothing to explain on this line.",
+    "redacted": "Personal details were removed before I read it.",
+    "stop_uncertain": "Part of this report needs a genetic counsellor to explain. It includes a finding that is uncertain or serious, and I won't interpret it. I've marked this as a priority request.",
+    "stop_differs": "This report seems different from the result saved in GeneBridge. A genetic counsellor should check both before anything is explained. I've marked this as a priority request.",
+    "needs_ai": "Reading a PDF or photo needs the full AI assistant, which isn't switched on here. You can paste the text of your report instead."
+  },
+  "fallback": "I'm sorry, I can't answer that one safely. A genetic counsellor can help, and I've added a way to reach one.",
+  "uncertain": "The evidence here is limited, so I'd rather be honest than sound sure. This is a good question for a counsellor.",
+  "teachback": {
+    "same_each_pregnancy": {
+      "q": "Quick check: is the chance the same in every pregnancy?",
+      "right": "That's right. Each pregnancy has the same chances, whatever happened before.",
+      "wrong": "Not quite. The chances are the same every time; earlier children don't change them for the next pregnancy."
+    },
+    "carrier_healthy": {
+      "q": "Quick check: is a carrier usually healthy?",
+      "right": "That's right. Carriers are healthy; being a carrier matters mainly when planning a family.",
+      "wrong": "Not quite. Carriers are healthy. Being a carrier matters mainly when planning a family."
+    }
+  }
+}

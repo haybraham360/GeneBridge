@@ -1,0 +1,35 @@
+{
+  "id": "what_is_a_carrier",
+  "kind": "general",
+  "locale": "ar",
+  "title": "ما معنى حامل الصفة",
+  "aliases": [
+    "حامل الصفة",
+    "حامل للصفة",
+    "حاملا للصفة",
+    "حاملة للصفة",
+    "حامل",
+    "حاملا",
+    "حاملة",
+    "ناقل",
+    "سمة",
+    "حامل سليم"
+  ],
+  "summary": "حامل الصفة لديه نسخة طبيعية ونسخة متغيّرة من جين لحالة متنحية. حاملو الصفة أصحاء. كل إنسان يحمل بعض الجينات المتغيّرة، وهذا شائع جداً ولم يسببه أحد بفعل ما.",
+  "body": "تهمّ حالة حمل الصفة أساساً عند التخطيط للأسرة. إذا كان الشريكان يحملان نسخة متغيّرة من الجين نفسه، فهناك احتمال في كل حمل أن يُصاب الطفل. وإذا كان أحدهما فقط حاملاً، فلا يُصاب الأطفال بتلك الحالة المتنحية، وقد يكون بعضهم حاملين أيضاً. نتيجة حمل الصفة ليست تشخيصاً لمرض.",
+  "sources": [
+    {
+      "title": "What are the different ways a genetic condition can be inherited?",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/understanding/inheritance/inheritancepatterns/"
+    },
+    {
+      "title": "Carrier (glossary)",
+      "publisher": "National Human Genome Research Institute",
+      "url": "https://www.genome.gov/genetics-glossary/Carrier"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-05",
+  "audio": "/audio/ar/general/what_is_a_carrier.mp3"
+}

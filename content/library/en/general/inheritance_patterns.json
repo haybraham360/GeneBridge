@@ -1,0 +1,29 @@
+{
+  "id": "inheritance_patterns",
+  "kind": "general",
+  "locale": "en",
+  "title": "How conditions are inherited",
+  "aliases": [
+    "inheritance",
+    "recessive",
+    "dominant",
+    "x-linked",
+    "x linked",
+    "autosomal",
+    "how is it inherited",
+    "inheritance pattern",
+    "punnett"
+  ],
+  "summary": "We each have two copies of most genes, one from each parent. How a condition passes from parents to children depends on its inheritance pattern.",
+  "body": "Autosomal recessive: a child needs a changed copy from both parents to be affected; people with one changed copy are healthy carriers. Autosomal dominant: one changed copy is enough to cause the condition. X-linked: the gene is on the X chromosome, so boys and girls are affected differently. The chances are the same for every pregnancy; earlier children do not change them. Dominant and X-linked patterns are more complex in families, so a genetic counsellor should go through them with you.",
+  "sources": [
+    {
+      "title": "What are the different ways a genetic condition can be inherited?",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/understanding/inheritance/inheritancepatterns/"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-05",
+  "audio": "/audio/en/general/inheritance_patterns.mp3"
+}

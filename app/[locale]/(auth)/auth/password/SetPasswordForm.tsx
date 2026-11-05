@@ -48,7 +48,7 @@ export function SetPasswordForm({ next }: { next: string | null }) {
         return showError(tErrors('generic'));
       }
       setStatus(t('saved'));
-      router.replace(next ?? '/home');
+      router.replace(next ?? '/dashboard');
       router.refresh();
     } catch {
       setBusy(false);

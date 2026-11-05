@@ -1,0 +1,32 @@
+{
+  "id": "g6pd_deficiency",
+  "kind": "condition",
+  "locale": "en",
+  "inheritance": "x_linked",
+  "title": "G6PD deficiency",
+  "aliases": [
+    "G6PD",
+    "favism",
+    "glucose-6-phosphate dehydrogenase"
+  ],
+  "summary": "G6PD deficiency means red blood cells lack enough of an enzyme that protects them. Most people have no symptoms most of the time, but certain triggers, such as some foods, medicines or infections, can break down red blood cells.",
+  "inheritance_plain": "It is X-linked: the gene is on the X chromosome. Boys have one X, so one changed copy affects them. Girls have two X chromosomes and are often carriers, though some are affected too. X-linked chances depend on which parent has the change, so a genetic counsellor should talk them through with you.",
+  "carrier_meaning": "A woman with one changed copy is often called a carrier. Many have no symptoms; some have mild effects.",
+  "disease_meaning": "People with G6PD deficiency usually live normal lives by avoiding known triggers. A doctor gives the list of triggers to avoid.",
+  "screening": "Newborn screening in the UAE includes G6PD deficiency.",
+  "sources": [
+    {
+      "title": "Glucose-6-phosphate dehydrogenase deficiency",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/glucose-6-phosphate-dehydrogenase-deficiency/"
+    },
+    {
+      "title": "Glucose-6-phosphate dehydrogenase deficiency",
+      "publisher": "MedlinePlus Medical Encyclopedia (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/ency/article/000528.htm"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-05",
+  "audio": "/audio/en/conditions/g6pd_deficiency.mp3"
+}

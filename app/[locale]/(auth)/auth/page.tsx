@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import { Logo } from '@/components/ui/Logo';
 import { redirect } from '@/i18n/navigation';
 import { routing } from '@/i18n/routing';
+import { destinationProfile } from '@/lib/auth/destination';
 import { destinationFor, IDLE_REASON, safeNextPath } from '@/lib/auth/routes';
 import { googleSignInAvailable, phoneSignInAvailable } from '@/lib/auth/providers';
 import { uaePassMockEnabled } from '@/lib/auth/uaePass';
@@ -34,7 +35,7 @@ export default async function AuthPage({ params, searchParams }: PageProps<'/[lo
   } = await supabase.auth.getUser();
   let needsConsent = false;
   if (user) {
-    const [{ data: consent }, { data: profile }] = await Promise.all([
+    const [{ data: consent }, profile] = await Promise.all([
       supabase
         .from('consents')
         .select('id')
@@ -42,11 +43,7 @@ export default async function AuthPage({ params, searchParams }: PageProps<'/[lo
         .is('revoked_at', null)
         .limit(1)
         .maybeSingle(),
-      supabase
-        .from('profiles')
-        .select('role, onboarding_step')
-        .eq('user_id', user.id)
-        .maybeSingle(),
+      destinationProfile(supabase, user.id),
     ]);
     if (consent) redirect({ href: destinationFor(profile, next), locale });
     needsConsent = true;

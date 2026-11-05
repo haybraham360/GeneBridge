@@ -1,0 +1,32 @@
+{
+  "id": "phenylketonuria",
+  "kind": "condition",
+  "locale": "ar",
+  "inheritance": "autosomal_recessive",
+  "title": "بيلة الفينيل كيتون (PKU)",
+  "aliases": [
+    "PKU",
+    "بيلة الفينيل كيتون",
+    "الفينيل كيتون يوريا"
+  ],
+  "summary": "تعني بيلة الفينيل كيتون أن الجسم لا يستطيع تكسير الفينيل ألانين، وهو من مكوّنات البروتين. دون رعاية مبكرة قد يتراكم ويضر الدماغ.",
+  "inheritance_plain": "تُورَّث بطريقة جسمية متنحية: يُصاب الطفل فقط إذا ورث نسخة متغيّرة من جين PAH من كلا الوالدين.",
+  "carrier_meaning": "حامل الصفة لديه نسخة متغيّرة واحدة وهو سليم.",
+  "disease_meaning": "الشخص الذي لديه نسختان متغيّرتان مصاب ببيلة الفينيل كيتون. عند اكتشافها مبكراً بفحص حديثي الولادة واتباع نظام غذائي خاص بإشراف فريق متخصص، ينمو الأطفال ويتعلّمون جيداً.",
+  "screening": "يشمل فحص حديثي الولادة في الإمارات بيلة الفينيل كيتون.",
+  "sources": [
+    {
+      "title": "Phenylketonuria",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/phenylketonuria/"
+    },
+    {
+      "title": "Phenylalanine Hydroxylase Deficiency",
+      "publisher": "GeneReviews (NCBI Bookshelf)",
+      "url": "https://www.ncbi.nlm.nih.gov/books/NBK1504/"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-05",
+  "audio": "/audio/ar/conditions/phenylketonuria.mp3"
+}

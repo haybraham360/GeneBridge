@@ -1,0 +1,32 @@
+{
+  "id": "phenylketonuria",
+  "kind": "condition",
+  "locale": "en",
+  "inheritance": "autosomal_recessive",
+  "title": "Phenylketonuria (PKU)",
+  "aliases": [
+    "PKU",
+    "phenylketonuria",
+    "PAH"
+  ],
+  "summary": "Phenylketonuria means the body cannot break down phenylalanine, a building block found in protein. Without early care, it can build up and harm the brain.",
+  "inheritance_plain": "It is inherited in an autosomal recessive way: a child is affected only if they get a changed copy of the PAH gene from both parents.",
+  "carrier_meaning": "A carrier has one changed copy and is healthy.",
+  "disease_meaning": "A person with two changed copies has PKU. Found early through newborn screening and managed with a special diet led by a specialist team, children can grow and learn well.",
+  "screening": "Newborn screening in the UAE includes PKU.",
+  "sources": [
+    {
+      "title": "Phenylketonuria",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/phenylketonuria/"
+    },
+    {
+      "title": "Phenylalanine Hydroxylase Deficiency",
+      "publisher": "GeneReviews (NCBI Bookshelf)",
+      "url": "https://www.ncbi.nlm.nih.gov/books/NBK1504/"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-05",
+  "audio": "/audio/en/conditions/phenylketonuria.mp3"
+}

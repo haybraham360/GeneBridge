@@ -1,0 +1,32 @@
+{
+  "id": "consanguinity",
+  "kind": "general",
+  "locale": "ar",
+  "title": "زواج الأقارب والمخاطر الوراثية",
+  "aliases": [
+    "زواج الأقارب",
+    "ابن العم",
+    "ابنة العم",
+    "ابن الخال",
+    "الأقارب",
+    "قرابة",
+    "زواج العائلة"
+  ],
+  "summary": "زواج الأقارب، مثل أبناء العمومة، شائع في كثير من العائلات والثقافات. يرفع احتمال بعض الحالات المتنحية أساساً عندما يحمل الشريكان نسخة متغيّرة من الجين نفسه، لأن الأقارب أكثر عرضة لمشاركة الجينات المتغيّرة نفسها.",
+  "body": "معظم أطفال الأزواج الأقارب يولدون أصحاء. يُظهر الفحص إن كان الشريكان يحملان التغيّر نفسه، وتوضّح الاستشارة ما يعنيه ذلك في كل حمل. هذه الخدمات موجودة لدعم الأزواج والعائلات بالمعلومات، لا للحكم على اختياراتهم.",
+  "sources": [
+    {
+      "title": "What is a genetic consultation?",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/understanding/consult/consultation/"
+    },
+    {
+      "title": "Thalassaemia and other haemoglobinopathies (report EB118/5)",
+      "publisher": "World Health Organization",
+      "url": "https://apps.who.int/gb/ebwha/pdf_files/eb118/b118_5-en.pdf"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-05",
+  "audio": "/audio/ar/general/consanguinity.mp3"
+}

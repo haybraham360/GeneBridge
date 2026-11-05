@@ -1,0 +1,38 @@
+{
+  "id": "sickle_cell_disease",
+  "kind": "condition",
+  "locale": "ar",
+  "inheritance": "autosomal_recessive",
+  "title": "فقر الدم المنجلي",
+  "aliases": [
+    "الأنيميا المنجلية",
+    "سمة الخلية المنجلية",
+    "المنجلي",
+    "الهيموغلوبين S"
+  ],
+  "summary": "يؤثر فقر الدم المنجلي في الهيموغلوبين، وهو الجزء من خلايا الدم الحمراء الذي يحمل الأكسجين. قد تصبح خلايا الدم الحمراء صلبة ومنحنية مثل المنجل، فتسدّ الأوعية الدموية الصغيرة وتسبب الألم والتعب والالتهابات.",
+  "inheritance_plain": "يُورَّث بطريقة جسمية متنحية: يُصاب الطفل فقط إذا ورث نسخة متغيّرة من الجين من كلا الوالدين.",
+  "carrier_meaning": "حامل الصفة (سمة الخلية المنجلية HbAS) لديه نسخة طبيعية ونسخة متغيّرة. حاملو الصفة أصحاء ولا تظهر عليهم أعراض عادةً، ويمكنهم نقل النسخة المتغيّرة إلى أطفالهم.",
+  "disease_meaning": "الشخص المصاب بفقر الدم المنجلي (مثل HbSS) لديه نسختان متغيّرتان. تحسّنت الرعاية كثيراً، ويعيش كثيرون حياة كاملة مع متابعة منتظمة لدى فريق متخصص.",
+  "screening": "يساعد فحص ما قبل الزواج وفحص حديثي الولادة على اكتشاف حاملي الصفة والأطفال المصابين مبكراً.",
+  "sources": [
+    {
+      "title": "Sickle cell disease",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/sickle-cell-disease/"
+    },
+    {
+      "title": "Sickle Cell Disease",
+      "publisher": "GeneReviews (NCBI Bookshelf)",
+      "url": "https://www.ncbi.nlm.nih.gov/books/NBK1377/"
+    },
+    {
+      "title": "Thalassaemia and other haemoglobinopathies (report EB118/5)",
+      "publisher": "World Health Organization",
+      "url": "https://apps.who.int/gb/ebwha/pdf_files/eb118/b118_5-en.pdf"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-05",
+  "audio": "/audio/ar/conditions/sickle_cell_disease.mp3"
+}

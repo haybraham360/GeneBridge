@@ -1,0 +1,181 @@
+{
+  "meta": {
+    "title": "Ask GeneBridge"
+  },
+  "title": "Ask GeneBridge",
+  "subtitle": "General questions about genetics and inheritance, in plain language.",
+  "cardBadge": "Education and support",
+  "openFull": "Open full chat",
+  "boundary": "I can explain genetics and inheritance. I can't diagnose or tell you what to decide. For anything about your own situation, I'll connect you with a counsellor.",
+  "offlineNote": "Running in offline mode: answers come straight from the GeneBridge library.",
+  "suggestions": {
+    "label": "Try asking",
+    "items": [
+      "What does being a carrier mean?",
+      "How does cousin marriage affect inherited risk?",
+      "What happens in genetic counselling?"
+    ]
+  },
+  "input": {
+    "label": "Your question",
+    "placeholder": "Ask a question about genetics",
+    "send": "Send",
+    "tooLong": "Please keep your question under {max} characters.",
+    "mic": "Speak your question",
+    "micStop": "Stop listening",
+    "listening": "Listening…"
+  },
+  "toggle": {
+    "label": "Use my result in this chat",
+    "hint": "When on, the assistant can see your result summary (condition and carrier status), never your raw data."
+  },
+  "family": {
+    "share": "Share my family map with this chat",
+    "shared": "Family map shared for this chat",
+    "hint": "Only relations and statuses are shared, never names. For this conversation only.",
+    "stop": "Stop sharing"
+  },
+  "report": {
+    "button": "Explain my report",
+    "title": "Explain my screening report",
+    "paste": "Paste the text of your report",
+    "upload": "Or upload a PDF or photo",
+    "uploadNote": "Uploaded files are sent to our AI provider to read the text, then deleted. Only the text is kept, in this conversation, for 30 days.",
+    "uploadOff": "Uploading needs the full AI assistant, which isn't switched on. Paste the text instead.",
+    "explain": "Explain it",
+    "cancel": "Cancel",
+    "question": "Please explain my report line by line.",
+    "tooBig": "That file is too large (5 MB maximum).",
+    "attached": "Report attached"
+  },
+  "you": "You",
+  "assistant": "GeneBridge",
+  "typing": "GeneBridge is writing…",
+  "sources": "From GeneBridge library:",
+  "simpler": "Explain it more simply",
+  "detail": "Give me more detail",
+  "listen": "Listen",
+  "stopListening": "Stop",
+  "feedback": {
+    "question": "Was this helpful?",
+    "yes": "Helpful",
+    "no": "Not helpful",
+    "thanks": "Thanks for the feedback."
+  },
+  "teachback": {
+    "yes": "Yes",
+    "no": "No"
+  },
+  "actions": {
+    "values_exercise": "Try the values exercise",
+    "book_counsellor": "Talk to a counsellor",
+    "draft_family_message": "Draft an anonymous family message",
+    "turn_on_result": "Turn on \"Use my result\"",
+    "counselling_summary": "Edit my summary"
+  },
+  "escalation": {
+    "title": "Talk to a genetic counsellor",
+    "body": "This is something a genetic counsellor should talk through with you. They can look at your full situation.",
+    "priority": "Priority",
+    "share": "Share a short summary of this conversation with the counsellor",
+    "summaryLabel": "Summary to share (you can edit it)",
+    "summaryDefault": "I'd like to talk about {topic}.",
+    "book": "Book a counsellor",
+    "booking": "Sending…",
+    "sent": "Request sent. Choose a time on the next page.",
+    "failed": "Couldn't send the request. Please try again.",
+    "openChat": "You can keep asking general questions here.",
+    "topics": {
+      "flagged_result": "my screening result",
+      "pregnancy": "a question about my pregnancy",
+      "x_linked_or_dominant": "a condition in my family",
+      "major_decision": "a decision we're making",
+      "outside_library": "a question the assistant couldn't answer",
+      "distress": "how I'm feeling about all this",
+      "asked_for_person": "my situation"
+    }
+  },
+  "support": {
+    "title": "You don't have to face this alone",
+    "body": "These services can talk with you today:",
+    "counsellor": "Ask a counsellor to contact me",
+    "resources": {
+      "emergency": "Emergency services",
+      "ambulance": "Ambulance",
+      "mentalHealth": "Mental health support line",
+      "familySupport": "Family and social support"
+    }
+  },
+  "emergency": {
+    "title": "Call emergency services now",
+    "call": "Call {number}",
+    "stopped": "The chat is paused so you can get help."
+  },
+  "prep": {
+    "title": "My summary for the counsellor",
+    "note": "Edit it as you like. It's only shared if you choose to."
+  },
+  "delete": {
+    "button": "Delete this conversation",
+    "confirm": "Delete this conversation? This can't be undone.",
+    "done": "Conversation deleted."
+  },
+  "errors": {
+    "rate_limited": "You've sent a lot of messages this hour. Please wait a little and try again.",
+    "too_long": "Please keep your question shorter.",
+    "not_set_up": "The assistant isn't set up yet. Please try again later.",
+    "signed_out": "Please sign in again to keep chatting.",
+    "file_too_large": "That file is too large (5 MB maximum).",
+    "failed": "Something went wrong. Please try again."
+  },
+  "risk": {
+    "title": "For each pregnancy",
+    "affected": "Child has {condition}",
+    "carrier": "Child is a healthy carrier",
+    "unaffected": "Child has no changed copy",
+    "son": "For a son",
+    "daughter": "For a daughter",
+    "same": "The same for every pregnancy.",
+    "figure": {
+      "affected": "Affected",
+      "carrier": "Healthy carrier",
+      "unaffected": "No changed copy"
+    },
+    "generic": "the condition"
+  },
+  "nav": "Ask GeneBridge",
+  "page": {
+    "subtitle": "Ask anything about genetics, inheritance, screening and counselling."
+  },
+  "counsellorRequest": {
+    "title": "Your request was sent",
+    "body": "A genetic counsellor will see it. Booking times will appear here once scheduling is ready; the counsellor's team can also contact you.",
+    "reason": "Topic: {topic}",
+    "priority": "Marked as priority",
+    "summaryShared": "You shared a short summary.",
+    "noSummary": "No summary was shared."
+  },
+  "pro": {
+    "title": "Counsellor requests",
+    "subtitle": "Requests from Ask GeneBridge. Priority requests are shown first.",
+    "empty": "No open requests.",
+    "notCounsellor": "This page is for counsellors.",
+    "summary": "Summary shared by the person",
+    "noSummary": "No summary shared",
+    "status": {
+      "open": "Open",
+      "booked": "Booked",
+      "closed": "Closed"
+    },
+    "created": "Received {date}",
+    "reasons": {
+      "flagged_result": "Flagged result",
+      "pregnancy": "Current pregnancy",
+      "x_linked_or_dominant": "X-linked or dominant condition in the family",
+      "major_decision": "Major decision",
+      "outside_library": "Question outside the library",
+      "distress": "Distress: support needed",
+      "asked_for_person": "Asked to talk to a person"
+    }
+  }
+}

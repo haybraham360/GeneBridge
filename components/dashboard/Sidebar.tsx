@@ -16,6 +16,7 @@ import { useState, useEffect } from "react";
 import { Logo } from "../ui/Logo";
 import { LanguageSwitch } from "../marketing/LanguageSwitch";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 
 type NavKey =
   | "home"
@@ -119,10 +120,12 @@ export default function Sidebar() {
             personal result. */}
             {t("ask.description")}
           </p>
-          <button className="mt-2.75 text-[10px] font-medium text-ink cursor-pointer hover:bg-brand/15 p-3 rounded-2xl">
-            {/* Ask a question */}
-            {t("ask.cta")}
-          </button>
+          <Link
+            href="/dashboard/assistant"
+            className="mt-2.75 inline-block text-[10px] font-medium text-ink cursor-pointer hover:bg-brand/15 p-3 rounded-2xl"
+          >
+            Ask a question
+          </Link>
         </div>
 
         <div className="flex items-center gap-2.5 px-4.5 pb-0 pt-3">

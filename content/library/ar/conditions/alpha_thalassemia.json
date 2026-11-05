@@ -1,0 +1,33 @@
+{
+  "id": "alpha_thalassemia",
+  "kind": "condition",
+  "locale": "ar",
+  "inheritance": "complex",
+  "title": "الثلاسيميا ألفا",
+  "aliases": [
+    "ثلاسيميا ألفا",
+    "الثلاسيميا ألفا",
+    "ألفا ثلاسيميا",
+    "الهيموغلوبين H"
+  ],
+  "summary": "تؤثر الثلاسيميا ألفا في طريقة صنع الجسم للهيموغلوبين. معظم من لديهم نسخة متغيّرة أصحاء، وتظهر الأشكال الأشد عندما تتغيّر عدة نسخ.",
+  "inheritance_plain": "هي أكثر تعقيداً من معظم الحالات المتنحية، لأن لدى الإنسان عادةً أربع نسخ من جينات ألفا غلوبين. تعتمد احتمالات الطفل على النسخ التي لدى كل والد بالتحديد، لذا يحسبها المستشار الوراثي من التقرير الكامل.",
+  "carrier_meaning": "من لديهم نسخة أو نسختان متغيّرتان أصحاء عادةً، وقد يكون لدى بعضهم فقر دم خفيف لا يحتاج إلى علاج.",
+  "disease_meaning": "عندما تتغيّر ثلاث نسخ أو أربع، تكون الحالة أشد وتحتاج إلى رعاية متخصصة.",
+  "screening": "قد لا تكشف فحوص الدم المعتادة بعض حاملي الصفة، لذا يحتاج تفسير النتيجة غالباً إلى مختص.",
+  "sources": [
+    {
+      "title": "Alpha thalassemia",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/alpha-thalassemia/"
+    },
+    {
+      "title": "Alpha-Thalassemia",
+      "publisher": "GeneReviews (NCBI Bookshelf)",
+      "url": "https://www.ncbi.nlm.nih.gov/books/NBK1435/"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-05",
+  "audio": "/audio/ar/conditions/alpha_thalassemia.mp3"
+}

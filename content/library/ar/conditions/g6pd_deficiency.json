@@ -1,0 +1,33 @@
+{
+  "id": "g6pd_deficiency",
+  "kind": "condition",
+  "locale": "ar",
+  "inheritance": "x_linked",
+  "title": "نقص إنزيم G6PD",
+  "aliases": [
+    "G6PD",
+    "أنيميا الفول",
+    "التفوّل",
+    "نقص الخميرة"
+  ],
+  "summary": "نقص إنزيم G6PD يعني أن خلايا الدم الحمراء ينقصها إنزيم يحميها. معظم الأشخاص لا تظهر عليهم أعراض في أغلب الأوقات، لكن بعض المحفّزات مثل أطعمة أو أدوية معيّنة أو الالتهابات قد تكسّر خلايا الدم الحمراء.",
+  "inheritance_plain": "يُورَّث مرتبطاً بالكروموسوم X: الجين موجود على الكروموسوم X. للذكور كروموسوم X واحد، لذا تكفي نسخة متغيّرة واحدة لإصابتهم. للإناث كروموسومان X، وغالباً يكنّ حاملات للصفة، وقد تتأثر بعضهن أيضاً. تعتمد الاحتمالات على أيّ الوالدين لديه التغيّر، لذا ينبغي أن يناقشها معك مستشار وراثي.",
+  "carrier_meaning": "المرأة التي لديها نسخة متغيّرة واحدة تُسمّى غالباً حاملة للصفة. كثيرات لا تظهر عليهن أعراض، وقد تظهر لدى بعضهن آثار خفيفة.",
+  "disease_meaning": "يعيش المصابون بنقص G6PD عادةً حياة طبيعية بتجنّب المحفّزات المعروفة، ويعطي الطبيب قائمة المحفّزات التي يجب تجنّبها.",
+  "screening": "يشمل فحص حديثي الولادة في الإمارات نقص إنزيم G6PD.",
+  "sources": [
+    {
+      "title": "Glucose-6-phosphate dehydrogenase deficiency",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/glucose-6-phosphate-dehydrogenase-deficiency/"
+    },
+    {
+      "title": "Glucose-6-phosphate dehydrogenase deficiency",
+      "publisher": "MedlinePlus Medical Encyclopedia (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/ency/article/000528.htm"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-05",
+  "audio": "/audio/ar/conditions/g6pd_deficiency.mp3"
+}

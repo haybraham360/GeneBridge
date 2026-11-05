@@ -1,0 +1,32 @@
+{
+  "id": "cystic_fibrosis",
+  "kind": "condition",
+  "locale": "ar",
+  "inheritance": "autosomal_recessive",
+  "title": "التليّف الكيسي",
+  "aliases": [
+    "التليف الكيسي",
+    "CF",
+    "CFTR"
+  ],
+  "summary": "يجعل التليّف الكيسي المخاط في الجسم سميكاً ولزجاً، ويؤثر أساساً في الرئتين والهضم.",
+  "inheritance_plain": "يُورَّث بطريقة جسمية متنحية: يُصاب الطفل فقط إذا ورث نسخة متغيّرة من جين CFTR من كلا الوالدين.",
+  "carrier_meaning": "حامل الصفة لديه نسخة متغيّرة واحدة. حاملو الصفة أصحاء، ولا يعرفون عادةً أنهم حاملون حتى يُجرى لهم الفحص.",
+  "disease_meaning": "الشخص الذي لديه نسختان متغيّرتان مصاب بالتليّف الكيسي. تحسّن العلاج كثيراً، وتقدّمه فرق متخصصة.",
+  "screening": "تبحث فحوص حمل الصفة عن التغيّرات الأكثر شيوعاً، ولا يمكنها اكتشاف كل تغيّر ممكن.",
+  "sources": [
+    {
+      "title": "Cystic fibrosis",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/cystic-fibrosis/"
+    },
+    {
+      "title": "Cystic Fibrosis",
+      "publisher": "GeneReviews (NCBI Bookshelf)",
+      "url": "https://www.ncbi.nlm.nih.gov/books/NBK1250/"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-05",
+  "audio": "/audio/ar/conditions/cystic_fibrosis.mp3"
+}

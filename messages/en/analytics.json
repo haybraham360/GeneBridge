@@ -1,0 +1,163 @@
+{
+  "meta": {
+    "title": "Programme impact · GeneBridge"
+  },
+  "nav": {
+    "label": "Analyst",
+    "programmeView": "Programme view",
+    "overview": "Overview",
+    "equity": "Equity",
+    "engagement": "Engagement",
+    "export": "Export"
+  },
+  "privacyNote": "Aggregated, anonymised data only. Groups under 10 people are hidden.",
+  "header": {
+    "title": "Programme impact",
+    "synthetic": "Synthetic demo data",
+    "subtitle": "Analyst view for the health authority"
+  },
+  "filters": {
+    "label": "Filters",
+    "range": "Date range",
+    "ranges": {
+      "30": "Last 30 days",
+      "90": "Last 90 days",
+      "all": "All time"
+    },
+    "centre": "Screening centre",
+    "allCentres": "All centres",
+    "export": "Export report",
+    "exportHint": "Downloads the aggregated figures shown, as a CSV file."
+  },
+  "hidden": "Hidden (under 10)",
+  "units": {
+    "points": "{count, plural, other {{value} pts}}",
+    "days": "{count, plural, one {# day} other {# days}}"
+  },
+  "kpis": {
+    "heading": "Key figures",
+    "understanding": {
+      "title": "Understanding score",
+      "definition": "Before and after the result explainer",
+      "valueLabel": "{before} before, {after} after"
+    },
+    "uptake": {
+      "title": "Counselling uptake",
+      "definition": "At-risk couples who attended a session"
+    },
+    "referral": {
+      "title": "Time to referral",
+      "definition": "Median, result to counselling session"
+    },
+    "onboarding": {
+      "title": "Onboarding completion",
+      "definition": "Finished all 8 steps"
+    },
+    "change": {
+      "upPoints": "Up {value} pts on the previous {range}",
+      "downPoints": "Down {value} pts on the previous {range}",
+      "upGain": "Gain up {value} pts on the previous {range}",
+      "downGain": "Gain down {value} pts on the previous {range}",
+      "longer": "{value, plural, one {# day longer} other {# days longer}} than the previous {range}",
+      "shorter": "{value, plural, one {# day shorter} other {# days shorter}} than the previous {range}",
+      "same": "No change on the previous {range}",
+      "unavailable": "No comparison: previous {range} hidden or empty",
+      "allTime": "No earlier period to compare",
+      "range30": "30 days",
+      "range90": "90 days"
+    }
+  },
+  "funnel": {
+    "title": "From sign-up to counselling",
+    "steps": {
+      "signed_up": "Signed up",
+      "finished_onboarding": "Finished onboarding",
+      "viewed_result": "Viewed their result",
+      "at_risk_couples": "At-risk couples",
+      "booked_counselling": "Booked counselling",
+      "attended_counselling": "Attended counselling"
+    },
+    "ofPrevious": "{value} of previous step",
+    "columns": {
+      "step": "Step",
+      "count": "Count",
+      "ofPrevious": "% of previous step"
+    },
+    "how": "People who signed up in the chosen period, then how many of them finished onboarding and viewed their result. The last three steps count couples where both partners carry a changed copy of the same condition, and whether either partner booked or attended a counselling session. Percentages compare each step with the one before it."
+  },
+  "modes": {
+    "title": "Read vs listen",
+    "subtitle": "Understanding gain by learning mode",
+    "items": {
+      "read": "Read",
+      "listen": "Listen",
+      "read_listen": "Read and listen"
+    },
+    "columns": {
+      "mode": "Learning mode",
+      "users": "People",
+      "gain": "Understanding gain"
+    },
+    "how": "The average change in teach-back score (share of answers correct, in points) from before to after the result explainer, among people who answered both times. Grouped by the learning mode each person chose in onboarding."
+  },
+  "notTracked": "Marriage outcomes are not tracked or used as a measure of success.",
+  "equity": {
+    "title": "Equity by language",
+    "columns": {
+      "language": "Language",
+      "users": "Users",
+      "gain": "Understanding gain",
+      "uptake": "Counselling uptake",
+      "days": "Median days to referral"
+    },
+    "languages": {
+      "ar": "Arabic",
+      "en": "English",
+      "ur": "Urdu",
+      "hi": "Hindi",
+      "tl": "Tagalog"
+    },
+    "flag": "Below average: review",
+    "footnote": "Gaps of more than 5 points between languages are flagged for review.",
+    "how": "Each row covers people who use GeneBridge in that language. Understanding gain is the teach-back change in points. Counselling uptake is the share of people in an at-risk couple whose couple attended a session. Median days to referral runs from first viewing a result to the first counselling session. A row is flagged when its understanding gain or uptake is more than 5 points below the average for all languages."
+  },
+  "chart": {
+    "howMeasured": "How this is measured",
+    "viewTable": "View as table",
+    "viewChart": "View as chart"
+  },
+  "empty": {
+    "title": "Not enough data for these filters",
+    "body": "Every group here has fewer than 10 people, so all figures are hidden. Try a longer date range or all centres."
+  },
+  "error": {
+    "title": "The figures couldn't load",
+    "body": "Nothing is wrong with the data. Please try again in a moment.",
+    "retry": "Try again"
+  },
+  "loading": "Loading figures…",
+  "csv": {
+    "notice": "Synthetic demo data. Aggregated figures only; groups under 10 people are hidden.",
+    "filters": "Filters",
+    "range": "Date range",
+    "centre": "Centre",
+    "generated": "Generated",
+    "section": "Section",
+    "measure": "Measure",
+    "value": "Value",
+    "unit": "Unit",
+    "kpis": "Key figures",
+    "current": "This period",
+    "previous": "Previous period",
+    "understandingBefore": "Understanding score before explainer",
+    "understandingAfter": "Understanding score after explainer",
+    "unitPercent": "%",
+    "unitPoints": "points",
+    "unitDays": "days",
+    "unitCount": "count",
+    "notTracked": "Marriage outcomes are not tracked or used as a measure of success.",
+    "group": "Group",
+    "note": "Note",
+    "thisPeriod": "This period"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "id": "sickle_cell_disease",
+  "kind": "condition",
+  "locale": "en",
+  "inheritance": "autosomal_recessive",
+  "title": "Sickle cell disease",
+  "aliases": [
+    "sickle cell",
+    "sickle cell trait",
+    "HbS",
+    "HbAS",
+    "HbSS",
+    "haemoglobin S",
+    "hemoglobin S"
+  ],
+  "summary": "Sickle cell disease affects haemoglobin, the part of red blood cells that carries oxygen. Red blood cells can become stiff and curved like a sickle, which can block small blood vessels and cause pain, tiredness and infections.",
+  "inheritance_plain": "It is inherited in an autosomal recessive way: a child is affected only if they get a changed copy of the gene from both parents.",
+  "carrier_meaning": "A carrier (sickle cell trait, HbAS) has one typical copy and one changed copy. Carriers are healthy and usually have no symptoms. They can pass the changed copy to their children.",
+  "disease_meaning": "A person with sickle cell disease (for example HbSS) has two changed copies. Care has improved a lot, and many people live full lives with regular treatment from a specialist team.",
+  "screening": "Premarital and newborn screening can find carriers and affected babies early.",
+  "sources": [
+    {
+      "title": "Sickle cell disease",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/sickle-cell-disease/"
+    },
+    {
+      "title": "Sickle Cell Disease",
+      "publisher": "GeneReviews (NCBI Bookshelf)",
+      "url": "https://www.ncbi.nlm.nih.gov/books/NBK1377/"
+    },
+    {
+      "title": "Thalassaemia and other haemoglobinopathies (report EB118/5)",
+      "publisher": "World Health Organization",
+      "url": "https://apps.who.int/gb/ebwha/pdf_files/eb118/b118_5-en.pdf"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-05",
+  "audio": "/audio/en/conditions/sickle_cell_disease.mp3"
+}

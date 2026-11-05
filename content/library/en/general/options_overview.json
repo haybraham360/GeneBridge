@@ -1,0 +1,92 @@
+{
+  "id": "options_overview",
+  "kind": "general",
+  "locale": "en",
+  "title": "Your options, side by side",
+  "aliases": [
+    "options",
+    "what are our options",
+    "ivf",
+    "pgt",
+    "embryo testing",
+    "prenatal test",
+    "test during pregnancy",
+    "what can we do",
+    "should we"
+  ],
+  "summary": "When both partners carry the same condition, couples have several options. None is right for everyone; each is listed in alphabetical order with equal weight.",
+  "options": [
+    {
+      "name": "Continue and plan ahead",
+      "involves": "Have a pregnancy without extra testing, and plan care with doctors so any condition is found and supported early.",
+      "timeline": "[Confirm with counsellor]",
+      "cost": "[Programme details]",
+      "questions": [
+        "What care would be available for our child?",
+        "What support exists for families?"
+      ]
+    },
+    {
+      "name": "IVF with embryo testing (PGT)",
+      "involves": "IVF treatment where embryos are tested before one is placed in the womb.",
+      "timeline": "[Confirm with counsellor]",
+      "cost": "[Programme details]",
+      "questions": [
+        "How many cycles might it take?",
+        "What are the success rates?"
+      ]
+    },
+    {
+      "name": "Talk it through with a counsellor first",
+      "involves": "A conversation with a genetic counsellor before deciding anything.",
+      "timeline": "Usually within days",
+      "cost": "[Programme details]",
+      "questions": [
+        "What else should we know about our results?"
+      ]
+    },
+    {
+      "name": "Test during pregnancy",
+      "involves": "Testing the pregnancy (for example CVS or amniocentesis) to learn whether the baby is affected.",
+      "timeline": "[Confirm with counsellor]",
+      "cost": "[Programme details]",
+      "questions": [
+        "What are the risks of the test?",
+        "When would we get results?"
+      ]
+    },
+    {
+      "name": "Test other family members",
+      "involves": "Relatives can choose to be tested to understand their own chances.",
+      "timeline": "[Confirm with counsellor]",
+      "cost": "[Programme details]",
+      "questions": [
+        "Who in my family might want testing?"
+      ]
+    },
+    {
+      "name": "Faith and family",
+      "involves": "Talking with your family and a religious scholar you trust. GeneBridge does not give religious rulings.",
+      "timeline": "Your own pace",
+      "cost": "None",
+      "questions": [
+        "Where can we find official guidance?"
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "title": "Embryo testing and treatments for disease",
+      "publisher": "Human Fertilisation and Embryology Authority (UK)",
+      "url": "https://www.hfea.gov.uk/treatments/embryo-testing-and-treatments-for-disease/"
+    },
+    {
+      "title": "Prenatal testing",
+      "publisher": "MedlinePlus (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/prenataltesting.html"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-05",
+  "audio": "/audio/en/general/options_overview.mp3"
+}

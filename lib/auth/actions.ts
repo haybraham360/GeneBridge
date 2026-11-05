@@ -11,6 +11,7 @@ import {
   type FinishResult,
 } from './complete';
 import type { AuthMethod } from './events';
+import { destinationProfile } from './destination';
 import { destinationFor, safeNextPath } from './routes';
 import { isUaePassIdentity, signInWithUaePass } from './uaePass';
 
@@ -89,11 +90,7 @@ export async function skipPassword(next: string | null) {
   const locale = await getLocale();
   if (!user) return redirect({ href: '/auth', locale });
   await supabase.auth.updateUser({ data: { password_prompt_dismissed: true } });
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role, onboarding_step')
-    .eq('user_id', user.id)
-    .maybeSingle();
+  const profile = await destinationProfile(supabase, user.id);
   redirect({ href: destinationFor(profile, safeNextPath(next)), locale });
 }
 
