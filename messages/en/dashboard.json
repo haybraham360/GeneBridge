@@ -198,5 +198,205 @@
       "pausedState": "Sharing paused",
       "done": "Done"
     }
+  },
+
+  "simulator": {
+    "header": {
+      "title": "Inheritance simulator",
+      "subtitle": "See how gene copies pass from parents to a child. This shows chances, not what will happen.",
+      "stop": "Stop"
+    },
+    "patterns": {
+      "label": "Pattern", 
+      "both": "Both parents carriers (AS × AS)",
+      "one": "One parent carrier (AS × AA)",
+      "xlinked": "X-linked: talk to a counsellor"
+    },
+    "parent": "Parent {n}",
+    "parents": {
+      "carrier": "Carrier (AS)",
+      "notCarrier": "Not a carrier (AA)"
+    },
+    "outcomes": {
+      "scd": "Sickle cell disease",
+      "carrier": "Healthy carrier",
+      "none": "No changed copy"
+    },
+    "sentences": {
+      "scd": "This child has sickle cell disease (SS).",
+      "carrier": "This child is a healthy carrier (AS).",
+      "none": "This child has no changed copy (AA)."
+    },
+    "single": {
+      "empty": "Press “{button}” to see one possible result.",
+      "from": "{a} from Parent 1, {b} from Parent 2"
+    },
+    "buttons": {
+      "simulateOne": "Simulate one pregnancy",
+      "runMany": "Run {count} times",
+      "reset": "Reset"
+    },
+    "punnett": {
+      "title": "All possible combinations",
+      "aria": "Punnett square",
+      "cell": "{label}{scd, select, yes {, sickle cell disease} other {}}{picked, select, yes {, last simulated result} other {}}",
+      "note": "Each square is one of four equally likely combinations.",
+      "noteScd": "A shaded square means two changed copies (sickle cell disease).",
+      "noteNoScd": "No square has two changed copies, so sickle cell disease is not possible in this pattern."
+    },
+    "many": {
+      "title": "{count} pregnancies",
+      "description": "Run {count} pregnancies to see how the chances add up over many families.",
+      "expected": "expected about {n}",
+      "disclaimer": "This shows chances, not what will happen.",
+      "aria": "{revealed} of {total} simulated pregnancies shown"
+    },
+    "xlinked": {
+      "title": "X-linked conditions follow a different pattern",
+      "body": "Chances depend on which parent carries the changed copy and on the sex of the child, so a simple simulator could mislead you. A counsellor can walk through your family’s chances with you.",
+      "cta": "Talk to a counsellor",
+      "note": "This is information, not a recommendation."
+    },
+    "listen": {
+      "intro": "Inheritance simulator. See how gene copies pass from parents to a child. This shows chances, not what will happen.",
+      "pattern": "Pattern: {label}. Each pregnancy has a {scd} percent chance of sickle cell disease, {carrier} percent of a healthy carrier, and {none} percent of no changed copy.",
+      "xlinked": "X-linked conditions follow a different inheritance pattern. Talk to a counsellor to understand your family’s chances.",
+      "unsupported": "Listening isn’t supported in this browser."
+    },
+    "toast": {
+      "booking": "Opening couple session booking…"
+    }
+  },
+
+  "family": {
+    "header": {
+      "title": "Family map",
+      "subtitlePrivate": "Private to you unless you choose to share it.",
+      "subtitleShared": "Shared with your counsellor. You can stop at any time.",
+      "share": "Share with my counsellor",
+      "shared": "Shared with counsellor",
+      "add": "Add a relative"
+    },
+    "banner": {
+      "private": "Self-reported and <b>private to you</b>. GeneBridge never pulls in a relative’s test result.",
+      "shared": "Self-reported and <b>shared with your counsellor</b>. GeneBridge never pulls in a relative’s test result."
+    },
+    "tree": {
+      "title": "Your family",
+      "counts": "{generations, plural, one {# generation} other {# generations}} · {people, plural, one {# person} other {# people}}",
+      "aria": "Family tree",
+      "cousins": "cousins"
+    },
+    "selected": {
+      "label": "Selected",
+      "aria": "Selected relative",
+      "empty": "Select a relative on the map, or add one to get started.",
+      "edit": "Edit",
+      "status": "{label}{known, select, yes { · known} other {}} · {origin}.",
+      "parentOf": "{gender, select, male {Father of {names}} female {Mother of {names}} other {Parent of {names}}}.",
+      "childOf": "{gender, select, male {Son of {names}} female {Daughter of {names}} other {Child of {names}}}.",
+      "partnerOf": "{gender, select, male {Husband of {names}} female {Wife of {names}} other {Partner of {names}}}.",
+      "origin": {
+        "added": "added by you",
+        "self": "from your own result",
+        "shared": "shared with you"
+      }
+    },
+    "tell": {
+      "title": "Tell relatives, privately",
+      "body": "Relatives in this branch may want to get tested. Your own result is never included.",
+      "anonymous": "Send anonymously through GeneBridge",
+      "cta": "Choose relatives to notify"
+    },
+    "notifyMessage": "A genetic condition may run in our family. Free, confidential testing is available through GeneBridge.",
+    "key": {
+      "title": "Key",
+      "marriage": "Marriage between cousins"
+    },
+    "status": {
+      "legend": "Condition",
+      "noteShared": "shared",
+      "node": {
+        "condition": "Sickle cell disease",
+        "carrier": "Carrier",
+        "unsure": "Not sure",
+        "none": "No known condition"
+      },
+      "option": {
+        "condition": "Known condition",
+        "carrier": "Carrier",
+        "unsure": "Not sure",
+        "none": "No known condition"
+      }
+    },
+    "relations": {
+      "father": "Father", "mother": "Mother", "parent": "Parent",
+      "brother": "Brother", "sister": "Sister", "sibling": "Sibling",
+      "son": "Son", "daughter": "Daughter", "child": "Child",
+      "husband": "Husband", "wife": "Wife", "partner": "Partner"
+    },
+    "errors": {
+      "noTarget": "Choose who this person is related to.",
+      "twoPartners": "{name} already has two partners on the map.",
+      "twoParents": "{name} already has two parents on the map.",
+      "branch": "Something is off with this branch.",
+      "needParent": "Add a parent of {name} first, so siblings can be connected."
+    },
+    "common": {
+      "close": "Close",
+      "cancel": "Cancel",
+      "quote": "“{text}”"
+    },
+    "add": {
+      "title": "Add a relative",
+      "description": "Self-reported and private to you. Only add what you know.",
+      "submit": "Add to map",
+      "name": "Name, or how you know them",
+      "namePlaceholder": "e.g. Aunt Zainab",
+      "relation": "This person is the",
+      "of": "of",
+      "cousins": "They are related by blood (cousins)"
+    },
+    "edit": {
+      "title": "Edit {name}",
+      "name": "Name",
+      "save": "Save changes",
+      "confirm": "Remove {name} from your map?",
+      "keep": "Keep",
+      "remove": "Remove",
+      "removeCta": "Remove from map"
+    },
+    "share": {
+      "titleOn": "Sharing with your counsellor",
+      "titleOff": "Share with my counsellor",
+      "descOn": "Your counsellor can see this family map. You can stop at any time.",
+      "descOff": "Your counsellor will see this map so you can talk it through together.",
+      "stop": "Stop sharing",
+      "done": "Done",
+      "confirm": "Share family map",
+      "summary": "{people, plural, one {# person} other {# people}} on the map, {flagged} with a known condition or carrier status. Test results from relatives are never included.",
+      "understand": "I understand my counsellor will see names and conditions on this map."
+    },
+    "notify": {
+      "title": "Choose relatives to notify",
+      "descAnon": "Sent anonymously through GeneBridge. Your own result is never included.",
+      "descNamed": "Sent with your name. Your own result is never included.",
+      "send": "Send to {count}",
+      "sendNone": "Send to …",
+      "sending": "Sending…",
+      "relatives": "Relatives",
+      "selectAll": "Select all",
+      "clear": "Clear",
+      "empty": "Add a relative to your map first, then choose who to notify.",
+      "error": "We couldn’t send this. Check your connection and try again."
+    },
+    "toast": {
+      "added": "{name} added to your map.",
+      "saved": "Changes saved.",
+      "removed": "{name} removed from your map.",
+      "sharedOn": "Shared with your counsellor.",
+      "sharedOff": "Sharing stopped.",
+      "sent": "{anonymous, select, yes {Sent anonymously to {count, plural, one {# relative} other {# relatives}}.} other {Sent to {count, plural, one {# relative} other {# relatives}}.}}"
+    }
   }
 }

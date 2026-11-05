@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowDown, Square, Volume1 } from "lucide-react";
 import { calculateInheritance, type ParentStatus } from "@/lib/genetics/inheritance";
+import { useTranslations } from "next-intl";
 
 /* -------------------------------------------------------------------------- */
 /*  Types & static content                                                    */
@@ -17,8 +18,8 @@ interface Pattern {
   label: string;
   parent1: [Allele, Allele];
   parent2: [Allele, Allele];
-  parent1Label: string;
-  parent2Label: string;
+  // parent1Label: string;
+  // parent2Label: string;
   expected: Record<OutcomeKey, number>;
 }
 
@@ -41,8 +42,8 @@ const PATTERNS: Pattern[] = [
     label: "Both parents carriers (AS × AS)",
     parent1: ["A", "S"],
     parent2: ["A", "S"],
-    parent1Label: "Carrier (AS)",
-    parent2Label: "Carrier (AS)",
+    // parent1Label: "Carrier (AS)",
+//     parent2Label: "Carrier (AS)",
     expected: expectedFor("carrier", "carrier"),
   },
   {
@@ -50,33 +51,38 @@ const PATTERNS: Pattern[] = [
     label: "One parent carrier (AS × AA)",
     parent1: ["A", "S"],
     parent2: ["A", "A"],
-    parent1Label: "Carrier (AS)",
-    parent2Label: "Not a carrier (AA)",
+    // parent1Label: "Carrier (AS)",
+    // parent2Label: "Not a carrier (AA)",
     expected: expectedFor("carrier", "unaffected"),
   },
 ];
 
-const XLINKED_LABEL = "X-linked: talk to a counsellor";
+// const XLINKED_LABEL = "X-linked: talk to a counsellor";
 
-const OUTCOME_META: Record<
-  OutcomeKey,
-  { label: string; dot: string; sentence: string }
-> = {
-  scd: {
-    label: "Sickle cell disease",
-    dot: "bg-[#9f1239] border-[#9f1239]",
-    sentence: "This child has sickle cell disease (SS).",
-  },
-  carrier: {
-    label: "Healthy carrier",
-    dot: "bg-[#ff5a1f] border-[#ff5a1f]",
-    sentence: "This child is a healthy carrier (AS).",
-  },
-  none: {
-    label: "No changed copy",
-    dot: "bg-[#e9e2db] border-[#e9e2db]",
-    sentence: "This child has no changed copy (AA).",
-  },
+// const OUTCOME_META: Record<
+//   OutcomeKey,
+//   { label: string; dot: string; sentence: string }
+// > = {
+//   scd: {
+//     label: "Sickle cell disease",
+//     dot: "bg-[#9f1239] border-[#9f1239]",
+//     sentence: "This child has sickle cell disease (SS).",
+//   },
+//   carrier: {
+//     label: "Healthy carrier",
+//     dot: "bg-[#ff5a1f] border-[#ff5a1f]",
+//     sentence: "This child is a healthy carrier (AS).",
+//   },
+//   none: {
+//     label: "No changed copy",
+//     dot: "bg-[#e9e2db] border-[#e9e2db]",
+//     sentence: "This child has no changed copy (AA).",
+//   },
+// };
+const OUTCOME_META: Record<OutcomeKey, { dot: string }> = {
+  scd: { dot: "bg-[#9f1239] border-[#9f1239]" },
+  carrier: { dot: "bg-[#ff5a1f] border-[#ff5a1f]" },
+  none: { dot: "bg-[#e9e2db] border-[#e9e2db]" },
 };
 
 const OUTCOME_ORDER: OutcomeKey[] = ["scd", "carrier", "none"];
@@ -189,6 +195,26 @@ export default function InheritanceSimulator({
   const [listening, setListening] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const timerRef = useRef<number | null>(null);
+  const t = useTranslations("dashboard.simulator");
+  const tShared = useTranslations("dashboard.shared");
+
+  const patternLabels: Record<PatternId, string> = {
+    both: t("patterns.both"),
+    one: t("patterns.one"),
+    xlinked: t("patterns.xlinked"),
+  };
+  const outcomeLabels: Record<OutcomeKey, string> = {
+    scd: t("outcomes.scd"),
+    carrier: t("outcomes.carrier"),
+    none: t("outcomes.none"),
+  };
+  const outcomeSentences: Record<OutcomeKey, string> = {
+    scd: t("sentences.scd"),
+    carrier: t("sentences.carrier"),
+    none: t("sentences.none"),
+  };
+  const parentCaption = (a: [Allele, Allele]) =>
+    a.includes("S") ? t("parents.carrier") : t("parents.notCarrier");
 
   const pattern = useMemo(
     () => PATTERNS.find((p) => p.id === patternId) ?? null,
@@ -222,8 +248,8 @@ export default function InheritanceSimulator({
 
   useEffect(() => {
     if (!toast) return;
-    const t = window.setTimeout(() => setToast(null), 2600);
-    return () => window.clearTimeout(t);
+    const timer = window.setTimeout(() => setToast(null), 2600);
+    return () => window.clearTimeout(timer);
   }, [toast]);
 
   const selectPattern = (id: PatternId) => {
@@ -269,20 +295,32 @@ export default function InheritanceSimulator({
 
   /* ----------------------------- Listen (TTS) ---------------------------- */
 
+  // const spokenText = useMemo(() => {
+  //   const intro =
+  //     "Inheritance simulator. See how gene copies pass from parents to a child. This shows chances, not what will happen.";
+  //   if (!pattern) {
+  //     return `${intro} X-linked conditions follow a different inheritance pattern. Talk to a counsellor to understand your family's chances.`;
+  //   }
+  //   const expected = pattern.expected;
+  //   const combos = `Pattern: ${pattern.label}. Each pregnancy has a ${expected.scd} percent chance of sickle cell disease, ${expected.carrier} percent of a healthy carrier, and ${expected.none} percent of no changed copy.`;
+  //   return `${intro} ${combos}`;
+  // }, [pattern]);
   const spokenText = useMemo(() => {
-    const intro =
-      "Inheritance simulator. See how gene copies pass from parents to a child. This shows chances, not what will happen.";
-    if (!pattern) {
-      return `${intro} X-linked conditions follow a different inheritance pattern. Talk to a counsellor to understand your family's chances.`;
-    }
-    const expected = pattern.expected;
-    const combos = `Pattern: ${pattern.label}. Each pregnancy has a ${expected.scd} percent chance of sickle cell disease, ${expected.carrier} percent of a healthy carrier, and ${expected.none} percent of no changed copy.`;
-    return `${intro} ${combos}`;
-  }, [pattern]);
+    if (!pattern) return `${t("listen.intro")} ${t("listen.xlinked")}`;
+    const e = pattern.expected;
+    return `${t("listen.intro")} ${t("listen.pattern", {
+      label: patternLabels[pattern.id],
+      scd: e.scd,
+      carrier: e.carrier,
+      none: e.none,
+    })}`;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pattern, t]);
 
   const toggleListen = () => {
     if (typeof window === "undefined" || !("speechSynthesis" in window)) {
-      setToast("Listening isn't supported in this browser.");
+      // setToast("Listening isn't supported in this browser.");
+      setToast(t("listen.unsupported"));
       return;
     }
     const synth = window.speechSynthesis;
@@ -302,7 +340,8 @@ export default function InheritanceSimulator({
 
   const bookCounsellor = () => {
     if (onBookCounsellor) onBookCounsellor();
-    else setToast("Opening couple session booking…");
+    // else setToast("Opening couple session booking…");
+    else setToast(t("toast.booking"));
   };
 
   /* -------------------------------- Render -------------------------------- */
@@ -317,11 +356,13 @@ export default function InheritanceSimulator({
         <header className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <h1 className="text-[28px] leading-tight font-extrabold tracking-tight">
-              Inheritance simulator
+              {/* Inheritance simulator */}
+              {t("header.title")}
             </h1>
             <p className="mt-1 text-[13px] text-[#6b6159]">
-              See how gene copies pass from parents to a child. This shows
-              chances, not what will happen.
+              {/* See how gene copies pass from parents to a child. This shows
+              chances, not what will happen. */}
+              {t("header.subtitle")}
             </p>
           </div>
           <button
@@ -335,17 +376,19 @@ export default function InheritanceSimulator({
             ) : (
               <Volume1 className="size-4" aria-hidden />
             )}
-            {listening ? "Stop" : "Listen"}
+            {/* {listening ? "Stop" : "Listen"} */}
+            {listening ? t("header.stop") : tShared("listen")} 
           </button>
         </header>
 
         {/* Pattern selector */}
         <div
           role="group"
-          aria-label="Pattern"
+          // aria-label="Pattern"
+          aria-label={t("patterns.label")}
           className="mt-5 flex flex-wrap items-center gap-2"
         >
-          <span className="mr-1 text-xs font-bold">Pattern</span>
+          <span className="me-1 text-xs font-bold">{t("patterns.label")}</span>
           {PATTERNS.map((p) => {
             const active = p.id === patternId;
             return (
@@ -360,7 +403,8 @@ export default function InheritanceSimulator({
                     : "border-[#f0e2d8] bg-white text-[#16110d] hover:border-[#e0c3ad]"
                 }`}
               >
-                {p.label}
+                {/* {p.label} */}
+                {patternLabels[p.id]}
               </button>
             );
           })}
@@ -374,7 +418,8 @@ export default function InheritanceSimulator({
                 : "border-dashed border-[#e6d6c9] bg-transparent text-[#6b6159] hover:border-[#d2b8a4]"
             }`}
           >
-            {XLINKED_LABEL}
+            {/* {XLINKED_LABEL} */}
+            {patternLabels.xlinked} 
           </button>
         </div>
 
@@ -385,7 +430,7 @@ export default function InheritanceSimulator({
               {/* Simulator card */}
               <section aria-label="Simulate a pregnancy" className={`${cardClass} p-6`}>
                 <div className="flex items-start justify-center gap-10">
-                  <ParentBlock
+                  {/* <ParentBlock
                     title="Parent 1"
                     alleles={pattern.parent1}
                     caption={pattern.parent1Label}
@@ -394,7 +439,9 @@ export default function InheritanceSimulator({
                     title="Parent 2"
                     alleles={pattern.parent2}
                     caption={pattern.parent2Label}
-                  />
+                  /> */}
+                  <ParentBlock title={t("parent", { n: 1 })} alleles={pattern.parent1} caption={parentCaption(pattern.parent1)} />
+                  <ParentBlock title={t("parent", { n: 2 })} alleles={pattern.parent2} caption={parentCaption(pattern.parent2)} />
                 </div>
 
                 <div className="mt-4 flex justify-center">
@@ -412,17 +459,20 @@ export default function InheritanceSimulator({
                         <AlleleCircle allele={single.alleles[1]} />
                       </div>
                       <p className="text-[13px] font-bold">
-                        {OUTCOME_META[single.outcome].sentence}
+                        {/* {OUTCOME_META[single.outcome].sentence} */}
+                        {outcomeSentences[single.outcome]}
                       </p>
                       <p className="text-[11px] text-[#6b6159]">
-                        {single.alleles[0]} from Parent 1, {single.alleles[1]}{" "}
-                        from Parent 2
+                        {/* {single.alleles[0]} from Parent 1, {single.alleles[1]}{" "}
+                        from Parent 2 */}
+                        {t("single.from", { a: single.alleles[0], b: single.alleles[1] })}
                       </p>
                     </>
                   ) : (
                     <p className="text-xs leading-relaxed text-[#6b6159]">
-                      Press &ldquo;Simulate one pregnancy&rdquo; to see one
-                      possible result.
+                      {/* Press &ldquo;Simulate one pregnancy&rdquo; to see one
+                      possible result. */}
+                      {t("single.empty", { button: t("buttons.simulateOne") })}
                     </p>
                   )}
                 </div>
@@ -434,7 +484,8 @@ export default function InheritanceSimulator({
                     disabled={running}
                     className="rounded-full bg-[#ff5a1f] px-5 py-2.5 text-xs font-bold text-white transition hover:bg-[#ea4c12] disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c2410c]"
                   >
-                    Simulate one pregnancy
+                    {/* Simulate one pregnancy */}
+                    {t("buttons.simulateOne")} 
                   </button>
                   <button
                     type="button"
@@ -442,14 +493,16 @@ export default function InheritanceSimulator({
                     disabled={running}
                     className="rounded-full bg-[#16110d] px-5 py-2.5 text-xs font-bold text-white transition hover:bg-[#2c2420] disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c2410c]"
                   >
-                    Run 100 times
+                    {/* Run 100 times */}
+                     {t("buttons.runMany", { count: TOTAL_RUNS })}
                   </button>
                   <button
                     type="button"
                     onClick={reset}
                     className="rounded-full border border-[#f0e2d8] bg-white px-5 py-2.5 text-xs font-bold transition hover:border-[#e0c3ad] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c2410c]"
                   >
-                    Reset
+                    {/* Reset */}
+                    {t("buttons.reset")}
                   </button>
                 </div>
               </section>
@@ -457,12 +510,14 @@ export default function InheritanceSimulator({
               {/* Combinations card */}
               <section aria-labelledby="combos-title" className={`${cardClass} p-6`}>
                 <h2 id="combos-title" className="text-base font-bold tracking-tight">
-                  All possible combinations
+                  {/* All possible combinations */}
+                  {t("punnett.title")}
                 </h2>
 
                 <div
                   role="table"
-                  aria-label="Punnett square"
+                  // aria-label="Punnett square"
+                  aria-label={t("punnett.aria")}
                   className="mt-5 grid grid-cols-[56px_1fr_1fr] items-center gap-2"
                 >
                   <div />
@@ -488,10 +543,12 @@ export default function InheritanceSimulator({
                 </div>
 
                 <p className="mt-4 text-[11px] leading-relaxed text-[#6b6159]">
-                  Each square is one of four equally likely combinations.{" "}
-                  {pattern.expected.scd > 0
+                  {/* Each square is one of four equally likely combinations.{" "} */}
+                  {t("punnett.note")}{" "}
+                  {/* {pattern.expected.scd > 0
                     ? "A shaded square means two changed copies (sickle cell disease)."
-                    : "No square has two changed copies, so sickle cell disease is not possible in this pattern."}
+                    : "No square has two changed copies, so sickle cell disease is not possible in this pattern."} */}
+                  {pattern.expected.scd > 0 ? t("punnett.noteScd") : t("punnett.noteNoScd")}
                 </p>
               </section>
             </div>
@@ -507,11 +564,13 @@ export default function InheritanceSimulator({
                     id="hundred-title"
                     className="text-base font-bold tracking-tight"
                   >
-                    100 pregnancies
+                    {/* 100 pregnancies */}
+                    {t("many.title", { count: TOTAL_RUNS })}
                   </h2>
                   <p className="mt-2 text-[13px] text-[#6b6159]">
-                    Run 100 pregnancies to see how the chances add up over many
-                    families.
+                    {/* Run 100 pregnancies to see how the chances add up over many
+                    families. */}
+                    {t("many.description", { count: TOTAL_RUNS })}
                   </p>
 
                   <ul className="mt-3 space-y-2.5" aria-live="polite">
@@ -524,25 +583,29 @@ export default function InheritanceSimulator({
                           className={`size-3.5 rounded-full border ${OUTCOME_META[key].dot}`}
                           aria-hidden
                         />
-                        <span>{OUTCOME_META[key].label}</span>
+                        {/* <span>{OUTCOME_META[key].label}</span> */}
+                        <span>{outcomeLabels[key]}</span>
                         <span className="text-center font-bold tabular-nums">
                           {counts[key]}
                         </span>
                         <span className="text-[11px] text-[#6b6159]">
-                          expected about {pattern.expected[key]}
+                          {/* expected about {pattern.expected[key]} */}
+                          {t("many.expected", { n: pattern.expected[key] })}
                         </span>
                       </li>
                     ))}
                   </ul>
 
                   <p className="mt-4 text-xs font-bold">
-                    This shows chances, not what will happen.
+                    {/* This shows chances, not what will happen. */}
+                    {t("many.disclaimer")}
                   </p>
                 </div>
 
                 <div
                   role="img"
-                  aria-label={`${revealed} of ${TOTAL_RUNS} simulated pregnancies shown`}
+                  // aria-label={`${revealed} of ${TOTAL_RUNS} simulated pregnancies shown`}
+                  aria-label={t("many.aria", { revealed, total: TOTAL_RUNS })}
                   className="grid w-full max-w-[320px] grid-cols-10 gap-1.5 justify-self-end"
                 >
                   {Array.from({ length: TOTAL_RUNS }, (_, i) => {
@@ -568,22 +631,26 @@ export default function InheritanceSimulator({
             className={`${cardClass} mt-5 flex min-h-80 flex-col items-center justify-center p-8 text-center`}
           >
             <h2 id="xlinked-title" className="text-base font-bold tracking-tight">
-              X-linked conditions follow a different pattern
+              {/* X-linked conditions follow a different pattern */}
+              {t("xlinked.title")}
             </h2>
             <p className="mt-2 max-w-md text-[13px] leading-relaxed text-[#6b6159]">
-              Chances depend on which parent carries the changed copy and on the
+              {/* Chances depend on which parent carries the changed copy and on the
               sex of the child, so a simple simulator could mislead you. A
-              counsellor can walk through your family&rsquo;s chances with you.
+              counsellor can walk through your family&rsquo;s chances with you. */}
+              {t("xlinked.body")}
             </p>
             <button
               type="button"
               onClick={bookCounsellor}
               className="mt-5 rounded-full bg-[#ff5a1f] px-5 py-2.5 text-xs font-bold text-white transition hover:bg-[#ea4c12] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c2410c]"
             >
-              Talk to a counsellor
+              {/* Talk to a counsellor */}
+              {t("xlinked.cta")}
             </button>
             <p className="mt-4 text-xs text-[#6b6159]">
-              This is information, not a recommendation.
+              {/* This is information, not a recommendation. */}
+              {t("xlinked.note")}
             </p>
           </section>
         )}
@@ -609,6 +676,7 @@ function PunnettRow({
   cols: [Allele, Allele];
   highlight: SingleResult | null;
 }) {
+  const t = useTranslations("dashboard.simulator.punnett");
   return (
     <>
       <div role="rowheader" className="text-center text-[13px] font-bold">
@@ -622,9 +690,14 @@ function PunnettRow({
           <div
             key={c}
             role="cell"
-            aria-label={`${label}${isScd ? ", sickle cell disease" : ""}${
-              isPicked ? ", last simulated result" : ""
-            }`}
+            // aria-label={`${label}${isScd ? ", sickle cell disease" : ""}${
+            //   isPicked ? ", last simulated result" : ""
+            // }`}
+            aria-label={t("cell", {
+              label,
+              scd: isScd ? "yes" : "no",
+              picked: isPicked ? "yes" : "no",
+            })}
             className={`grid h-11.5 place-items-center rounded-xl text-sm font-bold transition-shadow ${
               isScd ? "bg-[#ffe1e1]" : "bg-[#f6f0ea]"
             } ${isPicked ? "ring-2 ring-[#16110d] ring-offset-2" : ""}`}

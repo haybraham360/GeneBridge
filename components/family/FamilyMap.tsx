@@ -3,6 +3,7 @@
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import type { FormEvent, ReactNode } from "react";
 import { Calendar, Check, Lock, X } from "lucide-react";
+import { useFormatter, useTranslations } from "next-intl";
 
 /* -------------------------------------------------------------------------- */
 /*  Types                                                                     */
@@ -46,6 +47,16 @@ export interface NotifyPayload {
   message: string;
 }
 
+type AddError =
+  | { code: "noTarget" }
+  | { code: "twoPartners"; name: string }
+  | { code: "twoParents"; name: string }
+  | { code: "branch" }
+  | { code: "needParent"; name: string };
+
+type Placement = { people: Person[]; x: number } | { error: AddError };
+type AddResult = { data: FamilyMapData; id: string } | { error: AddError };
+
 export interface FamilyMapProps {
   initialData?: FamilyMapData;
   lang?: string;
@@ -66,18 +77,33 @@ const BAR_GAP = 23;
 const PAD_X = 14;
 const PAD_Y = 7;
 
-const NOTIFY_MESSAGE =
-  "A genetic condition may run in our family. Free, confidential testing is available through GeneBridge.";
+// const NOTIFY_MESSAGE =
+//   "A genetic condition may run in our family. Free, confidential testing is available through GeneBridge.";
 
-const STATUS_META: Record<Status, { label: string; box: string }> = {
-  condition: {
-    label: "Sickle cell disease",
-    box: "border-[#9f1239] bg-[#9f1239]",
-  },
-  carrier: { label: "Carrier", box: "border-[#ff5a1f] bg-[#ff5a1f]" },
-  unsure: { label: "Not sure", box: "border-[#e3d9cf] bg-white" },
-  none: { label: "No known condition", box: "border-[#e5ddd5] bg-[#e5ddd5]" },
+// const STATUS_META: Record<Status, { label: string; box: string }> = {
+//   condition: {
+//     label: "Sickle cell disease",
+//     box: "border-[#9f1239] bg-[#9f1239]",
+//   },
+//   carrier: { label: "Carrier", box: "border-[#ff5a1f] bg-[#ff5a1f]" },
+//   unsure: { label: "Not sure", box: "border-[#e3d9cf] bg-white" },
+//   none: { label: "No known condition", box: "border-[#e5ddd5] bg-[#e5ddd5]" },
+// };
+const STATUS_META: Record<Status, { box: string }> = {
+  condition: { box: "border-[#9f1239] bg-[#9f1239]" },
+  carrier: { box: "border-[#ff5a1f] bg-[#ff5a1f]" },
+  unsure: { box: "border-[#e3d9cf] bg-white" },
+  none: { box: "border-[#e5ddd5] bg-[#e5ddd5]" },
 };
+const STATUS_ORDER: Status[] = ["condition", "carrier", "unsure", "none"];
+
+interface PersonInfo {
+  known: boolean;
+  origin: Origin;
+  relation:
+    | null
+    | { kind: "parentOf" | "childOf" | "partnerOf"; gender: Gender; names: string[] };
+}
 
 const STATUS_OPTIONS: { value: Status; label: string }[] = [
   { value: "condition", label: "Known condition" },
@@ -194,7 +220,7 @@ function findFreeX(
   return desired + 60 * PITCH;
 }
 
-type Placement = { people: Person[]; x: number } | { error: string };
+// type Placement = { people: Person[]; x: number } | { error: string };
 
 /** Finds a spot right next to `anchor`, pushing the row outwards when needed. */
 function placePartner(
@@ -213,7 +239,8 @@ function placePartner(
   const hasRight = others.some((p) => p.x > anchor.x);
   const hasLeft = others.some((p) => p.x < anchor.x);
   if (hasRight && hasLeft) {
-    return { error: `${anchor.name} already has two partners on the map.` };
+    // return { error: `${anchor.name} already has two partners on the map.` };
+    return { error: { code: "twoPartners", name: anchor.name } };
   }
 
   const side = hasRight ? -1 : 1;
@@ -241,7 +268,7 @@ interface NewRelativeInput {
   consanguineous: boolean;
 }
 
-type AddResult = { data: FamilyMapData; id: string } | { error: string };
+// type AddResult = { data: FamilyMapData; id: string } | { error: string };
 
 function addRelative(
   data: FamilyMapData,
@@ -250,7 +277,7 @@ function addRelative(
 ): AddResult {
   const rel = RELATIONS.find((r) => r.id === input.relationId);
   const target = data.people.find((p) => p.id === input.targetId);
-  if (!rel || !target) return { error: "Choose who this person is related to." };
+  if (!rel || !target) return { error: { code: "noTarget" } };
 
   const { people, unions } = data;
   const base = {
@@ -348,10 +375,11 @@ function addRelative(
       }
 
       if (parentUnion.partners.length >= 2) {
-        return { error: `${target.name} already has two parents on the map.` };
+        // return { error: `${target.name} already has two parents on the map.` };
+        return { error: { code: "twoParents", name: target.name } };
       }
       const existingParent = map.get(parentUnion.partners[0]);
-      if (!existingParent) return { error: "Something is off with this branch." };
+      if (!existingParent) return { error: { code: "branch" } };
       const placed = placePartner(people, unions, existingParent);
       if ("error" in placed) return placed;
       const person: Person = { ...base, gen, x: placed.x };
@@ -371,9 +399,10 @@ function addRelative(
     case "sibling": {
       const parentUnion = unions.find((u) => u.children.includes(target.id));
       if (!parentUnion) {
-        return {
-          error: `Add a parent of ${target.name} first, so siblings can be connected.`,
-        };
+        // return {
+        //   error: `Add a parent of ${target.name} first, so siblings can be connected.`,
+        // };
+        return { error: { code: "needParent", name: target.name } }; 
       }
       const person: Person = {
         ...base,
@@ -409,25 +438,59 @@ function removePerson(data: FamilyMapData, id: string): FamilyMapData {
   return { people: data.people.filter((p) => p.id !== id), unions };
 }
 
-function joinNames(names: string[]): string {
-  if (names.length <= 1) return names[0] ?? "";
-  return `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`;
-}
+// function joinNames(names: string[]): string {
+//   if (names.length <= 1) return names[0] ?? "";
+//   return `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`;
+// }
 
-function describePerson(
-  person: Person,
-  data: FamilyMapData,
-): { status: string; relation: string } {
-  const label = STATUS_META[person.status].label;
+// function describePerson(
+//   person: Person,
+//   data: FamilyMapData,
+// ): { status: string; relation: string } {
+//   const label = STATUS_META[person.status].label;
+//   const known = person.status === "condition" || person.status === "carrier";
+//   const origin =
+//     person.origin === "added"
+//       ? "added by you"
+//       : person.origin === "self"
+//         ? "from your own result"
+//         : "shared with you";
+//   const status = `${label}${known ? " · known" : ""} · ${origin}.`;
+
+//   const map = indexPeople(data.people);
+//   const asPartner = data.unions.filter((u) => u.partners.includes(person.id));
+//   const kids = asPartner
+//     .flatMap((u) => u.children)
+//     .map((id) => map.get(id)?.name)
+//     .filter((n): n is string => Boolean(n));
+//   const parentUnion = data.unions.find((u) => u.children.includes(person.id));
+//   const parents = (parentUnion?.partners ?? [])
+//     .map((id) => map.get(id)?.name)
+//     .filter((n): n is string => Boolean(n));
+//   const partners = asPartner
+//     .flatMap((u) => u.partners)
+//     .filter((id) => id !== person.id)
+//     .map((id) => map.get(id)?.name)
+//     .filter((n): n is string => Boolean(n));
+
+//   let relation = "";
+//   if (kids.length) {
+//     const word =
+//       person.gender === "male" ? "Father" : person.gender === "female" ? "Mother" : "Parent";
+//     relation = `${word} of ${joinNames(kids)}.`;
+//   } else if (parents.length) {
+//     const word =
+//       person.gender === "male" ? "Son" : person.gender === "female" ? "Daughter" : "Child";
+//     relation = `${word} of ${joinNames(parents)}.`;
+//   } else if (partners.length) {
+//     const word =
+//       person.gender === "male" ? "Husband" : person.gender === "female" ? "Wife" : "Partner";
+//     relation = `${word} of ${joinNames(partners)}.`;
+//   }
+//   return { status, relation };
+// }
+function describePerson(person: Person, data: FamilyMapData): PersonInfo {
   const known = person.status === "condition" || person.status === "carrier";
-  const origin =
-    person.origin === "added"
-      ? "added by you"
-      : person.origin === "self"
-        ? "from your own result"
-        : "shared with you";
-  const status = `${label}${known ? " · known" : ""} · ${origin}.`;
-
   const map = indexPeople(data.people);
   const asPartner = data.unions.filter((u) => u.partners.includes(person.id));
   const kids = asPartner
@@ -444,21 +507,53 @@ function describePerson(
     .map((id) => map.get(id)?.name)
     .filter((n): n is string => Boolean(n));
 
-  let relation = "";
-  if (kids.length) {
-    const word =
-      person.gender === "male" ? "Father" : person.gender === "female" ? "Mother" : "Parent";
-    relation = `${word} of ${joinNames(kids)}.`;
-  } else if (parents.length) {
-    const word =
-      person.gender === "male" ? "Son" : person.gender === "female" ? "Daughter" : "Child";
-    relation = `${word} of ${joinNames(parents)}.`;
-  } else if (partners.length) {
-    const word =
-      person.gender === "male" ? "Husband" : person.gender === "female" ? "Wife" : "Partner";
-    relation = `${word} of ${joinNames(partners)}.`;
-  }
-  return { status, relation };
+
+  const relation: PersonInfo["relation"] = kids.length
+    ? { kind: "parentOf", gender: person.gender, names: kids }
+    : parents.length
+      ? { kind: "childOf", gender: person.gender, names: parents }
+      : partners.length
+        ? { kind: "partnerOf", gender: person.gender, names: partners }
+        : null;
+
+  return { known, origin: person.origin, relation };
+}
+
+function useStatusLabels() {
+  const t = useTranslations("dashboard.family.status");
+  return {
+    node: {
+      condition: t("node.condition"), carrier: t("node.carrier"),
+      unsure: t("node.unsure"), none: t("node.none"),
+    } as Record<Status, string>,
+    option: {
+      condition: t("option.condition"), carrier: t("option.carrier"),
+      unsure: t("option.unsure"), none: t("option.none"),
+    } as Record<Status, string>,
+  };
+}
+
+function useRelationLabels(): Record<string, string> {
+  const t = useTranslations("dashboard.family.relations");
+  return {
+    father: t("father"), mother: t("mother"), parent: t("parent"),
+    brother: t("brother"), sister: t("sister"), sibling: t("sibling"),
+    son: t("son"), daughter: t("daughter"), child: t("child"),
+    husband: t("husband"), wife: t("wife"), partner: t("partner"),
+  };
+}
+
+function useAddErrorText() {
+  const t = useTranslations("dashboard.family.errors");
+  return (e: AddError): string => {
+    switch (e.code) {
+      case "noTarget": return t("noTarget");
+      case "twoPartners": return t("twoPartners", { name: e.name });
+      case "twoParents": return t("twoParents", { name: e.name });
+      case "branch": return t("branch");
+      case "needParent": return t("needParent", { name: e.name });
+    }
+  };
 }
 
 /* -------------------------------------------------------------------------- */
@@ -512,27 +607,30 @@ function StatusPicker({
   onChange: (next: Status) => void;
   name: string;
 }) {
+  const t = useTranslations("dashboard.family");
+  const labels = useStatusLabels();
   return (
     <fieldset>
-      <legend className="mb-1.5 text-xs font-bold">Condition</legend>
+      {/* <legend className="mb-1.5 text-xs font-bold">Condition</legend> */}
+      <legend className="mb-1.5 text-xs font-bold">{t("status.legend")}</legend>
       <div className="grid grid-cols-2 gap-2">
-        {STATUS_OPTIONS.map((opt) => (
+        {STATUS_ORDER.map((value) => (
           <label
-            key={opt.value}
+            key={value}
             className="flex cursor-pointer items-center gap-2 rounded-xl border border-[#ecdccf] bg-white px-3 py-2.5 text-xs font-semibold transition has-checked:border-[#16110d] has-checked:bg-[#fffaf6] has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-[#c2410c]"
           >
             <input
               type="radio"
               name={name}
               className="sr-only"
-              checked={value === opt.value}
-              onChange={() => onChange(opt.value)}
+              checked={value === value}
+              onChange={() => onChange(value)}
             />
             <span
               aria-hidden
-              className={`size-3 shrink-0 rounded-[3px] border ${STATUS_META[opt.value].box}`}
+              className={`size-3 shrink-0 rounded-[3px] border ${STATUS_META[value].box}`}
             />
-            {opt.label}
+            {labels.option[value]}
           </label>
         ))}
       </div>
@@ -557,6 +655,7 @@ function Modal({
   const descId = useId();
   const panelRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef(onClose);
+  const t = useTranslations("dashboard.family")
 
   useEffect(() => {
     closeRef.current = onClose;
@@ -637,7 +736,8 @@ function Modal({
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close"
+            // aria-label="Close"
+            aria-label={t("common.close")}
             className={`rounded-full p-1.5 text-[#6b6159] transition hover:bg-[#fff4ec] ${focusRing}`}
           >
             <X className="size-4" aria-hidden />
@@ -677,6 +777,9 @@ function AddRelativeDialog({
   const [targetId, setTargetId] = useState(defaultTargetId);
   const [status, setStatus] = useState<Status>("unsure");
   const [consanguineous, setConsanguineous] = useState(false);
+  const t = useTranslations("dashboard.family")
+  const errorText = useAddErrorText();
+  const relationLabels = useRelationLabels();
 
   const relation = RELATIONS.find((r) => r.id === relationId);
   const isPartner = relation?.kind === "partner";
@@ -687,8 +790,9 @@ function AddRelativeDialog({
       { name: "preview", status, relationId, targetId, consanguineous },
       { person: "preview-person", union: "preview-union" },
     );
-    return "error" in preview ? preview.error : null;
-  }, [data, status, relationId, targetId, consanguineous]);
+    // return "error" in preview ? preview.error : null;
+    return "error" in preview ? errorText(preview.error) : null;
+  }, [data, status, relationId, targetId, consanguineous, errorText]);
 
   const canSubmit = name.trim().length > 0 && problem === null;
 
@@ -706,13 +810,16 @@ function AddRelativeDialog({
 
   return (
     <Modal
-      title="Add a relative"
-      description="Self-reported and private to you. Only add what you know."
+      // title="Add a relative"
+      // description="Self-reported and private to you. Only add what you know."
+      title={t("add.title")}
+      description={t("add.description")}
       onClose={onClose}
       footer={
         <>
           <button type="button" onClick={onClose} className={outlineBtn}>
-            Cancel
+            {/* Cancel */}
+            {t("common.cancel")}
           </button>
           <button
             type="submit"
@@ -720,7 +827,8 @@ function AddRelativeDialog({
             disabled={!canSubmit}
             className={primaryBtn}
           >
-            Add to map
+            {/* Add to map */}
+            {t("add.submit")}
           </button>
         </>
       }
@@ -728,7 +836,8 @@ function AddRelativeDialog({
       <form id={formId} onSubmit={submit} className="space-y-4">
         <div>
           <label htmlFor={`${formId}-name`} className="mb-1.5 block text-xs font-bold">
-            Name, or how you know them
+            {/* Name, or how you know them */}
+            {t("add.name")}
           </label>
           <input
             id={`${formId}-name`}
@@ -736,7 +845,8 @@ function AddRelativeDialog({
             className={inputClass}
             value={name}
             maxLength={40}
-            placeholder="e.g. Aunt Zainab"
+            // placeholder="e.g. Aunt Zainab"
+            placeholder={t("add.namePlaceholder")}
             onChange={(e) => setName(e.target.value)}
           />
         </div>
@@ -744,7 +854,8 @@ function AddRelativeDialog({
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label htmlFor={`${formId}-rel`} className="mb-1.5 block text-xs font-bold">
-              This person is the
+              {/* This person is the */}
+              {t("add.relation")}
             </label>
             <select
               id={`${formId}-rel`}
@@ -754,14 +865,16 @@ function AddRelativeDialog({
             >
               {RELATIONS.map((r) => (
                 <option key={r.id} value={r.id}>
-                  {r.label}
+                  {/* {r.label} */}
+                  {relationLabels[r.id]}
                 </option>
               ))}
             </select>
           </div>
           <div>
             <label htmlFor={`${formId}-target`} className="mb-1.5 block text-xs font-bold">
-              of
+              {/* of */}
+              {t("add.of")}
             </label>
             <select
               id={`${formId}-target`}
@@ -780,7 +893,8 @@ function AddRelativeDialog({
 
         {isPartner && (
           <Checkbox checked={consanguineous} onChange={setConsanguineous}>
-            They are related by blood (cousins)
+            {/* They are related by blood (cousins) */}
+            {t("add.cousins")}
           </Checkbox>
         )}
 
@@ -816,6 +930,7 @@ function EditPersonDialog({
   const [name, setName] = useState(person.name);
   const [status, setStatus] = useState<Status>(person.status);
   const [confirmRemove, setConfirmRemove] = useState(false);
+  const t = useTranslations("dashboard.family");
 
   const submit = (e: FormEvent) => {
     e.preventDefault();
@@ -825,12 +940,14 @@ function EditPersonDialog({
 
   return (
     <Modal
-      title={`Edit ${person.name}`}
+      // title={`Edit ${person.name}`}
+      title={t("edit.title", { name: person.name })}
       onClose={onClose}
       footer={
         <>
           <button type="button" onClick={onClose} className={outlineBtn}>
-            Cancel
+            {/* Cancel */}
+            {t("common.cancel")}
           </button>
           <button
             type="submit"
@@ -838,7 +955,8 @@ function EditPersonDialog({
             disabled={!name.trim()}
             className={primaryBtn}
           >
-            Save changes
+            {/* Save changes */}
+            {t("edit.save")}
           </button>
         </>
       }
@@ -846,7 +964,8 @@ function EditPersonDialog({
       <form id={formId} onSubmit={submit} className="space-y-4">
         <div>
           <label htmlFor={`${formId}-name`} className="mb-1.5 block text-xs font-bold">
-            Name
+            {/* Name */}
+            {t("edit.name")}
           </label>
           <input
             id={`${formId}-name`}
@@ -864,18 +983,21 @@ function EditPersonDialog({
           <div className="border-t border-[#f6e9df] pt-4">
             {confirmRemove ? (
               <div className="flex flex-wrap items-center gap-2.5">
-                <p className="mr-auto text-xs text-[#6b6159]">
-                  Remove {person.name} from your map?
+                <p className="me-auto text-xs text-[#6b6159]">
+                  {/* Remove {person.name} from your map? */}
+                  {t("edit.confirm", { name: person.name })}
                 </p>
                 <button
                   type="button"
                   onClick={() => setConfirmRemove(false)}
                   className={outlineBtn}
                 >
-                  Keep
+                  {/* Keep */}
+                  {t("edit.keep")} 
                 </button>
                 <button type="button" onClick={onRemove} className={darkBtn}>
-                  Remove
+                  {/* Remove */}
+                  {t("edit.remove")}
                 </button>
               </div>
             ) : (
@@ -884,7 +1006,8 @@ function EditPersonDialog({
                 onClick={() => setConfirmRemove(true)}
                 className={`text-xs font-bold text-[#9f1239] underline underline-offset-2 ${focusRing}`}
               >
-                Remove from map
+                {/* Remove from map */}
+                {t("edit.removeCta")}
               </button>
             )}
           </div>
@@ -910,30 +1033,36 @@ function ShareDialog({
   onClose: () => void;
 }) {
   const [understood, setUnderstood] = useState(false);
+  const t = useTranslations("dashboard.family");
 
   return (
     <Modal
-      title={shared ? "Sharing with your counsellor" : "Share with my counsellor"}
-      description={
-        shared
-          ? "Your counsellor can see this family map. You can stop at any time."
-          : "Your counsellor will see this map so you can talk it through together."
-      }
+      // title={shared ? "Sharing with your counsellor" : "Share with my counsellor"}
+      // description={
+      //   shared
+      //     ? "Your counsellor can see this family map. You can stop at any time."
+      //     : "Your counsellor will see this map so you can talk it through together."
+      // }
+      title={shared ? t("share.titleOn") : t("share.titleOff")}
+      description={shared ? t("share.descOn") : t("share.descOff")}
       onClose={onClose}
       footer={
         shared ? (
           <>
             <button type="button" onClick={onStop} className={outlineBtn}>
-              Stop sharing
+              {/* Stop sharing */}
+              {t("share.stop")}
             </button>
             <button type="button" onClick={onClose} className={darkBtn}>
-              Done
+              {/* Done */}
+              {t("share.done")}
             </button>
           </>
         ) : (
           <>
             <button type="button" onClick={onClose} className={outlineBtn}>
-              Cancel
+              {/* Cancel */}
+              {t("common.cancel")}
             </button>
             <button
               type="button"
@@ -941,7 +1070,8 @@ function ShareDialog({
               disabled={!understood}
               className={primaryBtn}
             >
-              Share family map
+              {/* Share family map */}
+              {t("share.confirm")}
             </button>
           </>
         )
@@ -949,14 +1079,16 @@ function ShareDialog({
     >
       <div className="space-y-4">
         <p className="rounded-xl bg-[#fff3ea] px-3 py-2.5 text-xs leading-relaxed text-[#6b6159]">
-          {peopleCount} {peopleCount === 1 ? "person" : "people"} on the map,{" "}
+          {/* {peopleCount} {peopleCount === 1 ? "person" : "people"} on the map,{" "}
           {flaggedCount} with a known condition or carrier status. Test results
-          from relatives are never included.
+          from relatives are never included. */}
+          {t("share.summary", { people: peopleCount, flagged: flaggedCount })}
         </p>
         {!shared && (
           <Checkbox checked={understood} onChange={setUnderstood}>
             <span data-autofocus>
-              I understand my counsellor will see names and conditions on this map.
+              {/* I understand my counsellor will see names and conditions on this map. */}
+              {t("share.understand")}
             </span>
           </Checkbox>
         )}
@@ -979,6 +1111,8 @@ function NotifyDialog({
   const [picked, setPicked] = useState<string[]>([]);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const t = useTranslations("dashboard.family");
+
 
   const toggle = (id: string, next: boolean) =>
     setPicked((prev) => (next ? [...prev, id] : prev.filter((p) => p !== id)));
@@ -990,24 +1124,28 @@ function NotifyDialog({
     try {
       await onSend(picked);
     } catch {
-      setError("We couldn't send this. Check your connection and try again.");
+      // setError("We couldn't send this. Check your connection and try again.");
+      setError(t("notify.error"));
       setSending(false);
     }
   };
 
   return (
     <Modal
-      title="Choose relatives to notify"
-      description={
-        anonymous
-          ? "Sent anonymously through GeneBridge. Your own result is never included."
-          : "Sent with your name. Your own result is never included."
-      }
+      // title="Choose relatives to notify"
+      // description={
+      //   anonymous
+      //     ? "Sent anonymously through GeneBridge. Your own result is never included."
+      //     : "Sent with your name. Your own result is never included."
+      // }
+      title={t("notify.title")}
+      description={anonymous ? t("notify.descAnon") : t("notify.descNamed")}
       onClose={onClose}
       footer={
         <>
           <button type="button" onClick={onClose} className={outlineBtn}>
-            Cancel
+            {/* Cancel */}
+            {t("common.cancel")}
           </button>
           <button
             type="button"
@@ -1015,39 +1153,44 @@ function NotifyDialog({
             disabled={!picked.length || sending}
             className={primaryBtn}
           >
-            {sending ? "Sending…" : `Send to ${picked.length || "…"}`}
+            {/* {sending ? "Sending…" : `Send to ${picked.length || "…"}`} */}
+            {sending ? t("notify.sending") : picked.length ? t("notify.send", { count: picked.length }) : t("notify.sendNone")}
           </button>
         </>
       }
     >
       <div className="space-y-4">
         <blockquote className="rounded-xl bg-[#fff3ea] px-3 py-2.5 text-xs leading-relaxed text-[#6b6159]">
-          &ldquo;{NOTIFY_MESSAGE}&rdquo;
+          {/* &ldquo;{NOTIFY_MESSAGE}&rdquo; */}
+          {t("common.quote", { text: t("notifyMessage") })}   
         </blockquote>
 
         <div className="flex items-center justify-between">
-          <p className="text-xs font-bold">Relatives</p>
+          <p className="text-xs font-bold">{t("notify.relatives")}</p>
           <div className="flex gap-3 text-xs font-bold">
             <button
               type="button"
               onClick={() => setPicked(relatives.map((r) => r.id))}
               className={`underline underline-offset-2 ${focusRing}`}
             >
-              Select all
+              {/* Select all */}
+              {t("notify.selectAll")}
             </button>
             <button
               type="button"
               onClick={() => setPicked([])}
               className={`underline underline-offset-2 ${focusRing}`}
             >
-              Clear
+              {/* Clear */}
+              {t("notify.clear")}
             </button>
           </div>
         </div>
 
         {relatives.length === 0 ? (
           <p className="text-xs text-[#6b6159]">
-            Add a relative to your map first, then choose who to notify.
+            {/* Add a relative to your map first, then choose who to notify. */}
+            {t("notify.empty")}
           </p>
         ) : (
           <ul className="divide-y divide-[#f6e9df] rounded-2xl border border-[#f6e9df]">
@@ -1101,9 +1244,13 @@ function PersonNode({
   onSelect: (id: string) => void;
 }) {
   const isSelf = person.origin === "self";
-  const subtitle = `${STATUS_META[person.status].label}${
-    person.statusNote ? ` (${person.statusNote})` : ""
-  }`;
+  const t = useTranslations("dashboard.family.status");
+  const labels = useStatusLabels();
+  const note = person.statusNote === "shared" ? t("noteShared") : person.statusNote;
+  const subtitle = `${labels.node[person.status]}${note ? ` (${note})` : ""}`;
+  // const subtitle = `${STATUS_META[person.status].label}${
+  //   person.statusNote ? ` (${person.statusNote})` : ""
+  // }`;
 
   const border = selected
     ? "border-[1.5px] border-[#ff5a1f] shadow-[0_0_0_4px_rgba(255,90,31,0.18)]"
@@ -1121,10 +1268,11 @@ function PersonNode({
       aria-label={`${person.name}, ${subtitle}`}
       onClick={() => onSelect(person.id)}
       style={{ left, top, width: NODE_W, height: NODE_H }}
-      className={`absolute flex items-center gap-2 overflow-hidden rounded-xl bg-white px-2.5 py-0.5 text-left transition-shadow hover:shadow-[0_2px_8px_rgba(120,60,20,0.12)] ${border} ${focusRing}`}
+      className={`absolute flex items-center gap-2 overflow-hidden rounded-xl bg-white px-2.5 py-0.5 text-start transition-shadow hover:shadow-[0_2px_8px_rgba(120,60,20,0.12)] ${border} ${focusRing}`}
     >
       <span
         aria-hidden
+        dir="auto"
         className={`size-3 shrink-0 rounded-[3px] border ${STATUS_META[person.status].box}`}
       />
       <span className="min-w-0">
@@ -1158,6 +1306,10 @@ export default function FamilyMap({
   const [anonymous, setAnonymous] = useState(true);
   const [shared, setShared] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  const t = useTranslations("dashboard.family");
+  const format = useFormatter();
+  const labels = useStatusLabels();
+  const errorText = useAddErrorText();
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -1176,8 +1328,8 @@ export default function FamilyMap({
 
   useEffect(() => {
     if (!toast) return;
-    const t = window.setTimeout(() => setToast(null), 2800);
-    return () => window.clearTimeout(t);
+    const timer = window.setTimeout(() => setToast(null), 2800);
+    return () => window.clearTimeout(timer);
   }, [toast]);
 
   // Bring a newly chosen relative into view inside the horizontal scroller.
@@ -1278,14 +1430,16 @@ export default function FamilyMap({
       person: uid("p"),
       union: uid("u"),
     });
-    if ("error" in result) {
-      setToast(result.error);
-      return;
-    }
+    // if ("error" in result) {
+    //   setToast(result.error);
+    //   return;
+    // }
+    if ("error" in result) { setToast(errorText(result.error)); return; }
     commit(result.data);
     setSelectedId(result.id);
     setDialog(null);
-    setToast(`${input.name.trim()} added to your map.`);
+    // setToast(`${input.name.trim()} added to your map.`);
+    setToast(t("toast.added", { name: input.name.trim() }));
   };
 
   const handleSave = (patch: { name: string; status: Status }) => {
@@ -1299,7 +1453,9 @@ export default function FamilyMap({
       ),
     });
     setDialog(null);
-    setToast("Changes saved.");
+    // setToast("Changes saved.");
+    setToast(t("toast.saved"));
+
   };
 
   const handleRemove = () => {
@@ -1308,27 +1464,53 @@ export default function FamilyMap({
     commit(next);
     setSelectedId(next.people.find((p) => p.origin === "self")?.id ?? next.people[0]?.id ?? "");
     setDialog(null);
-    setToast(`${selected.name} removed from your map.`);
+    // setToast(`${selected.name} removed from your map.`);
+    setToast(t("toast.removed", { name: selected.name }));
   };
 
   const setSharing = (next: boolean) => {
     setShared(next);
     onShareChange?.(next);
     setDialog(null);
-    setToast(next ? "Shared with your counsellor." : "Sharing stopped.");
+    // setToast(next ? "Shared with your counsellor." : "Sharing stopped.");
+    setToast(next ? t("toast.sharedOn") : t("toast.sharedOff"));
   };
 
+  // const handleSend = async (ids: string[]) => {
+  //   await onNotify?.({ relativeIds: ids, anonymous, message: NOTIFY_MESSAGE });
+  //   setDialog(null);
+  //   setToast(
+  //     `Sent ${anonymous ? "anonymously " : ""}to ${ids.length} ${
+  //       ids.length === 1 ? "relative" : "relatives"
+  //     }.`,
+  //   );
+  // };
   const handleSend = async (ids: string[]) => {
-    await onNotify?.({ relativeIds: ids, anonymous, message: NOTIFY_MESSAGE });
+    await onNotify?.({ relativeIds: ids, anonymous, message: t("notifyMessage") });
     setDialog(null);
-    setToast(
-      `Sent ${anonymous ? "anonymously " : ""}to ${ids.length} ${
-        ids.length === 1 ? "relative" : "relatives"
-      }.`,
-    );
+    setToast(t("toast.sent", { anonymous: anonymous ? "yes" : "no", count: ids.length }));
   };
 
   const info = selected ? describePerson(selected, data) : null;
+  const originText: Record<Origin, string> = {
+    added: t("selected.origin.added"),
+    self: t("selected.origin.self"),
+    shared: t("selected.origin.shared"),
+  };
+  const rel = info?.relation ?? null;
+  const names = rel ? format.list(rel.names, { type: "conjunction" }) : "";
+  const STATUS_ORDER: Status[] = ["condition", "carrier", "unsure", "none"];
+  const relationText = !rel ? "" :
+    rel.kind === "parentOf" ? t("selected.parentOf", { gender: rel.gender, names }) :
+    rel.kind === "childOf" ? t("selected.childOf", { gender: rel.gender, names }) :
+    t("selected.partnerOf", { gender: rel.gender, names });
+  const statusText = selected && info
+    ? t("selected.status", {
+        label: labels.node[selected.status],
+        known: info.known ? "yes" : "no",
+        origin: originText[info.origin],
+      })
+    : "";
 
   /* --------------------------------- Render -------------------------------- */
 
@@ -1339,12 +1521,14 @@ export default function FamilyMap({
         <header className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <h1 className="text-[28px] leading-tight font-extrabold tracking-tight">
-              Family map
+              {/* Family map */}
+              {t("header.title")}
             </h1>
             <p className="mt-1 text-[13px] text-[#6b6159]">
-              {shared
+              {/* {shared
                 ? "Shared with your counsellor. You can stop at any time."
-                : "Private to you unless you choose to share it."}
+                : "Private to you unless you choose to share it."} */}
+                {shared ? t("header.subtitleShared") : t("header.subtitlePrivate")}
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-3">
@@ -1358,14 +1542,16 @@ export default function FamilyMap({
               ) : (
                 <Calendar className="size-4" aria-hidden />
               )}
-              {shared ? "Shared with counsellor" : "Share with my counsellor"}
+              {/* {shared ? "Shared with counsellor" : "Share with my counsellor"} */}
+              {shared ? t("header.shared") : t("header.share")}
             </button>
             <button
               type="button"
               onClick={() => setDialog("add")}
               className={`rounded-full bg-[#ff5a1f] px-5 py-2.5 text-sm font-bold text-white transition hover:bg-[#ea4c12] ${focusRing}`}
             >
-              Add a relative
+              {/* Add a relative */}
+              {t("header.add")}
             </button>
           </div>
         </header>
@@ -1374,9 +1560,10 @@ export default function FamilyMap({
         <div className="mt-5 flex items-center gap-3 rounded-2xl bg-[#fff0e6] px-4 py-3 text-[13px]">
           <Lock className="size-4 shrink-0 text-[#e8531c]" aria-hidden />
           <p>
-            Self-reported and{" "}
+            {/* Self-reported and{" "}
             <strong>{shared ? "shared with your counsellor" : "private to you"}</strong>
-            . GeneBridge never pulls in a relative&rsquo;s test result.
+            . GeneBridge never pulls in a relative&rsquo;s test result. */}
+            {t.rich(shared ? "banner.shared" : "banner.private", { b: (c) => <strong>{c}</strong> })}
           </p>
         </div>
 
@@ -1385,11 +1572,13 @@ export default function FamilyMap({
           <section aria-labelledby="family-title" className={`${cardClass} p-5`}>
             <div className="flex flex-wrap items-baseline justify-between gap-2">
               <h2 id="family-title" className="text-base font-bold tracking-tight">
-                Your family
+                {/* Your family */}
+                {t("tree.title")}
               </h2>
               <p className="text-[11px] text-[#6b6159]">
-                {generations} {generations === 1 ? "generation" : "generations"} ·{" "}
-                {data.people.length} {data.people.length === 1 ? "person" : "people"}
+                {/* {generations} {generations === 1 ? "generation" : "generations"} ·{" "}
+                {data.people.length} {data.people.length === 1 ? "person" : "people"} */}
+                {t("tree.counts", { generations, people: data.people.length })}
               </p>
             </div>
 
@@ -1401,7 +1590,8 @@ export default function FamilyMap({
               <div
                 ref={canvasRef}
                 role="group"
-                aria-label="Family tree"
+                // aria-label="Family tree"
+                aria-label={t("tree.aria")}
                 className="relative mx-auto"
                 style={{ width: layout.width, height: layout.height }}
               >
@@ -1424,7 +1614,8 @@ export default function FamilyMap({
                     className="absolute -translate-x-1/2 text-[10px] text-[#6b6159]"
                     style={{ left: l.x, top: l.y }}
                   >
-                    cousins
+                    {/* cousins */}
+                    {t("tree.cousins")}
                   </span>
                 ))}
 
@@ -1445,12 +1636,14 @@ export default function FamilyMap({
           {/* Side column */}
           <aside className="flex flex-col gap-4">
             <section
-              aria-label="Selected relative"
+              // aria-label="Selected relative"
+              aria-label={t("selected.aria")}
               aria-live="polite"
               className={`${cardClass} p-5`}
             >
               <p className="text-[10px] font-semibold tracking-wide text-[#6b6159] uppercase">
-                Selected
+                {/* Selected */}
+                {t("selected.label")}
               </p>
               {selected && info ? (
                 <>
@@ -1458,37 +1651,44 @@ export default function FamilyMap({
                     {selected.name}
                   </h2>
                   <p className="mt-2 text-[11.5px] leading-relaxed text-[#6b6159]">
-                    {info.status} {info.relation}
+                    {/* {info.status} {info.relation} */}
+                    {statusText} {relationText}
                   </p>
                   <button
                     type="button"
                     onClick={() => setDialog("edit")}
                     className={`mt-3.5 rounded-full border border-[#f0e2d8] bg-white px-5 py-2 text-xs font-bold transition hover:border-[#e0c3ad] ${focusRing}`}
                   >
-                    Edit
+                    {/* Edit */}
+                    {t("selected.edit")}
                   </button>
                 </>
               ) : (
                 <p className="mt-2.5 text-[13px] text-[#6b6159]">
-                  Select a relative on the map, or add one to get started.
+                  {/* Select a relative on the map, or add one to get started. */}
+                  {t("selected.empty")}
                 </p>
               )}
             </section>
 
             <section aria-labelledby="tell-title" className={`${cardClass} p-5`}>
               <h2 id="tell-title" className="text-sm font-extrabold tracking-tight">
-                Tell relatives, privately
+                {/* Tell relatives, privately */}
+                {t("tell.title")}
               </h2>
               <p className="mt-2.5 text-[11.5px] leading-relaxed text-[#6b6159]">
-                Relatives in this branch may want to get tested. Your own result
-                is never included.
+                {/* Relatives in this branch may want to get tested. Your own result
+                is never included. */}
+                {t("tell.body")}
               </p>
               <blockquote className="mt-3.5 rounded-xl bg-[#fff3ea] px-3.5 py-3 text-[11.5px] leading-relaxed text-[#6b6159]">
-                &ldquo;{NOTIFY_MESSAGE}&rdquo;
+                {/* &ldquo;{NOTIFY_MESSAGE}&rdquo; */}
+                {t("common.quote", { text: t("notifyMessage") })}
               </blockquote>
               <Checkbox checked={anonymous} onChange={setAnonymous} className="mt-4">
                 <span className="text-xs font-semibold">
-                  Send anonymously through GeneBridge
+                  {/* Send anonymously through GeneBridge */}
+                  {t("tell.anonymous")}
                 </span>
               </Checkbox>
               <button
@@ -1496,29 +1696,33 @@ export default function FamilyMap({
                 onClick={() => setDialog("notify")}
                 className={`mt-4 w-full rounded-full bg-[#ff5a1f] px-5 py-3 text-[13px] font-bold text-white transition hover:bg-[#ea4c12] ${focusRing}`}
               >
-                Choose relatives to notify
+                {/* Choose relatives to notify */}
+                {t("tell.cta")}
               </button>
             </section>
 
             <section aria-labelledby="key-title" className={`${cardClass} p-5`}>
               <h2 id="key-title" className="text-base font-extrabold tracking-tight">
-                Key
+                {/* Key */}
+                {t("key.title")}
               </h2>
               <ul className="mt-3 space-y-2 text-xs">
-                {(
-                  [
-                    ["condition", "Known condition"],
-                    ["carrier", "Carrier"],
-                    ["unsure", "Not sure"],
-                    ["none", "No known condition"],
-                  ] as [Status, string][]
-                ).map(([status, label]) => (
+                {
+                // (
+                //   [
+                //     ["condition", "Known condition"],
+                //     ["carrier", "Carrier"],
+                //     ["unsure", "Not sure"],
+                //     ["none", "No known condition"],
+                //   ] as [Status, string][]
+                // )
+                STATUS_ORDER.map((status) => (
                   <li key={status} className="flex items-center gap-2.5">
                     <span
                       aria-hidden
                       className={`size-3 rounded-[3px] border ${STATUS_META[status].box}`}
                     />
-                    {label}
+                    {labels.option[status]}
                   </li>
                 ))}
                 <li className="flex items-center gap-2.5">
@@ -1526,7 +1730,8 @@ export default function FamilyMap({
                     <span className="h-[1.5px] bg-[#c4b6ab]" />
                     <span className="h-[1.5px] bg-[#c4b6ab]" />
                   </span>
-                  Marriage between cousins
+                  {/* Marriage between cousins */}
+                  {t("key.marriage")}
                 </li>
               </ul>
             </section>
