@@ -1,0 +1,106 @@
+{
+  "meta": {
+    "title": "Talking to family · GeneBridge"
+  },
+  "header": {
+    "title": "Talking to your partner and family",
+    "subtitle": "Gentle guides and words you can use. You decide what to share, and with whom.",
+    "listen": "Listen",
+    "stop": "Stop",
+    "listenLabel": "Listen to this guide",
+    "stopLabel": "Stop reading"
+  },
+  "tabs": {
+    "label": "Guides"
+  },
+  "guide": {
+    "wordsTitle": "Words you could use",
+    "copy": "Copy",
+    "copyLabel": "Copy this phrase",
+    "use": "Use in message",
+    "useLabel": "Put this phrase in your message",
+    "notice": "Send an anonymous notice instead",
+    "counsellor": "A counsellor can help with this conversation too. They can join a session with your family if you'd like.",
+    "counsellorLink": "Book a family session"
+  },
+  "checkin": {
+    "title": "How are you feeling about all this?",
+    "subtitle": "Private to you. It helps us offer the right support.",
+    "feelings": {
+      "calm": "Calm",
+      "unsure": "Unsure",
+      "worried": "Worried",
+      "overwhelmed": "Overwhelmed"
+    },
+    "ok": "Glad you're here. Take things at your own pace.",
+    "supportTitle": "That's a very normal reaction.",
+    "supportBody": "You don't have to work through this alone. A counsellor can talk it through with you, and with your family if you'd like.",
+    "supportCta": "Talk to a counsellor",
+    "supportLine": "Support line: {phone}",
+    "talkNow": "Talk to someone now",
+    "saveError": "We couldn't save that, but you can carry on."
+  },
+  "drafter": {
+    "title": "Draft a message together",
+    "subtitle": "Ask GeneBridge helps you word it. Nothing is sent without you.",
+    "recipientLabel": "Who is it for?",
+    "recipients": {
+      "partner": "Your partner",
+      "parents": "Your parents",
+      "relatives": "Relatives",
+      "other": "Someone else"
+    },
+    "textLabel": "Your message",
+    "tonesLabel": "Change the wording",
+    "tones": {
+      "gentler": "Gentler",
+      "simpler": "Simpler",
+      "detail": "More detail",
+      "toArabic": "بالعربية",
+      "toEnglish": "In English"
+    },
+    "rewriting": "Rewording…",
+    "rewritten": "Reworded. Check it still says what you mean.",
+    "templateNote": "We used the guide's suggested wording. Edit it to make it your own.",
+    "rateLimited": "You've reworded a lot in the last hour. Please try again a little later.",
+    "error": "We couldn't reword that just now. Your message is unchanged.",
+    "whatsapp": "Send by WhatsApp",
+    "copy": "Copy",
+    "save": "Save draft",
+    "saved": "Draft saved. Only you can see it.",
+    "saveError": "We couldn't save the draft. It's still here on this device.",
+    "sendNote": "GeneBridge never sends this for you. WhatsApp opens with your message, and you choose who gets it."
+  },
+  "privacy": {
+    "title": "Before you share this",
+    "named": "This message mentions {who}'s result. Do you have their permission to share it?",
+    "someone": "This message mentions someone else's result. Do you have their permission to share it?",
+    "edit": "Edit message",
+    "agreedNamed": "{who} has agreed, continue",
+    "agreed": "They've agreed, continue",
+    "relations": {
+      "husband": "your husband",
+      "wife": "your wife",
+      "fiance": "your fiancé",
+      "fiancee": "your fiancée",
+      "partner": "your partner",
+      "brother": "your brother",
+      "sister": "your sister",
+      "mother": "your mother",
+      "father": "your father",
+      "uncle": "your uncle",
+      "aunt": "your aunt",
+      "cousin": "your cousin",
+      "son": "your son",
+      "daughter": "your daughter",
+      "grandmother": "your grandmother",
+      "grandfather": "your grandfather",
+      "nephew": "your nephew",
+      "niece": "your niece"
+    }
+  },
+  "toast": {
+    "copied": "Copied",
+    "copiedMessage": "Message copied"
+  }
+}

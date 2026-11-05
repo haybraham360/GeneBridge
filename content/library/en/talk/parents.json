@@ -1,0 +1,29 @@
+{
+  "id": "parents",
+  "kind": "talk",
+  "locale": "en",
+  "recipient": "parents",
+  "label": "Telling your parents",
+  "title": "Telling your parents",
+  "intro": "Whether and what you share with your parents is your choice. Some people find their support helps a lot.",
+  "steps": [
+    "Decide what you want to share before you start.",
+    "Explain that being a carrier is common and doesn't make you ill.",
+    "Ask for their support, not for a decision."
+  ],
+  "phrases": [
+    "My screening showed I carry a gene change. It doesn't make me ill.",
+    "We're getting advice from a qualified counsellor.",
+    "I'd really value your support while we learn more."
+  ],
+  "drafts": {
+    "starter": "I wanted to share something with you. My screening showed I carry a gene change. It doesn't make me ill. We're getting advice from a qualified counsellor, and I'd really value your support.",
+    "starterNamed": "I wanted to share something with you. My screening showed I carry a gene change. It doesn't make me ill. We're getting advice from a qualified counsellor, and I'd really value your support.",
+    "gentler": "I'd like to share something with you when you have a moment. My screening showed I carry a gene change, and it doesn't make me ill. I'd really value your support while we learn more.",
+    "simpler": "My screening showed I carry a gene change. It doesn't make me ill. I'd like your support.",
+    "detail": "My screening showed I carry a gene change. This is common, it doesn't make me ill, and it mainly matters when planning children. We're getting advice from a qualified counsellor and we'll decide things together in our own time. I'd really value your support while we learn more."
+  },
+  "reviewed": false,
+  "last_checked": "2026-11-06",
+  "audio": "/audio/en/talk/parents.mp3"
+}

@@ -82,6 +82,8 @@ export interface FamilyMapProps {
    * the browser. Without it, sending is simulated.
    */
   onNotify?: (payload: Omit<NotifyPayload, "relativeIds">) => Promise<NotifyResult>;
+  /** Open "Choose relatives to notify" straight away (e.g. from /dashboard/talk). */
+  openNotify?: boolean;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -1491,10 +1493,11 @@ export default function FamilyMap({
   onChange,
   onShareChange,
   onNotify,
+  openNotify = false,
 }: FamilyMapProps) {
   const [data, setData] = useState<FamilyMapData>(initialData);
   const [selectedId, setSelectedId] = useState("saeed");
-  const [dialog, setDialog] = useState<DialogKind>(null);
+  const [dialog, setDialog] = useState<DialogKind>(openNotify ? "notify" : null);
   const [anonymous, setAnonymous] = useState(true);
   const [shared, setShared] = useState(false);
   const [toast, setToast] = useState<string | null>(null);

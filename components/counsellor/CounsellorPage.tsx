@@ -97,9 +97,11 @@ type Props = {
   path?: LiveStep[];
   /** Flagged result: "My full report" is suggested and pre-ticked (task 07). */
   flagged?: boolean;
+  /** From /counsellor?topic=family (task 09): "a family member joins" is pre-ticked. */
+  familyTopic?: boolean;
 };
 
-export default function CounsellorPage({ path: livePath, flagged = false }: Props = {}) {
+export default function CounsellorPage({ path: livePath, flagged = false, familyTopic = false }: Props = {}) {
   const t = useTranslations("dashboard.counsellor");
   const tBooking = useTranslations("dashboard.booking");
   const locale = useLocale();
@@ -126,6 +128,8 @@ export default function CounsellorPage({ path: livePath, flagged = false }: Prop
     "values",
   ]);
   const [confirmed, setConfirmed] = useState(false);
+  // Saved as bookings.family_member_invited once booking is live (task 09).
+  const [familyJoins, setFamilyJoins] = useState(familyTopic);
 
   const current = counsellors.find((c) => c.id === counsellor)!;
   const firstName = current.name.split(" ").slice(0, 2).join(" ");
@@ -416,6 +420,28 @@ export default function CounsellorPage({ path: livePath, flagged = false }: Prop
               </div>
             </fieldset>
 
+            <label className="mt-4 flex cursor-pointer flex-wrap items-center gap-3 rounded-xl border border-neutral-200 p-4 text-[13px] text-neutral-800">
+              <input
+                type="checkbox"
+                checked={familyJoins}
+                onChange={(e) => {
+                  setFamilyJoins(e.target.checked);
+                  setConfirmed(false);
+                }}
+                className="peer sr-only"
+              />
+              <span
+                aria-hidden
+                className={`flex h-4 w-4 items-center justify-center rounded-sm border peer-focus-visible:ring-2 peer-focus-visible:ring-brand/40 ${
+                  familyJoins ? "border-ink bg-ink text-white" : "border-neutral-600 bg-white"
+                }`}
+              >
+                {familyJoins && <Check className="h-3 w-3" strokeWidth={3} />}
+              </span>
+              <span className="font-bold">{tBooking("familyJoin")}</span>
+              <span className="basis-full ps-7 text-[12px] text-neutral-600">{tBooking("familyJoinHint")}</span>
+            </label>
+
             <button
               type="button"
               onClick={() => setConfirmed(true)}
@@ -437,6 +463,7 @@ export default function CounsellorPage({ path: livePath, flagged = false }: Prop
               {confirmed
                 ? t("book.booked", { counsellor: current.name, day: dayLong[day], time, session: sessionLabel[session] })
                 : t("book.invite", { partner: "Khalid" })}
+              {confirmed && familyJoins ? ` ${tBooking("bookedFamily")}` : null}
             </p>
           </aside>
         </div>

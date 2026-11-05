@@ -1,0 +1,29 @@
+{
+  "id": "partner",
+  "kind": "talk",
+  "locale": "en",
+  "recipient": "partner",
+  "label": "Telling your partner",
+  "title": "Telling your partner",
+  "intro": "Many couples find it easier to talk once you both know the basics. There is no right way, only your way.",
+  "steps": [
+    "Choose a calm, private moment, not in a rush.",
+    "Start with what it means: being a carrier means you are healthy.",
+    "Invite them to look at their own result, and decide together what to share."
+  ],
+  "phrases": [
+    "I got my screening result. I'm a carrier, which means I'm healthy, but I'd like us to understand it together.",
+    "You don't have to share your result with me unless you want to.",
+    "Shall we talk it through with a counsellor together?"
+  ],
+  "drafts": {
+    "starter": "I got my screening result. I'm a carrier, which means I'm healthy, but I'd like us to understand it together. Can we talk this evening?",
+    "starterNamed": "{name}, I got my screening result. I'm a carrier, which means I'm healthy, but I'd like us to understand it together. Can we talk this evening?",
+    "gentler": "When you have a quiet moment, could we talk? I got my screening result. I'm a carrier, which means I'm healthy. I'd love for us to understand it together, whenever feels right for you.",
+    "simpler": "I got my screening result. I'm a carrier. That means I'm healthy. Can we talk about it together?",
+    "detail": "I got my screening result. It shows I'm a carrier, which means I'm healthy and have no symptoms. It mainly matters if we plan to have children and you carry a change in the same gene. You don't have to share your result with me unless you want to. Could we talk this evening, or with a counsellor together?"
+  },
+  "reviewed": false,
+  "last_checked": "2026-11-06",
+  "audio": "/audio/en/talk/partner.mp3"
+}

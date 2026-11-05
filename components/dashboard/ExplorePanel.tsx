@@ -1,4 +1,4 @@
-import { Layers, Compass } from "lucide-react";
+import { Layers, Compass, MessagesSquare } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 function FamilyIcon({ className }: { className?: string }) {
@@ -34,6 +34,7 @@ export default function ExplorePanel() {
     { label: t("simulator"), icon: Layers, href: "/dashboard/simulator" },
     { label: t("family"), icon: FamilyIcon, href: "/dashboard/family" },
     { label: t("options"), icon: Compass, href: "/dashboard/options" },
+    { label: t("talk"), icon: MessagesSquare, href: "/dashboard/talk" },
   ];
 
   return (

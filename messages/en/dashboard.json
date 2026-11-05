@@ -6,6 +6,7 @@
       "couple": "Couple view",
       "simulator": "Inheritance simulator",
       "family": "Family map",
+      "talk": "Talking to family",
       "options": "Options",
       "counsellor": "Counsellor & referral",
       "privacy": "Privacy & consent"
@@ -71,7 +72,8 @@
     "title": "Explore at your own pace",
     "simulator": "Inheritance simulator",
     "family": "Build your family map",
-    "options": "Explore your options"
+    "options": "Explore your options",
+    "talk": "Talk to your partner and family"
   },
 
   "result": {
@@ -673,6 +675,9 @@
   },
   "booking": {
     "fullReport": "My full report",
-    "fullReportHint": "Suggested for your result, so your counsellor can prepare. Nothing is shared until you confirm."
+    "fullReportHint": "Suggested for your result, so your counsellor can prepare. Nothing is shared until you confirm.",
+    "familyJoin": "I'd like a family member to join",
+    "familyJoinHint": "Your counsellor will help you plan who joins and what is shared. Nothing about your result is shared with them unless you choose.",
+    "bookedFamily": "A family member is invited to join."
   }
 }

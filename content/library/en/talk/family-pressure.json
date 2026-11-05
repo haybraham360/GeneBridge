@@ -1,0 +1,29 @@
+{
+  "id": "family-pressure",
+  "kind": "talk",
+  "locale": "en",
+  "recipient": "other",
+  "label": "When family pressure feels heavy",
+  "title": "When family pressure feels heavy",
+  "intro": "Families care, and sometimes that care feels like pressure. You can be kind and still keep decisions between you and your partner.",
+  "steps": [
+    "Set a boundary kindly and calmly.",
+    "Remember that decisions belong to you and your partner.",
+    "A counsellor can help with family conversations too, and can join one if you'd like."
+  ],
+  "phrases": [
+    "We're taking advice and we'll decide together in our own time.",
+    "I know you care. Please trust us with this.",
+    "Would you like to come to a counselling session with us?"
+  ],
+  "drafts": {
+    "starter": "I know you care about us, and that means a lot. We're taking advice and we'll decide together in our own time. Please trust us with this.",
+    "starterNamed": "I know you care about us, and that means a lot. We're taking advice and we'll decide together in our own time. Please trust us with this.",
+    "gentler": "Thank you for caring about us. We're taking good advice, and we'd like to make our decisions together, in our own time. Your trust would mean a lot.",
+    "simpler": "Thank you for caring. We're getting advice. We'll decide together, in our own time.",
+    "detail": "I know you care about us, and we're grateful. We've had our screening results explained and we're talking with a qualified counsellor. Decisions like this belong to the two of us, and we'll make them in our own time. If you'd like to understand more, you're welcome to join a counselling session with us."
+  },
+  "reviewed": false,
+  "last_checked": "2026-11-06",
+  "audio": "/audio/en/talk/family-pressure.mp3"
+}

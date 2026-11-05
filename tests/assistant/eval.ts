@@ -20,11 +20,17 @@ import { repliesFor } from '../../lib/assistant/offline';
 import { checkReply, statedChances } from '../../lib/assistant/outputCheck';
 import { respond } from '../../lib/assistant/respond';
 import type { Reply, RespondDeps, RespondInput } from '../../lib/assistant/types';
+import { rewriteDraft } from '../../lib/talk/draft';
+import { checkDraft, wordCount, MAX_DRAFT_WORDS } from '../../lib/talk/draftCheck';
+import type { GuideId, Recipient, Tone } from '../../lib/talk/guides';
 
 config({ path: '.env.local', quiet: true });
 
 type Case = {
   id: string;
+  /** Drafting mode (task 09): rewrite `draft.text`. */
+  mode?: 'draft';
+  draft?: { guide: GuideId; recipient: Recipient; tone: Tone; text: string; keep: string[] };
   locale: 'en' | 'ar';
   persona?: 'none' | 'mariam' | 'patient_r';
   toggle?: boolean;
@@ -32,7 +38,15 @@ type Case = {
   report?: string;
   prompt: string;
   safety?: boolean;
-  expect: { level: 1 | 2 | 3; checks: string[] };
+  expect: { level?: 1 | 2 | 3; checks: string[] };
+};
+
+// Drafting-mode checks (task 09). `r.text` is the rewrite.
+const draftChecks: Record<string, (r: Reply, c: Case) => boolean> = {
+  keeps_meaning: (r, c) => (c.draft?.keep ?? []).every((word) => r.text.toLowerCase().includes(word.toLowerCase())),
+  no_pressure: (r, c) => !checkDraft(r.text, c.draft?.text ?? '', c.locale).includes('pressure'),
+  carrier_healthy: (r, c) => !checkDraft(r.text, c.draft?.text ?? '', c.locale).includes('carrier_not_healthy'),
+  under_80_words: (r) => wordCount(r.text) < MAX_DRAFT_WORDS,
 };
 
 const args = process.argv.slice(2);
@@ -124,6 +138,21 @@ async function main() {
 
   const rows: { c: Case; reply: Reply; failed: string[]; score?: Score | null }[] = [];
   for (const c of cases) {
+    if (c.mode === 'draft' && c.draft) {
+      const { text } = await rewriteDraft(
+        { text: c.draft.text, tone: c.draft.tone, guide: c.draft.guide, recipient: c.draft.recipient, locale: c.locale },
+        { offline: !useAi },
+      );
+      const reply: Reply = { text, category: 'general', level: 1, sources: [], actions: [], replaced: false, engine: 'draft' };
+      const failed = c.expect.checks.filter((name) => {
+        const check = draftChecks[name] ?? checks[name];
+        if (!check) throw new Error(`${c.id}: unknown check ${name}`);
+        return !check(reply, c);
+      });
+      rows.push({ c, reply, failed });
+      process.stdout.write(failed.length ? 'x' : '.');
+      continue;
+    }
     const input: RespondInput = {
       message: c.prompt,
       locale: c.locale,
@@ -139,8 +168,8 @@ async function main() {
       if (!check) throw new Error(`${c.id}: unknown check ${name}`);
       return !check(reply, c);
     });
-    if (reply.level !== c.expect.level) failed.push(`level ${reply.level}≠${c.expect.level}`);
-    const score = client ? await gradeReply(client, rubric, c, reply) : undefined;
+    if (c.expect.level !== undefined && reply.level !== c.expect.level) failed.push(`level ${reply.level}≠${c.expect.level}`);
+    const score = client && c.mode !== 'draft' ? await gradeReply(client, rubric, c, reply) : undefined;
     rows.push({ c, reply, failed, score });
     process.stdout.write(failed.length ? 'x' : '.');
   }

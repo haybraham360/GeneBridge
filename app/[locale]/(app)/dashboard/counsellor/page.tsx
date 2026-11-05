@@ -24,7 +24,7 @@ export default async function Page({ params, searchParams }: PageProps<'/[locale
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
-  const { request: requestId } = await searchParams;
+  const { request: requestId, topic } = await searchParams;
 
   const supabase = await createClient();
   const [tDashboard, format, facts] = await Promise.all([
@@ -64,7 +64,7 @@ export default async function Page({ params, searchParams }: PageProps<'/[locale
   return (
     <>
       {banner}
-      <CounsellorPage path={path} flagged={facts.result?.flagged ?? false} />
+      <CounsellorPage path={path} flagged={facts.result?.flagged ?? false} familyTopic={topic === 'family'} />
     </>
   );
 }

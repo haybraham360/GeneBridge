@@ -6,7 +6,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
   const requested = await requestLocale;
   const locale = hasLocale(routing.locales, requested) ? requested : routing.defaultLocale;
 
-  const [landing, common, auth, onboarding, analytics, assistant, dashboard, pro, notice] = await Promise.all([
+  const [landing, common, auth, onboarding, analytics, assistant, dashboard, pro, notice, talk] = await Promise.all([
     import(`../messages/${locale}/landing.json`),
     import(`../messages/${locale}/common.json`),
     import(`../messages/${locale}/auth.json`),
@@ -16,6 +16,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
     import(`../messages/${locale}/dashboard.json`),
     import(`../messages/${locale}/pro.json`),
     import(`../messages/${locale}/notice.json`),
+    import(`../messages/${locale}/talk.json`),
   ]);
 
   return {
@@ -30,6 +31,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
       dashboard: dashboard.default,
       pro: pro.default,
       notice: notice.default,
+      talk: talk.default,
     },
   };
 });

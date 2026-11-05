@@ -9,6 +9,7 @@ import {
   Calendar,
   ShieldCheck,
   MessageSquare,
+  MessagesSquare,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import type { ComponentType } from "react";
@@ -24,6 +25,7 @@ type NavKey =
   | "couple"
   | "simulator"
   | "family"
+  | "talk"
   | "options"
   | "counsellor"
   | "privacy";
@@ -42,6 +44,7 @@ const nav: NavItem[] = [
   { label: "Couple view", icon: Users, link: "/dashboard/couple", short: "couple" },
   { label: "Inheritance simulator", icon: Layers, link: "/dashboard/simulator", short: "simulator"  },
   { label: "Family map", icon: FamilyIcon, link: "/dashboard/family", short: "family"  },
+  { label: "Talking to family", icon: MessagesSquare, link: "/dashboard/talk", short: "talk" },
   { label: "Options", icon: Compass, link: "/dashboard/options", short: "options"  },
   { label: "Counsellor & referral", icon: Calendar, link: "/dashboard/counsellor", short: "counsellor"  },
   { label: "Privacy & consent", icon: ShieldCheck, link: "/dashboard/privacy", short: "privacy"  },

@@ -8,6 +8,7 @@ import type analytics from '@/messages/en/analytics.json';
 import type assistant from '@/messages/en/assistant.json';
 import type pro from '@/messages/en/pro.json';
 import type notice from '@/messages/en/notice.json';
+import type talk from '@/messages/en/talk.json';
 
 declare module 'next-intl' {
   interface AppConfig {
@@ -22,6 +23,7 @@ declare module 'next-intl' {
       assistant: typeof assistant;
       pro: typeof pro;
       notice: typeof notice;
+      talk: typeof talk;
     };
   }
 }

@@ -1,0 +1,29 @@
+{
+  "id": "relatives",
+  "kind": "talk",
+  "locale": "en",
+  "recipient": "relatives",
+  "label": "Relatives who could be tested",
+  "title": "Telling relatives who could be tested",
+  "intro": "Relatives may want to know their own status. You can tell them about testing without sharing your result.",
+  "steps": [
+    "Keep it about health, never about blame.",
+    "Share where to get tested, not your own result.",
+    "If you prefer, send an anonymous notice through GeneBridge."
+  ],
+  "phrases": [
+    "A condition may run in our family. Testing is free and confidential.",
+    "Being a carrier is common and doesn't mean you're ill.",
+    "You can find out privately. Nobody else needs to know."
+  ],
+  "drafts": {
+    "starter": "A condition may run in our family. Testing is free and confidential, and being a carrier is common and doesn't mean you're ill. You can find out privately if you'd like.",
+    "starterNamed": "A condition may run in our family. Testing is free and confidential, and being a carrier is common and doesn't mean you're ill. You can find out privately if you'd like.",
+    "gentler": "I wanted to pass on something that might be useful. A condition may run in our family. If you'd ever like to know your own status, testing is free and confidential. Being a carrier is common and doesn't mean you're ill.",
+    "simpler": "A condition may run in our family. Testing is free and private. Being a carrier is common. It doesn't mean you're ill.",
+    "detail": "A condition may run in our family. Being a carrier is common: most carriers are completely healthy and never know it. It mainly matters when planning children. A simple blood test can show your own status. It's free and confidential, and you decide who, if anyone, sees the result."
+  },
+  "reviewed": false,
+  "last_checked": "2026-11-06",
+  "audio": "/audio/en/talk/relatives.mp3"
+}
