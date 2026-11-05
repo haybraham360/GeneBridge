@@ -87,6 +87,8 @@ export function AuthForm({
   const [busy, setBusy] = useState(false);
   const [resendIn, setResendIn] = useState(0);
   const [uaePassOpen, setUaePassOpen] = useState(false);
+  /** Bumped each time the consent box is missed, to replay its nudge. */
+  const [consentNudge, setConsentNudge] = useState(0);
 
   const facilityRef = useRef<HTMLInputElement>(null);
   const phoneRef = useRef<HTMLInputElement>(null);
@@ -121,10 +123,19 @@ export function AuthForm({
   /** Shows errors and moves focus to the first one, in on-screen order. */
   const fail = (next: Errors) => {
     setErrors(next);
-    const order: Field[] = ['facility', 'phone', 'email', 'password', 'code', 'consent'];
+    const order: Field[] = ['facility', 'consent', 'phone', 'email', 'password', 'code'];
     const first = order.find((f) => next[f]);
+    if (next.consent) setConsentNudge((n) => n + 1);
     requestAnimationFrame(() => {
       if (first === 'code') codeRef.current?.focus();
+      else if (first === 'consent') {
+        // If the person has scrolled down to a sign-in option, bring the whole
+        // box (and its message) back into view, then focus it.
+        const box = consentRef.current?.closest('label');
+        const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        box?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+        consentRef.current?.focus({ preventScroll: true });
+      }
       else if (first) {
         const refs = {
           facility: facilityRef,
@@ -397,11 +408,17 @@ export function AuthForm({
   );
 
   const consentField = (
-    <div className="flex flex-col gap-2">
+    <div className="flex scroll-my-24 flex-col gap-2">
       <label
+        // A new key replays the nudge each time the box is missed.
+        key={consentNudge}
         className={cn(
-          'flex cursor-pointer items-start gap-3 rounded-tile border bg-surface p-4 text-sm leading-[1.5] transition-colors duration-200',
-          errors.consent ? 'border-danger' : 'border-line',
+          'flex cursor-pointer items-start gap-3 rounded-tile border p-4 text-sm leading-[1.5] transition-[background-color,border-color,box-shadow] duration-200',
+          errors.consent
+            ? 'border-danger bg-brand-tint-soft shadow-[0_0_0_4px_rgba(185,28,28,0.12)] motion-safe:animate-nudge'
+            : consent
+              ? 'border-ink bg-surface'
+              : 'border-line bg-surface hover:border-line-strong',
         )}
       >
         <input
@@ -673,6 +690,8 @@ export function AuthForm({
           className="flex flex-col gap-5"
         >
           {heading(t(`${mode}.heading`), t(`${mode}.subline`))}
+          {/* Agree first, then choose how to continue. */}
+          {isSignup ? consentField : null}
           {uaePassEnabled || googleEnabled ? (
             <>
               {uaePassEnabled ? (
@@ -711,7 +730,6 @@ export function AuthForm({
             </>
           ) : null}
           {methodFields}
-          {isSignup ? consentField : null}
           <p className="text-sm text-muted">
             {t('facility.prompt')}{' '}
             <button

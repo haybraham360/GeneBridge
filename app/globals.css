@@ -26,6 +26,24 @@
     }
   }
 
+  /* Auth: a short side-to-side nudge that draws the eye to a missed required box. */
+  --animate-nudge: nudge 480ms cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+
+  @keyframes nudge {
+    0%,
+    100% {
+      translate: 0 0;
+    }
+    20%,
+    60% {
+      translate: -6px 0;
+    }
+    40%,
+    80% {
+      translate: 6px 0;
+    }
+  }
+
   @keyframes fade-up {
     from {
       opacity: 0;
