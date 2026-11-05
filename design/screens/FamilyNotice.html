@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A message about your family&#39;s health</title>
+<!-- Static reference export of the GeneBridge design canvas. Initial state only; see design/source/FamilyNotice.dc.html for interactive logic. -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FFF7F0;color:#141414;font-family:'Plus Jakarta Sans',system-ui,sans-serif}
+a{color:#C2410C}a:hover{color:#9A3412}
+.card{background:#FFFFFF;border:1px solid #F1E3D8;border-radius:20px;box-shadow:0 8px 24px rgba(60,30,10,0.06)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 24px;border-radius:999px;font-weight:700;font-size:15px;text-decoration:none;border:0;cursor:pointer;font-family:inherit;box-sizing:border-box}
+.btn-o{background:#FF5A1F;color:#141414}.btn-o:hover{background:#FF7440;color:#141414}
+.btn-d{background:#141414;color:#FFFFFF}.btn-d:hover{background:#2E2A27;color:#FFFFFF}
+.btn-g{background:#FFFFFF;color:#141414;border:1px solid #E7D7CA}.btn-g:hover{background:#FFF1E7;color:#141414}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;background:#FFFFFF;border:1px solid #F1E3D8;font-size:13px;font-weight:600;color:#141414}
+.muted{color:#5C5550}
+.side a{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:12px;color:#3A3532;text-decoration:none;font-weight:600;font-size:14px}
+.side a:hover{background:#FFEDE2;color:#141414}
+.side a.on{background:#141414;color:#FFFFFF}
+svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+@media (max-width:900px){.decor{display:none}}
+</style>
+</head>
+<body>
+<div style="min-height:100vh;display:flex;flex-direction:column">
+<header style="max-width:1000px;width:100%;margin:0 auto;padding:24px;display:flex;justify-content:space-between;align-items:center;gap:16px;box-sizing:border-box"><a href="Main.html" aria-label="GeneBridge home" style="display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:800;font-size:24px;letter-spacing:-0.02em"><img src="../../public/genebridge-mark.png" alt="" style="height:35px;width:auto;display:block"><span><span style="color:#141414">Gene</span><span style="color:#FF5A1F">Bridge</span></span></a><a href="#" lang="ar" style="font-weight:700;color:#141414;text-decoration:none;padding:10px 14px;border-radius:999px;border:1px solid #E7D7CA;background:#FFFFFF">العربية</a></header>
+<main style="max-width:1000px;width:100%;margin:0 auto;padding:16px 24px 64px;display:flex;flex-direction:column;gap:28px;box-sizing:border-box">
+<section style="background:#FFFFFF;border:1px solid #F1E3D8;border-radius:28px;padding:clamp(28px,5vw,56px);display:flex;flex-direction:column;gap:18px">
+<span class="chip" style="align-self:flex-start"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="color:#C2410C;width:16px;height:16px"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Private message</span>
+<h1 style="margin:0;font-size:clamp(30px,4vw,46px);line-height:1.1;font-weight:800;letter-spacing:-0.02em">A message about your family&#39;s health</h1>
+<p style="margin:0;font-size:18px;line-height:1.6;max-width:680px">Someone in your family wanted you to know that a hereditary condition may run in your family. They chose not to share their name, and this page shares nothing about them.</p>
+<div style="display:flex;gap:12px;align-items:center;padding:16px 18px;border-radius:16px;background:#FFF7F0;flex-wrap:wrap"><span class="muted" style="font-size:14px">The condition they mentioned:</span><span style="font-weight:800;font-size:16px">Sickle cell</span><a href="#" style="font-size:14px;font-weight:700">What is sickle cell?</a></div>
+<div style="display:flex;gap:12px;flex-wrap:wrap"><a class="btn btn-o" href="Services.html" style="min-height:52px">Find free, confidential testing</a><button type="button" class="btn btn-g" style="min-height:52px"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M17 9a4 4 0 0 1 0 6"/></svg>Listen</button></div>
+</section>
+<section style="display:flex;flex-direction:column;gap:16px">
+<h2 style="margin:0;font-size:20px;font-weight:800;letter-spacing:-0.01em">What this means for you</h2>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px">
+<div class="card" style="padding:22px;display:flex;flex-direction:column;gap:10px"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="color:#E2531B;width:28px;height:28px"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg><span style="font-weight:800;font-size:17px">It doesn&#39;t mean you&#39;re ill</span><span class="muted" style="font-size:15px;line-height:1.55">Most people who carry a gene change are completely healthy and never know it.</span></div>
+<div class="card" style="padding:22px;display:flex;flex-direction:column;gap:10px"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="color:#E2531B;width:28px;height:28px"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-4 3-6 7-6s7 2 7 6M16 4a4 4 0 0 1 0 8M22 21c0-3-2-5-4-6"/></svg><span style="font-weight:800;font-size:17px">Being a carrier is common</span><span class="muted" style="font-size:15px;line-height:1.55">It mainly matters when planning children, and only if a partner carries a change in the same gene.</span></div>
+<div class="card" style="padding:22px;display:flex;flex-direction:column;gap:10px"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="color:#E2531B;width:28px;height:28px"><path d="M5 12l5 5 9-10"/></svg><span style="font-weight:800;font-size:17px">A simple test can tell you</span><span class="muted" style="font-size:15px;line-height:1.55">A blood test shows whether you carry it. You decide who, if anyone, sees the result.</span></div>
+</div>
+</section>
+<section class="card" style="padding:clamp(24px,4vw,36px);display:flex;flex-wrap:wrap;gap:24px;align-items:center">
+<div style="flex:2 1 360px;display:flex;flex-direction:column;gap:10px"><h2 style="margin:0;font-size:20px;font-weight:800;letter-spacing:-0.01em">Have questions first?</h2><p class="muted" style="margin:0;font-size:15px;line-height:1.55">Ask GeneBridge answers general questions about hereditary conditions in Arabic or English, with no sign-up needed. A genetic counsellor can explain anything personal.</p></div>
+<div style="flex:1 1 220px;display:flex;flex-direction:column;gap:10px"><a class="btn btn-d" href="Home.html#ask">Ask a question</a><a class="btn btn-g" href="Counsellor.html">Talk to a counsellor</a></div>
+</section>
+<section style="display:flex;gap:14px;align-items:flex-start;padding:20px 22px;border-radius:20px;background:#141414;color:#FFFFFF;font-size:15px;line-height:1.6"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="color:#FF8A5C;width:24px;height:24px"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg><div style="display:flex;flex-direction:column;gap:6px"><span style="font-weight:800">Your privacy</span><span>We don&#39;t know who you are. Opening this page doesn&#39;t tell anyone in your family, and nothing you do here is shared with the person who sent it.</span><a href="#" style="color:#FFB896;font-weight:700">Don&#39;t want messages like this? Stop them</a></div></section>
+</main>
+<footer style="max-width:1000px;width:100%;margin:0 auto;padding:24px;border-top:1px solid #EADBD0;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;box-sizing:border-box" class="muted"><span style="font-size:14px">© 2026 GeneBridge</span><a href="Main.html" style="font-size:14px;color:#5C5550">About GeneBridge</a></footer>
+</div>
+</body>
+</html>
