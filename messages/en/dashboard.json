@@ -20,7 +20,9 @@
       "cta": "Ask a question",
       "cta": "Ask a question"
     },
-    "account": "Your account"
+    "account": "Your account",
+    "label": "Main menu",
+    "groups": { "understand": "Understand", "family": "Partner & family", "care": "Choices & care" }
   },
 
   "shared": {

@@ -153,6 +153,21 @@
   }
 }
 
+/*
+ * Side menu entrance: links slide in from the reading start, one after the
+ * other (--i is the item's index). Mirrors in Arabic; off for reduced motion.
+ */
+@utility nav-in {
+  --step-from: -8px;
+  &:where([dir='rtl'] *) {
+    --step-from: 8px;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    animation: step-in 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: calc(var(--i, 0) * 35ms);
+  }
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
