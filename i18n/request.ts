@@ -18,6 +18,6 @@ export default getRequestConfig(async ({ requestLocale }) => {
 
   return {
     locale,
-    messages: { landing: landing.default, common: common.default, auth: auth.default },
+    messages: { landing: landing.default, common: common.default, auth: auth.default, onboarding: onboarding.default, analytics: analytics.default, assistant: assistant.default, dashboard: dashboard.default },
   };
 });
