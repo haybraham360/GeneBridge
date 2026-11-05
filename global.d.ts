@@ -7,6 +7,7 @@ import type onboarding from '@/messages/en/onboarding.json';
 import type analytics from '@/messages/en/analytics.json';
 import type assistant from '@/messages/en/assistant.json';
 import type pro from '@/messages/en/pro.json';
+import type notice from '@/messages/en/notice.json';
 
 declare module 'next-intl' {
   interface AppConfig {
@@ -20,6 +21,7 @@ declare module 'next-intl' {
       analytics: typeof analytics;
       assistant: typeof assistant;
       pro: typeof pro;
+      notice: typeof notice;
     };
   }
 }

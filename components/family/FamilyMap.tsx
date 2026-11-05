@@ -42,10 +42,25 @@ export interface FamilyMapData {
 }
 
 export interface NotifyPayload {
+  /** Map ids, used only in the browser. Names never leave the device. */
   relativeIds: string[];
+  /** Same order as relativeIds. Hashed after sending, never stored. */
+  phones: string[];
+  channel: "sms" | "whatsapp";
+  locale: "ar" | "en";
+  /** Only when "Include the condition name" is ticked. */
+  conditionId: string | null;
   anonymous: boolean;
-  message: string;
+  signedName: string | null;
 }
+
+export type NotifyResult =
+  | { status: "sent"; count: number; devLinks: string[] }
+  | { status: "rate_limited"; remaining: number }
+  | { status: "invalid_phone"; index: number }
+  | { status: "duplicate_phone"; index: number }
+  | { status: "name_required" }
+  | { status: "error" };
 
 type AddError =
   | { code: "noTarget" }
@@ -62,8 +77,11 @@ export interface FamilyMapProps {
   lang?: string;
   onChange?: (data: FamilyMapData) => void;
   onShareChange?: (shared: boolean) => void;
-  /** Reject to show an error in the dialog. Resolves silently when omitted. */
-  onNotify?: (payload: NotifyPayload) => Promise<void> | void;
+  /**
+   * Sends the notices (task 08). Gets no map ids or names: those never leave
+   * the browser. Without it, sending is simulated.
+   */
+  onNotify?: (payload: Omit<NotifyPayload, "relativeIds">) => Promise<NotifyResult>;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -1097,54 +1115,128 @@ function ShareDialog({
   );
 }
 
+const NOTICE_CONDITIONS = [
+  "sickle_cell_disease",
+  "beta_thalassemia",
+  "alpha_thalassemia",
+  "g6pd_deficiency",
+  "cystic_fibrosis",
+  "phenylketonuria",
+  "spinal_muscular_atrophy",
+  "gjb2_hearing_loss",
+] as const;
+
 function NotifyDialog({
   relatives,
   anonymous,
+  onAnonymousChange,
+  defaultLocale,
   onSend,
   onClose,
 }: {
   relatives: Person[];
   anonymous: boolean;
-  onSend: (ids: string[]) => Promise<void>;
+  onAnonymousChange: (next: boolean) => void;
+  defaultLocale: "ar" | "en";
+  onSend: (payload: NotifyPayload) => Promise<NotifyResult>;
   onClose: () => void;
 }) {
   const [picked, setPicked] = useState<string[]>([]);
+  const [phones, setPhones] = useState<Record<string, string>>({});
+  const [channel, setChannel] = useState<"sms" | "whatsapp">("whatsapp");
+  const [locale, setLocale] = useState<"ar" | "en">(defaultLocale);
+  const [includeCondition, setIncludeCondition] = useState(false);
+  const [conditionId, setConditionId] = useState<string>(NOTICE_CONDITIONS[0]);
+  const [signedName, setSignedName] = useState("");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const t = useTranslations("dashboard.family");
+  const tNotice = useTranslations("notice.conditions");
+  const ids = useId();
 
+  const chosen = relatives.filter((r) => picked.includes(r.id));
+  const nameOf = (index: number) => chosen[index]?.name ?? "";
 
   const toggle = (id: string, next: boolean) =>
     setPicked((prev) => (next ? [...prev, id] : prev.filter((p) => p !== id)));
 
+  // The preview opens the relative's page in the chosen language, with these
+  // options. Nothing is sent and no notice is created.
+  const previewParams = new URLSearchParams({
+    anonymous: anonymous ? "1" : "0",
+    ...(includeCondition ? { condition: conditionId } : {}),
+    ...(!anonymous && signedName.trim() ? { name: signedName.trim() } : {}),
+  });
+  const previewHref = `/${locale}/family-notice/preview?${previewParams}`;
+
   const send = async () => {
-    if (!picked.length || sending) return;
+    if (!chosen.length || sending) return;
+    const missing = chosen.findIndex((r) => !(phones[r.id] ?? "").trim());
+    if (missing !== -1) {
+      setError(t("notify.errors.phoneRequired", { name: nameOf(missing) }));
+      document.getElementById(`${ids}-phone-${chosen[missing].id}`)?.focus();
+      return;
+    }
+    if (!anonymous && !signedName.trim()) {
+      setError(t("notify.errors.nameRequired"));
+      document.getElementById(`${ids}-signed`)?.focus();
+      return;
+    }
     setSending(true);
     setError(null);
     try {
-      await onSend(picked);
+      const result = await onSend({
+        relativeIds: chosen.map((r) => r.id),
+        phones: chosen.map((r) => phones[r.id] ?? ""),
+        channel,
+        locale,
+        conditionId: includeCondition ? conditionId : null,
+        anonymous,
+        signedName: anonymous ? null : signedName.trim(),
+      });
+      if (result.status === "sent") return;
+      setSending(false);
+      if (result.status === "rate_limited") {
+        setError(t("notify.errors.rateLimited", { remaining: result.remaining }));
+      } else if (result.status === "invalid_phone" || result.status === "duplicate_phone") {
+        setError(
+          t(result.status === "invalid_phone" ? "notify.errors.invalidPhone" : "notify.errors.duplicatePhone", {
+            name: nameOf(result.index),
+          }),
+        );
+        document.getElementById(`${ids}-phone-${chosen[result.index]?.id}`)?.focus();
+      } else if (result.status === "name_required") {
+        setError(t("notify.errors.nameRequired"));
+      } else {
+        setError(t("notify.error"));
+      }
     } catch {
-      // setError("We couldn't send this. Check your connection and try again.");
       setError(t("notify.error"));
       setSending(false);
     }
   };
 
+  const radio = (on: boolean) =>
+    `flex min-h-10 flex-1 cursor-pointer items-center justify-center rounded-full border px-4 text-xs font-bold transition has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-[#c2410c] ${
+      on ? "border-[#16110d] bg-[#16110d] text-white" : "border-[#f0e2d8] bg-white hover:border-[#e0c3ad]"
+    }`;
+
   return (
     <Modal
-      // title="Choose relatives to notify"
-      // description={
-      //   anonymous
-      //     ? "Sent anonymously through GeneBridge. Your own result is never included."
-      //     : "Sent with your name. Your own result is never included."
-      // }
       title={t("notify.title")}
       description={anonymous ? t("notify.descAnon") : t("notify.descNamed")}
       onClose={onClose}
       footer={
         <>
+          <a
+            href={previewHref}
+            target="_blank"
+            rel="noopener"
+            className={`${outlineBtn} me-auto inline-flex items-center`}
+          >
+            {t("notify.preview")}
+          </a>
           <button type="button" onClick={onClose} className={outlineBtn}>
-            {/* Cancel */}
             {t("common.cancel")}
           </button>
           <button
@@ -1153,7 +1245,6 @@ function NotifyDialog({
             disabled={!picked.length || sending}
             className={primaryBtn}
           >
-            {/* {sending ? "Sending…" : `Send to ${picked.length || "…"}`} */}
             {sending ? t("notify.sending") : picked.length ? t("notify.send", { count: picked.length }) : t("notify.sendNone")}
           </button>
         </>
@@ -1161,8 +1252,8 @@ function NotifyDialog({
     >
       <div className="space-y-4">
         <blockquote className="rounded-xl bg-[#fff3ea] px-3 py-2.5 text-xs leading-relaxed text-[#6b6159]">
-          {/* &ldquo;{NOTIFY_MESSAGE}&rdquo; */}
-          {t("common.quote", { text: t("notifyMessage") })}   
+          {/* The exact template relatives receive, with their link. No free text. */}
+          {t("common.quote", { text: t("notifyMessage") })}
         </blockquote>
 
         <div className="flex items-center justify-between">
@@ -1173,7 +1264,6 @@ function NotifyDialog({
               onClick={() => setPicked(relatives.map((r) => r.id))}
               className={`underline underline-offset-2 ${focusRing}`}
             >
-              {/* Select all */}
               {t("notify.selectAll")}
             </button>
             <button
@@ -1181,40 +1271,142 @@ function NotifyDialog({
               onClick={() => setPicked([])}
               className={`underline underline-offset-2 ${focusRing}`}
             >
-              {/* Clear */}
               {t("notify.clear")}
             </button>
           </div>
         </div>
 
         {relatives.length === 0 ? (
-          <p className="text-xs text-[#6b6159]">
-            {/* Add a relative to your map first, then choose who to notify. */}
-            {t("notify.empty")}
-          </p>
+          <p className="text-xs text-[#6b6159]">{t("notify.empty")}</p>
         ) : (
           <ul className="divide-y divide-[#f6e9df] rounded-2xl border border-[#f6e9df]">
-            {relatives.map((r, i) => (
-              <li key={r.id} className="px-4 py-3">
-                <Checkbox
-                  checked={picked.includes(r.id)}
-                  onChange={(next) => toggle(r.id, next)}
-                >
-                  <span
-                    {...(i === 0 ? { "data-autofocus": true } : {})}
-                    className="flex items-center gap-2"
-                  >
+            {relatives.map((r, i) => {
+              const on = picked.includes(r.id);
+              return (
+                <li key={r.id} className="space-y-2 px-4 py-3">
+                  <Checkbox checked={on} onChange={(next) => toggle(r.id, next)}>
                     <span
-                      aria-hidden
-                      className={`size-3 shrink-0 rounded-[3px] border ${STATUS_META[r.status].box}`}
-                    />
-                    <span className="font-semibold">{r.name}</span>
-                  </span>
-                </Checkbox>
-              </li>
-            ))}
+                      {...(i === 0 ? { "data-autofocus": true } : {})}
+                      className="flex items-center gap-2"
+                    >
+                      <span
+                        aria-hidden
+                        className={`size-3 shrink-0 rounded-[3px] border ${STATUS_META[r.status].box}`}
+                      />
+                      <span className="font-semibold">{r.name}</span>
+                    </span>
+                  </Checkbox>
+                  {on ? (
+                    <div className="ps-6">
+                      <label htmlFor={`${ids}-phone-${r.id}`} className="sr-only">
+                        {t("notify.phoneLabel", { name: r.name })}
+                      </label>
+                      <input
+                        id={`${ids}-phone-${r.id}`}
+                        type="tel"
+                        inputMode="tel"
+                        autoComplete="off"
+                        dir="ltr"
+                        value={phones[r.id] ?? ""}
+                        onChange={(e) => setPhones((prev) => ({ ...prev, [r.id]: e.target.value }))}
+                        placeholder={t("notify.phonePlaceholder")}
+                        className={`${inputClass} text-start`}
+                      />
+                    </div>
+                  ) : null}
+                </li>
+              );
+            })}
           </ul>
         )}
+        {picked.length ? <p className="text-[11px] text-[#6b6159]">{t("notify.phoneHint")}</p> : null}
+
+        <fieldset className="space-y-2">
+          <legend className="mb-2 text-xs font-bold">{t("notify.channel")}</legend>
+          <div className="flex gap-2">
+            {(["whatsapp", "sms"] as const).map((value) => (
+              <label key={value} className={radio(channel === value)}>
+                <input
+                  type="radio"
+                  name={`${ids}-channel`}
+                  value={value}
+                  checked={channel === value}
+                  onChange={() => setChannel(value)}
+                  className="sr-only"
+                />
+                {t(`notify.channels.${value}`)}
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <fieldset className="space-y-2">
+          <legend className="mb-2 text-xs font-bold">{t("notify.language")}</legend>
+          <div className="flex gap-2">
+            {(["ar", "en"] as const).map((value) => (
+              <label key={value} lang={value} className={radio(locale === value)}>
+                <input
+                  type="radio"
+                  name={`${ids}-locale`}
+                  value={value}
+                  checked={locale === value}
+                  onChange={() => setLocale(value)}
+                  className="sr-only"
+                />
+                {value === "ar" ? "العربية" : "English"}
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <div className="space-y-2">
+          <Checkbox checked={includeCondition} onChange={setIncludeCondition}>
+            <span className="font-semibold">{t("notify.includeCondition")}</span>
+            <span className="block text-[11px] text-[#6b6159]">{t("notify.includeConditionHint")}</span>
+          </Checkbox>
+          {includeCondition ? (
+            <div className="ps-6">
+              <label htmlFor={`${ids}-condition`} className="sr-only">
+                {t("notify.conditionLabel")}
+              </label>
+              <select
+                id={`${ids}-condition`}
+                value={conditionId}
+                onChange={(e) => setConditionId(e.target.value)}
+                className={inputClass}
+              >
+                {NOTICE_CONDITIONS.map((id) => (
+                  <option key={id} value={id}>
+                    {tNotice(`${id}.name`)}
+                  </option>
+                ))}
+              </select>
+            </div>
+          ) : null}
+        </div>
+
+        <div className="space-y-2">
+          <Checkbox checked={anonymous} onChange={onAnonymousChange}>
+            <span className="font-semibold">{t("tell.anonymous")}</span>
+          </Checkbox>
+          {!anonymous ? (
+            <div className="ps-6">
+              <label htmlFor={`${ids}-signed`} className="mb-1 block text-xs font-bold">
+                {t("notify.signedName")}
+              </label>
+              <input
+                id={`${ids}-signed`}
+                type="text"
+                maxLength={40}
+                autoComplete="given-name"
+                value={signedName}
+                onChange={(e) => setSignedName(e.target.value)}
+                className={inputClass}
+              />
+              <p className="mt-1 text-[11px] text-[#6b6159]">{t("notify.signedHint")}</p>
+            </div>
+          ) : null}
+        </div>
 
         {error && (
           <p role="alert" className="text-xs text-[#9a3412]">
@@ -1306,6 +1498,8 @@ export default function FamilyMap({
   const [anonymous, setAnonymous] = useState(true);
   const [shared, setShared] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  // Development only: the mocked SMS/WhatsApp links, to open on a second phone.
+  const [devLinks, setDevLinks] = useState<string[]>([]);
   const t = useTranslations("dashboard.family");
   const format = useFormatter();
   const labels = useStatusLabels();
@@ -1476,19 +1670,17 @@ export default function FamilyMap({
     setToast(next ? t("toast.sharedOn") : t("toast.sharedOff"));
   };
 
-  // const handleSend = async (ids: string[]) => {
-  //   await onNotify?.({ relativeIds: ids, anonymous, message: NOTIFY_MESSAGE });
-  //   setDialog(null);
-  //   setToast(
-  //     `Sent ${anonymous ? "anonymously " : ""}to ${ids.length} ${
-  //       ids.length === 1 ? "relative" : "relatives"
-  //     }.`,
-  //   );
-  // };
-  const handleSend = async (ids: string[]) => {
-    await onNotify?.({ relativeIds: ids, anonymous, message: t("notifyMessage") });
+  const handleSend = async (payload: NotifyPayload): Promise<NotifyResult> => {
+    const { relativeIds: _mapIds, ...wire } = payload;
+    void _mapIds;
+    const result: NotifyResult = onNotify
+      ? await onNotify(wire)
+      : { status: "sent", count: payload.phones.length, devLinks: [] };
+    if (result.status !== "sent") return result;
     setDialog(null);
-    setToast(t("toast.sent", { anonymous: anonymous ? "yes" : "no", count: ids.length }));
+    setToast(t("toast.sent", { count: result.count }));
+    if (result.devLinks.length) setDevLinks(result.devLinks);
+    return result;
   };
 
   const info = selected ? describePerson(selected, data) : null;
@@ -1770,9 +1962,40 @@ export default function FamilyMap({
         <NotifyDialog
           relatives={relatives}
           anonymous={anonymous}
+          onAnonymousChange={setAnonymous}
+          defaultLocale={lang === "ar" ? "ar" : "en"}
           onSend={handleSend}
           onClose={() => setDialog(null)}
         />
+      )}
+
+      {devLinks.length > 0 && (
+        <div
+          role="region"
+          aria-label={t("notify.devLinks.title")}
+          className="fixed end-4 bottom-20 z-60 max-w-sm space-y-2 rounded-2xl bg-white p-4 text-xs shadow-lg ring-1 ring-[#f0e2d8]"
+        >
+          <div className="flex items-center justify-between gap-3">
+            <p className="font-bold">{t("notify.devLinks.title")}</p>
+            <button
+              type="button"
+              onClick={() => setDevLinks([])}
+              aria-label={t("notify.devLinks.close")}
+              className={`grid size-8 place-items-center rounded-full hover:bg-[#fff3ea] ${focusRing}`}
+            >
+              <X className="size-4" />
+            </button>
+          </div>
+          <ul className="space-y-1.5">
+            {devLinks.map((link) => (
+              <li key={link}>
+                <a href={link} target="_blank" rel="noopener noreferrer" dir="ltr" className="break-all text-[#c2410c] underline">
+                  {link}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
 
       {toast && (

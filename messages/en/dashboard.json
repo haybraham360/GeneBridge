@@ -388,7 +388,33 @@
       "selectAll": "Select all",
       "clear": "Clear",
       "empty": "Add a relative to your map first, then choose who to notify.",
-      "error": "We couldn’t send this. Check your connection and try again."
+      "error": "We couldn’t send this. Check your connection and try again.",
+      "phoneLabel": "Phone number for {name}",
+      "phonePlaceholder": "+971 50 000 0000",
+      "phoneHint": "Numbers are used once to send the message, then kept only in a scrambled form so a relative can stop messages.",
+      "channel": "Send by",
+      "channels": {
+        "whatsapp": "WhatsApp",
+        "sms": "SMS"
+      },
+      "language": "Message language",
+      "includeCondition": "Include the condition name",
+      "includeConditionHint": "Off by default. Relatives see only the condition's name, never your result.",
+      "conditionLabel": "Condition",
+      "signedName": "Sign with your first name",
+      "signedHint": "Relatives will see “This message is from” and this name.",
+      "preview": "Preview what relatives will see",
+      "errors": {
+        "phoneRequired": "Add a phone number for {name}.",
+        "invalidPhone": "Check the phone number for {name}.",
+        "duplicatePhone": "{name} has the same number as another relative.",
+        "nameRequired": "Add the name to sign with, or send anonymously.",
+        "rateLimited": "You can notify up to 10 relatives a week. {remaining, plural, =0 {Please try again in a few days.} one {You can send to # more this week.} other {You can send to # more this week.}}"
+      },
+      "devLinks": {
+        "title": "Demo links (development only)",
+        "close": "Close demo links"
+      }
     },
     "toast": {
       "added": "{name} added to your map.",
@@ -396,7 +422,7 @@
       "removed": "{name} removed from your map.",
       "sharedOn": "Shared with your counsellor.",
       "sharedOff": "Sharing stopped.",
-      "sent": "{anonymous, select, yes {Sent anonymously to {count, plural, one {# relative} other {# relatives}}.} other {Sent to {count, plural, one {# relative} other {# relatives}}.}}"
+      "sent": "Sent to {count, plural, one {# relative} other {# relatives}}. Your result was not included."
     }
   },
 
@@ -576,7 +602,10 @@
       "sent": "Sent anonymously to {count, plural, one {# relative} other {# relatives}}",
       "sentWhen": "1 Nov · your result was not included",
       "opened": "{count, plural, one {# relative opened the testing information} other {# relatives opened the testing information}}",
-      "openedWhen": "2 Nov"
+      "openedWhen": "2 Nov",
+      "sentMeta": "{when} · your result was not included{condition, select, yes {; condition name included} other {}}",
+      "empty": "You haven't sent any family messages.",
+      "sentLine": "{anonymous, select, yes {Sent anonymously} other {Sent with your name}} to {count, plural, one {# relative} other {# relatives}} by {channel, select, sms {SMS} other {WhatsApp}}"
     },
     "data": {
       "title": "Your data",

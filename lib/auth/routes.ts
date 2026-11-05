@@ -15,11 +15,23 @@ export const protectedPaths = [
   '/invite',
   '/pro',
   '/admin',
+  // The sender's preview of a family notice. The notice itself is public.
+  '/family-notice/preview',
 ] as const;
 
 export function isProtectedPath(path: string): boolean {
   return protectedPaths.some((p) => path === p || path.startsWith(`${p}/`));
 }
+
+/**
+ * The relative's family notice pages (task 08): public, no cookies, no
+ * tracking, strict CSP. Includes the sender's preview.
+ */
+export function isNoticePath(path: string): boolean {
+  return path === '/family-notice' || path.startsWith('/family-notice/');
+}
+
+export const NOTICE_PREVIEW_PATH = '/family-notice/preview';
 
 /** Paths only analysts may open (task 05). Everyone else gets a 404. */
 export function isAnalystPath(path: string): boolean {

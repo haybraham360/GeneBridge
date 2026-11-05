@@ -12,6 +12,7 @@ export async function generateMetadata({ params }: PageProps<'/[locale]/dashboar
 }
 
 type LogRow = { id: string; viewer_name: string | null; resource: string; level: string | null; viewed_at: string };
+type NoticeRow = { sent_at: string; recipients: number; anonymous: boolean; condition_included: boolean; channel: string };
 
 export default async function Page({ params }: PageProps<'/[locale]/dashboard/privacy'>) {
   const { locale } = await params;
@@ -19,8 +20,10 @@ export default async function Page({ params }: PageProps<'/[locale]/dashboard/pr
 
   // Guardrail 10: every read of the patient's shared data, by whom and when.
   const supabase = await createClient();
-  const [{ data }, t, format] = await Promise.all([
+  const [{ data }, { data: notices }, t, format] = await Promise.all([
     supabase.rpc('my_access_log'),
+    // Task 08: the sender's own sends. Nothing about who opened or stopped them.
+    supabase.rpc('my_family_notices'),
     getTranslations({ locale, namespace: 'dashboard.privacy' }),
     getFormatter({ locale }),
   ]);
@@ -33,5 +36,24 @@ export default async function Page({ params }: PageProps<'/[locale]/dashboard/pr
     when: format.dateTime(new Date(row.viewed_at), { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }),
   }));
 
-  return <PrivacyPage accessLog={accessLog} accessLogEmpty={t('accessLogEmpty')} />;
+  const familyNotices = ((notices ?? []) as NoticeRow[]).map((row) => ({
+    text: t('notifications.sentLine', {
+      anonymous: row.anonymous ? 'yes' : 'no',
+      count: row.recipients,
+      channel: row.channel,
+    }),
+    when: t('notifications.sentMeta', {
+      when: format.dateTime(new Date(row.sent_at), { day: 'numeric', month: 'short' }),
+      condition: row.condition_included ? 'yes' : 'no',
+    }),
+  }));
+
+  return (
+    <PrivacyPage
+      accessLog={accessLog}
+      accessLogEmpty={t('accessLogEmpty')}
+      familyNotices={familyNotices}
+      familyNoticesEmpty={t('notifications.empty')}
+    />
+  );
 }

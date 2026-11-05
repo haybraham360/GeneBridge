@@ -1,0 +1,179 @@
+{
+  "meta": {
+    "title": "A message about your family's health · GeneBridge"
+  },
+  "chip": "Private message",
+  "title": "A message about your family's health",
+  "intro": "Someone in your family wanted you to know that a hereditary condition may run in your family.",
+  "anonymous": "They chose not to share their name, and this page shares nothing about them.",
+  "signed": "This message is from {name}.",
+  "condition": {
+    "label": "The condition they mentioned:",
+    "learn": "What is {name}?",
+    "none": "They didn't mention a specific condition. A general screening can check for the most common ones."
+  },
+  "conditions": {
+    "alpha_thalassemia": {
+      "name": "Alpha thalassaemia",
+      "inSentence": "alpha thalassaemia"
+    },
+    "beta_thalassemia": {
+      "name": "Beta thalassaemia",
+      "inSentence": "beta thalassaemia"
+    },
+    "cystic_fibrosis": {
+      "name": "Cystic fibrosis",
+      "inSentence": "cystic fibrosis"
+    },
+    "g6pd_deficiency": {
+      "name": "G6PD deficiency",
+      "inSentence": "G6PD deficiency"
+    },
+    "gjb2_hearing_loss": {
+      "name": "GJB2 hearing loss",
+      "inSentence": "GJB2 hearing loss"
+    },
+    "phenylketonuria": {
+      "name": "Phenylketonuria (PKU)",
+      "inSentence": "phenylketonuria"
+    },
+    "sickle_cell_disease": {
+      "name": "Sickle cell",
+      "inSentence": "sickle cell"
+    },
+    "spinal_muscular_atrophy": {
+      "name": "Spinal muscular atrophy",
+      "inSentence": "spinal muscular atrophy"
+    }
+  },
+  "testingCta": "Find free, confidential testing",
+  "listen": {
+    "play": "Listen",
+    "stop": "Stop"
+  },
+  "means": {
+    "title": "What this means for you",
+    "notIll": {
+      "title": "It doesn't mean you're ill",
+      "body": "Most people who carry a gene change are completely healthy and never know it."
+    },
+    "common": {
+      "title": "Being a carrier is common",
+      "body": "It mainly matters when planning children, and only if a partner carries a change in the same gene."
+    },
+    "test": {
+      "title": "A simple test can tell you",
+      "body": "A blood test shows whether you carry it. You decide who, if anyone, sees the result."
+    }
+  },
+  "questions": {
+    "title": "Have questions first?",
+    "body": "Ask GeneBridge answers general questions about hereditary conditions in Arabic or English, with no sign-up needed. A genetic counsellor can explain anything personal.",
+    "ask": "Ask a question",
+    "counsellor": "Talk to a counsellor"
+  },
+  "privacy": {
+    "title": "Your privacy",
+    "body": "We don't know who you are. Opening this page doesn't tell anyone in your family, and nothing you do here is shared with the person who sent it.",
+    "stop": "Don't want messages like this? Stop them",
+    "report": "Report misuse"
+  },
+  "footer": {
+    "copyright": "© 2026 GeneBridge",
+    "about": "About GeneBridge"
+  },
+  "states": {
+    "invalid": {
+      "title": "This link isn't valid",
+      "body": "It may have been copied incompletely. You can still read what hereditary conditions mean for you and find free, confidential testing."
+    },
+    "expired": {
+      "title": "This message has expired",
+      "body": "Messages like this stay open for 90 days. You can still read what it means for you and find free, confidential testing."
+    },
+    "stopped": {
+      "title": "You won't receive more messages like this",
+      "body": "We've stopped family messages to your number. No one was told.",
+      "undo": "Undo: I'd like to receive them again"
+    }
+  },
+  "stop": {
+    "metaTitle": "Stop messages · GeneBridge",
+    "title": "Stop messages like this?",
+    "body": "You won't receive any more family messages from GeneBridge on this number. The person who sent this won't be told.",
+    "confirm": "Stop messages",
+    "cancel": "Go back",
+    "error": "That didn't work. Please try again."
+  },
+  "report": {
+    "metaTitle": "Report misuse · GeneBridge",
+    "title": "Report misuse",
+    "body": "If this message was unwanted or sent to upset you, let us know and we'll review it. The sender isn't told who reported it, and we won't tell you who they are.",
+    "legend": "What happened?",
+    "reasons": {
+      "not_family": "I don't think this is from my family",
+      "harassment": "It feels like it was sent to upset or pressure me",
+      "unwanted": "I've had messages like this before and don't want them",
+      "other": "Something else"
+    },
+    "submit": "Send report",
+    "required": "Choose one option.",
+    "doneTitle": "Thank you. We'll review it.",
+    "doneBody": "You don't need to do anything else. To stop messages like this, use the link below.",
+    "back": "Back to the message"
+  },
+  "preview": {
+    "metaTitle": "Preview · GeneBridge",
+    "banner": "Preview: this is exactly what your relatives will see. Nothing has been sent.",
+    "back": "Back to family map"
+  },
+  "testing": {
+    "metaTitle": "Free, confidential testing · GeneBridge",
+    "title": "Free, confidential testing",
+    "subtitle": "Screening and genetic counselling, in your language. You don't need to sign up, and no one in your family is told.",
+    "placeholder": "Placeholder listings for the demo. Real services will come from [HEALTH AUTHORITY DIRECTORY].",
+    "count": "{count, plural, one {# service} other {# services}}",
+    "kinds": {
+      "screening": "Screening",
+      "genetic_counselling": "Genetic counselling",
+      "confirmatory_testing": "Confirmatory testing"
+    },
+    "descriptions": {
+      "screening": "Carrier screening with a simple blood test. Ask for a carrier test for hereditary blood conditions.",
+      "genetic_counselling": "Talk through what a condition in your family means for you, in confidence.",
+      "confirmatory_testing": "Follow-up blood tests, usually arranged by a counsellor or doctor."
+    },
+    "languages": "Languages: {list}",
+    "howToBook": "Call or visit to book. Your result is yours: you decide who, if anyone, sees it.",
+    "empty": "We couldn't load the list just now. Ask at any primary health centre for carrier screening.",
+    "unavailable": "Not listed"
+  },
+  "ask": {
+    "metaTitle": "Ask a general question · GeneBridge",
+    "title": "Ask a general question",
+    "subtitle": "Ask GeneBridge answers general questions about hereditary conditions. It can't see anything about you or your family, and your question isn't saved.",
+    "label": "Your question",
+    "placeholder": "For example: what does being a carrier mean?",
+    "submit": "Ask",
+    "thinking": "Finding an answer…",
+    "answerLabel": "Answer",
+    "sources": "From the GeneBridge library",
+    "personal": "That sounds like a question about your own situation. A genetic counsellor can answer it properly, in confidence.",
+    "rateLimited": "Lots of people are asking right now. Please try again in a little while.",
+    "empty": "Type a question first.",
+    "tooLong": "Please keep your question under {max} characters.",
+    "error": "We couldn't answer just now. Please try again.",
+    "general": "General information only, from the GeneBridge library. Not medical advice.",
+    "counsellor": "Talk to a counsellor"
+  },
+  "learn": {
+    "whatItIs": "What it is",
+    "carrier": "What being a carrier means",
+    "inheritance": "How it's passed on",
+    "disease": "Living with the condition",
+    "screening": "Testing",
+    "sources": "Sources",
+    "draft": "Draft content, not yet reviewed by a genetic counsellor."
+  },
+  "sms": "A genetic condition may run in our family. Free, confidential testing is available through GeneBridge: {link}"
+}

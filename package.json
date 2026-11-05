@@ -12,6 +12,7 @@
     "test:rls": "vitest run",
     "seed:results": "tsx scripts/seed-results.ts",
     "seed:pro": "tsx scripts/seed-pro.ts",
+    "seed:notices": "tsx scripts/seed-notices.ts",
     "seed:analytics": "tsx scripts/seed-analytics.ts",
     "clear:synthetic": "tsx scripts/clear-synthetic.ts",
     "test:sql": "tsx scripts/test-sql.ts",

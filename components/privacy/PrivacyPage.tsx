@@ -66,9 +66,17 @@ type Props = {
   accessLog?: LogItem[];
   /** Shown when accessLog is empty. */
   accessLogEmpty?: string;
+  /** The family messages this person sent (task 08). Never says who opened them. */
+  familyNotices?: LogItem[];
+  familyNoticesEmpty?: string;
 };
 
-export default function PrivacyPage({ accessLog: liveLog, accessLogEmpty }: Props = {}) {
+export default function PrivacyPage({
+  accessLog: liveLog,
+  accessLogEmpty,
+  familyNotices,
+  familyNoticesEmpty,
+}: Props = {}) {
   const [access, setAccess] = useState<Access[]>(initialAccess);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const t = useTranslations("dashboard.privacy");
@@ -235,8 +243,20 @@ export default function PrivacyPage({ accessLog: liveLog, accessLogEmpty }: Prop
             subtitle="Messages you sent to relatives through GeneBridge."
             items={notifications}
           /> */}
-          <TimelineCard title={t("log.title")} subtitle={t("log.subtitle")} items={accessLog} />
-          <TimelineCard title={t("notifications.title")} subtitle={t("notifications.subtitle")} items={notifications} />
+          <TimelineCard
+            title={t("log.title")}
+            subtitle={t("log.subtitle")}
+            items={liveLog ?? accessLog}
+            empty={accessLogEmpty}
+            testId="access-log"
+          />
+          <TimelineCard
+            title={t("notifications.title")}
+            subtitle={t("notifications.subtitle")}
+            items={familyNotices ?? notifications}
+            empty={familyNoticesEmpty}
+            testId="family-notices"
+          />
         </div>
 
         {/* Data + consent history */}
@@ -320,11 +340,13 @@ function TimelineCard({
   subtitle,
   items,
   empty,
+  testId,
 }: {
   title: string;
   subtitle?: string;
   items: { text: string; when: string }[];
   empty?: string;
+  testId?: string;
 }) {
   return (
     <section className={card}>
@@ -335,7 +357,7 @@ function TimelineCard({
       {items.length === 0 && empty ? (
         <p className="mt-3 border-t border-neutral-200 pt-3 text-[13px] text-neutral-600">{empty}</p>
       ) : null}
-      <ul className={subtitle ? "mt-3" : "mt-4"} data-testid={empty ? "access-log" : undefined}>
+      <ul className={subtitle ? "mt-3" : "mt-4"} data-testid={testId}>
         {items.map((it, i) => (
           <li
             key={`${i}-${it.text}`}

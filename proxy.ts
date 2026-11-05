@@ -6,9 +6,12 @@ import {
   IDLE_REASON,
   isAnalystPath,
   isCounsellorPath,
+  isNoticePath,
   isProtectedPath,
   LAST_ACTIVE_COOKIE,
+  NOTICE_PREVIEW_PATH,
 } from './lib/auth/routes';
+import { newNonce, noticeCsp, noticeHeaders } from './lib/notices/headers';
 import { routing } from './i18n/routing';
 
 const intl = createMiddleware(routing);
@@ -18,8 +21,64 @@ function splitLocale(pathname: string) {
   const [, first = '', ...rest] = pathname.split('/');
   const locale = (routing.locales as readonly string[]).includes(first) ? first : null;
   return locale
-    ? { locale, path: `/${rest.join('/')}`.replace(/\/$/, '') || '/' }
-    : { locale: routing.defaultLocale, path: pathname };
+    ? { locale, path: `/${rest.join('/')}`.replace(/\/$/, '') || '/', prefixed: true }
+    : { locale: routing.defaultLocale, path: pathname, prefixed: false };
+}
+
+function withNoticeHeaders(response: NextResponse, csp: string) {
+  response.headers.set('Content-Security-Policy', csp);
+  for (const [name, value] of Object.entries(noticeHeaders)) response.headers.set(name, value);
+  return response;
+}
+
+/** Drops every Set-Cookie (e.g. next-intl's locale cookie) from a response. */
+function withoutCookies(response: NextResponse) {
+  response.cookies.getAll().forEach((cookie) => response.cookies.delete(cookie.name));
+  response.headers.delete('set-cookie');
+  return response;
+}
+
+/**
+ * Family notice pages (task 08 section 5). The relative is never signed in:
+ * no Supabase session, no cookies set or read, no idle timer. A per-request
+ * nonce lets Next's own scripts run under a strict CSP. Only the sender's
+ * preview reads the session, to require sign-in.
+ */
+async function noticeProxy(request: NextRequest, locale: string, path: string) {
+  const nonce = newNonce();
+  const csp = noticeCsp(nonce, { dev: process.env.NODE_ENV === 'development' });
+  const headers = new Headers(request.headers);
+  headers.set('Content-Security-Policy', csp);
+  headers.set('X-NEXT-INTL-LOCALE', locale);
+
+  const preview = path === NOTICE_PREVIEW_PATH;
+  if (!preview) {
+    // The page can't read GeneBridge cookies even if the visitor has some.
+    headers.delete('cookie');
+    return withNoticeHeaders(NextResponse.next({ request: { headers } }), csp);
+  }
+
+  const response = NextResponse.next({ request: { headers } });
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  let signedIn = false;
+  if (url && anonKey) {
+    const supabase = createServerClient(url, anonKey, {
+      cookies: {
+        getAll: () => request.cookies.getAll(),
+        setAll: (cookiesToSet) =>
+          cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options)),
+      },
+    });
+    const { data } = await supabase.auth.getClaims();
+    signedIn = Boolean(data?.claims?.sub);
+  }
+  if (!signedIn) {
+    const target = new URL(`/${locale}/auth`, request.url);
+    target.searchParams.set('next', path);
+    return redirectWithCookies(target, response);
+  }
+  return withNoticeHeaders(response, csp);
 }
 
 /** Redirect that keeps any auth cookies Supabase just set or cleared. */
@@ -30,6 +89,14 @@ function redirectWithCookies(url: URL, from: NextResponse) {
 }
 
 export default async function proxy(request: NextRequest) {
+  const notice = splitLocale(request.nextUrl.pathname);
+  if (isNoticePath(notice.path)) {
+    if (notice.prefixed) return noticeProxy(request, notice.locale, notice.path);
+    // No locale yet: next-intl redirects, but without setting its cookie.
+    const redirected = intl(request);
+    return withNoticeHeaders(withoutCookies(redirected), noticeCsp(newNonce()));
+  }
+
   // 1. Locale routing. If next-intl redirects (no locale prefix yet), let it.
   const response = intl(request);
   if (response.headers.has('location')) return response;

@@ -60,6 +60,7 @@ Copy `.env.example` to `.env.local` and fill it in. `.env.local` is git-ignored.
 | `ANTHROPIC_API_KEY` | Server only | Ask GeneBridge's AI mode. **Optional**: leave empty and the assistant runs in free offline mode (see [Ask GeneBridge](#ask-genebridge-ai-assistant)). Never prefix with `NEXT_PUBLIC_`. |
 | `ASSISTANT_MODEL` | Server only | Main assistant model. Default `claude-opus-5-5`; `claude-haiku-5-5` is the cheapest. |
 | `ASSISTANT_CLASSIFIER_MODEL`, `ASSISTANT_GRADER_MODEL` | Server, eval | Classifier (default `claude-haiku-5-5`) and evaluation grader (default `claude-opus-5-5`). |
+| `NOTICE_PHONE_SALT` | Server only | Secret for hashing relatives' phone numbers (family notices). Any long random string; **required in production**, and keep it the same once notices exist. A dev-only default is used locally. |
 | `SUPABASE_DB_URL` | Scripts only | Session pooler connection string. Needed for `npm run test:sql` and for applying migrations with `psql`. |
 
 ### 2. Database
@@ -208,6 +209,31 @@ npm run eval:assistant -- --ai --grade  # also scores quality 1–5 with a gradi
 
 `tests/assistant/eval.yaml` covers general education, hypothetical risk, personal results (toggle on/off, flagged), decision requests, reports, family reasoning, pregnancy, X-linked/dominant family history, distress, emergencies and prompt injection, in English and Arabic. It fails if any safety case fails, the pass rate is under 90%, or (with `--grade`) the quality average is under 4.5.
 
+## Family notices (relative's landing page)
+
+When someone sends relatives a notice from the family map, each relative gets a fixed-template SMS or WhatsApp message from GeneBridge with a link to `/family-notice/<code>`. The page needs no sign-in and **never reveals the sender**: the database returns only the notice's status, language, the condition name (if the sender included it) and a first name (only if they chose to sign).
+
+Apply `supabase/migrations/20261106000000_family_notices.sql`, then:
+
+```bash
+npm run seed:notices
+```
+
+**Demo links** (synthetic, sent by Mariam; run `npm run seed:notices` first, and again to reset them):
+
+| Notice | Link |
+|---|---|
+| Anonymous, with the condition (sickle cell), English | http://localhost:3000/en/family-notice/demoA7f3kQ9xLm2Pv8RtZc4Wn6Yb |
+| Anonymous, no condition, Arabic | http://localhost:3000/ar/family-notice/demoB2h8sN5vKq1Xj7GdFw3Ep9Ua |
+| Expired | http://localhost:3000/en/family-notice/demoC9m4tR6yHz3Lb1QnVx8Ks5Jd |
+
+Also: `/en/family-notice/testing` (free, confidential testing), `/en/family-notice/ask` (general questions, no sign-up) and `/en/family-notice/preview` (the sender's preview, signed in).
+
+- **Sending is mocked** (`lib/messaging/send.ts`): messages and links go to the server console, and in development the links also appear in a panel on the family map so you can open them on a second phone. Real SMS or WhatsApp sending comes later.
+- **No tracking:** these pages set no cookies, load nothing from other sites (strict Content-Security-Policy with a per-request nonce), send `Referrer-Policy: no-referrer` and `X-Robots-Tag: noindex, nofollow`. Opening a notice only records the first open time.
+- **Limits:** templates only, 10 relatives per sender per 7 days, and numbers that chose "Stop them" never get another notice (the sender isn't told).
+- Counts (`notice_sent`, `notice_opened`, `notice_testing_clicked`, `notice_question_clicked`, `notice_stopped`) go to `notice_events`, which has no user, code or phone column.
+
 ## Scripts
 
 | Command | What it does |
@@ -218,6 +244,7 @@ npm run eval:assistant -- --ai --grade  # also scores quality 1–5 with a gradi
 | `npm run lint` | Runs ESLint across the project |
 | `npm run seed:auth` | Creates or updates the demo users (needs `.env.local`) |
 | `npm run seed:results` | Adds the demo screening results, unclaimed, and clears demo couple links |
+| `npm run seed:notices` | Seeds the three demo family notices (links in [Family notices](#family-notices-relatives-landing-page)) |
 | `npm run seed:analytics` | Seeds about 1,250 synthetic users for the dashboard (`-- --days 180` to spread them wider) |
 | `npm run clear:synthetic` | Removes all synthetic users and their data |
 | `npm run test:rls` | Unit tests, plus row-level security tests when Supabase env vars are set |

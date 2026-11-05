@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { IBM_Plex_Sans_Arabic, Plus_Jakarta_Sans } from 'next/font/google';
 import { notFound } from 'next/navigation';
-import { hasLocale, NextIntlClientProvider } from 'next-intl';
+import { hasLocale } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { localeDirection, routing } from '@/i18n/routing';
 import '../globals.css';
@@ -51,7 +51,11 @@ export default async function LocaleLayout({ children, params }: LayoutProps<'/[
         >
           {t('skipToContent')}
         </a>
-        <NextIntlClientProvider>{children}</NextIntlClientProvider>
+        {/*
+          Each route group adds its own NextIntlClientProvider, so the public
+          family notice pages ship only their own messages (task 08).
+        */}
+        {children}
       </body>
     </html>
   );
