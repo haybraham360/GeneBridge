@@ -30,13 +30,19 @@ The HTML files are a **reference, not production code**. Rebuild each screen as 
 | `Options` | `/options` | `app/(app)/options` | Values sliders; Compare disabled until both consent |
 | `Counsellor` | `/counsellor` | `app/(app)/counsellor` | Pick counsellor, day, time, format; share checkboxes; confirm booking |
 | `Privacy` | `/privacy` | `app/(app)/privacy` | Revoke and share actions, download, delete |
+| `Pro` | `/pro` | `app/(pro)/pro` | Counsellor workspace: queue with filters, request detail, session notes, actions (task 07) |
+| `FamilyNotice` | `/family-notice/[code]` | `app/(public)/family-notice/[code]` | Public page for relatives; no sign-in, no tracking, never reveals the sender |
+| `CoupleConsent` | `/couple/consent` | `app/(app)/couple/consent` | Source only for now (`design/source/`): sharing level, agree, partner status |
+| `Talk` | `/talk` | `app/(app)/talk` | Source only for now: 4 guides, feelings check-in, message drafter |
+| `Services` | `/services` | `app/(app)/services` | Source only for now: filter by service type, listings |
 | `Analytics` | `/admin/analytics` | `app/(admin)/analytics` | Analyst role only; aggregate data, groups of 10 or more |
 
 ## Shared layout
 
 - **Marketing pages:** logo left, black pill nav right (`How it works`, `Features`, `For professionals`, `Pricing`, `FAQs`, `العربية`, white `Get started` pill).
-- **App pages:** white side menu (logo, 8 links, Ask GeneBridge card, user + language) and a main area with page title, subtitle and actions on the right. On phones the side menu stacks above the content.
+- **App pages:** white side menu (logo, 10 links: Home, My results, Couple view, Inheritance simulator, Family map, Talking to family, Options, Counsellor & referral, Care & services, Privacy & consent; Ask GeneBridge card, user + language) and a main area with page title, subtitle and actions on the right. On phones the side menu stacks above the content.
 - **Analytics:** its own side menu (Overview, Equity, Engagement, Export).
+- **Counsellor workspace:** its own side menu (Queue, Today's sessions, Patients, Referrals, Session notes) with the counsellor's name and facility at the bottom.
 - **Logo:** the mark image followed by the word "Gene" in ink (`#141414`) and "Bridge" in orange (`#FF5A1F`), weight 800.
 
 ## Components to build once and reuse
