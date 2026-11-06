@@ -28,6 +28,16 @@
     "الصمم الوراثي",
     "فقدان السمع الوراثي"
   ],
+  "everyday_terms": [
+    "hearing problems",
+    "hearing problem",
+    "hard of hearing",
+    "deaf",
+    "cannot hear",
+    "can't hear",
+    "hearing aids",
+    "hearing difficulties"
+  ],
   "summary": "Changes in the GJB2 gene are a common genetic cause of hearing loss that is present from birth. Hearing loss can range from mild to profound.",
   "inheritance_plain": "GJB2 hearing loss is usually inherited in an autosomal recessive way: a child is affected only if they get a changed copy from both parents.",
   "carrier_meaning": "A carrier has one changed copy and usually has typical hearing.",

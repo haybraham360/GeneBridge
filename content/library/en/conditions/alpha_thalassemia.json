@@ -25,6 +25,15 @@
     "ألفا ثلاسيميا",
     "ثلاسيميا ألفا صغرى"
   ],
+  "everyday_terms": [
+    "blood problem",
+    "blood disorder",
+    "anaemia from birth",
+    "anemia from birth",
+    "inherited anaemia",
+    "inherited anemia",
+    "small red blood cells"
+  ],
   "summary": "Alpha-thalassaemia affects how the body makes haemoglobin. Most people with a changed copy are healthy; more serious forms happen when several copies are changed.",
   "inheritance_plain": "It is more complicated than most recessive conditions because people normally have four copies of the alpha-globin genes. The chances for a child depend on exactly which copies each parent has, so a genetic counsellor works them out from the full report.",
   "carrier_meaning": "People with one or two changed copies are usually healthy. Some have mild anaemia that does not need treatment.",

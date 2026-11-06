@@ -30,6 +30,18 @@
     "أنيميا البحر المتوسط",
     "ثلاسيميا بيتا صغرى"
   ],
+  "everyday_terms": [
+    "blood problem",
+    "blood disorder",
+    "anaemia from birth",
+    "anemia from birth",
+    "needed transfusions",
+    "needs transfusions",
+    "blood transfusions",
+    "monthly transfusions",
+    "inherited anaemia",
+    "inherited anemia"
+  ],
   "summary": "Beta-thalassaemia affects how the body makes haemoglobin. People with the more serious form make too little haemoglobin and can have anaemia that needs regular care.",
   "inheritance_plain": "It is inherited in an autosomal recessive way: a child is affected only if they get a changed copy of the gene from both parents.",
   "carrier_meaning": "A carrier (beta-thalassaemia trait or minor) has one changed copy. Carriers are healthy, though some have slightly small red blood cells or mild anaemia that does not need treatment.",

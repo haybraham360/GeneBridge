@@ -29,6 +29,15 @@
     "سمة الخلية المنجلية",
     "فقر الدم المنجلي الوراثي"
   ],
+  "everyday_terms": [
+    "blood problem",
+    "blood disorder",
+    "pain crises",
+    "pain crisis",
+    "sickle",
+    "inherited anaemia",
+    "inherited anemia"
+  ],
   "summary": "Sickle cell disease affects haemoglobin, the part of red blood cells that carries oxygen. Red blood cells can become stiff and curved like a sickle, which can block small blood vessels and cause pain, tiredness and infections.",
   "inheritance_plain": "It is inherited in an autosomal recessive way: a child is affected only if they get a changed copy of the gene from both parents.",
   "carrier_meaning": "A carrier (sickle cell trait, HbAS) has one typical copy and one changed copy. Carriers are healthy and usually have no symptoms. They can pass the changed copy to their children.",

@@ -25,6 +25,12 @@ export type LibraryEntry = {
    * and Arabic, for matching scanned reports to the catalogue.
    */
   synonyms?: string[];
+  /**
+   * Conditions (task 13): everyday descriptions ("hearing problems",
+   * "anaemia from birth that needed transfusions"). Only ever used to
+   * suggest a match the person then confirms, never as a match.
+   */
+  everyday_terms?: string[];
   /** Conditions: always route to a counsellor, whatever the result (task 10 flagging). */
   always_escalate?: boolean;
   summary: string;

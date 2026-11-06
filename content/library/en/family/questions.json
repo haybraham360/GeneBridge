@@ -1,0 +1,16 @@
+{
+  "side": "Is your {relation} on your father's side or your mother's side?",
+  "sideChoices": ["Father's side", "Mother's side", "Not sure"],
+  "relations": {
+    "uncle": "uncle",
+    "aunt": "aunt",
+    "uncle_or_aunt": "uncle or aunt",
+    "cousin": "cousin",
+    "grandfather": "grandfather",
+    "grandmother": "grandmother",
+    "grandparent": "grandparent"
+  },
+  "noFamily": "Who would you like to add to your family map?",
+  "noFamilyChoices": ["My parents", "My partner", "My children"],
+  "offTopic": "I can only help draw your family map. Who would you like to add?"
+}
