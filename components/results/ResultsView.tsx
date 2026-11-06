@@ -1,5 +1,6 @@
 'use client';
 
+import { Camera, Info } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { logResultsTeachback } from '@/app/[locale]/(app)/dashboard/results/actions';
@@ -24,12 +25,16 @@ export type FindingView = {
   diseaseShort: string;
   explanation: string;
   simple: string;
+  /** From a photographed report, not yet confirmed (task 12). */
+  unverified: boolean;
 };
 
 type Props = {
   subtitle: string;
   screenedCount: number;
   findings: FindingView[];
+  /** Some findings come from a photographed report. */
+  unverified: boolean;
 };
 
 const answerKey = { q1: 'b', q2: 'a', q3: 'a' } as const;
@@ -42,7 +47,7 @@ const explanations = { q1: 'e1', q2: 'e2', q3: 'e3' } as const;
  * finding from the person's own report, and the selected finding's detail
  * from the condition catalogue. Never shown for a flagged report.
  */
-export function ResultsView({ subtitle, screenedCount, findings }: Props) {
+export function ResultsView({ subtitle, screenedCount, findings, unverified }: Props) {
   const t = useTranslations('results');
   const [selectedId, setSelectedId] = useState(findings[0]?.id ?? null);
   const [simple, setSimple] = useState(false);
@@ -85,8 +90,18 @@ export function ResultsView({ subtitle, screenedCount, findings }: Props) {
         <div className="flex flex-col gap-2">
           <h1 className="text-[32px] leading-tight font-extrabold tracking-[-0.02em]">{t('title')}</h1>
           <p className="text-[15px] text-muted">{subtitle}</p>
+          {unverified ? (
+            <p data-testid="from-photo" className="inline-flex w-fit items-center gap-2 rounded-full bg-info-tint px-3.5 py-1.5 text-[13px] font-bold text-info-text">
+              <Info aria-hidden="true" className="size-4" strokeWidth={2} />
+              {t('fromPhoto')}
+            </p>
+          ) : null}
         </div>
         <div className="flex flex-wrap gap-3">
+          <Link href="/dashboard/scan?from=results" className={buttonClasses('ghost', 'md')}>
+            <Camera aria-hidden="true" className="size-5" strokeWidth={2} />
+            {t('scanAnother')}
+          </Link>
           <ListenPill text={listen} play={t('listen')} stop={t('stop')} />
           <label className={buttonClasses('ghost', 'md', 'cursor-pointer')}>
             <input type="checkbox" checked={simple} onChange={(e) => setSimple(e.target.checked)} className="size-4 accent-ink" />
@@ -129,6 +144,7 @@ export function ResultsView({ subtitle, screenedCount, findings }: Props) {
                   >
                     <span className="flex flex-col gap-1">
                       <span className="font-extrabold">{f.title}</span>
+                      {f.unverified ? <span className="text-[12px] font-bold text-info-text">{t('fromPhotoShort')}</span> : null}
                       <span className="text-[13px] text-muted">
                         {f.gene ? t('findings.patternGene', { pattern: f.pattern, gene: f.gene }) : f.pattern}
                       </span>

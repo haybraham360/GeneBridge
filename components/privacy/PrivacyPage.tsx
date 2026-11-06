@@ -281,6 +281,8 @@ export default function PrivacyPage({
                   {/* Your raw genome or any relative&apos;s test result. */}
                   {t("data.neverBody")}
                 </p>
+                {/* Task 12: photographed reports. */}
+                <p className="mt-1.5 text-[12px] leading-4.5 text-neutral-500">{t("data.photos")}</p>
               </div>
             </div>
 

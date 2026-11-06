@@ -1,6 +1,6 @@
 'use client';
 
-import { BarChart3, Check, Layers, MapPin } from 'lucide-react';
+import { BarChart3, Camera, Check, Layers, MapPin } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useState, useTransition, type ReactNode } from 'react';
 import { addResultFromHome, logExploringTesting, setFocusCondition } from '@/app/[locale]/(app)/dashboard/pathActions';
@@ -123,6 +123,12 @@ function AddResultForm({ onCancel }: { onCancel: () => void }) {
       className="flex flex-col gap-2 rounded-card border border-line bg-surface p-6 shadow-card"
     >
       <h2 className="text-lg font-extrabold">{t('title')}</h2>
+      {/* Task 12: the same scan flow as onboarding, results and Ask GeneBridge. */}
+      <Link href="/dashboard/scan?from=home" className={buttonClasses('primary', 'md', 'self-start')}>
+        <Camera aria-hidden="true" className="size-5" strokeWidth={2} />
+        {t('photo')}
+      </Link>
+      <p className="mt-2 text-sm text-muted">{t('or')}</p>
       <label htmlFor="home-reference" className="text-sm font-bold">
         {t('label')}
       </label>

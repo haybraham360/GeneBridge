@@ -8,6 +8,9 @@
   "listen": "Listen",
   "stop": "Stop",
   "simpler": "Read it simpler",
+  "fromPhoto": "From your photo, not yet confirmed by your screening centre",
+  "fromPhotoShort": "From your photo",
+  "scanAnother": "Scan another report",
   "summary": {
     "carrier": "You are healthy. Your screening found you carry {count, plural, one {a change linked to # condition} other {changes linked to # conditions}}.",
     "carrierBody": "Most people carry a few gene changes without knowing. Being a carrier mainly matters when planning children.",

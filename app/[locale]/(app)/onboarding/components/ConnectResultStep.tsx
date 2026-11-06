@@ -1,11 +1,10 @@
 "use client";
 
-import { CircleCheck } from "lucide-react";
+import { Camera, CircleCheck } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useCallback, useRef, useState, type FormEvent } from "react";
+import { useRef, type FormEvent } from "react";
 import { buttonClasses } from "@/components/ui/Button";
-import { referenceFromQr } from "@/lib/onboarding/steps";
-import { QrScanner } from "./QrScanner";
+import { Link } from "@/i18n/navigation";
 
 export type ClaimError = "notFound" | "rateLimited" | "generic";
 
@@ -19,8 +18,9 @@ type ConnectResultStepProps = {
 };
 
 /**
- * Step 6. Reference number or QR scan. Once connected it only says "Result
- * connected." and shows nothing about the result itself.
+ * Step 6. Reference number, or photograph or upload the report (task 12).
+ * Once connected it only says "Result connected." and shows nothing about
+ * the result itself.
  */
 export function ConnectResultStep({
   code,
@@ -33,23 +33,6 @@ export function ConnectResultStep({
   const t = useTranslations("onboarding.steps.connect");
   const tCommon = useTranslations("onboarding");
   const inputRef = useRef<HTMLInputElement>(null);
-  const [scanning, setScanning] = useState(false);
-  const [scanned, setScanned] = useState(false);
-
-  const closeScanner = useCallback(() => setScanning(false), []);
-  const typeInstead = useCallback(() => {
-    setScanning(false);
-    requestAnimationFrame(() => inputRef.current?.focus());
-  }, []);
-  const onScan = useCallback(
-    (text: string) => {
-      onCodeChange(referenceFromQr(text) ?? text.trim());
-      setScanned(true);
-      setScanning(false);
-      requestAnimationFrame(() => inputRef.current?.focus());
-    },
-    [onCodeChange],
-  );
 
   if (connected) {
     return (
@@ -102,7 +85,6 @@ export function ConnectResultStep({
             value={code}
             onChange={(event) => {
               onCodeChange(event.target.value);
-              setScanned(false);
             }}
             placeholder={t("placeholder")}
             aria-invalid={Boolean(errorText) || undefined}
@@ -131,32 +113,20 @@ export function ConnectResultStep({
             {errorText}
           </p>
         ) : null}
-        {scanned && !errorText ? (
-          <p role="status" className="text-sm text-muted">
-            {t("scanner.found")}
-          </p>
-        ) : null}
       </form>
 
-      {scanning ? (
-        <QrScanner
-          onScan={onScan}
-          onClose={closeScanner}
-          onTypeInstead={typeInstead}
-        />
-      ) : (
-        <button
-          type="button"
-          onClick={() => setScanning(true)}
-          className={buttonClasses(
-            "ghost",
-            "md",
-            "w-full hover:translate-y-0 hover:shadow-none",
-          )}
-        >
-          {t("scan")}
-        </button>
-      )}
+      {/* Task 12: read the report itself. Onboarding resumes here afterwards. */}
+      <Link
+        href="/dashboard/scan?from=onboarding"
+        className={buttonClasses(
+          "ghost",
+          "md",
+          "w-full hover:translate-y-0 hover:shadow-none",
+        )}
+      >
+        <Camera aria-hidden="true" className="size-5" strokeWidth={2} />
+        {t("photo")}
+      </Link>
     </>
   );
 }

@@ -1,11 +1,12 @@
 'use client';
 
-import { FileText, Info, Mic, MicOff, Network, Send, Trash2, X } from 'lucide-react';
+import { Camera, FileText, Info, Mic, MicOff, Network, Send, Trash2, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { buttonClasses } from '@/components/ui/Button';
 import { Link } from '@/i18n/navigation';
 import { demoFamilySnapshot } from '@/lib/assistant/family';
+import { SCAN_CONTEXT_KEY } from '@/lib/scan/assistantContext';
 import { cn } from '@/lib/cn';
 import { AssistantMessage, type ChatMessage, type ReplyMeta } from './AssistantMessage';
 import { useSpeechInput } from './useSpeechInput';
@@ -68,6 +69,8 @@ export function AssistantChat({
   const [useFollowed, setUseFollowed] = useState(false);
   const askedInitial = useRef(false);
   const [reportOpen, setReportOpen] = useState(false);
+  /** A report summary from the scan flow (task 12), for this browser session only. */
+  const [scanContext, setScanContext] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const conversationRef = useRef<string | null>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -85,6 +88,7 @@ export function AssistantChat({
     setUseResult(session(KEYS.useResult) === '1');
     setShareFamily(session(KEYS.family) === '1');
     setUseFollowed(session(KEYS.followed) === '1');
+    setScanContext(session(SCAN_CONTEXT_KEY));
     if (!id) return;
     conversationRef.current = id;
     fetch(`/api/assistant/conversation?id=${encodeURIComponent(id)}`)
@@ -127,7 +131,7 @@ export function AssistantChat({
             // The server reads the conditions itself; the browser only asks.
             useFollowedConditions: canUseFollowed && useFollowed,
             family: shareFamily ? demoFamilySnapshot : null,
-            reportText: p.reportText ?? null,
+            reportText: p.reportText ?? scanContext ?? null,
             file: p.file ?? null,
           }),
         });
@@ -173,7 +177,7 @@ export function AssistantChat({
         inputRef.current?.focus();
       }
     },
-    [busy, stopped, locale, useResult, shareFamily, canUseFollowed, useFollowed],
+    [busy, stopped, locale, useResult, shareFamily, canUseFollowed, useFollowed, scanContext],
   );
 
   // A suggested question from another page (?q=) is asked once, on arrival.
@@ -394,6 +398,23 @@ export function AssistantChat({
         ) : null}
       </div>
 
+      {scanContext ? (
+        <div data-testid="scan-context" className="flex flex-wrap items-center gap-2 rounded-tile bg-info-tint p-3 text-[13px] font-semibold text-info-text">
+          <FileText aria-hidden="true" className="size-4 flex-none" />
+          <span className="flex-1">{t('scanContext.using')}</span>
+          <button
+            type="button"
+            onClick={() => {
+              setScanContext(null);
+              setSession(SCAN_CONTEXT_KEY, null);
+            }}
+            className="min-h-11 cursor-pointer rounded-full px-3 underline underline-offset-4"
+          >
+            {t('scanContext.remove')}
+          </button>
+        </div>
+      ) : null}
+
       {reportOpen ? (
         <ReportForm
           aiEnabled={aiEnabled}
@@ -423,6 +444,15 @@ export function AssistantChat({
           placeholder={speech.listening ? t('input.listening') : t('input.placeholder')}
           className="max-h-40 min-h-12 flex-1 resize-none rounded-[24px] border border-line-strong bg-surface px-4 py-3 text-[15px] placeholder:text-muted disabled:opacity-60"
         />
+        {/* Task 12: photograph or upload a report; it opens the scan flow. */}
+        <Link
+          href="/dashboard/scan?from=assistant"
+          aria-label={t('attach')}
+          title={t('attach')}
+          className="flex size-12 flex-none cursor-pointer items-center justify-center rounded-full border border-line-strong bg-surface hover:bg-brand-tint-soft"
+        >
+          <Camera aria-hidden="true" className="size-5" />
+        </Link>
         {speech.supported ? (
           <button
             type="button"

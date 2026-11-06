@@ -10,6 +10,7 @@
   "yourPartner": "Your partner",
   "consentSettings": "Consent settings",
   "manageSharing": "Manage sharing",
+  "basedOnUploads": "Based on reports you uploaded.",
   "agreedChip": "{name} agreed · {level}",
   "levels": {
     "shared_only": "shared results only",

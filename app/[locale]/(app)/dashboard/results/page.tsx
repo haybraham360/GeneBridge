@@ -9,7 +9,7 @@ import { routing } from '@/i18n/routing';
 import { logEvents } from '@/lib/auth/events';
 import { conditionEntry } from '@/lib/conditions/catalogue';
 import { loadMyReport } from '@/lib/results/report';
-import { createClient } from '@/lib/supabase/server';
+import { createClient, getAuthUser } from '@/lib/supabase/server';
 
 export async function generateMetadata({ params }: PageProps<'/[locale]/dashboard/results'>): Promise<Metadata> {
   const { locale } = await params;
@@ -56,9 +56,7 @@ export default async function ResultsPage({ params }: PageProps<'/[locale]/dashb
     return <Notice title={t('flagged.title')} body={t('flagged.body')} cta={t('flagged.cta')} href="/dashboard/counsellor" />;
   }
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthUser(supabase);
   if (user) await logEvents(supabase, user.id, [{ name: 'result_viewed' }]);
 
   const findings: FindingView[] = report.findings.flatMap((f) => {
@@ -78,6 +76,7 @@ export default async function ResultsPage({ params }: PageProps<'/[locale]/dashb
         diseaseShort: entry.disease_short ?? '',
         explanation: entry.carrier_meaning ?? entry.summary,
         simple: entry.card_summary ?? entry.summary,
+        unverified: f.unverified,
       },
     ];
   });
@@ -87,5 +86,5 @@ export default async function ResultsPage({ params }: PageProps<'/[locale]/dashb
     ? t('subtitle', { date: format.dateTime(new Date(report.reportedAt), { day: 'numeric', month: 'short', year: 'numeric' }), centre })
     : t('subtitleNoDate', { centre });
 
-  return <ResultsView subtitle={subtitle} screenedCount={report.screenedCount} findings={findings} />;
+  return <ResultsView subtitle={subtitle} screenedCount={report.screenedCount} findings={findings} unverified={report.unverified} />;
 }

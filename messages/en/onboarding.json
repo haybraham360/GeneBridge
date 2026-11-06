@@ -127,7 +127,7 @@
     },
     "connect": {
       "title": "Connect your screening result (optional)",
-      "body": "Enter the reference number from your screening centre, or scan the QR code on your report.",
+      "body": "Enter the reference number from your screening centre, or photograph or upload your report.",
       "label": "Screening reference number",
       "placeholder": "AD-PMS-2026-000000",
       "connect": "Connect result",
@@ -143,7 +143,8 @@
         "noCamera": "We can't use the camera on this device.",
         "typeInstead": "Type the number instead",
         "found": "Reference number found. Check it, then connect your result."
-      }
+      },
+      "photo": "Photograph or upload my report"
     },
     "invite": {
       "title": "Invite your partner (optional)",

@@ -9,7 +9,7 @@ import type { UserPathInfo } from '@/lib/user/path';
  */
 export type HomeSummary = {
   result:
-    | { kind: 'carrier' | 'affected'; conditionIds: string[] }
+    | { kind: 'carrier' | 'affected'; conditionIds: string[]; fromPhoto: boolean }
     | { kind: 'none_found' | 'flagged' | 'missing' };
   couple:
     | { kind: 'shared'; partner: string | null; sharedConditionIds: string[] }
@@ -42,6 +42,7 @@ export async function loadHomeSummary(supabase: SupabaseClient, path: UserPathIn
     result = {
       kind: withChange.some((f) => f.status === 'affected') ? 'affected' : 'carrier',
       conditionIds: withChange.map((f) => f.conditionId),
+      fromPhoto: withChange.some((f) => f.unverified),
     };
 
   // Couple card: only what the couple summary allows (both agreed).

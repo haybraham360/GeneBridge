@@ -39,6 +39,11 @@
     "hint": "Only relations and statuses are shared, never names. For this conversation only.",
     "stop": "Stop sharing"
   },
+  "attach": "Photograph or upload a report",
+  "scanContext": {
+    "using": "Using the report you photographed, for this session only.",
+    "remove": "Stop using it"
+  },
   "report": {
     "button": "Explain my report",
     "title": "Explain my screening report",

@@ -50,6 +50,7 @@
   "summaryCards": {
     "result": {
       "pill": "Your result",
+      "pillPhoto": "Your result · from your photo",
       "carrierOne": "Carrier of {condition}",
       "carrierMany": "Carrier of {count} conditions",
       "healthy": "{list}. You are healthy.",
@@ -731,6 +732,7 @@
       "storeBody": "Your result interpretation, consents, bookings and family map.",
       "never": "We never store",
       "neverBody": "Your raw genome or any relative’s test result.",
+      "photos": "Photos of reports are processed by our AI provider to read them and are not stored by GeneBridge.",
       "download": "Download my data",
       "delete": "Delete my account",
       "cancel": "Cancel",
@@ -850,7 +852,7 @@
       },
       "result": {
         "title": "Already have a result?",
-        "body": "Connect it and GeneBridge will explain it."
+        "body": "Photograph it or connect it, and GeneBridge will explain it."
       }
     },
     "patterns": {
@@ -894,6 +896,8 @@
     },
     "claim": {
       "title": "Add your screening result",
+      "photo": "Photograph or upload my report",
+      "or": "Or enter the reference number",
       "label": "Screening reference number",
       "placeholder": "AD-PMS-2026-000000",
       "submit": "Connect result",

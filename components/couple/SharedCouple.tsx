@@ -49,6 +49,11 @@ export async function SharedCouple({ view, locale, myName }: { view: Ready; loca
               ? t('subtitle', { me, partner, date: format.dateTime(new Date(view.agreedAt), { day: 'numeric', month: 'short', year: 'numeric' }) })
               : t('subtitleNoDate', { me, partner })}
           </p>
+          {view.basedOnUploads ? (
+            <p data-testid="based-on-uploads" className="w-fit rounded-full bg-info-tint px-3.5 py-1.5 text-[13px] font-bold text-info-text">
+              {t('basedOnUploads')}
+            </p>
+          ) : null}
         </div>
         <div className="flex flex-wrap gap-3">
           <Link href="/dashboard/couple/consent" className={buttonClasses('ghost', 'md')}>

@@ -10,6 +10,7 @@
   "yourPartner": "شريك حياتك",
   "consentSettings": "إعدادات الموافقة",
   "manageSharing": "إدارة المشاركة",
+  "basedOnUploads": "بناءً على التقارير التي رفعتماها.",
   "agreedChip": "وافق {name} · {level}",
   "levels": {
     "shared_only": "النتائج المشتركة فقط",

@@ -29,7 +29,7 @@ export default async function SummaryCards({ summary, catalogue }: { summary: Ho
     r.kind === "carrier"
       ? {
           key: "result",
-          pill: t("result.pill"),
+          pill: r.fromPhoto ? t("result.pillPhoto") : t("result.pill"),
           pillClass: pills.result,
           title: r.conditionIds.length === 1 ? t("result.carrierOne", { condition: name(r.conditionIds[0]) }) : t("result.carrierMany", { count: r.conditionIds.length }),
           body: r.conditionIds.length === 1 ? t("result.healthyOne") : t("result.healthy", { list: list(r.conditionIds) }),
