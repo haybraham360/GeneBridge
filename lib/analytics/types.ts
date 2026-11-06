@@ -59,4 +59,6 @@ export type DashboardData = {
   overall: EquityOverall;
   /** Task 11: exploring users who later added a result. Hidden under 10. */
   exploring: { explorers: Figure; tested: Figure; testedPct: Figure };
+  /** Task 12: reports scanned, and average seconds from upload to explanation. Hidden under 10 people. */
+  scans: { scanned: Figure; people: Figure; avgSeconds: Figure };
 };

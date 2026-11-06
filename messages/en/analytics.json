@@ -170,5 +170,14 @@
     "tested": "Later added a result",
     "pct": "Share who added a result",
     "how": "People who began on the exploring path (no screening result, following conditions to learn about), and how many later connected a screening result. A direct measure of improved access. Groups under 10 are hidden."
+  },
+  "scans": {
+    "title": "Reports scanned",
+    "subtitle": "Screening reports people photographed or uploaded",
+    "scanned": "Reports scanned",
+    "people": "People",
+    "avg": "Average time to explanation",
+    "seconds": "{count, plural, one {# second} other {# seconds}}",
+    "how": "Counts of scan_completed events: how many reports were read, by how many people, and the average seconds from upload to the findings being ready to check. No report content is logged. Groups under 10 people are hidden."
   }
 }

@@ -9,6 +9,7 @@ import type { DashboardData, Filters } from '@/lib/analytics/types';
 import { createClient } from '@/lib/supabase/server';
 import { EquityPanel } from './EquityPanel';
 import { ExploringPanel } from './ExploringPanel';
+import { ScansPanel } from './ScansPanel';
 import { FunnelPanel } from './FunnelPanel';
 import { KpiTiles } from './KpiTiles';
 import { ModesPanel } from './ModesPanel';
@@ -48,6 +49,7 @@ export async function DashboardBody({ filters }: { filters: Filters }) {
       </div>
       <EquityPanel rows={data.equity} overall={data.overall} />
       <ExploringPanel data={data.exploring} className="motion-safe:animate-fade-up" />
+      <ScansPanel data={data.scans} className="motion-safe:animate-fade-up" />
     </>
   );
 }

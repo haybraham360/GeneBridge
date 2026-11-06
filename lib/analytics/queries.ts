@@ -64,12 +64,14 @@ export async function loadDashboard(
 ): Promise<DashboardData> {
   const args = { p_days: rangeDays(filters.range), p_centre: filters.centre };
 
-  const [kpis, funnel, modes, equity, exploring] = await Promise.all([
+  const [kpis, funnel, modes, equity, exploring, scans] = await Promise.all([
     supabase.rpc('analytics_kpis', args),
     supabase.rpc('analytics_funnel', args),
     supabase.rpc('analytics_learning_modes', args),
     supabase.rpc('analytics_equity', args),
     supabase.rpc('analytics_exploring_to_tested', args),
+    // Task 12. Fails softly like "exploring to tested".
+    supabase.rpc('analytics_scans', args),
   ]);
   // Function names only: error details could echo arguments.
   // "Exploring to tested" (task 11) fails softly: its figures show as hidden
@@ -90,6 +92,7 @@ export async function loadDashboard(
   }[];
 
   const all = equityRows.find((r) => r.language === 'all');
+  const scansRow = ((scans.error ? [] : (scans.data ?? [])) as { scanned: unknown; people: unknown; avg_seconds: unknown }[])[0];
   const exploringRow = ((exploring.error ? [] : (exploring.data ?? [])) as { explorers: unknown; tested: unknown; tested_pct: unknown }[])[0];
 
   return {
@@ -120,6 +123,11 @@ export async function loadDashboard(
       explorers: figure(exploringRow?.explorers),
       tested: figure(exploringRow?.tested),
       testedPct: figure(exploringRow?.tested_pct),
+    },
+    scans: {
+      scanned: figure(scansRow?.scanned),
+      people: figure(scansRow?.people),
+      avgSeconds: figure(scansRow?.avg_seconds),
     },
   };
 }
