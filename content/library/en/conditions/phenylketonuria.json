@@ -11,6 +11,14 @@
     "phenylketonuria",
     "PAH"
   ],
+  "synonyms": [
+    "phenylketonuria",
+    "PAH deficiency",
+    "phenylalanine hydroxylase deficiency",
+    "hyperphenylalaninemia",
+    "بيلة الفينيل كيتون",
+    "بيلة الفينيل كيتونية"
+  ],
   "summary": "Phenylketonuria means the body cannot break down phenylalanine, a building block found in protein. Without early care, it can build up and harm the brain.",
   "inheritance_plain": "It is inherited in an autosomal recessive way: a child is affected only if they get a changed copy of the PAH gene from both parents.",
   "carrier_meaning": "A carrier has one changed copy and is healthy.",

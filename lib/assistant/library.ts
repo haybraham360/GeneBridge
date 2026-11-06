@@ -20,6 +20,13 @@ export type LibraryEntry = {
   inheritance?: 'autosomal_recessive' | 'autosomal_dominant' | 'x_linked' | 'complex';
   title: string;
   aliases: string[];
+  /**
+   * Conditions (task 12): names as labs write them on reports, in English
+   * and Arabic, for matching scanned reports to the catalogue.
+   */
+  synonyms?: string[];
+  /** Conditions: always route to a counsellor, whatever the result (task 10 flagging). */
+  always_escalate?: boolean;
   summary: string;
   inheritance_plain?: string;
   carrier_meaning?: string;

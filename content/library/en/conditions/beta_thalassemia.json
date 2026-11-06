@@ -15,6 +15,21 @@
     "thalassemia minor",
     "thalassemia trait"
   ],
+  "synonyms": [
+    "beta thalassaemia",
+    "β-thalassemia",
+    "β-thalassaemia",
+    "beta-thalassemia trait",
+    "beta thalassaemia minor",
+    "beta thalassemia major",
+    "Cooley anemia",
+    "HBB-related beta thalassemia",
+    "ثلاسيميا بيتا",
+    "الثلاسيميا بيتا",
+    "بيتا ثلاسيميا",
+    "أنيميا البحر المتوسط",
+    "ثلاسيميا بيتا صغرى"
+  ],
   "summary": "Beta-thalassaemia affects how the body makes haemoglobin. People with the more serious form make too little haemoglobin and can have anaemia that needs regular care.",
   "inheritance_plain": "It is inherited in an autosomal recessive way: a child is affected only if they get a changed copy of the gene from both parents.",
   "carrier_meaning": "A carrier (beta-thalassaemia trait or minor) has one changed copy. Carriers are healthy, though some have slightly small red blood cells or mild anaemia that does not need treatment.",
