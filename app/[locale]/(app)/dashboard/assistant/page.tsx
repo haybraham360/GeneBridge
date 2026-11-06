@@ -20,7 +20,7 @@ export const dynamic = 'force-dynamic';
 /** Ask GeneBridge, full page (task 06). */
 export default async function AssistantPage({ params, searchParams }: PageProps<'/[locale]/dashboard/assistant'>) {
   const { locale } = await params;
-  const { q } = await searchParams;
+  const { q, family } = await searchParams;
   const path = await loadUserPath(await createClient());
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
@@ -37,6 +37,7 @@ export default async function AssistantPage({ params, searchParams }: PageProps<
           aiEnabled={aiEnabled()}
           canUseFollowed={path.followed.length > 0}
           initialQuestion={typeof q === 'string' ? q.slice(0, 500) : undefined}
+          initialShareFamily={family === '1'}
         />
       </div>
     </div>

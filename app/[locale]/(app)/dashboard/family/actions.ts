@@ -16,6 +16,9 @@ import {
   type NoticeLocale,
 } from '@/lib/notices/types';
 import { createClient } from '@/lib/supabase/server';
+import type { TreeDiff } from '@/lib/family/diff';
+import { treeDiffSchema } from '@/lib/family/diffSchema';
+import { saveFamilyDiff } from '@/lib/family/server';
 
 /*
  * "Choose relatives to notify" (task 08 section 6). Templates only: the
@@ -48,6 +51,24 @@ async function siteOrigin(): Promise<string> {
   const host = h.get('x-forwarded-host') ?? h.get('host') ?? 'localhost:3000';
   const proto = h.get('x-forwarded-proto') ?? (host.startsWith('localhost') ? 'http' : 'https');
   return `${proto}://${host}`;
+}
+
+/*
+ * Saving the family map (task 13): only what the person kept or edited by
+ * hand. The whole resulting tree is validated before one transaction.
+ */
+export async function saveFamilyChanges(
+  diff: TreeDiff,
+): Promise<{ status: 'saved' } | { status: 'invalid'; problem: string } | { status: 'error' }> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { status: 'error' };
+  const parsed = treeDiffSchema.safeParse(diff);
+  if (!parsed.success) return { status: 'invalid', problem: 'shape' };
+  const result = await saveFamilyDiff(supabase, user.id, parsed.data);
+  return result.status === 'saved' ? { status: 'saved' } : result;
 }
 
 export async function sendFamilyNotices(input: SendNoticesInput): Promise<SendNoticesResult> {

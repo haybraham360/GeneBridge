@@ -14,6 +14,7 @@ import type services from '@/messages/en/services.json';
 import type results from '@/messages/en/results.json';
 import type couple from '@/messages/en/couple.json';
 import type scan from '@/messages/en/scan.json';
+import type family from '@/messages/en/family.json';
 
 declare module 'next-intl' {
   interface AppConfig {
@@ -34,6 +35,7 @@ declare module 'next-intl' {
       results: typeof results;
       couple: typeof couple;
       scan: typeof scan;
+      family: typeof family;
     };
   }
 }

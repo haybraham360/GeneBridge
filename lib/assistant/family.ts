@@ -1,11 +1,12 @@
 /**
- * Family map shared into the chat (task 06, 1b point 3). The family map is
- * self-reported and kept in the browser for now (components/family); it is
- * not stored in the database yet. When the user presses "Share my family map
- * with this chat", only this minimal snapshot is sent: relations and
- * statuses, never names (guardrails 8 and 9).
+ * Family map shared into the chat (task 06, 1b point 3). Since task 13 the
+ * map is stored owner-only (family_members); when the user presses "Share
+ * my family map with this chat", the server builds this minimal snapshot
+ * from it (lib/family/snapshot.ts): relations and statuses, never names
+ * (guardrails 8 and 9).
  *
- * The demo snapshot mirrors Mariam's family in PROJECT.md section 10.
+ * The demo snapshot mirrors Mariam's family in PROJECT.md section 10 and is
+ * used by the assistant eval.
  */
 import type { FamilyMember, FamilySnapshot } from './types';
 

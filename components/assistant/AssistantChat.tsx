@@ -5,7 +5,6 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { buttonClasses } from '@/components/ui/Button';
 import { Link } from '@/i18n/navigation';
-import { demoFamilySnapshot } from '@/lib/assistant/family';
 import { SCAN_CONTEXT_KEY } from '@/lib/scan/assistantContext';
 import { cn } from '@/lib/cn';
 import { AssistantMessage, type ChatMessage, type ReplyMeta } from './AssistantMessage';
@@ -50,6 +49,7 @@ export function AssistantChat({
   aiEnabled,
   canUseFollowed = false,
   initialQuestion,
+  initialShareFamily = false,
 }: {
   compact?: boolean;
   aiEnabled: boolean;
@@ -57,6 +57,8 @@ export function AssistantChat({
   canUseFollowed?: boolean;
   /** Asked once on arrival, e.g. a suggested question from the exploring Home (?q=). */
   initialQuestion?: string;
+  /** Arrived from the family map's "Ask GeneBridge" (?family=1): "Use my family map" starts on. */
+  initialShareFamily?: boolean;
 }) {
   const t = useTranslations('assistant');
   const locale = useLocale() as 'en' | 'ar';
@@ -86,7 +88,8 @@ export function AssistantChat({
     const id = session(KEYS.conversation);
     // eslint-disable-next-line react-hooks/set-state-in-effect -- reading browser-only session state once on mount
     setUseResult(session(KEYS.useResult) === '1');
-    setShareFamily(session(KEYS.family) === '1');
+    if (initialShareFamily) setSession(KEYS.family, '1');
+    setShareFamily(initialShareFamily || session(KEYS.family) === '1');
     setUseFollowed(session(KEYS.followed) === '1');
     setScanContext(session(SCAN_CONTEXT_KEY));
     if (!id) return;
@@ -104,7 +107,7 @@ export function AssistantChat({
         );
       })
       .catch(() => {});
-  }, []);
+  }, [initialShareFamily]);
 
   useEffect(() => {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight });
@@ -130,7 +133,8 @@ export function AssistantChat({
             useMyResult: useResult,
             // The server reads the conditions itself; the browser only asks.
             useFollowedConditions: canUseFollowed && useFollowed,
-            family: shareFamily ? demoFamilySnapshot : null,
+            // The server reads the family map itself (owner-only, no names); the browser only asks.
+            useFamilyMap: shareFamily,
             reportText: p.reportText ?? scanContext ?? null,
             file: p.file ?? null,
           }),

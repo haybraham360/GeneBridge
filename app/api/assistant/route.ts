@@ -12,7 +12,9 @@
  */
 import { extractReportText, aiEnabled } from '@/lib/assistant/claude';
 import { logEvents } from '@/lib/auth/events';
-import { parseFamilySnapshot } from '@/lib/assistant/family';
+import { getCondition } from '@/lib/conditions/catalogue';
+import { loadFamilyTree } from '@/lib/family/server';
+import { familySnapshot } from '@/lib/family/snapshot';
 import { repliesFor } from '@/lib/assistant/offline';
 import { redactReport } from '@/lib/assistant/report';
 import { MAX_MESSAGE_LENGTH, MAX_REPORT_LENGTH, respond } from '@/lib/assistant/respond';
@@ -31,7 +33,7 @@ type Body = {
   locale?: unknown;
   mode?: unknown;
   useMyResult?: unknown;
-  family?: unknown;
+  useFamilyMap?: unknown;
   reportText?: unknown;
   file?: unknown;
   useFollowedConditions?: unknown;
@@ -48,6 +50,20 @@ async function followedFor(supabase: Awaited<ReturnType<typeof createClient>>, u
     .filter((r): r is { condition_id: string; reason: 'family_history' | 'think_i_have' | 'learning' } =>
       r.reason === 'family_history' || r.reason === 'think_i_have' || r.reason === 'learning')
     .map((r) => ({ id: r.condition_id, reason: r.reason }));
+}
+
+/**
+ * "Use my family map" (task 06, task 13): the owner's own map, read as the
+ * user, reduced to relations, sides and statuses for one condition. No
+ * labels or names.
+ */
+async function familyFor(supabase: Awaited<ReturnType<typeof createClient>>, userId: string) {
+  const tree = await loadFamilyTree(supabase, userId);
+  if (!tree) return null;
+  return familySnapshot(tree, (id) => {
+    const pattern = getCondition(id, 'en')?.inheritance;
+    return pattern === 'autosomal_recessive' || pattern === 'autosomal_dominant' || pattern === 'x_linked' ? pattern : null;
+  });
 }
 
 export async function POST(request: Request) {
@@ -130,7 +146,7 @@ export async function POST(request: Request) {
         mode,
         history,
         useMyResult: body.useMyResult === true,
-        family: parseFamilySnapshot(body.family),
+        family: body.useFamilyMap === true ? await familyFor(supabase, user.id) : null,
         reportText: reportText || null,
         followed: body.useFollowedConditions === true ? await followedFor(supabase, user.id) : null,
       },
