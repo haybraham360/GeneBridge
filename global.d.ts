@@ -13,6 +13,7 @@ import type conditions from '@/messages/en/conditions.json';
 import type services from '@/messages/en/services.json';
 import type results from '@/messages/en/results.json';
 import type couple from '@/messages/en/couple.json';
+import type scan from '@/messages/en/scan.json';
 
 declare module 'next-intl' {
   interface AppConfig {
@@ -32,6 +33,7 @@ declare module 'next-intl' {
       services: typeof services;
       results: typeof results;
       couple: typeof couple;
+      scan: typeof scan;
     };
   }
 }

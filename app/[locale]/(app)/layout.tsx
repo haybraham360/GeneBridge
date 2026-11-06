@@ -1,10 +1,11 @@
 import { NextIntlClientProvider } from 'next-intl';
+import { clientMessages } from '@/i18n/clientMessages';
 import { IdleSignOut } from '@/components/auth/IdleSignOut';
 
 /** Signed-in area. The proxy guards these routes; this adds the idle timer. */
-export default function AppLayout({ children }: { children: React.ReactNode }) {
+export default async function AppLayout({ children }: { children: React.ReactNode }) {
   return (
-    <NextIntlClientProvider>
+    <NextIntlClientProvider messages={await clientMessages(['analytics', 'assistant', 'common', 'conditions', 'couple', 'dashboard', 'landing', 'notice', 'onboarding', 'results', 'scan', 'services', 'talk'])}>
       {children}
       <IdleSignOut />
     </NextIntlClientProvider>
