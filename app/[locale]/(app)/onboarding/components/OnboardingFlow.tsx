@@ -8,7 +8,7 @@ import { cardClasses } from '@/components/ui/Card';
 import { ListenButton } from '@/components/ui/ListenButton';
 import { Logo } from '@/components/ui/Logo';
 import { useRouter } from '@/i18n/navigation';
-import { speak, stopSpeaking } from '@/lib/audio/speak';
+import { speak, stopSpeaking } from '@/lib/audio/tts';
 import { cn } from '@/lib/cn';
 import type { Finish } from '@/lib/onboarding/queries';
 import {

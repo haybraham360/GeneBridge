@@ -3,7 +3,7 @@
 import { Square, Volume2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useSyncExternalStore } from 'react';
-import { isSpeechSupported } from '@/lib/audio/speak';
+import { isSpeechSupported } from '@/lib/audio/tts';
 import { cn } from '@/lib/cn';
 
 const noopSubscribe = () => () => {};

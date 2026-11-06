@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSpeechSupported } from '@/components/ui/ListenButton';
 import { buttonClasses } from '@/components/ui/Button';
-import { speak, stopSpeaking } from '@/lib/audio/speak';
+import { speak, stopSpeaking } from '@/lib/audio/tts';
 import { guideListenText, starterFor, type Guide, type GuideId, type Recipient } from '@/lib/talk/guides';
 import { FeelingsCheckin } from './FeelingsCheckin';
 import { GuidePanel, GuideTabs } from './GuidePanel';

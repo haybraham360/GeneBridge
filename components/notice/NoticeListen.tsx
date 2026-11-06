@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 import { useSpeechSupported } from '@/components/ui/ListenButton';
 import { buttonClasses } from '@/components/ui/Button';
-import { speak, stopSpeaking } from '@/lib/audio/speak';
+import { speak, stopSpeaking } from '@/lib/audio/tts';
 
 /**
  * The design's "Listen" pill. Reads the main card and the three cards in the

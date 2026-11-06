@@ -8,7 +8,7 @@ import arReplies from '@/content/library/ar/assistant/replies.json';
 import { RiskVisual } from '@/components/genetics/RiskVisual';
 import { ListenButton } from '@/components/ui/ListenButton';
 import { Link } from '@/i18n/navigation';
-import { speak } from '@/lib/audio/speak';
+import { speak } from '@/lib/audio/tts';
 import { inline } from '@/lib/assistant/text';
 import type { Reply, ReplyAction } from '@/lib/assistant/types';
 import { cn } from '@/lib/cn';
