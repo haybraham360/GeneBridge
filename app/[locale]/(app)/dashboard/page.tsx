@@ -14,7 +14,7 @@ import { careView } from "@/lib/care/display";
 import { loadCareFacts } from "@/lib/care/tracker";
 import { loadNotifications } from "@/lib/notifications/server";
 import { currentPerson } from "@/lib/profile/currentPerson";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getAuthClaims } from "@/lib/supabase/server";
 import { ExploreHome } from "@/components/home/ExploreHome";
 import { FollowingCard } from "@/components/home/FollowingCard";
 import { listConditions } from "@/lib/conditions/catalogue";
@@ -30,13 +30,13 @@ export default async function Page({ params, searchParams }: PageProps<'/[locale
   const { locale } = await params;
   const { addResult } = await searchParams;
   if (!hasLocale(routing.locales, locale)) notFound();
-  const t = await getTranslations({ locale, namespace: "dashboard" });
   const supabase = await createClient();
-  const [format, facts, notifications, { data: claims }, person, path] = await Promise.all([
+  const [t, format, facts, notifications, claims, person, path] = await Promise.all([
+    getTranslations({ locale, namespace: "dashboard" }),
     getFormatter({ locale }),
     loadCareFacts(supabase),
     loadNotifications(supabase),
-    supabase.auth.getClaims(),
+    getAuthClaims(supabase),
     currentPerson(supabase),
     loadUserPath(supabase),
   ]);
@@ -63,7 +63,7 @@ export default async function Page({ params, searchParams }: PageProps<'/[locale
   });
   // Care journey and counsellor updates come from the patient's own data (task 07).
   const care = careView(facts, t as unknown as Parameters<typeof careView>[1], format);
-  const userId = claims?.claims?.sub;
+  const userId = claims?.sub;
 //   return <PlaceholderPage locale={locale} screen="dashboard" />;
   return (
         <main className="min-w-0 min-h-0 overflow-auto flex-1 px-[clamp(16px,3vw,40px)] pb-10 pt-7 sm:pt-9">

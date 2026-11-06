@@ -7,7 +7,7 @@ import { COUNSELLOR_HOME } from "@/lib/auth/routes";
 import { conditionGuideHref } from "@/lib/conditions/links";
 import { currentPerson } from "@/lib/profile/currentPerson";
 import { loadUserPath } from "@/lib/user/path";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getAuthUser } from "@/lib/supabase/server";
 
 /**
  * Patient dashboard shell. The account type chosen at onboarding decides the
@@ -21,19 +21,25 @@ export default async function DashboardLayout({
   if (!hasLocale(routing.locales, locale)) notFound();
 
   const supabase = await createClient();
-  const { data: claims } = await supabase.auth.getClaims();
-  const userId = claims?.claims?.sub;
-  if (userId) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("user_id", userId)
-      .maybeSingle();
-    if (profile?.role === "counsellor") return redirect({ href: COUNSELLOR_HOME, locale });
-  }
+  const user = await getAuthUser(supabase);
 
-  // The signed-in person's own name, never a demo persona.
-  const [person, path] = await Promise.all([currentPerson(supabase), loadUserPath(supabase)]);
+  // One round of queries, all at once. The name and path come from the same
+  // cached user lookup the page uses, so nothing is fetched twice.
+  const [role, person, path] = await Promise.all([
+    user
+      ? supabase
+          .from("profiles")
+          .select("role")
+          .eq("user_id", user.id)
+          .maybeSingle()
+          .then(({ data }) => data?.role ?? null)
+      : null,
+    // The signed-in person's own name, never a demo persona.
+    currentPerson(supabase),
+    loadUserPath(supabase),
+  ]);
+  if (role === "counsellor") return redirect({ href: COUNSELLOR_HOME, locale });
+
   const conditionsHref =
     path.path === "exploring" ? (path.focus ? conditionGuideHref(path.focus.conditionId) : "/dashboard") : null;
 

@@ -5,6 +5,7 @@
  * creates or updates a referral (task 07).
  */
 import type { SupabaseClient } from '@supabase/supabase-js';
+import { getAuthUser } from '@/lib/supabase/server';
 import type { ReferralStatus } from '@/lib/pro/types';
 
 export type StepStatus = 'done' | 'current' | 'upcoming' | 'optional';
@@ -50,9 +51,7 @@ export function currentStepNumber(steps: CareStep[]): number {
 
 /** Reads the facts as the signed-in patient. Missing data simply stays null. */
 export async function loadCareFacts(supabase: SupabaseClient): Promise<CareFacts> {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthUser(supabase);
   if (!user) return { result: null, booking: null, test: null, specialist: null };
 
   const [result, bookings, referrals] = await Promise.all([

@@ -27,5 +27,6 @@
   "listen": {
     "play": "Listen to this step",
     "stop": "Stop reading"
-  }
+  },
+  "loading": "Loading…"
 }

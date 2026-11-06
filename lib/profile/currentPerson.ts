@@ -1,5 +1,7 @@
 import 'server-only';
 import type { SupabaseClient } from '@supabase/supabase-js';
+import { cache } from 'react';
+import { getAuthUser } from '@/lib/supabase/server';
 
 export type CurrentPerson = {
   /** First name from the person's own account, or null if they haven't given one. */
@@ -19,10 +21,8 @@ function firstWord(value: unknown): string | null {
  * else the name their sign-in provider gave (e.g. Google). Never a demo
  * persona. Read as the user (row-level security applies).
  */
-export async function currentPerson(supabase: SupabaseClient): Promise<CurrentPerson> {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+export const currentPerson = cache(async (supabase: SupabaseClient): Promise<CurrentPerson> => {
+  const user = await getAuthUser(supabase);
   if (!user) return { firstName: null, initial: null };
 
   const { data: profile } = await supabase
@@ -42,4 +42,4 @@ export async function currentPerson(supabase: SupabaseClient): Promise<CurrentPe
   const source = firstName ?? user.email ?? null;
   const initial = source ? source.charAt(0).toLocaleUpperCase() : null;
   return { firstName, initial };
-}
+});
