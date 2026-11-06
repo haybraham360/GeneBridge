@@ -18,7 +18,9 @@
     "test:sql": "tsx scripts/test-sql.ts",
     "eval:assistant": "tsx tests/assistant/eval.ts",
     "samples:generate": "tsx scripts/generate-sample-reports.ts",
-    "eval:scan": "tsx --conditions=react-server tests/scan/eval.ts"
+    "eval:scan": "tsx --conditions=react-server tests/scan/eval.ts",
+    "seed:family": "tsx scripts/seed-family.ts",
+    "eval:family": "tsx --conditions=react-server tests/family/eval.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.5.0",
