@@ -6,6 +6,8 @@ import { logEvents, type AuthEvent, type AuthMethod } from './events';
 import { destinationProfile } from './destination';
 import { destinationFor, safeNextPath } from './routes';
 
+export type AccountType = 'individual' | 'professional';
+
 /**
  * What the visitor chose before the code or link was sent. Kept in a
  * short-lived httpOnly cookie, so the email-link flow can finish on the
@@ -15,7 +17,11 @@ export type PendingAuth = {
   mode: 'signup' | 'signin';
   method: AuthMethod;
   consent: boolean;
-  facilityCode: string | null;
+  /**
+   * "How will you use GeneBridge?" on Create account (task 14). Only these
+   * two values exist: the browser can never ask for analyst or admin.
+   */
+  accountType: AccountType;
   next: string | null;
   /** Page locale, saved to the profile on sign-up (OAuth can't carry it). */
   locale: 'ar' | 'en';
@@ -50,7 +56,7 @@ async function takePendingAuth(): Promise<PendingAuth | null> {
           ? parsed.method
           : 'phone',
       consent: parsed.consent === true,
-      facilityCode: typeof parsed.facilityCode === 'string' ? parsed.facilityCode : null,
+      accountType: parsed.accountType === 'professional' ? 'professional' : 'individual',
       next: safeNextPath(parsed.next),
       locale: parsed.locale === 'en' ? 'en' : 'ar',
     };
@@ -64,53 +70,31 @@ async function clearPendingAuth() {
   store.delete(PENDING_COOKIE);
 }
 
-export function normaliseFacilityCode(code: string): string {
-  return code.trim().toUpperCase();
-}
-
-/** Checks a facility code with the service role. Codes are never readable by users. */
-export async function isValidFacilityCode(code: string): Promise<boolean> {
-  const normalised = normaliseFacilityCode(code);
-  if (!/^[A-Z0-9-]{4,32}$/.test(normalised)) return false;
-  const { data } = await createAdminClient()
-    .from('facilities')
-    .select('id')
-    .eq('code', normalised)
-    .maybeSingle();
-  return Boolean(data);
-}
-
 /**
- * Makes the signed-in user a counsellor at the facility with this code
- * (task 07): sets the role and creates (or moves) their counsellors row, so
- * they see that facility's queue. Service role; the code was checked first.
- * Used by sign-in and by the onboarding "I'm a health professional" choice.
+ * Makes a brand-new account a health professional (task 14): role
+ * `professional` and an unverified professional_profiles row. Service role,
+ * and only for an account that hasn't started onboarding as a patient. The
+ * role grants nothing on its own: every patient-facing path checks
+ * is_verified_professional() in the database.
  */
-export async function joinFacility(user: { id: string; email?: string; user_metadata?: Record<string, unknown> }, code: string) {
+export async function becomeProfessional(userId: string): Promise<void> {
   const admin = createAdminClient();
-  const { data: facility } = await admin
-    .from('facilities')
-    .select('id')
-    .eq('code', normaliseFacilityCode(code))
+  const { data: profile } = await admin
+    .from('profiles')
+    .select('role, onboarding_step, display_name')
+    .eq('user_id', userId)
     .maybeSingle();
-  if (!facility) throw new Error('Could not apply facility code');
+  if (!profile || profile.role !== 'individual' || profile.onboarding_step > 0) return;
 
-  const { error } = await admin.from('profiles').update({ role: 'counsellor' }).eq('user_id', user.id);
-  if (error) throw new Error('Could not apply facility code');
-
-  const { data: profile } = await admin.from('profiles').select('display_name, locale').eq('user_id', user.id).maybeSingle();
-  const name =
-    (profile?.display_name as string | null) ||
-    (typeof user.user_metadata?.display_name === 'string' ? user.user_metadata.display_name : null) ||
-    user.email?.split('@')[0] ||
-    'Counsellor';
-  const { error: counsellorError } = await admin
-    .from('counsellors')
+  const { error } = await admin.from('profiles').update({ role: 'professional' }).eq('user_id', userId);
+  if (error) throw new Error('Could not set up the professional account');
+  const { error: proError } = await admin
+    .from('professional_profiles')
     .upsert(
-      { user_id: user.id, name, languages: [profile?.locale ?? 'ar'], facility_id: facility.id },
-      { onConflict: 'user_id' },
+      { user_id: userId, display_name: (profile.display_name as string | null) ?? '', verification_status: 'unverified' },
+      { onConflict: 'user_id', ignoreDuplicates: true },
     );
-  if (counsellorError) throw new Error('Could not apply facility code');
+  if (proError) throw new Error('Could not set up the professional account');
 }
 
 export type FinishResult =
@@ -118,7 +102,8 @@ export type FinishResult =
 
 /**
  * Runs after the session exists (phone code verified, email link opened or
- * UAE PASS mock). Records consent, applies a facility code server-side, logs
+ * UAE PASS mock). Records consent, sets up a professional account if that
+ * was chosen on Create account, logs
  * events and decides where to go next.
  *
  * `consentNow` is true when the person ticks the consent box on the
@@ -162,18 +147,17 @@ export async function finishSignIn(
     if (error) throw new Error('Could not store consent');
     events.push({ name: 'consent_given', props: { kind: 'terms' } });
     events.push({ name: 'sign_up_completed' });
+    // A new account that chose "I'm a health professional". The browser only
+    // sends the account type; the role is set here with the service role.
+    if (pending?.mode === 'signup' && pending.accountType === 'professional') {
+      await becomeProfessional(user.id);
+    }
     // Google sign-ups arrive without the page locale; keep the one they chose.
     if (pending) {
       await supabase.from('profiles').update({ locale: pending.locale }).eq('user_id', user.id);
     }
   } else {
     events.push({ name: 'sign_in_completed' });
-  }
-
-  // The browser only ever sends a facility code, never a role. The code is
-  // re-checked here and the role is set with the service role.
-  if (pending?.facilityCode && (await isValidFacilityCode(pending.facilityCode))) {
-    await joinFacility(user, pending.facilityCode);
   }
 
   await logEvents(supabase, user.id, events);

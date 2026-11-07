@@ -20,7 +20,9 @@
     "samples:generate": "tsx scripts/generate-sample-reports.ts",
     "eval:scan": "tsx --conditions=react-server tests/scan/eval.ts",
     "seed:family": "tsx scripts/seed-family.ts",
-    "eval:family": "tsx --conditions=react-server tests/family/eval.ts"
+    "eval:family": "tsx --conditions=react-server tests/family/eval.ts",
+    "create:admin": "tsx scripts/create-admin.ts",
+    "samples:kyc": "tsx scripts/generate-sample-kyc.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.5.0",

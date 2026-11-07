@@ -95,6 +95,9 @@
       "in_person": "حضورياً",
       "body": "{when} · {format}",
       "counsellorFallback": "مستشارك",
+      "unavailable": "هذا المختص غير متاح حالياً",
+      "unavailableBody": "اختر مختصاً آخر. تبقى تفاصيل حجزك محفوظة.",
+      "chooseAnother": "اختر مختصاً آخر",
       "link": "إدارة الحجز",
       "linkBook": "احجز مستشاراً"
     }

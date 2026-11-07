@@ -15,8 +15,12 @@ insert into auth.users (id, raw_user_meta_data) values
   ('7e570700-0000-4000-8000-0000000000c2', '{"display_name":"Counsellor B"}');
 
 select set_config('request.jwt.claims', '{"role":"service_role"}', true);
-update public.profiles set role = 'counsellor'
+update public.profiles set role = 'professional'
  where user_id in ('7e570700-0000-4000-8000-0000000000c1', '7e570700-0000-4000-8000-0000000000c2');
+-- Task 14: only verified professionals reach the workspace.
+insert into public.professional_profiles (user_id, verification_status, licence_expiry) values
+  ('7e570700-0000-4000-8000-0000000000c1', 'verified', current_date + 365),
+  ('7e570700-0000-4000-8000-0000000000c2', 'verified', current_date + 365);
 
 insert into public.facilities (id, name, code) values
   ('7e570700-0000-4000-8000-0000000000f1', 'Facility one', 'TEST-F1'),

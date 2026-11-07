@@ -15,7 +15,13 @@ export type HomeSummary = {
     | { kind: 'shared'; partner: string | null; sharedConditionIds: string[] }
     | { kind: 'none_shared'; partner: string | null }
     | { kind: 'consent_missing' | 'no_partner' | 'result_missing' | 'flagged' };
-  appointment: { counsellor: string | null; startsAt: string; format: 'video' | 'in_person' } | null;
+  appointment: {
+    counsellor: string | null;
+    /** False when the professional is no longer verified (task 14): RLS hides them. */
+    available: boolean;
+    startsAt: string;
+    format: 'video' | 'in_person';
+  } | null;
 };
 
 const changed = (status: string | null | undefined) => status === 'carrier' || status === 'affected';
@@ -66,7 +72,12 @@ export async function loadHomeSummary(supabase: SupabaseClient, path: UserPathIn
   let appointment: HomeSummary['appointment'] = null;
   if (booking) {
     const { data: counsellor } = await supabase.from('counsellors').select('name').eq('id', booking.counsellor_id).maybeSingle();
-    appointment = { counsellor: (counsellor?.name as string | undefined) ?? null, startsAt: booking.starts_at, format: booking.format };
+    appointment = {
+      counsellor: (counsellor?.name as string | undefined) ?? null,
+      available: Boolean(counsellor),
+      startsAt: booking.starts_at,
+      format: booking.format,
+    };
   }
 
   return { result, couple: coupleCard, appointment };

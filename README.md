@@ -52,7 +52,7 @@ Copy `.env.example` to `.env.local` and fill it in. `.env.local` is git-ignored.
 |---|---|---|
 | `NEXT_PUBLIC_SUPABASE_URL` | Browser and server | Project settings → API |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Browser and server | Project settings → API |
-| `SUPABASE_SERVICE_ROLE_KEY` | Server only | Facility-code role change, UAE PASS mock, seed script, tests. Never prefix with `NEXT_PUBLIC_`. |
+| `SUPABASE_SERVICE_ROLE_KEY` | Server only | Professional account set-up, verification documents (encrypted storage), UAE PASS mock, seed scripts, tests. Never prefix with `NEXT_PUBLIC_`. |
 | `DEMO_UAE_PASS_ENABLED` | Server | `true` shows the UAE PASS mock. Leave unset in production. |
 | `GOOGLE_AUTH_ENABLED` | Server | Leave empty: "Continue with Google" appears by itself once the Google provider is on in Supabase (step 3). `false` hides it. |
 | `PHONE_AUTH_ENABLED` | Server | `true` shows phone code sign-in. **Off for now**: email is the main path until the Phone provider is set up (step 3). |
@@ -72,7 +72,7 @@ Apply the migrations in `supabase/migrations/`, in order:
 3. `20261104020000_analytics.sql`: `profiles.is_synthetic`, the analyst lock-out on `profiles`, and the aggregate-only dashboard functions (see [Health authority dashboard](#health-authority-dashboard)).
 4. `20261105000000_assistant.sql`: Ask GeneBridge conversations (owner-only, 30-day retention), `counsellor_requests`, and the functions behind them (see [Ask GeneBridge](#ask-genebridge-ai-assistant)). Optional: turn on the `pg_cron` extension (Database → Extensions) before applying it, for nightly clean-up; without it, expired messages are removed on each chat request.
 
-Later tasks add more migrations, applied the same way in filename order; the latest is `20261107000000_report_scanner.sql` (report scanner: scanned results, private storage buckets, couples and dashboard figures).
+Later tasks add more migrations, applied the same way in filename order; the latest is `20261109000000_professional_kyc.sql` (professional sign-up and verification: the `professional` and `admin` roles, `professional_profiles`, `verification_submissions`, the append-only `verification_audit`, `is_verified_professional()` on every patient-facing path, and the private `kyc-documents` bucket; see [Health professionals and verification](#health-professionals-and-verification)). Then run `npm run seed:auth` again, so the demo professionals are verified.
 
 - **Hosted project:** `npx supabase link --project-ref <ref>` then `npx supabase db push`, or paste each SQL file into the SQL editor. With `SUPABASE_DB_URL` set in `.env.local` (Connect → Session pooler), `psql "$SUPABASE_DB_URL" -f <file>` also works.
 - **Local (needs Docker):** `npx supabase start`. This also applies `supabase/config.toml`, which already has the test phone numbers.
@@ -110,25 +110,26 @@ The personas are seeded as having finished onboarding, so they land on `/dashboa
 | Mariam | individual | `mariam@demo.genebridge.app` | `50 000 0001`, code `123456` | `/dashboard` |
 | Khalid | individual | `khalid@demo.genebridge.app` | `50 000 0002`, code `123456` | `/dashboard` |
 | Patient R. | individual | `patient.r@demo.genebridge.app` | `50 000 0003`, code `123456` | `/dashboard` |
-| Dr. Amaka Okoro | counsellor | `amaka.okoro@demo.genebridge.app` | `50 000 0004`, code `123456` | `/pro` |
+| Dr. Amaka Okoro | professional (verified, synthetic licence) | `amaka.okoro@demo.genebridge.app` | `50 000 0004`, code `123456` | `/pro` |
 | Programme analyst | analyst | `analyst@demo.genebridge.app` | `50 000 0005`, code `123456` | `/admin/analytics` |
 | *(no account)* | | | `50 000 0009`, code `123456` | `/onboarding` (try sign-up) |
 
 The demo email addresses don't receive mail. To sign in as any persona in a demo, use the UAE PASS mock. To try sign-up, use your own email (the default Supabase mailer only delivers to members of your Supabase organisation).
 
 - **UAE PASS (mock):** "Continue with UAE PASS" opens a "Demo: UAE PASS" dialog with all five personas. Dr. Amaka Okoro lands on `/pro`; the Programme analyst lands on `/admin/analytics`.
-- **Facility code:** "Sign in with a facility code", then `GB-DEMO-001` with your own email. The role is set to `counsellor` on the server.
+- **Health professionals:** on Create account, choose "I'm a health professional" and sign up with your own email. You land on `/pro` with a verification banner; patient pages stay locked until an admin approves you. There is no facility code.
 
 ### How sign-in works
 
 - Email magic link (main path for now), Google and phone code (when turned on) all create the account on first use, so the page never reveals whether a number or email already has one.
 - **Passwords:** sign-up is always by email link. Right after an email-link sign-in, people are offered "Set a password" (`/auth/password`) or "Skip for now". Next time they can choose "Sign in with a password instead" on the Sign in tab. Forgotten password: sign in with an email link, then set a new one at `/auth/password`. A wrong password and an unknown email get the same message.
 - Anyone without a `terms` consent is asked for it before going further, including new people who used the Sign in tab.
+- **Who the account is for:** Create account asks "How will you use GeneBridge?" ("For myself or my family", the default, or "I'm a health professional"). The choice goes into the same short-lived httpOnly cookie as the rest of the sign-in choices, and the server sets `role = 'professional'` with the service role, only for a brand-new account. The browser can never ask for `analyst` or `admin`; those are set only by `npm run seed:auth` and `npm run create:admin`.
 - Sessions end after 30 minutes without activity, with a notice on the sign-in page.
 
 ### How onboarding works
 
-- `/onboarding` has 8 steps. `profiles.onboarding_step` holds the step to resume on, saved after every Next, Skip and Back; reaching step 8 marks it finished, and later sign-ins go to `/dashboard`.
+- `/onboarding` has 8 steps for individuals (professionals get their own 4 steps, below). `profiles.onboarding_step` holds the step to resume on, saved after every Next, Skip and Back; reaching step 8 marks it finished, and later sign-ins go to `/dashboard`.
 - Choosing a language saves it and reloads the page in that language straight away. Urdu, Hindi and Tagalog are stored as chosen and shown in English for now.
 - Step 6 claims a result through the `claim_screening_result` database function. Each code can be claimed once; a wrong code and one already claimed get the same message. After 10 failed tries in an hour, a person has to wait.
 - Step 7 creates a pending `couple_links` row with a single-use token that expires after 14 days. The partner opens `/invite/<token>`, signs in, and accepts. This links the accounts only; it shares no result and doesn't open the couple view.
@@ -193,7 +194,7 @@ Emergency, distress, prompt-injection, pregnancy and flagged-result replies are 
 
 ### Escalation and counsellor requests
 
-The escalation card's "Book a counsellor" creates a `counsellor_requests` row (summary only if the user ticked the box, which is off by default) and opens `/dashboard/counsellor`. Counsellors see open requests for their facility at `/pro`, priority first.
+The escalation card's "Book a counsellor" creates a `counsellor_requests` row (summary only if the user ticked the box, which is off by default) and opens `/dashboard/counsellor`. Verified professionals see open requests in their queue at `/pro`, priority first.
 
 **Support numbers** in `config/support-resources.ts` are `[CONFIRM]` placeholders. Verify each with the Abu Dhabi Department of Health or the Ministry of Health and Prevention before the demo.
 
@@ -302,6 +303,42 @@ FAMILY_TEST_PLANNER=1 npx playwright test family
 
 Demo (English): *"My father Ahmed has a brother, Saeed, who has beta-thalassemia major. My husband Khalid is Saeed's son. My mother's mother, Noura, had hearing problems, but I'm not sure if it was genetic."* Arabic: *"عمي سعيد عنده ثلاسيميا، وزوجي خالد ابن عمي. جدتي أم أمي كانت عندها مشاكل في السمع"*
 
+## Health professionals and verification
+
+Task 14. Anyone can sign up as a health professional, but **an unverified professional never sees, contacts, is booked by or appears to any patient**, and this is enforced in the database (guardrail 15).
+
+**Flow**
+
+1. Create account → "I'm a health professional" → sign in (email link, UAE PASS mock or phone).
+2. Professional onboarding at `/onboarding`: welcome, about you (name as on licence, profession, specialties, languages, years, optional facility), language and notifications, done → `/pro`.
+3. `/pro` shows the verification banner (Details ✓ → Documents → Review → Verified). Profile, Availability, Settings and Notifications work; Queue, sessions, Patients, Referrals and Session notes show "Available once you're verified" and load no patient data.
+4. `/pro/verify`: licence details, licence photo (camera or upload, several pages), government ID front and back, optional selfie, consent. Status becomes `pending`.
+5. An admin reviews at `/admin/verifications` and approves (confirming licence number, authority and expiry), requests more information, or rejects. Approval creates the workspace record in the intake queue, and the professional can turn on "Accepting new patients".
+6. Admins can suspend a verified professional at any time (Professionals tab). A daily job (`/api/kyc/expire`, Vercel Cron) expires licences past their date; access already ends on the expiry day. Upcoming bookings with a suspended or expired professional are listed under Flagged bookings.
+
+**Where it's enforced:** `is_verified_professional(uid)` (verified, licence in date, role `professional`) is required by `my_counsellor()` and `pro_private.require_counsellor()`, so every task 07 policy and `pro_*` function locks at once. It also gates `share_grants` inserts, `access_log` writes, bookings (plus `accepting_patients` for patient bookings), the family-map grant check, `pro_conversations` / `pro_messages`, `professional_directory()` and the patient-visible `counsellors` list. Nobody can change `verification_status`, the licence fields or `accepting_patients` directly: column grants plus a guard trigger; changes go through the `kyc_admin_*` functions and `pro_set_accepting()`.
+
+**Documents (guardrail 16):** pages are re-encoded (EXIF and PDF metadata removed) and encrypted with AES-256-GCM (`KYC_ENCRYPTION_KEY`) by `/api/kyc/upload`, then stored in the private `kyc-documents` bucket, which has no policies for signed-in users at all. Admins view them through `/api/kyc/document`, which checks `kyc_admin_document_allowed()` and audits each view. After every decision the files are deleted and the paths cleared; the AI pre-check is cut down to its pass/fail chips. Only the outcome, licence number, authority, expiry and the `verification_audit` trail remain. Abandoned uploads are swept daily.
+
+**AI pre-check:** a Claude vision call (`KYC_MODEL`, default `claude-opus-5-5`) transcribes the licence and ID; name match, licence number, expiry, document type and image quality are then computed in code (`lib/kyc/checks.ts`) and shown to the admin as passed / failed / unclear chips. It never decides. Text in the images is treated as data. Optional identity provider: `KYC_PROVIDER` (`lib/kyc/provider.ts`, none integrated yet). Official licence lookups: `lib/kyc/registry.ts`, every URL is `[CONFIRM SOURCE]` until confirmed; GeneBridge never scrapes government sites.
+
+**Admin account:** there's no way to become an admin in the app.
+
+```bash
+npm run create:admin -- reviewer@example.org    # or a phone number
+```
+
+**Tests**
+
+```bash
+npm run samples:kyc        # watermarked "SAMPLE – NOT A REAL DOCUMENT" licence, ID and selfie in samples/kyc/
+npm run test:sql           # supabase/tests/kyc.sql: the enforcement rules inside the database
+npm run test:rls           # tests/rls/kyc.test.ts: the same rules through the API
+KYC_TEST_PRECHECK=1 npx playwright test kyc
+```
+
+Events: `pro_signup_completed` (profession), `kyc_submitted`, `kyc_precheck_completed` (passed / failed / unclear counts), `kyc_decision` (outcome, hours to decision), `pro_accepting_toggled`, `pro_expired`. Never document content, names or numbers.
+
 ## Scripts
 
 | Command | What it does |
@@ -320,6 +357,8 @@ Demo (English): *"My father Ahmed has a brother, Saeed, who has beta-thalassemia
 | `npm run test:sql` | SQL tests for the analytics functions (group-of-10 rule, no identifiers, access). Needs `psql` and `SUPABASE_DB_URL`; rolls back everything |
 | `npm run samples:generate` | Generates the fake sample reports in `samples/reports/` (see [Report scanner](#report-scanner-photograph-your-report)) |
 | `npm run eval:scan` | Report scanner evaluation; prints the results table (`-- --offline` for no AI calls) |
+| `npm run create:admin -- <email-or-phone>` | Makes an account a verification admin (the only way to get the role) |
+| `npm run samples:kyc` | Generates the watermarked sample verification documents in `samples/kyc/` |
 | `npm run test:e2e` | Playwright auth flow tests (needs Supabase set up as above; run `npx playwright install chromium` once) |
 
 Before pushing, make sure `npm run build` and `npm run lint` both pass.
@@ -375,7 +414,8 @@ proxy.ts                 Locale routing, session refresh, route protection, inac
 | Milestone | Status |
 |---|---|
 | M1 Landing page | Done: `/ar` and `/en`, Lighthouse accessibility 96+ |
-| M2 Auth | Built: email link, Google, UAE PASS mock, facility code, consent, route protection. Phone code built but off (`PHONE_AUTH_ENABLED`). |
+| M2 Auth | Built: email link, Google, UAE PASS mock, "How will you use GeneBridge?" choice, consent, route protection. Phone code built but off (`PHONE_AUTH_ENABLED`). |
+| Task 14 Professionals | Built: professional sign-up and onboarding, `/pro` locked until verified, `/pro/verify` with AI pre-check, `/admin/verifications`, suspension and expiry, all enforced in the database. |
 | M3 Onboarding | Built: 8 steps with resume, language switch, listen mode, result claiming by reference or QR, partner invite and accept (`/invite/<token>`). |
 | M4–M7 | Not started. Linked routes show a placeholder page for now. |
 | M8 Dashboard | Built: `/admin/analytics` for analysts, aggregate-only database functions with the group-of-10 rule, synthetic seed and clear, CSV export. |

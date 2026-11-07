@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import Sidebar from "@/components/dashboard/Sidebar";
 import { redirect } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
-import { COUNSELLOR_HOME } from "@/lib/auth/routes";
+import { ADMIN_HOME, PRO_HOME } from "@/lib/auth/routes";
 import { conditionGuideHref } from "@/lib/conditions/links";
 import { currentPerson } from "@/lib/profile/currentPerson";
 import { loadUserPath } from "@/lib/user/path";
@@ -38,7 +38,9 @@ export default async function DashboardLayout({
     currentPerson(supabase),
     loadUserPath(supabase),
   ]);
-  if (role === "counsellor") return redirect({ href: COUNSELLOR_HOME, locale });
+  // Professionals and admins have their own workspaces, never the patient app.
+  if (role === "professional") return redirect({ href: PRO_HOME, locale });
+  if (role === "admin") return redirect({ href: ADMIN_HOME, locale });
 
   const conditionsHref =
     path.path === "exploring" ? (path.focus ? conditionGuideHref(path.focus.conditionId) : "/dashboard") : null;

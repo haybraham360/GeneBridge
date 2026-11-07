@@ -25,7 +25,6 @@ import {
   reasons,
   stepKey,
   TOTAL_STEPS,
-  type AccountType,
   type LanguageChoice,
   type LearningMode,
   type Reason,
@@ -35,17 +34,14 @@ import {
   claimResult,
   completeStep,
   goBack,
-  joinAsProfessional,
   setLanguage,
-  type ProfessionalResult,
   type StepResult,
 } from '../actions';
-import { AccountTypeStep, type FacilityError } from './AccountTypeStep';
 import { ConnectResultStep, type ClaimError } from './ConnectResultStep';
 import { PickConditionStep } from './PickConditionStep';
 import type { CatalogueCondition } from '@/lib/conditions/search';
 import { InviteStep } from './InviteStep';
-import { OptionCards } from './OptionCards';
+import { OptionCards } from '@/components/ui/OptionCards';
 import { PrivacyStep } from './PrivacyStep';
 
 export type OnboardingInitial = {
@@ -80,9 +76,6 @@ export function OnboardingFlow({ initial }: { initial: OnboardingInitial }) {
 
   const [step, setStep] = useState<StepNumber>(initial.step);
   const [direction, setDirection] = useState<'forward' | 'back'>('forward');
-  const [accountType, setAccountType] = useState<AccountType | null>(null);
-  const [facilityCode, setFacilityCode] = useState('');
-  const [facilityError, setFacilityError] = useState<FacilityError | null>(null);
   const [language, setLanguageChoice] = useState<LanguageChoice>(initial.language);
   const [learningMode, setLearningMode] = useState<LearningMode | null>(initial.learningMode);
   const [reason, setReason] = useState<Reason | null>(initial.reason);
@@ -189,7 +182,6 @@ export function OnboardingFlow({ initial }: { initial: OnboardingInitial }) {
         const result = await completeStep({
           step,
           skipped,
-          accountType: accountType ?? undefined,
           learningMode: learningMode ?? undefined,
           reason: reason ?? undefined,
           conditions: exploringStep ? picked : undefined,
@@ -198,7 +190,7 @@ export function OnboardingFlow({ initial }: { initial: OnboardingInitial }) {
         apply(result, 'forward');
       });
     },
-    [accountType, agreed, apply, exploringStep, learningMode, picked, reason, step],
+    [agreed, apply, exploringStep, learningMode, picked, reason, step],
   );
 
   const back = () => {
@@ -243,41 +235,12 @@ export function OnboardingFlow({ initial }: { initial: OnboardingInitial }) {
     });
   };
 
-  // Health professional: the server checks the facility code and, only if
-  // it's valid, grants the counsellor role. Then on to their workspace.
-  const joinProfessional = () => {
-    if (!facilityCode.trim()) {
-      setFacilityError('required');
-      document.getElementById('facility-code')?.focus();
-      return;
-    }
-    setFacilityError(null);
-    startTransition(async () => {
-      const result = await joinAsProfessional(facilityCode).catch(
-        (): ProfessionalResult => ({ status: 'error' }),
-      );
-      if (result.status === 'ok') {
-        router.replace(result.redirectTo);
-        return;
-      }
-      setFacilityError(
-        result.status === 'invalid'
-          ? 'invalid'
-          : result.status === 'rate_limited'
-            ? 'rateLimited'
-            : 'generic',
-      );
-      document.getElementById('facility-code')?.focus();
-    });
-  };
-
   // ------------------------------------------------------- primary action
   const primary = (() => {
     switch (key) {
       case 'welcome':
-        return accountType === 'professional'
-          ? { label: t('steps.welcome.facility.submit'), enabled: true, run: joinProfessional }
-          : { label: t('start'), enabled: accountType !== null, run: () => complete(false) };
+        // Who the account is for was chosen at sign-up (task 14).
+        return { label: t('start'), enabled: true, run: () => complete(false) };
       case 'learn':
         return { label: t('next'), enabled: learningMode !== null, run: () => complete(false) };
       case 'reason':
@@ -410,21 +373,6 @@ export function OnboardingFlow({ initial }: { initial: OnboardingInitial }) {
             {key === 'welcome' ? (
               <>
                 <WelcomeArt />
-                <AccountTypeStep
-                  value={accountType}
-                  onChange={(value) => {
-                    setAccountType(value);
-                    setFacilityError(null);
-                  }}
-                  onSubmit={() => primary?.run()}
-                  facilityCode={facilityCode}
-                  onFacilityCodeChange={(value) => {
-                    setFacilityCode(value);
-                    setFacilityError(null);
-                  }}
-                  error={facilityError}
-                  pending={pending}
-                />
               </>
             ) : null}
 

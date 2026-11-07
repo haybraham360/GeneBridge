@@ -109,3 +109,84 @@ export async function restoreFinished(key: DemoUser['key']) {
     .update({ onboarding_step: user.onboardingStep, locale: user.locale })
     .eq('user_id', userId);
 }
+
+// ---------------------------------------------------------------------------
+// Task 14: professionals and the verification admin (synthetic test accounts)
+// ---------------------------------------------------------------------------
+
+export const KYC_ADMIN_EMAIL = 'kyc-admin@demo.genebridge.app';
+
+/** The test admin, created with the same code as scripts/create-admin.ts. */
+export async function ensureKycAdmin(): Promise<string> {
+  const { ensureAdmin } = await import('../scripts/lib/admin');
+  return (await ensureAdmin(adminClient(), { email: KYC_ADMIN_EMAIL })).id;
+}
+
+type ProfessionalOptions = {
+  status?: 'unverified' | 'pending' | 'verified' | 'rejected' | 'expired' | 'suspended';
+  licenceExpiry?: string | null;
+  accepting?: boolean;
+  onboarded?: boolean;
+  displayName?: string;
+};
+
+/**
+ * A fresh professional account (deleted and recreated each call), as the app
+ * would leave it after "I'm a health professional". Verified ones also get
+ * the workspace record an admin approval creates.
+ */
+export async function createProfessional(email: string, options: ProfessionalOptions = {}): Promise<string> {
+  const admin = adminClient();
+  const existing = await findUserId({ email });
+  if (existing) await deleteTestUser(existing);
+  const { data, error } = await admin.auth.admin.createUser({
+    email,
+    email_confirm: true,
+    user_metadata: { display_name: options.displayName ?? 'Dr. Sample Professional', locale: 'en' },
+  });
+  if (error) throw error;
+  const id = data.user.id;
+  await admin.from('profiles').update({ role: 'professional', locale: 'en', onboarding_step: options.onboarded === false ? 0 : 8 }).eq('user_id', id);
+  await admin.from('consents').insert({ user_id: id, kind: 'terms' });
+  const status = options.status ?? 'unverified';
+  const licensed = status === 'verified' || status === 'expired' || status === 'suspended';
+  const { error: proError } = await admin.from('professional_profiles').insert({
+    user_id: id,
+    display_name: options.displayName ?? 'Dr. Sample Professional',
+    profession: 'genetic_counsellor',
+    languages: ['en', 'ar'],
+    verification_status: status,
+    licence_number: licensed ? 'SAMPLE-LIC-12345' : null,
+    licence_authority: licensed ? 'dha' : null,
+    licence_expiry: licensed ? (options.licenceExpiry ?? '2030-12-31') : null,
+    accepting_patients: status === 'verified' && options.accepting === true,
+  });
+  if (proError) throw proError;
+  if (licensed) {
+    const { data: facility } = await admin.from('facilities').select('id').order('code').limit(1).single();
+    await admin.from('counsellors').insert({ user_id: id, name: options.displayName ?? 'Dr. Sample Professional', languages: ['en', 'ar'], facility_id: facility!.id });
+  }
+  return id;
+}
+
+/** Removes a test account and anything it uploaded for verification. */
+export async function deleteTestUser(id: string) {
+  const admin = adminClient();
+  const { data: drafts } = await admin.storage.from('kyc-documents').list(id);
+  for (const d of drafts ?? []) {
+    const { data: files } = await admin.storage.from('kyc-documents').list(`${id}/${d.name}`);
+    if (files?.length) await admin.storage.from('kyc-documents').remove(files.map((f) => `${id}/${d.name}/${f.name}`));
+  }
+  await admin.from('counsellors').delete().eq('user_id', id);
+  await admin.auth.admin.deleteUser(id);
+}
+
+/** A client signed in as any account, by email (test only). */
+export async function signedInByEmail(email: string) {
+  const { data, error } = await adminClient().auth.admin.generateLink({ type: 'magiclink', email });
+  if (error) throw error;
+  const client = anonClient();
+  const { data: session, error: verifyError } = await client.auth.verifyOtp({ type: 'magiclink', token_hash: data.properties.hashed_token });
+  if (verifyError || !session.user) throw verifyError ?? new Error('No session');
+  return { client, userId: session.user.id };
+}

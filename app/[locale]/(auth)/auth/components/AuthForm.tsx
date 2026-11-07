@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
-import { ArrowLeft } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { Button, buttonClasses } from '@/components/ui/Button';
+import { OptionCards } from '@/components/ui/OptionCards';
 import { Link, useRouter } from '@/i18n/navigation';
 import { completeAuth, prepareAuth, uaePassSignIn } from '@/lib/auth/actions';
 import type { FinishResult } from '@/lib/auth/complete';
@@ -20,7 +20,10 @@ import { UaePassDialog, type UaePassIdentityKey } from './UaePassDialog';
 
 type View = 'start' | 'code' | 'emailSent' | 'consent';
 type Method = 'phone' | 'email';
-type Field = 'facility' | 'phone' | 'email' | 'password' | 'consent' | 'code';
+type Field = 'phone' | 'email' | 'password' | 'consent' | 'code';
+/** "How will you use GeneBridge?" (task 14). The server never accepts any other value. */
+type AccountType = 'individual' | 'professional';
+const accountTypes: AccountType[] = ['individual', 'professional'];
 type Errors = Partial<Record<Field | 'uaePass' | 'google', string>>;
 
 const RESEND_SECONDS = 30;
@@ -66,14 +69,13 @@ export function AuthForm({
   const supabase = useMemo(() => createClient(), []);
 
   const [mode, setMode] = useState<AuthMode>('signup');
-  const [professional, setProfessional] = useState(false);
+  const [accountType, setAccountType] = useState<AccountType>('individual');
   const [view, setView] = useState<View>(initialView);
   const [method, setMethod] = useState<Method>(phoneEnabled ? 'phone' : 'email');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [usePassword, setUsePassword] = useState(false);
-  const [facilityCode, setFacilityCode] = useState('');
   const [consent, setConsent] = useState(false);
   const [code, setCode] = useState<string[]>(emptyCode);
   const [errors, setErrors] = useState<Errors>(
@@ -90,7 +92,6 @@ export function AuthForm({
   /** Bumped each time the consent box is missed, to replay its nudge. */
   const [consentNudge, setConsentNudge] = useState(0);
 
-  const facilityRef = useRef<HTMLInputElement>(null);
   const phoneRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
@@ -98,7 +99,7 @@ export function AuthForm({
   const codeRef = useRef<CodeInputHandle>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
 
-  const isSignup = mode === 'signup' && !professional;
+  const isSignup = mode === 'signup';
   // Passwords are for returning users: sign-up is by email link, then the
   // person can set a password (/auth/password).
   const passwordMode = usePassword && !isSignup && method === 'email';
@@ -123,7 +124,7 @@ export function AuthForm({
   /** Shows errors and moves focus to the first one, in on-screen order. */
   const fail = (next: Errors) => {
     setErrors(next);
-    const order: Field[] = ['facility', 'consent', 'phone', 'email', 'password', 'code'];
+    const order: Field[] = ['consent', 'phone', 'email', 'password', 'code'];
     const first = order.find((f) => next[f]);
     if (next.consent) setConsentNudge((n) => n + 1);
     requestAnimationFrame(() => {
@@ -138,7 +139,6 @@ export function AuthForm({
       }
       else if (first) {
         const refs = {
-          facility: facilityRef,
           phone: phoneRef,
           email: emailRef,
           password: passwordRef,
@@ -169,7 +169,6 @@ export function AuthForm({
   /** Shared checks before any code or link is sent. */
   const validateStart = (field: 'phone' | 'email'): Errors => {
     const found: Errors = {};
-    if (professional && !facilityCode.trim()) found.facility = t('facility.required');
     if (field === 'phone' && !isUaeMobile(digits)) found.phone = t('phone.invalid');
     if (field === 'email' && !isEmail(email)) found.email = t('email.invalid');
     if (isSignup && !consent) found.consent = t('consent.required');
@@ -178,18 +177,14 @@ export function AuthForm({
 
   const prepare = async (m: Method | 'password'): Promise<boolean> => {
     const prepared = await prepareAuth({
-      mode: professional ? 'signin' : mode,
+      mode,
       method: m,
       consent: isSignup && consent,
-      facilityCode: professional ? facilityCode : undefined,
+      accountType: isSignup ? accountType : undefined,
       next,
     });
     if (prepared.ok) return true;
-    fail(
-      prepared.error === 'facilityInvalid'
-        ? { facility: t('facility.invalid') }
-        : { consent: t('consent.required') },
-    );
+    fail({ consent: t('consent.required') });
     return false;
   };
 
@@ -324,6 +319,7 @@ export function AuthForm({
         mode,
         method: 'google',
         consent: isSignup && consent,
+        accountType: isSignup ? accountType : undefined,
         next,
       });
       if (!prepared.ok) {
@@ -355,7 +351,13 @@ export function AuthForm({
     setBusy(true);
     setErrors({});
     try {
-      const result = await uaePassSignIn({ identity, mode, consent: isSignup && consent, next });
+      const result = await uaePassSignIn({
+        identity,
+        mode,
+        consent: isSignup && consent,
+        accountType: isSignup ? accountType : undefined,
+        next,
+      });
       if (result.status === 'error') {
         setBusy(false);
         setErrors({ uaePass: t('uaePass.failed') });
@@ -404,6 +406,26 @@ export function AuthForm({
         {title}
       </h1>
       {subline ? <p className="text-base text-muted">{subline}</p> : null}
+    </div>
+  );
+
+  const accountTypeField = (
+    <div className="flex flex-col gap-3">
+      <p id="account-type-question" className={labelClasses}>
+        {t('accountType.question')}
+      </p>
+      <OptionCards
+        options={accountTypes.map((type) => ({
+          value: type,
+          label: t(`accountType.${type}.label`),
+          sub: t(`accountType.${type}.sub`),
+        }))}
+        value={accountType}
+        onChange={setAccountType}
+        onSubmit={() => consentRef.current?.focus()}
+        labelledBy="account-type-question"
+        disabled={busy}
+      />
     </div>
   );
 
@@ -639,46 +661,6 @@ export function AuthForm({
         </button>
       </>
     );
-  } else if (professional) {
-    body = (
-      <>
-        <button
-          type="button"
-          onClick={() => {
-            setProfessional(false);
-            setErrors({});
-          }}
-          className={cn(linkButtonClasses, 'gap-1.5 self-start')}
-        >
-          <ArrowLeft aria-hidden="true" className="size-4 rtl:-scale-x-100" />
-          {t('facility.back')}
-        </button>
-        {heading(t('facility.heading'), t('facility.subline'))}
-        <div className="flex flex-col gap-2">
-          <label htmlFor="facility" className={labelClasses}>
-            {t('facility.label')}
-          </label>
-          <input
-            ref={facilityRef}
-            id="facility"
-            name="facility"
-            type="text"
-            dir="ltr"
-            autoComplete="off"
-            autoCapitalize="characters"
-            spellCheck={false}
-            placeholder={t('facility.placeholder')}
-            value={facilityCode}
-            onChange={(e) => setFacilityCode(e.target.value)}
-            aria-invalid={Boolean(errors.facility)}
-            aria-describedby={describe('facility')}
-            className={cn(inputClasses, 'uppercase rtl:text-right')}
-          />
-          <FieldError id="facility-error" message={errors.facility} />
-        </div>
-        {methodFields}
-      </>
-    );
   } else {
     body = (
       <>
@@ -690,7 +672,8 @@ export function AuthForm({
           className="flex flex-col gap-5"
         >
           {heading(t(`${mode}.heading`), t(`${mode}.subline`))}
-          {/* Agree first, then choose how to continue. */}
+          {/* Who the account is for, then agree, then choose how to continue. */}
+          {isSignup ? accountTypeField : null}
           {isSignup ? consentField : null}
           {uaePassEnabled || googleEnabled ? (
             <>
@@ -730,19 +713,6 @@ export function AuthForm({
             </>
           ) : null}
           {methodFields}
-          <p className="text-sm text-muted">
-            {t('facility.prompt')}{' '}
-            <button
-              type="button"
-              onClick={() => {
-                setProfessional(true);
-                setErrors({});
-              }}
-              className="cursor-pointer font-semibold text-brand-text underline hover:text-brand-text-dark"
-            >
-              {t('facility.link')}
-            </button>
-          </p>
         </div>
       </>
     );
@@ -759,7 +729,7 @@ export function AuthForm({
         noValidate
         onSubmit={onSubmit}
         // Re-run the entrance on each step so changes feel connected.
-        key={`${view}-${professional}`}
+        key={view}
         className="flex flex-col gap-5 motion-safe:animate-fade-up"
       >
         {body}

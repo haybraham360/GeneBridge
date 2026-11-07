@@ -96,6 +96,9 @@
       "in_person": "In person",
       "body": "{when} · {format}",
       "counsellorFallback": "Your counsellor",
+      "unavailable": "This professional is currently unavailable",
+      "unavailableBody": "Choose another professional. Your booking details are kept.",
+      "chooseAnother": "Choose another professional",
       "link": "Manage booking",
       "linkBook": "Book a counsellor"
     }

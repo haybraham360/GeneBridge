@@ -4,13 +4,18 @@
   },
   "nav": {
     "label": "المستشار",
-    "workspace": "مساحة عمل المستشار",
+    "workspace": "مساحة عمل المختص",
     "queue": "قائمة الطلبات",
     "sessions": "جلسات اليوم",
     "patients": "المرضى",
     "referrals": "الإحالات",
     "notes": "ملاحظات الجلسات",
-    "synthetic": "بيانات عرض تجريبية"
+    "synthetic": "بيانات عرض تجريبية",
+    "profile": "الملف الشخصي",
+    "availability": "أوقات التوفّر",
+    "settings": "الإعدادات",
+    "notifications": "الإشعارات",
+    "lockedLabel": "(مقفل حتى يتم التحقق منك)"
   },
   "labels": {
     "patient": "المريض {initial}.",

@@ -144,7 +144,7 @@ test('closing a request needs an outcome category, with no marriage-related opti
   await expect(card(page, /Patient S\./)).toHaveCount(0);
 });
 
-test('people who are not counsellors get a 404 on /pro', async ({ page }) => {
+test('patients get a 404 on /pro', async ({ page }) => {
   await signIn(page, 'mariam');
   const response = await page.goto('/en/pro');
   expect(response?.status()).toBe(404);

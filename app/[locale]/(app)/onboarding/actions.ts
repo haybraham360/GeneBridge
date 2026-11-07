@@ -3,9 +3,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { headers } from 'next/headers';
-import { isValidFacilityCode, joinFacility } from '@/lib/auth/complete';
 import { logEvents } from '@/lib/auth/events';
-import { COUNSELLOR_HOME } from '@/lib/auth/routes';
 import { isInviteChannel, type OnboardingEvent } from '@/lib/onboarding/events';
 import {
   DEFAULT_REASON,
@@ -27,7 +25,6 @@ import {
 } from '@/lib/onboarding/steps';
 import { finishFor, hasPrivacyConsent, isLinkedToPartner, type Finish } from '@/lib/onboarding/queries';
 import { isConditionId } from '@/lib/conditions/catalogue';
-import { createAdminClient } from '@/lib/supabase/admin';
 import { followReasonFor, type FollowReason } from '@/lib/user/pathRules';
 import { createClient } from '@/lib/supabase/server';
 
@@ -78,7 +75,6 @@ export type StepResult =
 type StepInput = {
   step: number;
   skipped: boolean;
-  accountType?: string;
   /** Step 6, exploring path: library condition ids ([] for "not sure yet"). */
   conditions?: string[];
   learningMode?: string;
@@ -110,12 +106,9 @@ export async function completeStep(input: StepInput): Promise<StepResult> {
     update.onboarding_started_at = new Date().toISOString();
   }
 
-  // Step 1 asks who is signing up. Health professionals go through
-  // joinAsProfessional instead, so only "individual" continues here.
-  if (step === 1) {
-    if (skipped || input.accountType !== 'individual') return { status: 'error' };
-    events.push({ name: 'onboarding_account_type_set', props: { type: 'individual' } });
-  }
+  // Step 1 is the welcome. Who the account is for was chosen at sign-up
+  // (task 14); professionals have their own onboarding.
+  if (step === 1 && skipped) return { status: 'error' };
 
   if (step === 3 && !skipped) {
     if (!isLearningMode(input.learningMode)) return { status: 'error' };
@@ -296,60 +289,6 @@ export async function createInvite(channel: string): Promise<InviteResult> {
     { name: 'partner_invite_created', props: { channel } },
   ] satisfies OnboardingEvent[]);
   return { status: 'ok', url, message: t('message', { link: url }) };
-}
-
-export type ProfessionalResult =
-  | { status: 'ok'; redirectTo: typeof COUNSELLOR_HOME }
-  | { status: 'invalid' | 'rate_limited' | 'error' };
-
-/** Wrong facility codes allowed per hour, to slow down guessing. */
-const FACILITY_ATTEMPTS_PER_HOUR = 10;
-
-/**
- * Step 1, "I'm a health professional". Choosing it grants nothing on its own:
- * the facility code is checked here with the service role, and only a valid
- * code makes the person a counsellor at that facility (same path as the
- * facility-code sign-in). The browser never sends a role.
- */
-export async function joinAsProfessional(rawCode: string): Promise<ProfessionalResult> {
-  const session = await signedIn();
-  if (!session || typeof rawCode !== 'string') return { status: 'error' };
-  const { supabase, userId } = session;
-
-  const admin = createAdminClient();
-  const { count, error: countError } = await admin
-    .from('events')
-    .select('id', { count: 'exact', head: true })
-    .eq('user_id', userId)
-    .eq('name', 'facility_code_failed')
-    .gte('created_at', new Date(Date.now() - 60 * 60 * 1000).toISOString());
-  if (countError) {
-    logFailure('joinAsProfessional count', countError);
-    return { status: 'error' };
-  }
-  if ((count ?? 0) >= FACILITY_ATTEMPTS_PER_HOUR) return { status: 'rate_limited' };
-
-  if (!(await isValidFacilityCode(rawCode))) {
-    await logEvents(supabase, userId, [{ name: 'facility_code_failed' }] satisfies OnboardingEvent[]);
-    return { status: 'invalid' };
-  }
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return { status: 'error' };
-  try {
-    await joinFacility(user, rawCode);
-  } catch (error) {
-    logFailure('joinAsProfessional', { message: (error as Error).message });
-    return { status: 'error' };
-  }
-
-  // The facility code itself is never logged.
-  await logEvents(supabase, userId, [
-    { name: 'onboarding_account_type_set', props: { type: 'professional' } },
-  ] satisfies OnboardingEvent[]);
-  return { status: 'ok', redirectTo: COUNSELLOR_HOME };
 }
 
 /**

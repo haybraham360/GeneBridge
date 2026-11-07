@@ -33,13 +33,22 @@ export function isNoticePath(path: string): boolean {
 
 export const NOTICE_PREVIEW_PATH = '/family-notice/preview';
 
-/** Paths only analysts may open (task 05). Everyone else gets a 404. */
-export function isAnalystPath(path: string): boolean {
-  return path === '/admin' || path.startsWith('/admin/');
+/** Verification review (task 14): admins only. Everyone else gets a 404. */
+export function isAdminPath(path: string): boolean {
+  return path === '/admin/verifications' || path.startsWith('/admin/verifications/');
 }
 
-/** Paths only counsellors may open (task 07). Everyone else gets a 404. */
-export function isCounsellorPath(path: string): boolean {
+/** Paths only analysts may open (task 05). Everyone else gets a 404. */
+export function isAnalystPath(path: string): boolean {
+  return (path === '/admin' || path.startsWith('/admin/')) && !isAdminPath(path);
+}
+
+/**
+ * The professional workspace (tasks 07 and 14): any professional, verified or
+ * not. Unverified professionals see their dashboard with locked pages; every
+ * patient-facing database function checks verification itself.
+ */
+export function isProfessionalPath(path: string): boolean {
   return path === '/pro' || path.startsWith('/pro/');
 }
 
@@ -67,8 +76,11 @@ export const FINISHED_ONBOARDING_STEP = 8;
 
 type DestinationProfile = { role: string; onboarding_step: number } | null;
 
-/** The counsellor workspace (task 07): a counsellor's dashboard. */
-export const COUNSELLOR_HOME = '/pro';
+/** The professional workspace (tasks 07 and 14). */
+export const PRO_HOME = '/pro';
+
+/** The admin's verification queue (task 14). */
+export const ADMIN_HOME = '/admin/verifications';
 
 /** The analyst's only screen (task 05). */
 export const ANALYST_HOME = '/admin/analytics';
@@ -80,8 +92,13 @@ export function isInvitePath(path: string | null): boolean {
 
 /** Where to send someone after they sign in (section 3 of task 03). */
 export function destinationFor(profile: DestinationProfile, next: string | null): string {
-  if (profile?.role === 'counsellor') return next?.startsWith(COUNSELLOR_HOME) ? next : COUNSELLOR_HOME;
-  if (profile?.role === 'analyst') return next?.startsWith('/admin') ? next : ANALYST_HOME;
+  if (profile?.role === 'professional') {
+    // Professional onboarding (4 steps) first, then the workspace.
+    if (profile.onboarding_step < FINISHED_ONBOARDING_STEP) return '/onboarding';
+    return next?.startsWith(PRO_HOME) ? next : PRO_HOME;
+  }
+  if (profile?.role === 'admin') return next && isAdminPath(next) ? next : ADMIN_HOME;
+  if (profile?.role === 'analyst') return next && isAnalystPath(next) ? next : ANALYST_HOME;
   // An invite is accepted first; the invite page then sends them on.
   if (isInvitePath(next)) return next as string;
   if (!profile || profile.onboarding_step < FINISHED_ONBOARDING_STEP) return '/onboarding';

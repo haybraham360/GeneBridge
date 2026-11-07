@@ -4,7 +4,8 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { redirect } from '@/i18n/navigation';
 import { routing } from '@/i18n/routing';
-import { COUNSELLOR_HOME } from '@/lib/auth/routes';
+import { ADMIN_HOME, FINISHED_ONBOARDING_STEP, PRO_HOME } from '@/lib/auth/routes';
+import { loadProfessional } from '@/lib/kyc/server';
 import { listConditions } from '@/lib/conditions/catalogue';
 import { finishFor, followedConditionIds, hasPrivacyConsent } from '@/lib/onboarding/queries';
 import {
@@ -17,6 +18,7 @@ import {
 } from '@/lib/onboarding/steps';
 import { createClient } from '@/lib/supabase/server';
 import { OnboardingFlow } from './components/OnboardingFlow';
+import { ProOnboardingFlow } from './components/ProOnboardingFlow';
 
 export async function generateMetadata({
   params,
@@ -27,7 +29,7 @@ export async function generateMetadata({
   return { title: t('title') };
 }
 
-export default async function OnboardingPage({ params }: PageProps<'/[locale]/onboarding'>) {
+export default async function OnboardingPage({ params, searchParams }: PageProps<'/[locale]/onboarding'>) {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
@@ -46,8 +48,34 @@ export default async function OnboardingPage({ params }: PageProps<'/[locale]/on
     .maybeSingle();
   if (!profile) return redirect({ href: '/auth', locale });
 
-  // Health professionals have their own workspace and skip patient onboarding.
-  if (profile.role === 'counsellor') return redirect({ href: COUNSELLOR_HOME, locale });
+  if (profile.role === 'admin') return redirect({ href: ADMIN_HOME, locale });
+
+  // Health professionals (task 14): their own 4-step onboarding, then /pro.
+  if (profile.role === 'professional') {
+    const finished = profile.onboarding_step >= FINISHED_ONBOARDING_STEP;
+    // ?done=1: the done screen, after switching language on the last step.
+    if (finished && (await searchParams).done !== '1') return redirect({ href: PRO_HOME, locale });
+    const pro = await loadProfessional(supabase, user.id);
+    if (!pro) return redirect({ href: PRO_HOME, locale });
+    return (
+      <ProOnboardingFlow
+        initial={{
+          step: finished ? 4 : profile.onboarding_step <= 1 ? 1 : (Math.min(profile.onboarding_step, 3) as 2 | 3),
+          details: {
+            displayName: pro.displayName,
+            profession: pro.profession ?? '',
+            specialties: pro.specialties,
+            languages: pro.languages.length ? pro.languages : [locale],
+            yearsExperience: pro.yearsExperience === null ? '' : String(pro.yearsExperience),
+            facilityName: pro.facilityName ?? '',
+            bio: pro.bio ?? '',
+          },
+          language: profile.locale === 'ar' ? 'ar' : profile.locale === 'en' ? 'en' : locale,
+          notifyEmail: pro.notifyEmail,
+        }}
+      />
+    );
+  }
 
   // Finished: later visits go straight to the dashboard.
   if (profile.onboarding_step >= DONE_STEP) return redirect({ href: '/dashboard', locale });

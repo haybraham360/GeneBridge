@@ -14,11 +14,15 @@ insert into auth.users (id) values
 insert into public.counsellors (user_id, name, facility_code) values
   ('7e570000-0000-4000-8000-0000000000c3', 'Test C', 'AAA-TEST-F'),
   ('7e570000-0000-4000-8000-0000000000d4', 'Test D', 'ZZZ-TEST-G');
--- Task 07: counsellor access also needs the counsellor role on the profile.
+-- Task 07/14: counsellor access also needs a verified professional profile.
 -- Set as the service role (profiles_guard blocks role changes otherwise).
 select set_config('request.jwt.claims', '{"role":"service_role"}', true);
-update public.profiles set role = 'counsellor'
+update public.profiles set role = 'professional'
  where user_id in ('7e570000-0000-4000-8000-0000000000c3', '7e570000-0000-4000-8000-0000000000d4');
+-- Task 14: only verified professionals reach the workspace.
+insert into public.professional_profiles (user_id, verification_status, licence_expiry) values
+  ('7e570000-0000-4000-8000-0000000000c3', 'verified', current_date + 365),
+  ('7e570000-0000-4000-8000-0000000000d4', 'verified', current_date + 365);
 
 create function pg_temp.as_user(id text) returns void language plpgsql as $$
 begin

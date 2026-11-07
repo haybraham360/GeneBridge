@@ -32,8 +32,8 @@ export function isStepNumber(value: unknown): value is StepNumber {
 }
 
 /**
- * Skip is offered on every step except welcome (everyone must say whether
- * they're a patient or a health professional), privacy and the final step.
+ * Skip is offered on every step except welcome (it has nothing to skip:
+ * who the account is for was chosen at sign-up), privacy and the final step.
  */
 export function canSkip(step: StepNumber): boolean {
   return step !== 1 && step !== PRIVACY_STEP && step !== DONE_STEP;
@@ -67,17 +67,6 @@ export function progressPercent(step: StepNumber): number {
 // ---------------------------------------------------------------------------
 // Answers
 // ---------------------------------------------------------------------------
-
-/**
- * Step 1. Who is signing up. "professional" never sets a role by itself: the
- * counsellor role is granted only after the server checks a facility code.
- */
-export const accountTypes = ['individual', 'professional'] as const;
-export type AccountType = (typeof accountTypes)[number];
-
-export function isAccountType(value: unknown): value is AccountType {
-  return typeof value === 'string' && (accountTypes as readonly string[]).includes(value);
-}
 
 /** Step 2. Urdu, Hindi and Tagalog show English text until translated. */
 export const languageChoices = ['ar', 'en', 'ur', 'hi', 'tl'] as const;

@@ -52,10 +52,10 @@ describe.skipIf(!hasSupabase)('RLS: signed in as Mariam', () => {
     expect(after?.display_name).toBe(before?.display_name);
   });
 
-  it('cannot change her own role to counsellor', async () => {
+  it('cannot change her own role to professional or admin', async () => {
     const { error } = await mariam
       .from('profiles')
-      .update({ role: 'counsellor' })
+      .update({ role: 'professional' })
       .eq('user_id', mariamId);
     expect(error).not.toBeNull();
 

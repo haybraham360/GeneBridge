@@ -8,7 +8,7 @@
  * so run it after seed:results.
  */
 import type { SupabaseClient, User } from '@supabase/supabase-js';
-import { DEMO_FACILITY_CODE, demoFacilities, demoUsers, type DemoUser } from '../../lib/auth/demoUsers';
+import { DEMO_FACILITY_KEY, demoFacilities, demoUsers, type DemoUser } from '../../lib/auth/demoUsers';
 import { demoReports } from '../../lib/onboarding/demoResults';
 import { programmeDay } from '../../lib/pro/queue';
 
@@ -53,7 +53,7 @@ export async function seedPro(admin: SupabaseClient): Promise<ProSeed> {
   );
   const facility = check(
     'facility',
-    await admin.from('facilities').select('id').eq('code', DEMO_FACILITY_CODE).single(),
+    await admin.from('facilities').select('id').eq('code', DEMO_FACILITY_KEY).single(),
   ) as { id: string };
 
   const ids = await demoUserIds(admin);

@@ -7,7 +7,7 @@ import { createClient } from '@/lib/supabase/server';
 
 /**
  * Landing point for the email magic link and Google sign-in. Creates the
- * session, then finishes sign-in on the server (consent, facility code,
+ * session, then finishes sign-in on the server (consent, professional account type,
  * events) and sends the person on. Nothing personal is read from the URL.
  */
 export async function GET(

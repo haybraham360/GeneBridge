@@ -4,7 +4,8 @@ import { supabaseUrl } from './env';
 
 /**
  * Service-role client. Bypasses row-level security, so use it only for the
- * few server-side jobs that need it (role changes from a facility code, the
+ * few server-side jobs that need it (setting up a professional account,
+ * encrypted verification documents, the
  * UAE PASS mock) and never with values taken on trust from the browser.
  */
 export function createAdminClient() {

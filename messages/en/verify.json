@@ -1,0 +1,232 @@
+{
+  "banner": {
+    "welcome": {
+      "title": "You're verified",
+      "body": "Patients can now find you once you turn on \"Accepting new patients\". All workspace pages are open.",
+      "dismiss": "Dismiss"
+    },
+    "unverified": {
+      "title": "Complete verification to start seeing patients",
+      "body": "Patients can't see, message or book you until your licence is verified. It usually takes {days} working days."
+    },
+    "pending": {
+      "title": "We're reviewing your documents",
+      "body": "We'll let you know within {days} working days."
+    },
+    "needs_more_info": {
+      "title": "We need a little more information",
+      "body": "Please read the reviewer's message, then update and resubmit."
+    },
+    "rejected": {
+      "title": "Your verification wasn't approved",
+      "body": "Read the reviewer's message. You can update your details and resubmit."
+    },
+    "expired": {
+      "title": "Your licence has expired",
+      "body": "Upload your renewed licence to continue."
+    },
+    "suspended": {
+      "title": "Your account is suspended",
+      "body": "Patients can't see or book you while your account is suspended. GeneBridge will contact you."
+    },
+    "reviewerMessage": "Message from the reviewer",
+    "viewSubmission": "View submission",
+    "resubmit": "Update and resubmit",
+    "verifyNow": "Verify now",
+    "progressLabel": "Verification progress",
+    "stages": {
+      "details": "Details",
+      "documents": "Documents",
+      "review": "Review",
+      "verified": "Verified"
+    },
+    "stageDone": "(done)"
+  },
+  "locked": {
+    "title": "Available once you're verified",
+    "body": "This page shows patient information, so it opens after your licence is verified. There's nothing here yet.",
+    "suspended": "This page is unavailable while your account is suspended.",
+    "cta": "Verify now"
+  },
+  "accepting": {
+    "label": "Accepting new patients",
+    "on": "On",
+    "off": "Off",
+    "error": "That didn't save. Try again."
+  },
+  "profile": {
+    "title": "Profile",
+    "subtitle": "Patients see your profile only once you're verified.",
+    "subtitleVerified": "How patients see you in the directory.",
+    "photoAlt": "Your profile photo",
+    "changePhoto": "Change photo",
+    "addPhoto": "Add a photo",
+    "photoHint": "A clear photo of your face. Location data is removed.",
+    "saving": "Saving…",
+    "save": "Save profile",
+    "saved": "Saved.",
+    "error": "We couldn't save that. Try again.",
+    "photoError": "That photo couldn't be used. Try a JPEG or PNG."
+  },
+  "availability": {
+    "title": "Availability",
+    "subtitle": "Set your weekly hours now. Patients see them only once you're verified.",
+    "subtitleVerified": "Your weekly hours. Patients book within these.",
+    "days": {
+      "0": "Sunday",
+      "1": "Monday",
+      "2": "Tuesday",
+      "3": "Wednesday",
+      "4": "Thursday",
+      "5": "Friday",
+      "6": "Saturday"
+    },
+    "from": "{day} start time",
+    "to": "{day} end time",
+    "save": "Save hours",
+    "status": {
+      "saved": "Saved.",
+      "invalid": "Each end time must be after its start time.",
+      "error": "We couldn't save that. Try again."
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Language, notifications and your licence.",
+    "patients": "Patients",
+    "licence": "Your licence",
+    "expires": "Expires {date, date, medium}",
+    "language": "Language",
+    "notifications": "Notifications",
+    "inApp": "You'll always see updates in the app.",
+    "email": "Email me when my verification status changes",
+    "save": "Save settings",
+    "saved": "Saved.",
+    "error": "We couldn't save that. Try again."
+  },
+  "notifications": {
+    "title": "Notifications",
+    "subtitle": "Updates about your verification.",
+    "empty": "No notifications yet.",
+    "new": "New",
+    "markRead": "Mark all as read",
+    "kinds": {
+      "pending": "We received your documents and they're in review.",
+      "verified": "You're verified. Welcome to GeneBridge.",
+      "rejected": "Your verification wasn't approved. See the reviewer's message.",
+      "needs_more_info": "The reviewer needs more information.",
+      "expired": "Your licence has expired. Upload your renewed licence.",
+      "suspended": "Your account has been suspended."
+    }
+  },
+  "capture": {
+    "pageAlt": "Page {n}",
+    "page": "Page {n}",
+    "remove": "Remove {label}",
+    "quality": {
+      "blurry": "This photo looks blurry. A sharp photo is easier to check.",
+      "dark": "This photo looks dark. Try somewhere brighter.",
+      "retake": "Take it again",
+      "keep": "Keep it"
+    },
+    "selfieHint": "Look at the camera, face in the frame",
+    "frameHint": "Fit the whole document in the frame",
+    "takeSlot": "Photograph the {label}",
+    "take": "Take a photo",
+    "upload": "Upload a file",
+    "full": "That's the most pages for this document.",
+    "cameraDenied": "The camera isn't available. You can upload a photo instead.",
+    "problems": {
+      "file_type": "Use a JPEG or PNG photo (or a PDF for your licence).",
+      "file_too_large": "That file is over 10 MB. Try a smaller photo.",
+      "heic_unsupported": "This browser can't read HEIC photos. Save it as JPEG and try again.",
+      "unreadable": "We couldn't read that file. Try another photo."
+    }
+  },
+  "flow": {
+    "meta": "Verify your licence",
+    "stepOf": "Step {step} of {total}",
+    "progressLabel": "Verification progress",
+    "uploading": "Sending your documents securely… {done} of {total}",
+    "checking": "Preparing your submission…",
+    "details": {
+      "title": "Licence details",
+      "body": "As printed on your professional licence.",
+      "number": "Licence number",
+      "authority": "Issuing authority",
+      "choose": "Choose…",
+      "authorityOther": "Name of the issuing authority",
+      "expiry": "Expiry date"
+    },
+    "licence": {
+      "title": "Photograph your professional licence",
+      "body": "Your licence card or certificate. Add more pages if it has them.",
+      "hint": "Lay it flat in good light. All four corners should be visible."
+    },
+    "id": {
+      "title": "Photograph your government ID",
+      "body": "Emirates ID or passport: the front, and the back if it has one.",
+      "hint": "We only use your ID to confirm it's you. It's deleted after the decision.",
+      "front": "Front",
+      "back": "Back"
+    },
+    "selfie": {
+      "title": "Take a selfie (optional, recommended)",
+      "body": "A reviewer compares it with your ID photo. It speeds up verification.",
+      "hint": "Plain background, face clearly visible, no sunglasses.",
+      "skip": "Skip this step"
+    },
+    "review": {
+      "title": "Review and submit",
+      "body": "Check your details before sending.",
+      "documents": "Documents",
+      "counts": "{licence, plural, one {# licence page} other {# licence pages}}, {id, plural, one {# ID side} other {# ID sides}}, {selfie, plural, =0 {no selfie} other {selfie}}",
+      "privacy": "Your documents are encrypted and seen only by the GeneBridge reviewer. They're deleted once a decision is made; we keep only the outcome, your licence number and expiry date.",
+      "consent": "I confirm these documents are mine and accurate, and I agree to GeneBridge verifying them."
+    },
+    "errors": {
+      "licenceNumber": "Enter your licence number.",
+      "authority": "Choose the issuing authority.",
+      "authorityOther": "Enter the name of the issuing authority.",
+      "expiry": "Enter an expiry date in the future.",
+      "licence": "Add a photo of your licence.",
+      "id": "Add a photo of the front of your ID.",
+      "consent": "Please confirm to continue."
+    },
+    "failure": {
+      "upload": "A document didn't send. Check your connection and try again.",
+      "not_allowed": "You already have a submission in review, or verification isn't available for your account right now.",
+      "error": "Something went wrong. Please try again."
+    },
+    "back": "Back",
+    "later": "Do this later",
+    "next": "Next",
+    "submit": "Submit for review",
+    "submitting": "Submitting…",
+    "verifiedTitle": "You're already verified",
+    "verifiedBody": "There's nothing to do here. When your licence is renewed, we'll ask for the new one.",
+    "suspendedTitle": "Verification unavailable",
+    "suspendedBody": "Your account is suspended. GeneBridge will contact you.",
+    "toDashboard": "Back to dashboard"
+  },
+  "submission": {
+    "title": "Your submission",
+    "sentTitle": "Submitted for review",
+    "sentBody": "We'll let you know within {days} working days. You'll get a notification when it's decided.",
+    "status": "Status",
+    "statuses": {
+      "submitted": "Waiting for review",
+      "in_review": "In review",
+      "approved": "Approved",
+      "rejected": "Not approved",
+      "needs_more_info": "More information needed"
+    },
+    "submitted": "Submitted",
+    "number": "Licence number",
+    "authority": "Issuing authority",
+    "expiry": "Expiry date",
+    "message": "Reviewer's message",
+    "documentsNote": "Your documents are encrypted and can't be viewed here. Only the reviewer can open them, and they're deleted after the decision.",
+    "back": "Back to dashboard"
+  }
+}

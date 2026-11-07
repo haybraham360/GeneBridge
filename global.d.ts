@@ -15,6 +15,9 @@ import type results from '@/messages/en/results.json';
 import type couple from '@/messages/en/couple.json';
 import type scan from '@/messages/en/scan.json';
 import type family from '@/messages/en/family.json';
+import type proOnboarding from '@/messages/en/pro-onboarding.json';
+import type verify from '@/messages/en/verify.json';
+import type admin from '@/messages/en/admin.json';
 
 declare module 'next-intl' {
   interface AppConfig {
@@ -36,6 +39,9 @@ declare module 'next-intl' {
       couple: typeof couple;
       scan: typeof scan;
       family: typeof family;
+      proOnboarding: typeof proOnboarding;
+      verify: typeof verify;
+      admin: typeof admin;
     };
   }
 }

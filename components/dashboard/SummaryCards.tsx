@@ -68,7 +68,18 @@ export default async function SummaryCards({ summary, catalogue }: { summary: Ho
               : { key: "couple", pill: t("couple.pill"), pillClass: pills.coupleWaiting, title: t("couple.noPartner"), body: t("couple.noPartnerBody"), link: t("couple.linkReview"), href: "/dashboard/couple" };
 
   const a = summary.appointment;
-  const appointment: Card = a
+  const appointment: Card = a && !a.available
+    ? {
+        // Task 14: the professional is suspended, expired or no longer verified.
+        key: "appointment",
+        pill: t("appointment.pill"),
+        pillClass: pills.appointment,
+        title: t("appointment.unavailable"),
+        body: t("appointment.unavailableBody"),
+        link: t("appointment.chooseAnother"),
+        href: "/dashboard/counsellor",
+      }
+    : a
     ? {
         key: "appointment",
         pill: t("appointment.pill"),

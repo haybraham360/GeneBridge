@@ -5,13 +5,7 @@ import { logEvents } from './events';
 import { getLocale } from 'next-intl/server';
 import { redirect } from '@/i18n/navigation';
 import { createClient } from '@/lib/supabase/server';
-import {
-  finishSignIn,
-  isValidFacilityCode,
-  normaliseFacilityCode,
-  setPendingAuth,
-  type FinishResult,
-} from './complete';
+import { finishSignIn, setPendingAuth, type FinishResult } from './complete';
 import type { AuthMethod } from './events';
 import { destinationProfile } from './destination';
 import { destinationFor, safeNextPath } from './routes';
@@ -21,31 +15,27 @@ type PrepareInput = {
   mode: 'signup' | 'signin';
   method: Exclude<AuthMethod, 'uae_pass'>;
   consent: boolean;
-  facilityCode?: string;
+  /** "How will you use GeneBridge?" on Create account. Never a role. */
+  accountType?: string;
   next?: string | null;
 };
 
+const accountTypeOf = (value: unknown) => (value === 'professional' ? 'professional' : 'individual');
+
 /**
  * Called just before a code or link is sent. Remembers the visitor's choices
- * server-side and checks a facility code if one was given.
+ * server-side (httpOnly cookie). Only "individual" or "professional" is kept.
  */
 export async function prepareAuth(
   input: PrepareInput,
-): Promise<{ ok: true } | { ok: false; error: 'consentRequired' | 'facilityInvalid' }> {
+): Promise<{ ok: true } | { ok: false; error: 'consentRequired' }> {
   if (input.mode === 'signup' && !input.consent) return { ok: false, error: 'consentRequired' };
-
-  let facilityCode: string | null = null;
-  if (input.facilityCode !== undefined) {
-    if (!(await isValidFacilityCode(input.facilityCode)))
-      return { ok: false, error: 'facilityInvalid' };
-    facilityCode = normaliseFacilityCode(input.facilityCode);
-  }
 
   await setPendingAuth({
     mode: input.mode,
     method: input.method,
     consent: input.mode === 'signup' && input.consent,
-    facilityCode,
+    accountType: input.mode === 'signup' ? accountTypeOf(input.accountType) : 'individual',
     next: safeNextPath(input.next),
     locale: (await getLocale()) === 'en' ? 'en' : 'ar',
   });
@@ -63,6 +53,7 @@ export async function uaePassSignIn(input: {
   identity: string;
   mode: 'signup' | 'signin';
   consent: boolean;
+  accountType?: string;
   next?: string | null;
 }): Promise<FinishResult | { status: 'error' }> {
   if (!isUaePassIdentity(input.identity)) return { status: 'error' };
@@ -72,7 +63,7 @@ export async function uaePassSignIn(input: {
     mode: input.mode,
     method: 'uae_pass',
     consent: input.mode === 'signup' && input.consent,
-    facilityCode: null,
+    accountType: input.mode === 'signup' ? accountTypeOf(input.accountType) : 'individual',
     next: safeNextPath(input.next),
     locale: (await getLocale()) === 'en' ? 'en' : 'ar',
   });

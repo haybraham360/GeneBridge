@@ -185,7 +185,7 @@ test('the UAE PASS mock signs in as a seeded user', async ({ page }) => {
   await expect(page).toHaveURL(/\/en\/dashboard$/);
 });
 
-test('the UAE PASS mock offers every persona; the counsellor lands on /pro', async ({ page }) => {
+test('the UAE PASS mock offers every persona; the verified professional lands on /pro', async ({ page }) => {
   await page.goto('/en/auth');
   await page.getByRole('tab', { name: 'Sign in' }).click();
   await page.getByRole('button', { name: 'Continue with UAE PASS' }).click();
@@ -230,37 +230,29 @@ test('signed-out return address is kept after sign-in', async ({ page }) => {
   await expect(page).toHaveURL(/\/en\/simulator$/);
 });
 
-test('a valid facility code makes the account a counsellor', async ({ page }) => {
-  const email = 'facility-test@demo.genebridge.app';
+test('there is no facility-code sign-in, and signing in never makes anyone a professional', async ({ page }) => {
+  // Task 14: professionals choose "I'm a health professional" on Create account.
+  const email = 'signin-not-pro@demo.genebridge.app';
   const existing = await findUserId({ email });
   if (existing) await adminClient().auth.admin.deleteUser(existing);
   await adminClient().auth.admin.createUser({ email, email_confirm: true });
 
   await page.goto('/en/auth');
-  await page.getByRole('button', { name: 'Sign in with a facility code' }).click();
-  await page.getByLabel('Facility code').fill('GB-WRONG-999');
-  await page.getByLabel('Email address').fill(email);
-  await page.getByRole('button', { name: 'Send sign-in link' }).click();
-  await expect(page.getByText("That facility code didn't work.")).toBeVisible();
+  await expect(page.getByText(/facility code/i)).toHaveCount(0);
+  await expect(page.getByRole('radio', { name: /I'm a health professional/ })).toBeVisible();
+  await page.getByRole('tab', { name: 'Sign in' }).click();
+  await expect(page.getByRole('radio', { name: /I'm a health professional/ })).toHaveCount(0);
 
-  await page.getByLabel('Facility code').fill('gb-demo-001');
   await requestEmailLink(page, email);
   await openMagicLink(page, email);
-  // New account: consent is asked for before anything else.
   await expect(page.getByRole('heading', { name: 'One more step' })).toBeVisible();
   await page.getByRole('checkbox').check();
   await page.getByRole('button', { name: 'Continue' }).click();
-  await expect(page).toHaveURL(/\/en\/auth\/password\?next=%2Fpro$/);
-  await page.getByRole('button', { name: 'Skip for now' }).click();
-  await expect(page).toHaveURL(/\/en\/pro$/);
+  await expect(page).toHaveURL(/\/en\/auth\/password\?next=%2Fonboarding$/);
 
   const userId = await findUserId({ email });
-  const { data } = await adminClient()
-    .from('profiles')
-    .select('role')
-    .eq('user_id', userId!)
-    .single();
-  expect(data?.role).toBe('counsellor');
+  const { data } = await adminClient().from('profiles').select('role').eq('user_id', userId!).single();
+  expect(data?.role).toBe('individual');
 });
 
 test('arrow keys move between tabs @mobile', async ({ page }) => {

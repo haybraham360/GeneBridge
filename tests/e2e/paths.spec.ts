@@ -51,7 +51,6 @@ test('exploring: "I think I may have a condition" + hearing loss, then adding a 
   await signIn(page, email);
   await expect(page).toHaveURL(/\/en\/onboarding$/);
 
-  await page.getByRole('radio', { name: /For myself or my family/ }).click();
   await page.getByRole('button', { name: "Let's start" }).click();
   for (const n of [2, 3]) {
     await expect(stepLabel(page, n)).toBeVisible();

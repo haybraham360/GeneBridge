@@ -64,6 +64,8 @@ These come straight from the brief. Breaking one loses points or causes harm. Ch
 12. **Every number in the demo is labelled synthetic.** No invented claims about real partners. Placeholders stay in `[BRACKETS]` until confirmed.
 13. **No real company logos** unless a real partnership exists.
 14. **The exploring path is never a diagnosis.** People without a result can follow conditions (family history, "I think I may have it", or learning). Never confirm, deny or estimate whether the person has or carries a condition from what they tell us: no symptom checker and no "your likely risk" numbers for the person themselves. Speak about families in general only ("if a brother or sister has it, there is a real chance you carry it; only a test can tell you"); the AI may explain general inheritance with the engine but must say a test is the only way to know. Every exploring screen shows "This isn't a diagnosis". For "I think I have it" with a dominant, X-linked or `always_escalate` condition, show the counsellor option prominently and suggest a priority counsellor request (with consent).
+15. **Only verified professionals serve patients.** No unverified professional can appear in the directory, receive messages, take bookings, claim requests or read shared data. Verification is approved by a human admin; AI only pre-checks documents.
+16. **Verification documents are highly sensitive.** Stored encrypted in a private bucket, visible only to admins reviewing them, deleted after the decision (keep only the outcome, licence number, expiry date and an audit record).
 
 ---
 
@@ -72,7 +74,7 @@ These come straight from the brief. Breaking one loses points or causes harm. Ch
 - **Framework:** Next.js (App Router) + TypeScript + Tailwind CSS
 - **i18n:** `next-intl`, locales `ar` (default, RTL) and `en`; Urdu, Hindi, Tagalog as stretch
 - **Backend:** Supabase (Postgres, Auth, Row-Level Security, Storage)
-- **Auth:** phone OTP (primary), email magic link (fallback), mock UAE PASS button that returns a test identity, facility-code sign-in for counsellors
+- **Auth:** phone OTP (primary), email magic link (fallback), mock UAE PASS button that returns a test identity. On "Create account" people choose **"For myself or my family"** or **"I'm a health professional"**; the choice is stored server-side (the browser can never ask for `analyst` or `admin`). Professionals land on `/pro` straight away but can't serve patients until a human admin verifies their licence (`/pro/verify` → `/admin/verifications`, task 14). There is no facility-code sign-in.
 - **AI:** server route calling an LLM API with a fixed system prompt and a topic allow-list (see section 8)
 - **Hosting:** Vercel
 - **Testing:** Vitest for logic, Playwright for the demo flow and the RLS access tests
@@ -114,7 +116,7 @@ Follow the design in `design/` exactly (screenshots for layout, `design/screens/
 | Route | Screen | Notes |
 |---|---|---|
 | `/` | Landing | Hero, 4 preview cards, partner placeholders, how it works, 6 feature cards, privacy band, for professionals, FAQ, CTA, footer (no pricing section) |
-| `/auth` | Sign up / sign in | Tabs, UAE PASS mock, phone OTP, email link, consent checkbox, facility-code link |
+| `/auth` | Sign up / sign in | Tabs, "How will you use GeneBridge?" choice on Create account, UAE PASS mock, phone OTP, email link, consent checkbox |
 | `/onboarding` | 8 steps | Welcome, language, read/listen, reason, privacy (required), connect result, invite partner, done. One question per screen, progress bar, Skip on all but privacy, resume where left off |
 | `/home` | Home | Care tracker (6 steps), result / couple / appointment cards, Ask GeneBridge chat |
 | `/results` | Genetic Risk Analysis | Result sentence, gene beads, risk vs diagnosis, "everyone carries something", 3 teach-back questions, next steps |
@@ -125,7 +127,9 @@ Follow the design in `design/` exactly (screenshots for layout, `design/screens/
 | `/counsellor` | Counsellor & Referral | Handoff banner, counsellor list, day/time/format picker, pre-session sharing checkboxes, referral timeline, Malaffi badge (mock) |
 | `/privacy` | Privacy & Consent | Grants table with Revoke, access log, family notifications, data stored vs never stored, download, delete, consent history |
 | `/admin/analytics` | Health authority dashboard | 4 KPIs, sign-up-to-counselling funnel, read vs listen, equity by language table, "marriage outcomes not tracked" note |
-| `/pro` | Counsellor workspace (stretch) | Today's sessions, shared summaries only |
+| `/pro` | Professional workspace | Verification banner and locked patient pages until verified; then queue, sessions, shared summaries only |
+| `/pro/verify` | Licence verification | Licence details, licence photo, ID front/back, optional selfie, consent; AI pre-check assists the admin |
+| `/admin/verifications` | Verification review | Admin only: pending queue, documents side by side, approve / request info / reject, suspend |
 
 Every app screen has: a side menu (stacks on mobile), a page title and subtitle, a Listen button (audio), and a language switch.
 
@@ -136,7 +140,17 @@ Every app screen has: a side menu (stacks on mobile), a page title and subtitle,
 ```sql
 users            -- managed by Supabase Auth
 profiles         (id, user_id, display_name, locale, learning_mode, reason, onboarding_step, role)
-                 -- role: individual | counsellor | analyst
+                 -- role: individual | professional | analyst | admin   (analyst and admin only via scripts)
+professional_profiles(user_id, display_name, profession, specialties[], languages[], years_experience, facility_name, bio,
+                 verification_status, licence_number, licence_authority, licence_expiry, verified_at, verified_by,
+                 accepting_patients)
+                 -- verification_status: unverified | pending | verified | rejected | expired | suspended
+                 -- accepting_patients can only be true when verified; status changes only via admin functions
+verification_submissions(id, user_id, id_document_paths[], licence_document_paths[], selfie_path,
+                 entered_licence_number, entered_authority, entered_expiry, ai_precheck jsonb, status,
+                 reviewer_id, reviewer_notes, decided_at, created_at)
+                 -- status: submitted | in_review | approved | rejected | needs_more_info ; paths cleared after the decision
+verification_audit(id, submission_id, actor_id, action, created_at)      -- append-only
 screening_results(id, owner_id, condition_code, status, genotype, flagged, flag_reason, reported_at, centre)
                  -- status: carrier | affected | no_variant | uncertain
 couple_links     (id, inviter_id, invitee_id, status, created_at)        -- status: pending | active | ended
@@ -148,7 +162,7 @@ family_members   (id, owner_id, label, relation, parent_ids[], partner_id, condi
                  -- condition_status: known_condition | carrier | not_sure | none
 family_notifications(id, sender_id, recipient_phone_hash, anonymous, template_id, sent_at, opened_at)
 values_answers   (id, user_id, question_id, value)                       -- 1..5
-counsellors      (id, name, languages[], facility_code)
+counsellors      (id, user_id, name, languages[], facility_id)              -- created when a professional is verified
 bookings         (id, user_id, counsellor_id, starts_at, format, partner_invited)
 referrals        (id, user_id, step, status, updated_at)
                  -- step: screening | counselling_booked | counselling_attended | confirmatory_test | specialist
@@ -160,6 +174,8 @@ events           (id, user_id, name, props jsonb, created_at)            -- powe
 - The couple view query returns data only if both partners have an unrevoked `consents` row of kind `couple_view` for the same `couple_links` row.
 - `family_members` are readable only by `owner_id`, or by a counsellor with a `share_grants` row on `family_map`.
 - Analysts can only query aggregate views that enforce `HAVING count(*) >= 10`.
+- `is_verified_professional(uid)` gates every professional touch of patient data: the directory, conversations and messages, bookings (also needs `accepting_patients`), `counsellor_requests` visibility and claiming, `share_grants` and `access_log` writes.
+- Only admins read `verification_submissions` of other people; documents live in a private bucket with no user policies and are served to admins by a server route.
 
 **Events to log from day one:** `onboarding_step_completed`, `result_viewed`, `teachback_answered` (pre/post), `couple_view_unlocked`, `simulator_run`, `family_notification_sent`, `booking_created`, `session_attended`, `ai_question` (category only, never the text of a personal question), `ai_routed_to_counsellor`.
 
@@ -215,7 +231,7 @@ Each JSON file has an audio file path for listen mode.
 | **Mariam** (main demo user) | Carrier, sickle cell trait (HbAS) | Full flow: results, couple, simulator, family, options, booking |
 | **Khalid** (Mariam's partner and cousin; son of Uncle Saeed) | Carrier, HbAS | Couple consent, values comparison |
 | **Patient R.** | Variant of uncertain significance, `flagged = true` | Shows the hard handoff: no explainer, straight to counsellor |
-| **Dr. Amaka Okoro** | Counsellor (English, Arabic) | Booking and counsellor view |
+| **Dr. Amaka Okoro** | Verified professional, genetic counsellor (English, Arabic) | Booking and counsellor view |
 
 Family map for Mariam: grandparents Rashid, Fatima, Ali, Noura; Uncle Saeed (sickle cell disease); Father Ahmed (carrier); Mother Huda (not sure); Brother Yousef (not sure); Khalid (carrier), with a cousin-marriage double line between Mariam and Khalid.
 

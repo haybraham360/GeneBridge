@@ -4,14 +4,19 @@
  * supabase/config.toml and README.md.
  */
 export const DEMO_OTP = '123456';
-export const DEMO_FACILITY_CODE = 'GB-DEMO-001';
-/** A second facility, so the access tests have a counsellor who must see nothing (task 07). */
-export const SECOND_FACILITY_CODE = 'GB-DEMO-002';
+/**
+ * Internal routing keys for the counsellor queues (task 07). Not a way in:
+ * since task 14 nobody signs in or becomes a professional with a code.
+ * Verified professionals join the intake queue (the key that sorts first).
+ */
+export const DEMO_FACILITY_KEY = 'GB-INTAKE';
+/** A second facility, so the access tests have a professional who must see nothing (task 07). */
+export const SECOND_FACILITY_KEY = 'GB-SITE-2';
 
 /** Demo facilities. Names stay bracketed placeholders until confirmed (guardrail 12). */
 export const demoFacilities = [
-  { code: DEMO_FACILITY_CODE, name: '[Facility name]' },
-  { code: SECOND_FACILITY_CODE, name: '[Second facility name]' },
+  { code: DEMO_FACILITY_KEY, name: '[Facility name]' },
+  { code: SECOND_FACILITY_KEY, name: '[Second facility name]' },
 ] as const;
 
 export type DemoUser = {
@@ -20,11 +25,11 @@ export type DemoUser = {
   /** E.164 without the plus, as Supabase stores it. */
   phone: string;
   email: string;
-  role: 'individual' | 'counsellor' | 'analyst';
+  role: 'individual' | 'professional' | 'analyst';
   locale: 'ar' | 'en';
   onboardingStep: number;
-  /** Counsellors only: the facility they work at. */
-  facilityCode?: string;
+  /** Verified professionals only: the queue they work in (task 07). */
+  facilityKey?: string;
 };
 
 export const demoUsers: DemoUser[] = [
@@ -60,10 +65,10 @@ export const demoUsers: DemoUser[] = [
     displayName: 'Dr. Amaka Okoro',
     phone: '971500000004',
     email: 'amaka.okoro@demo.genebridge.app',
-    role: 'counsellor',
+    role: 'professional',
     locale: 'en',
     onboardingStep: 8,
-    facilityCode: DEMO_FACILITY_CODE,
+    facilityKey: DEMO_FACILITY_KEY,
   },
   {
     // Second facility (task 07). Must never see Dr. Amaka's queue.
@@ -71,10 +76,10 @@ export const demoUsers: DemoUser[] = [
     displayName: 'Dr. Layla Haddad',
     phone: '971500000006',
     email: 'layla.haddad@demo.genebridge.app',
-    role: 'counsellor',
+    role: 'professional',
     locale: 'ar',
     onboardingStep: 8,
-    facilityCode: SECOND_FACILITY_CODE,
+    facilityKey: SECOND_FACILITY_KEY,
   },
   {
     // Counsellor queue demo (task 07): escalated by Ask GeneBridge, pregnant.

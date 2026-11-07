@@ -15,27 +15,7 @@
   "steps": {
     "welcome": {
       "title": "Welcome to GeneBridge",
-      "body": "Hi, I'm here to help you understand your screening results. This takes about 2 minutes. After this first question, you can skip anything except the privacy step.",
-      "question": "How will you use GeneBridge?",
-      "options": {
-        "individual": {
-          "label": "For myself or my family",
-          "sub": "Understand a screening result, a family condition, or just learn"
-        },
-        "professional": {
-          "label": "I'm a health professional",
-          "sub": "Genetic counsellor or clinician. You'll need your facility code"
-        }
-      },
-      "facility": {
-        "label": "Facility code",
-        "placeholder": "GB-XXXX-000",
-        "hint": "Your facility gives you this code. It opens the counsellor workspace, not the patient app.",
-        "submit": "Open my workspace",
-        "required": "Enter your facility code.",
-        "invalid": "That facility code didn't work. Check it and try again.",
-        "rateLimited": "Too many attempts. Please wait a while, then try again, or ask your facility."
-      }
+      "body": "Hi, I'm here to help you understand your screening results. This takes about 2 minutes. You can skip anything except the privacy step."
     },
     "language": {
       "title": "Which language do you prefer?",

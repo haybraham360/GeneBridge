@@ -38,7 +38,7 @@ async function allUsers(): Promise<User[]> {
 }
 
 async function main() {
-  // Facilities first (task 07): counsellors belong to one.
+  // Facilities first (task 07): internal queue keys, not sign-in codes.
   const { error: facilityError } = await admin
     .from('facilities')
     .upsert(demoFacilities.map((f) => ({ code: f.code, name: f.name })), { onConflict: 'code' });
@@ -94,14 +94,35 @@ async function main() {
       if (error) throw new Error(`${persona.displayName} consent: ${error.message}`);
     }
 
-    if (persona.role === 'counsellor' && persona.facilityCode) {
-      // facility_code is mirrored to facility_id by a database trigger.
+    if (persona.role === 'professional' && persona.facilityKey) {
+      // Seeded professionals are verified (synthetic licence, guardrail 12)
+      // and accepting patients, so the demo queue works (task 14). Real
+      // professionals are verified only by an admin in /admin/verifications.
+      const { error: proError } = await admin.from('professional_profiles').upsert(
+        {
+          user_id: user.id,
+          display_name: persona.displayName,
+          profession: 'genetic_counsellor',
+          specialties: ['carrier_screening', 'haemoglobin_disorders'],
+          languages: ['en', 'ar'],
+          verification_status: 'verified',
+          licence_number: '[SYNTHETIC-LICENCE]',
+          licence_authority: 'doh_abu_dhabi',
+          licence_expiry: new Date(Date.now() + 2 * 365 * 864e5).toISOString().slice(0, 10),
+          verified_at: new Date().toISOString(),
+          accepting_patients: true,
+        },
+        { onConflict: 'user_id' },
+      );
+      if (proError) throw new Error(`professional profile: ${proError.message}`);
+
+      // The workspace record: facility_code is mirrored to facility_id by a database trigger.
       const { error } = await admin.from('counsellors').upsert(
         {
           user_id: user.id,
           name: persona.displayName,
           languages: ['en', 'ar'],
-          facility_code: persona.facilityCode,
+          facility_code: persona.facilityKey,
         },
         { onConflict: 'user_id' },
       );

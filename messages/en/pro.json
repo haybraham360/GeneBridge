@@ -4,13 +4,18 @@
   },
   "nav": {
     "label": "Counsellor",
-    "workspace": "Counsellor workspace",
+    "workspace": "Professional workspace",
     "queue": "Queue",
     "sessions": "Today's sessions",
     "patients": "Patients",
     "referrals": "Referrals",
     "notes": "Session notes",
-    "synthetic": "Synthetic demo data"
+    "synthetic": "Synthetic demo data",
+    "profile": "Profile",
+    "availability": "Availability",
+    "settings": "Settings",
+    "notifications": "Notifications",
+    "lockedLabel": "(locked until you're verified)"
   },
   "labels": {
     "patient": "Patient {initial}.",

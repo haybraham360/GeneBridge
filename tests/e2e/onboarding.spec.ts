@@ -15,7 +15,7 @@ import {
   resetOnboarding,
   restoreFinished,
 } from '../supabase';
-import { DEMO_FACILITY_CODE, type DemoUser } from '../../lib/auth/demoUsers';
+import type { DemoUser } from '../../lib/auth/demoUsers';
 
 test.skip(!hasSupabase, 'Supabase env vars are not set (see README.md)');
 
@@ -48,10 +48,9 @@ async function expectStep(page: Page, n: number, title: string) {
   await expect(heading(page)).toHaveText(title);
 }
 
-/** Step 1: chooses "For myself or my family" and starts. */
+/** Step 1: the welcome. Who the account is for was chosen at sign-up (task 14). */
 async function startAsIndividual(page: Page) {
-  await expect(page.getByRole('button', { name: "Let's start" })).toBeDisabled();
-  await page.getByRole('radio', { name: /For myself or my family/ }).click();
+  await expect(page.getByRole('radio', { name: /health professional/ })).toHaveCount(0);
   await page.getByRole('button', { name: "Let's start" }).click();
 }
 
@@ -366,46 +365,4 @@ test('the invite link connects Mariam and Khalid as active', async ({ browser })
 
   await mariamContext.close();
   await khalidContext.close();
-});
-
-test('choosing "health professional" needs a valid facility code, then opens /pro', async ({ page }) => {
-  const userId = await resetOnboarding('khalid');
-  await signIn(page, 'khalid');
-  await expectStep(page, 1, 'Welcome to GeneBridge');
-
-  await page.getByRole('radio', { name: /health professional/ }).click();
-  const code = page.getByRole('textbox', { name: 'Facility code' });
-  await expect(code).toBeVisible();
-
-  // Choosing the option alone grants nothing.
-  await page.getByRole('button', { name: 'Open my workspace' }).click();
-  await expect(page.getByRole('alert')).toHaveText('Enter your facility code.');
-
-  await code.fill('GB-NOPE-000');
-  await page.getByRole('button', { name: 'Open my workspace' }).click();
-  await expect(page.getByRole('alert')).toHaveText(
-    "That facility code didn't work. Check it and try again.",
-  );
-  const { data: still } = await adminClient()
-    .from('profiles')
-    .select('role')
-    .eq('user_id', userId)
-    .single();
-  expect(still?.role).toBe('individual');
-
-  try {
-    await code.fill(DEMO_FACILITY_CODE.toLowerCase());
-    await page.getByRole('button', { name: 'Open my workspace' }).click();
-    await expect(page).toHaveURL(/\/en\/pro$/);
-    // The role now decides the dashboard: patient screens send them back to /pro.
-    await page.goto('/en/dashboard');
-    await expect(page).toHaveURL(/\/en\/pro$/);
-    await page.goto('/en/onboarding');
-    await expect(page).toHaveURL(/\/en\/pro$/);
-  } finally {
-    const admin = adminClient();
-    await admin.from('counsellors').delete().eq('user_id', userId);
-    await admin.from('profiles').update({ role: 'individual' }).eq('user_id', userId);
-    await admin.from('events').delete().eq('user_id', userId).eq('name', 'facility_code_failed');
-  }
 });

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { sendErrorKey, verifyErrorKey } from './errors';
-import { destinationFor, isAnalystPath, isProtectedPath, safeNextPath } from './routes';
+import { destinationFor, isAdminPath, isAnalystPath, isProtectedPath, safeNextPath } from './routes';
 
 describe('destinationFor', () => {
   it('sends new users and unfinished onboarding to /onboarding', () => {
@@ -28,13 +28,19 @@ describe('destinationFor', () => {
     );
   });
 
-  it('sends counsellors to /pro, never into onboarding or patient screens', () => {
-    expect(destinationFor({ role: 'counsellor', onboarding_step: 0 }, null)).toBe('/pro');
-    expect(destinationFor({ role: 'counsellor', onboarding_step: 8 }, '/dashboard')).toBe('/pro');
-    expect(destinationFor({ role: 'counsellor', onboarding_step: 8 }, '/onboarding')).toBe('/pro');
-    expect(destinationFor({ role: 'counsellor', onboarding_step: 8 }, '/pro/patients')).toBe(
-      '/pro/patients',
-    );
+  it('sends professionals through their onboarding, then to /pro, never into patient screens', () => {
+    expect(destinationFor({ role: 'professional', onboarding_step: 0 }, null)).toBe('/onboarding');
+    expect(destinationFor({ role: 'professional', onboarding_step: 3 }, '/pro')).toBe('/onboarding');
+    expect(destinationFor({ role: 'professional', onboarding_step: 8 }, null)).toBe('/pro');
+    expect(destinationFor({ role: 'professional', onboarding_step: 8 }, '/dashboard')).toBe('/pro');
+    expect(destinationFor({ role: 'professional', onboarding_step: 8 }, '/onboarding')).toBe('/pro');
+    expect(destinationFor({ role: 'professional', onboarding_step: 8 }, '/pro/patients')).toBe('/pro/patients');
+  });
+
+  it('sends admins to the verification queue only', () => {
+    expect(destinationFor({ role: 'admin', onboarding_step: 0 }, null)).toBe('/admin/verifications');
+    expect(destinationFor({ role: 'admin', onboarding_step: 8 }, '/admin/analytics')).toBe('/admin/verifications');
+    expect(destinationFor({ role: 'admin', onboarding_step: 8 }, '/admin/verifications/abc')).toBe('/admin/verifications/abc');
   });
 
   it('sends analysts to the dashboard, never into onboarding or patient screens', () => {
@@ -43,6 +49,9 @@ describe('destinationFor', () => {
       '/admin/analytics',
     );
     expect(destinationFor({ role: 'analyst', onboarding_step: 8 }, '/admin/analytics')).toBe(
+      '/admin/analytics',
+    );
+    expect(destinationFor({ role: 'analyst', onboarding_step: 8 }, '/admin/verifications')).toBe(
       '/admin/analytics',
     );
   });
@@ -102,5 +111,15 @@ describe('isAnalystPath', () => {
     expect(isAnalystPath('/admin/analytics')).toBe(true);
     expect(isAnalystPath('/administrator')).toBe(false);
     expect(isAnalystPath('/dashboard')).toBe(false);
+    expect(isAnalystPath('/admin/verifications')).toBe(false);
+  });
+});
+
+describe('isAdminPath', () => {
+  it('covers the verification review only', () => {
+    expect(isAdminPath('/admin/verifications')).toBe(true);
+    expect(isAdminPath('/admin/verifications/123')).toBe(true);
+    expect(isAdminPath('/admin/analytics')).toBe(false);
+    expect(isAdminPath('/admin/verificationsx')).toBe(false);
   });
 });

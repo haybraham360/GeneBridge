@@ -1,0 +1,146 @@
+{
+  "nav": {
+    "title": "Verification review",
+    "privacyNote": "Documents are encrypted, shown only here and deleted after each decision. Every view and action is audited.",
+    "label": "Verification menu",
+    "queue": "Pending",
+    "professionals": "Professionals",
+    "bookings": "Flagged bookings"
+  },
+  "queue": {
+    "title": "Pending verifications",
+    "subtitle": "Oldest first. The AI pre-check assists you; you decide.",
+    "empty": "Nothing waiting for review.",
+    "noName": "(no name yet)",
+    "precheck": "Pre-check: {passed} passed · {failed} failed · {unclear} unclear",
+    "precheckStatus": {
+      "pending": "Pre-check running",
+      "unavailable": "Pre-check unavailable"
+    },
+    "inReview": "In review"
+  },
+  "professionals": {
+    "title": "Professionals",
+    "subtitle": "Verified, expired and suspended professionals. Suspending hides them from patients immediately.",
+    "empty": "No verified professionals yet.",
+    "expires": "expires {date, date, medium}"
+  },
+  "bookings": {
+    "title": "Flagged bookings",
+    "subtitle": "Upcoming bookings with a professional who was suspended or whose licence expired. Help these patients choose another professional.",
+    "empty": "No flagged bookings.",
+    "reasons": {
+      "suspended": "Professional suspended",
+      "expired": "Licence expired"
+    }
+  },
+  "suspend": {
+    "button": "Suspend",
+    "reason": "Reason for suspending {name} (kept in the audit record)",
+    "error": "Enter a reason, then try again.",
+    "confirm": "Suspend now",
+    "cancel": "Cancel"
+  },
+  "precheck": {
+    "checks": {
+      "name_match": "Name match",
+      "licence_number_match": "Licence number",
+      "not_expired": "Not expired",
+      "document_type": "Document type",
+      "image_quality": "Image quality"
+    },
+    "results": {
+      "passed": "passed",
+      "failed": "failed",
+      "unclear": "unclear"
+    }
+  },
+  "review": {
+    "title": "Review verification",
+    "back": "All pending",
+    "submitted": "submitted {date}",
+    "statuses": {
+      "submitted": "Waiting for review",
+      "in_review": "In review",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "needs_more_info": "More information requested"
+    },
+    "documents": "Documents",
+    "licence": "Professional licence",
+    "id": "Government ID",
+    "selfie": "Selfie",
+    "noSelfie": "No selfie was provided.",
+    "selfieNote": "Compare the selfie with the ID photo yourself unless an identity provider is configured.",
+    "documentsDeleted": "The documents were deleted after the decision. Only the outcome and licence details remain.",
+    "precheck": "AI pre-check",
+    "precheckNote": "Assists you only. It reads the documents and compares details; it never approves or rejects anyone.",
+    "read": {
+      "licenceName": "Name on licence",
+      "idName": "Name on ID",
+      "licenceNumber": "Licence number read",
+      "authority": "Authority read",
+      "expiry": "Expiry read"
+    },
+    "issues": "Noticed:",
+    "issueNames": {
+      "possible_tampering": "possible tampering",
+      "edited_text": "edited text",
+      "photo_of_screen": "photo of a screen",
+      "photocopy": "photocopy",
+      "blurry": "blurry",
+      "glare": "glare",
+      "cut_off": "cut off",
+      "mismatched_fonts": "mismatched fonts",
+      "sample_watermark": "sample watermark",
+      "instruction_text_in_image": "instruction text in an image",
+      "multiple_documents": "several documents in one photo"
+    },
+    "provider": "{name}: ID authenticity {id}, face match {face}",
+    "precheckUnavailable": {
+      "pending": "The pre-check hasn't finished. Review the documents yourself.",
+      "not_configured": "The AI pre-check isn't set up. Review the documents yourself.",
+      "error": "The pre-check couldn't run. Review the documents yourself.",
+      "refused": "The pre-check declined these images. Review them yourself."
+    },
+    "typed": "What they entered",
+    "fields": {
+      "number": "Licence number",
+      "authority": "Authority",
+      "expiry": "Expiry",
+      "languages": "Languages",
+      "facility": "Facility"
+    },
+    "decided": "Decision",
+    "zoomOut": "Zoom out of {title}",
+    "zoomIn": "Zoom in to {title}",
+    "page": "{title}, page {n}",
+    "openPage": "Open page {n}",
+    "registry": "Check the official licence register (opens in a new tab)"
+  },
+  "decision": {
+    "title": "Your decision",
+    "modes": {
+      "approve": "Approve",
+      "needs_more_info": "Request more info",
+      "reject": "Reject"
+    },
+    "confirmNote": "Confirm the licence details exactly as you verified them.",
+    "number": "Licence number",
+    "authority": "Issuing authority",
+    "expiry": "Expiry date",
+    "reason": "Reason (shown to the professional)",
+    "message": "What do you need? (shown to the professional)",
+    "messageNote": "Don't include ID numbers or other personal details.",
+    "deleteNote": "The documents are deleted from storage once you decide.",
+    "submit": {
+      "approve": "Approve and verify",
+      "needs_more_info": "Send request",
+      "reject": "Reject"
+    },
+    "done": "Done. The documents were deleted.",
+    "doneDeletePending": "Done. The documents will be deleted by the daily cleanup.",
+    "invalid": "Check the details: the expiry must be in the future and a message is required.",
+    "error": "That didn't work. Try again."
+  }
+}

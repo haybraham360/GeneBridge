@@ -1,5 +1,7 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { careSteps, currentStepNumber, type CareFacts } from './tracker';
+
+vi.mock('server-only', () => ({}));
 
 const base: CareFacts = {
   result: { reportedAt: '2026-10-12T09:00:00Z', flagged: false },

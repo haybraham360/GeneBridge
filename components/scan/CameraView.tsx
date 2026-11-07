@@ -10,6 +10,10 @@ type Props = {
   onClose: () => void;
   /** Camera permission refused, or no camera: the caller offers upload instead. */
   onDenied: () => void;
+  /** 'user' for a selfie (task 14). Defaults to the rear camera. */
+  facing?: 'environment' | 'user';
+  /** Replaces the default "fit the page in the frame" hint. */
+  hint?: string;
 };
 
 /**
@@ -17,7 +21,7 @@ type Props = {
  * permission only once the person tapped "Take a photo"; uses the rear camera
  * on phones.
  */
-export function CameraView({ onCapture, onClose, onDenied }: Props) {
+export function CameraView({ onCapture, onClose, onDenied, facing = 'environment', hint }: Props) {
   const t = useTranslations('scan.capture');
   const video = useRef<HTMLVideoElement>(null);
   const stream = useRef<MediaStream | null>(null);
@@ -30,7 +34,7 @@ export function CameraView({ onCapture, onClose, onDenied }: Props) {
       return;
     }
     navigator.mediaDevices
-      .getUserMedia({ video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1440 } }, audio: false })
+      .getUserMedia({ video: { facingMode: { ideal: facing }, width: { ideal: 1920 }, height: { ideal: 1440 } }, audio: false })
       .then((s) => {
         if (cancelled) {
           s.getTracks().forEach((track) => track.stop());
@@ -50,7 +54,7 @@ export function CameraView({ onCapture, onClose, onDenied }: Props) {
       stream.current?.getTracks().forEach((track) => track.stop());
       stream.current = null;
     };
-  }, [onDenied]);
+  }, [onDenied, facing]);
 
   const shoot = () => {
     const v = video.current;
@@ -65,11 +69,17 @@ export function CameraView({ onCapture, onClose, onDenied }: Props) {
   return (
     <div data-testid="camera" className="flex flex-col gap-3">
       <div className="relative overflow-hidden rounded-card bg-ink">
-        <video ref={video} playsInline muted className="block aspect-3/4 w-full object-cover sm:aspect-4/3" aria-hidden="true" />
+        <video
+          ref={video}
+          playsInline
+          muted
+          className={`block aspect-3/4 w-full object-cover sm:aspect-4/3 ${facing === 'user' ? '-scale-x-100' : ''}`}
+          aria-hidden="true"
+        />
         {/* The page frame: a guide only, the whole picture is kept. */}
         <div aria-hidden="true" className="pointer-events-none absolute inset-[8%] rounded-tile border-[3px] border-dashed border-white/90" />
         <p className="absolute inset-x-0 bottom-4 mx-auto w-fit rounded-full bg-ink/80 px-4 py-2 text-center text-sm font-bold text-white">
-          {live ? t('frameHint') : t('cameraStarting')}
+          {live ? (hint ?? t('frameHint')) : t('cameraStarting')}
         </p>
       </div>
       <div className="flex flex-wrap gap-3">

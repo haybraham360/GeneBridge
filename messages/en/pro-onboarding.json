@@ -1,0 +1,107 @@
+{
+  "stepOf": "Step {step} of {total}",
+  "progressLabel": "Onboarding progress",
+  "start": "Start",
+  "next": "Next",
+  "back": "Back",
+  "saveError": "We couldn't save that. Check your connection and try again.",
+  "steps": {
+    "welcome": {
+      "title": "Welcome to GeneBridge for professionals",
+      "body": "Before you can support patients, we'll verify your licence. It usually takes {days} working days.",
+      "items": {
+        "details": "Tell us about you: two minutes.",
+        "documents": "Photograph your licence and ID when you're ready.",
+        "review": "A GeneBridge reviewer checks them. A computer only helps; a person decides.",
+        "verified": "Once verified, patients can find and book you."
+      }
+    },
+    "about": {
+      "title": "About you",
+      "body": "Use your name exactly as it appears on your licence."
+    },
+    "preferences": {
+      "title": "Language and notifications",
+      "body": "You can change these at any time in Settings.",
+      "language": "Which language do you prefer?",
+      "arabic": "Arabic",
+      "english": "English",
+      "notifications": "How should we tell you about your verification?",
+      "inApp": "You'll always see updates in the app.",
+      "email": "Also email me when my verification status changes"
+    },
+    "done": {
+      "title": "You're in",
+      "body": "Complete verification to start seeing patients.",
+      "note": "Until you're verified, patients can't see, message or book you. You can set up your profile and hours now.",
+      "cta": "Go to my dashboard"
+    }
+  },
+  "fields": {
+    "displayName": "Full name as on your licence",
+    "displayNameHint": "Patients will see this name once you're verified.",
+    "profession": "Profession",
+    "choose": "Choose…",
+    "specialties": "Specialties",
+    "languages": "Languages you speak with patients",
+    "yearsExperience": "Years of experience",
+    "facilityName": "Facility or practice name",
+    "optional": "(optional)",
+    "bio": "Short bio",
+    "bioCount": "{count} of {max} characters"
+  },
+  "errors": {
+    "displayName": "Enter your full name as it appears on your licence.",
+    "profession": "Choose your profession.",
+    "languages": "Choose at least one language.",
+    "yearsExperience": "Enter a whole number of years (0 to 70).",
+    "facilityName": "Keep the facility name under 160 characters.",
+    "bio": "Keep your bio to 400 characters."
+  },
+  "labels": {
+    "profession": {
+      "genetic_counsellor": "Genetic counsellor",
+      "medical_geneticist": "Medical geneticist",
+      "physician": "Physician",
+      "nurse": "Nurse",
+      "other": "Other licensed professional"
+    },
+    "specialty": {
+      "carrier_screening": "Carrier and premarital screening",
+      "haemoglobin_disorders": "Haemoglobin disorders",
+      "reproductive_genetics": "Reproductive genetics",
+      "prenatal": "Prenatal",
+      "paediatric_genetics": "Paediatric genetics",
+      "metabolic": "Metabolic conditions",
+      "neurogenetics": "Neurogenetics",
+      "hearing_loss": "Hearing loss",
+      "cancer_genetics": "Cancer genetics",
+      "cardiac_genetics": "Cardiac genetics"
+    },
+    "language": {
+      "ar": "العربية",
+      "en": "English",
+      "ur": "اردو",
+      "hi": "हिन्दी",
+      "tl": "Tagalog",
+      "fr": "Français",
+      "fa": "فارسی",
+      "ml": "മലയാളം",
+      "bn": "বাংলা"
+    },
+    "authority": {
+      "doh_abu_dhabi": "Department of Health – Abu Dhabi",
+      "mohap": "Ministry of Health and Prevention",
+      "dha": "Dubai Health Authority",
+      "other": "Other"
+    },
+    "status": {
+      "unverified": "Not verified",
+      "pending": "In review",
+      "verified": "Verified",
+      "rejected": "Not approved",
+      "expired": "Licence expired",
+      "suspended": "Suspended"
+    }
+  }
+}

@@ -4,8 +4,9 @@ import { NextResponse, type NextRequest } from 'next/server';
 import {
   IDLE_LIMIT_MS,
   IDLE_REASON,
+  isAdminPath,
   isAnalystPath,
-  isCounsellorPath,
+  isProfessionalPath,
   isNoticePath,
   isProtectedPath,
   LAST_ACTIVE_COOKIE,
@@ -79,6 +80,13 @@ async function noticeProxy(request: NextRequest, locale: string, path: string) {
     return redirectWithCookies(target, response);
   }
   return withNoticeHeaders(response, csp);
+}
+
+/** A plain 404 that keeps any auth cookies, so a route doesn't announce itself. */
+function notFoundFor(request: NextRequest, locale: string, from: NextResponse) {
+  const notFound = NextResponse.rewrite(new URL(`/${locale}/admin/not-found`, request.url), { status: 404 });
+  from.cookies.getAll().forEach((cookie) => notFound.cookies.set(cookie));
+  return notFound;
 }
 
 /** Redirect that keeps any auth cookies Supabase just set or cleared. */
@@ -195,17 +203,18 @@ export default async function proxy(request: NextRequest) {
     }
   }
 
-  // 6. Counsellor workspace (task 07): counsellors only, same 404 rule. The
-  // layout and every database function check again.
-  if (signedIn && isCounsellorPath(path)) {
-    const { data: counsellor, error } = await supabase.rpc('pro_is_counsellor');
-    if (error || counsellor !== true) {
-      const notFound = NextResponse.rewrite(new URL(`/${locale}/admin/not-found`, request.url), {
-        status: 404,
-      });
-      response.cookies.getAll().forEach((cookie) => notFound.cookies.set(cookie));
-      return notFound;
-    }
+  // 6. Professional workspace (tasks 07 and 14): any professional, same 404
+  // rule. Unverified professionals reach their own dashboard; the layout and
+  // every database function check verification before any patient data.
+  if (signedIn && isProfessionalPath(path)) {
+    const { data: professional, error } = await supabase.rpc('pro_is_professional');
+    if (error || professional !== true) return notFoundFor(request, locale, response);
+  }
+
+  // 7. Verification review (task 14): admins only, same 404 rule.
+  if (signedIn && isAdminPath(path)) {
+    const { data: admin, error } = await supabase.rpc('kyc_is_admin');
+    if (error || admin !== true) return notFoundFor(request, locale, response);
   }
 
   return response;

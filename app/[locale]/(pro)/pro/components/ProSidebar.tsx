@@ -4,11 +4,10 @@ import { Logo } from '@/components/ui/Logo';
 import { isDemoData } from '@/lib/analytics/demo';
 import { SignOutButton } from '@/components/auth/SignOutButton';
 import { initialsOf } from '@/lib/pro/labels';
-import type { CounsellorMe } from '@/lib/pro/types';
 import { ProNav } from './ProNav';
 
-/** White side menu: logo, "Counsellor workspace", links, and who is signed in. */
-export function ProSidebar({ me }: { me: CounsellorMe }) {
+/** White side menu: logo, "Professional workspace", links, and who is signed in. */
+export function ProSidebar({ name, subline, verified }: { name: string; subline: string; verified: boolean }) {
   const t = useTranslations('pro.nav');
 
   return (
@@ -18,7 +17,7 @@ export function ProSidebar({ me }: { me: CounsellorMe }) {
         <span className="text-xs font-bold tracking-[0.12em] text-muted uppercase">{t('workspace')}</span>
       </div>
 
-      <ProNav />
+      <ProNav verified={verified} />
 
       <div className="flex flex-col gap-4 md:mt-auto">
         <div className="flex flex-wrap items-center gap-x-4 px-2 text-sm font-semibold">
@@ -29,17 +28,15 @@ export function ProSidebar({ me }: { me: CounsellorMe }) {
             aria-hidden="true"
             className="flex size-10 flex-none items-center justify-center rounded-full bg-ink font-extrabold text-white"
           >
-            {initialsOf(me.name)}
+            {initialsOf(name)}
           </span>
           <span className="flex min-w-0 flex-col">
-            <span className="truncate text-sm font-bold">{me.name}</span>
-            <span className="truncate text-xs text-muted">{me.facilityName}</span>
+            <span className="truncate text-sm font-bold">{name}</span>
+            {subline ? <span className="truncate text-xs text-muted">{subline}</span> : null}
           </span>
         </div>
         <SignOutButton />
-        {isDemoData() ? (
-          <p className="px-2 text-xs font-bold text-brand-text-dark">{t('synthetic')}</p>
-        ) : null}
+        {isDemoData() ? <p className="px-2 text-xs font-bold text-brand-text-dark">{t('synthetic')}</p> : null}
       </div>
     </aside>
   );
