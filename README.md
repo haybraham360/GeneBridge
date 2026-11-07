@@ -4,6 +4,8 @@ GeneBridge is a bilingual (Arabic-first, English), privacy-first web app. It hel
 
 The full product brief, guardrails and milestones are in [PROJECT.md](PROJECT.md). The UI design is in [design/](design/README.md).
 
+**Live site:** https://genebridge-nine.vercel.app (hosted on Vercel; see [Deployment](#deployment)).
+
 ## Requirements
 
 - **Node.js 20.9 or later** (Next.js 16 requirement). Node 24 is used in development.
@@ -99,7 +101,7 @@ In the Supabase dashboard, **Authentication**:
   `971500000001=123456, 971500000002=123456, 971500000003=123456, 971500000004=123456, 971500000005=123456, 971500000009=123456`
 - **Sign In / Providers → Email:** enabled (magic link). The default Supabase mailer only delivers to your team's addresses; add custom SMTP to email anyone else.
 - **Sign In / Providers → Google** (optional): in Google Cloud, create an OAuth client (Web application) with redirect URI `https://<ref>.supabase.co/auth/v1/callback`, then paste its client ID and secret here. The button appears on the sign-in page within a minute.
-- **URL Configuration:** Site URL `http://localhost:3000`; add `http://localhost:3000/**` (and your Vercel URL) to the redirect URLs.
+- **URL Configuration:** Site URL `https://genebridge-nine.vercel.app` (or `http://localhost:3000` for a local-only project). Redirect URLs: `https://genebridge-nine.vercel.app/**`, `http://localhost:3000/**` and `https://genebridge-*-abrahams-projects-02e4bee7.vercel.app/**` (preview deployments). Without the live address here, email sign-in links send people to localhost.
 - **Rate limits** stay at Supabase's defaults; the app shows "Too many attempts. Please wait a minute." when one is hit.
 
 ### 4. Seed the demo users
@@ -440,6 +442,20 @@ Telehealth consultations must follow the professional's licensing rules and loca
 - Unit tests (`npm run test:rls`): time display for Dubai and London (including daylight saving), directory order and filters, chat helpers, content-free emails, and the Google API mocked: confirm creates a Meet event with a neutral title and no health text, reschedule moves it, cancel deletes it, and a failure falls back without losing the booking.
 - `tests/rls/booking-chat.test.ts`: the same rules through the API, with throwaway accounts.
 - `tests/e2e/realtime.spec.ts` (Playwright, two browser contexts): a message reaches the professional within 2 seconds and the reply comes back; a booking appears in the professional's sessions; confirming updates the patient's Home with "Join video call".
+
+## Deployment
+
+GeneBridge runs on Vercel as the project **genebridge** (team `abrahams-projects-02e4bee7`), at **https://genebridge-nine.vercel.app**.
+
+- **Automatic deploys:** the project is connected to `github.com/haybraham360/GeneBridge`. Every push to `main` deploys to production; other branches get preview deployments.
+- **Manual deploy:** `vercel deploy --prod` from this folder (it is linked in `.vercel/`).
+- **Environment variables (Production):** `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `ANTHROPIC_API_KEY`, `PHONE_AUTH_ENABLED`, `NEXT_PUBLIC_DEMO_MODE` (`false`), `NEXT_PUBLIC_SITE_URL`, and the production secrets `KYC_ENCRYPTION_KEY`, `CALENDAR_TOKEN_KEY`, `NOTICE_PHONE_SALT` and `CRON_SECRET`. Manage them in the Vercel dashboard (Settings → Environment Variables) or with `vercel env`. Preview deployments have none set yet: add them for the Preview environment if you use previews.
+- **Production secrets are not the development ones.** Verification documents uploaded while testing locally (encrypted with the development key) can't be opened in production; professionals upload them again. Keep the production keys once real data exists.
+- **`NEXT_PUBLIC_*` values are built into the app:** after changing one, redeploy.
+- **Demo mode:** off in production, so real users never see the demo sign-in. For a demo with the seeded personas, set `NEXT_PUBLIC_DEMO_MODE=true` and redeploy.
+- **Supabase:** the database migrations are applied, and Authentication → URL Configuration lists the live address (see [Auth settings](#3-auth-settings-hosted-project)).
+- **Crons** (`vercel.json`): scan clean-up, licence expiry and booking reminders, all daily on the Hobby plan. See [Reminders](#reminders) for 1-hour reminders.
+- **Not yet configured in production:** Google Meet (`GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REDIRECT_URI=https://genebridge-nine.vercel.app/api/calendar/google/callback`, plus that redirect URI in the Google OAuth client) and email (`EMAIL_PROVIDER`, `RESEND_API_KEY`, `EMAIL_FROM`). Until then professionals paste a video link, and notifications are in-app only.
 
 ## Scripts
 
