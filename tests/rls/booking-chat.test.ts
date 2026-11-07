@@ -46,14 +46,14 @@ describe.skipIf(!hasSupabase)('RLS: booking, chat and calendar', () => {
     ({ client: q } = await signedInByEmail(Q));
     ({ client: v } = await signedInByEmail(V));
     ({ client: u } = await signedInByEmail(U));
-  });
+  }, 90_000);
 
   afterAll(async () => {
     for (const email of [P, Q, V, U]) {
       const id = await findUserId({ email });
       if (id) await deleteTestUser(id);
     }
-  });
+  }, 90_000);
 
   it('only verified professionals who accept patients are in the directory', async () => {
     const { data } = await p.rpc('professional_directory');

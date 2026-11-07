@@ -38,7 +38,7 @@ describe.skipIf(!hasSupabase)('RLS: professional verification', () => {
     ({ client: unverified } = await signedInByEmail(UNVERIFIED));
     ({ client: mariam, userId: mariamId } = await signedInAs('mariam'));
     ({ client: admin } = await signedInByEmail(KYC_ADMIN_EMAIL));
-  });
+  }, 90_000);
 
   afterAll(async () => {
     if (unverifiedId) await deleteTestUser(unverifiedId);

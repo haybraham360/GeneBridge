@@ -51,13 +51,15 @@ export function SlotPicker({
   const [slots, setSlots] = useState<Slot[] | null>(initialSlots ?? null);
   const [format, setFormat] = useState<SessionFormat | null>(null);
   const [day, setDay] = useState<string | null>(null);
-  const loadedFor = useRef<string | null>(initialSlots ? professionalId : null);
+  // Times the page already loaded for this professional (the profile page).
+  // Never changed, so React's double-run of effects in development can't
+  // skip a fetch that is still needed.
+  const preloadedFor = useRef<string | null>(initialSlots ? professionalId : null);
 
   useEffect(() => {
-    if (loadedFor.current === professionalId) return;
-    loadedFor.current = professionalId;
+    if (preloadedFor.current === professionalId) return;
     let live = true;
-    // Reset while the new professional's times load.
+    // Reset while this professional's times load.
     setSlots(null);
     setDay(null);
     setFormat(null);

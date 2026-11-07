@@ -8,7 +8,7 @@
  */
 import { revalidatePath } from 'next/cache';
 import { getCondition } from '@/lib/conditions/catalogue';
-import { toMessage } from '@/lib/chat/server';
+import { loadMessages, toMessage } from '@/lib/chat/server';
 import { chatShareItems, cleanBody, reportReasons, type ChatMessage, type ChatShareItem, type ReportReason } from '@/lib/chat/types';
 import { emailUser } from '@/lib/email/notify';
 import { createClient, getAuthUser } from '@/lib/supabase/server';
@@ -45,6 +45,12 @@ export async function sendMessage(conversationId: string, body: string): Promise
   ]);
   if (convo && count === 1) await emailUser(convo.patient_id === user.id ? convo.professional_id : convo.patient_id, 'new_message');
   return { message: toMessage(data) };
+}
+
+/** The latest messages (row-level security: participants only), to catch up after reconnecting. */
+export async function fetchMessages(conversationId: string): Promise<ChatMessage[]> {
+  if (!isUuid(conversationId)) return [];
+  return loadMessages(await createClient(), conversationId);
 }
 
 export async function markRead(conversationId: string): Promise<void> {

@@ -3,7 +3,7 @@
 import { Flag, Lock, Trash2 } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useRef, useState, useTransition, type KeyboardEvent } from 'react';
-import { deleteMessage, markRead, reportMessage, sendMessage, setBlocked, shareInChat } from '@/app/[locale]/chatActions';
+import { deleteMessage, fetchMessages, markRead, reportMessage, sendMessage, setBlocked, shareInChat } from '@/app/[locale]/chatActions';
 import { useViewerTimeZone } from '@/components/booking/useViewerTimeZone';
 import { Link, useRouter } from '@/i18n/navigation';
 import { dayLabel, timeLabel } from '@/lib/booking/time';
@@ -48,10 +48,18 @@ export function ChatView({ conversation: c, initialMessages, userId }: { convers
   const writable = canSend(c);
   const isPatient = c.myRole === 'patient';
 
+  // Values the live subscription reads, kept in refs so a page refresh
+  // never tears the subscription down (a message could arrive in the gap).
+  const latest = useRef({ t, otherName: c.otherName, router, status: c.status, blockedByMe: c.blockedByMe });
+  useEffect(() => {
+    latest.current = { t, otherName: c.otherName, router, status: c.status, blockedByMe: c.blockedByMe };
+  });
+
   // Live messages, read receipts and the typing indicator.
   useEffect(() => {
     const supabase = createClient();
     let typingTimer: ReturnType<typeof setTimeout> | undefined;
+    const merge = (list: ChatMessage[]) => setMessages((current) => list.reduce(upsertMessage, current));
     const db = supabase
       .channel(`conversation-${c.id}`)
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `conversation_id=eq.${c.id}` }, (payload) => {
@@ -59,16 +67,25 @@ export function ChatView({ conversation: c, initialMessages, userId }: { convers
         setMessages((list) => upsertMessage(list, m));
         if (m.senderId !== userId) {
           setTyping(false);
-          if (m.kind === 'text') setAnnounce(t('newMessage', { name: c.otherName }));
-          if (document.visibilityState === 'visible') void markRead(c.id);
+          if (m.kind === 'text') setAnnounce(latest.current.t('newMessage', { name: latest.current.otherName }));
+          // The conversation is open: it has been seen.
+          if (document.visibilityState !== 'hidden') void markRead(c.id);
         }
       })
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'messages', filter: `conversation_id=eq.${c.id}` }, (payload) => {
         setMessages((list) => upsertMessage(list, fromRow(payload.new as Row)));
       })
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'conversations', filter: `id=eq.${c.id}` }, () => router.refresh())
-      .subscribe();
-    // Typing: a broadcast with the sender's role only, never text.
+      // Every message moves last_message_at; only a status change (block,
+      // unblock, close) needs the page to re-read.
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'conversations', filter: `id=eq.${c.id}` }, (payload) => {
+        const next = payload.new as { status?: string };
+        if (next.status && next.status !== latest.current.status) latest.current.router.refresh();
+      })
+      .subscribe((state) => {
+        // Catch up on anything sent while (re)connecting.
+        if (state === 'SUBSCRIBED') void fetchMessages(c.id).then(merge).catch(() => undefined);
+      });
+    // Typing: a broadcast with the sender's id only, never text.
     const live = supabase
       .channel(`typing-${c.id}`)
       .on('broadcast', { event: 'typing' }, ({ payload }) => {
@@ -80,12 +97,20 @@ export function ChatView({ conversation: c, initialMessages, userId }: { convers
       .subscribe();
     typingChannel.current = live;
     void markRead(c.id);
+    // "Seen" also when the person comes back to the tab.
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') void markRead(c.id);
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    window.addEventListener('focus', onVisible);
     return () => {
+      document.removeEventListener('visibilitychange', onVisible);
+      window.removeEventListener('focus', onVisible);
       clearTimeout(typingTimer);
       void supabase.removeChannel(db);
       void supabase.removeChannel(live);
     };
-  }, [c.id, c.otherName, userId, router, t]);
+  }, [c.id, userId]);
 
   useEffect(() => {
     end.current?.scrollIntoView({ block: 'end' });

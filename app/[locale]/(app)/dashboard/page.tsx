@@ -34,7 +34,7 @@ export default async function Page({ params, searchParams }: PageProps<'/[locale
   const { addResult } = await searchParams;
   if (!hasLocale(routing.locales, locale)) notFound();
   const supabase = await createClient();
-  const [t, format, facts, notifications, claims, person, path] = await Promise.all([
+  const [t, format, facts, notifications, claims, person, path, nextBooking] = await Promise.all([
     getTranslations({ locale, namespace: "dashboard" }),
     getFormatter({ locale }),
     loadCareFacts(supabase),
@@ -42,13 +42,25 @@ export default async function Page({ params, searchParams }: PageProps<'/[locale
     getAuthClaims(supabase),
     currentPerson(supabase),
     loadUserPath(supabase),
+    // The next live session (task 15), on both versions of Home.
+    loadNextBooking(supabase),
   ]);
   const catalogue = listConditions(locale);
 
   // Exploring path (task 11): no result yet; Home is shaped by the
   // conditions they follow, and never presents one as a diagnosis.
   if (path.path === "exploring") {
+    const exploringUserId = claims?.sub;
     return (
+      <>
+        {exploringUserId ? (
+          <LiveRefresh channel={`home-bookings-${exploringUserId}`} watch={[{ table: "bookings", filter: `patient_id=eq.${exploringUserId}` }]} />
+        ) : null}
+        {nextBooking ? (
+          <div className="px-[clamp(16px,3vw,40px)] pt-7">
+            <NextSession booking={nextBooking} />
+          </div>
+        ) : null}
       <ExploreHome
         locale={locale}
         firstName={person.firstName}
@@ -56,10 +68,10 @@ export default async function Page({ params, searchParams }: PageProps<'/[locale
         catalogue={catalogue}
         openClaim={addResult === "1"}
       />
+      </>
     );
   }
-  // The next live session (task 15) sits under the care tracker.
-  const [summary, nextBooking] = await Promise.all([loadHomeSummary(supabase, path), loadNextBooking(supabase)]);
+  const summary = await loadHomeSummary(supabase, path);
   const byId = new Map(catalogue.map((c) => [c.id, c]));
   const followedItems = path.followed.flatMap((f) => {
     const c = byId.get(f.conditionId);

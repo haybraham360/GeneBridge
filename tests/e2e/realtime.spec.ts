@@ -103,7 +103,15 @@ test('a booking appears for the professional, and confirming updates the patient
 
   // As the Meet step would: a link, and the session starting in 5 minutes.
   const admin = adminClient();
-  const { data: booking } = await admin.from('bookings').select('id').eq('patient_id', patientId).eq('status', 'confirmed').single();
+  // Wait for the confirmation to be saved (the card leaves "Waiting").
+  await expect(request).toHaveCount(0, { timeout: 15_000 });
+  let booking: { id: string } | null = null;
+  await expect
+    .poll(async () => {
+      ({ data: booking } = await admin.from('bookings').select('id').eq('patient_id', patientId).eq('status', 'confirmed').maybeSingle());
+      return booking?.id ?? null;
+    }, { timeout: 15_000 })
+    .not.toBeNull();
   const start = new Date(Date.now() + 5 * 60_000);
   await admin
     .from('bookings')
