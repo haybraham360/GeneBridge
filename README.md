@@ -399,7 +399,9 @@ Task 15. Patients find a verified professional, message them, book a session, an
 
 ### Reminders
 
-`/api/cron/booking-reminders` writes in-app reminders 24 hours and 1 hour before each confirmed session, once each, for both sides, and emails them when email is on. `vercel.json` runs it every 15 minutes with `Authorization: Bearer $CRON_SECRET`. Vercel's Hobby plan only runs crons once a day: use the Pro plan or call the route from another scheduler for timely reminders.
+`/api/cron/booking-reminders` writes in-app reminders 24 hours and 1 hour before each confirmed session, once each, for both sides, and emails them when email is on. It needs `Authorization: Bearer $CRON_SECRET`.
+
+`vercel.json` runs it **once a day** (05:00 UTC, 09:00 in Dubai), because Vercel's Hobby plan allows only daily crons: that sends every 24-hour reminder, but most 1-hour reminders are missed. For both, run it every 15 minutes: on the Pro plan change the schedule to `*/15 * * * *`, or call the route from another scheduler (for example a GitHub Actions schedule or cron-job.org) with the same header.
 
 ### Google Meet links
 

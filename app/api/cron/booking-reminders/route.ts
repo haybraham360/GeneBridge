@@ -2,8 +2,9 @@
  * Booking reminders (task 15, section 4): 24 hours and 1 hour before each
  * confirmed session, for the patient and the professional. In-app always
  * (queue_booking_reminders writes each one once); by email too when
- * EMAIL_PROVIDER is set, with no details in it. Run by Vercel Cron every
- * 15 minutes (vercel.json) with `Authorization: Bearer $CRON_SECRET`.
+ * EMAIL_PROVIDER is set, with no details in it. Run by Vercel Cron
+ * (vercel.json: daily on the Hobby plan, every 15 minutes on Pro or from
+ * another scheduler) with `Authorization: Bearer $CRON_SECRET`.
  */
 import { emailUser } from '@/lib/email/notify';
 import { createAdminClient } from '@/lib/supabase/admin';
