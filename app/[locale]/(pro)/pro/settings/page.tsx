@@ -6,6 +6,9 @@ import { requireProfessionalPage } from '@/lib/kyc/server';
 import { AcceptingToggle } from '../components/AcceptingToggle';
 import { PageHeader } from '../components/PageHeader';
 import { SettingsForm } from './SettingsForm';
+import { CalendarConnection } from './CalendarConnection';
+import { googleConfigured } from '@/lib/calendar/google';
+import { loadProBookingContext } from '@/lib/booking/pro';
 
 export async function generateMetadata({ params }: PageProps<'/[locale]/pro/settings'>) {
   const { locale } = await params;
@@ -14,8 +17,9 @@ export async function generateMetadata({ params }: PageProps<'/[locale]/pro/sett
   return { title: t('title'), robots: { index: false } };
 }
 
-export default async function SettingsPage({ params }: PageProps<'/[locale]/pro/settings'>) {
+export default async function SettingsPage({ params, searchParams }: PageProps<'/[locale]/pro/settings'>) {
   const { locale } = await params;
+  const { calendar } = await searchParams;
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
   const [{ supabase, userId, profile, verified }, t, tl] = await Promise.all([
@@ -23,7 +27,12 @@ export default async function SettingsPage({ params }: PageProps<'/[locale]/pro/
     getTranslations({ locale, namespace: 'verify.settings' }),
     getTranslations({ locale, namespace: 'proOnboarding.labels' }),
   ]);
-  const { data } = await supabase.from('profiles').select('locale').eq('user_id', userId).maybeSingle();
+  const [{ data }, calendarCtx] = await Promise.all([
+    supabase.from('profiles').select('locale').eq('user_id', userId).maybeSingle(),
+    loadProBookingContext(supabase, userId),
+  ]);
+  const calendarStatuses = ['connected', 'cancelled', 'error', 'not_configured', 'disconnected'] as const;
+  const calendarStatus = calendarStatuses.find((s) => s === calendar) ?? null;
 
   return (
     <>
@@ -46,6 +55,7 @@ export default async function SettingsPage({ params }: PageProps<'/[locale]/pro/
         </section>
       ) : null}
       <SettingsForm language={data?.locale === 'en' ? 'en' : 'ar'} notifyEmail={profile.notifyEmail} />
+      <CalendarConnection configured={googleConfigured()} connected={calendarCtx.googleConnected} email={calendarCtx.googleEmail} status={calendarStatus} />
     </>
   );
 }

@@ -33,6 +33,7 @@ export async function loadHomeSummary(supabase: SupabaseClient, path: UserPathIn
       .from('bookings')
       .select('starts_at, format, counsellor_id, attended_at')
       .is('attended_at', null)
+      .in('status', ['requested', 'confirmed'])
       .gte('starts_at', new Date(Date.now() - 2 * 3600_000).toISOString())
       .order('starts_at', { ascending: true })
       .limit(1),

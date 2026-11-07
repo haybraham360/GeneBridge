@@ -15,7 +15,9 @@
     "availability": "أوقات التوفّر",
     "settings": "الإعدادات",
     "notifications": "الإشعارات",
-    "lockedLabel": "(مقفل حتى يتم التحقق منك)"
+    "lockedLabel": "(مقفل حتى يتم التحقق منك)",
+    "calendar": "التقويم",
+    "messages": "الرسائل"
   },
   "labels": {
     "patient": "المريض {initial}.",
@@ -97,14 +99,38 @@
     "family_map": "خريطة العائلة"
   },
   "conditions": {
-    "sickle_cell": { "name": "مرض فقر الدم المنجلي", "carrier": "سمة الخلية المنجلية" },
-    "beta_thalassemia": { "name": "الثلاسيميا بيتا", "carrier": "سمة الثلاسيميا بيتا" },
-    "alpha_thalassemia": { "name": "الثلاسيميا ألفا", "carrier": "سمة الثلاسيميا ألفا" },
-    "cystic_fibrosis": { "name": "التليّف الكيسي", "carrier": "حامل للتليّف الكيسي" },
-    "g6pd_deficiency": { "name": "نقص إنزيم G6PD", "carrier": "حامل لنقص إنزيم G6PD" },
-    "gjb2_hearing_loss": { "name": "فقدان السمع المرتبط بجين GJB2", "carrier": "حامل لفقدان السمع المرتبط بجين GJB2" },
-    "phenylketonuria": { "name": "بيلة الفينيل كيتون (PKU)", "carrier": "حامل لبيلة الفينيل كيتون" },
-    "spinal_muscular_atrophy": { "name": "ضمور العضلات الشوكي", "carrier": "حامل لضمور العضلات الشوكي" }
+    "sickle_cell": {
+      "name": "مرض فقر الدم المنجلي",
+      "carrier": "سمة الخلية المنجلية"
+    },
+    "beta_thalassemia": {
+      "name": "الثلاسيميا بيتا",
+      "carrier": "سمة الثلاسيميا بيتا"
+    },
+    "alpha_thalassemia": {
+      "name": "الثلاسيميا ألفا",
+      "carrier": "سمة الثلاسيميا ألفا"
+    },
+    "cystic_fibrosis": {
+      "name": "التليّف الكيسي",
+      "carrier": "حامل للتليّف الكيسي"
+    },
+    "g6pd_deficiency": {
+      "name": "نقص إنزيم G6PD",
+      "carrier": "حامل لنقص إنزيم G6PD"
+    },
+    "gjb2_hearing_loss": {
+      "name": "فقدان السمع المرتبط بجين GJB2",
+      "carrier": "حامل لفقدان السمع المرتبط بجين GJB2"
+    },
+    "phenylketonuria": {
+      "name": "بيلة الفينيل كيتون (PKU)",
+      "carrier": "حامل لبيلة الفينيل كيتون"
+    },
+    "spinal_muscular_atrophy": {
+      "name": "ضمور العضلات الشوكي",
+      "carrier": "حامل لضمور العضلات الشوكي"
+    }
   },
   "result": {
     "carrier": "حامل، {condition}",

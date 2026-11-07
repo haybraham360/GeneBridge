@@ -18,6 +18,8 @@ import type family from '@/messages/en/family.json';
 import type proOnboarding from '@/messages/en/pro-onboarding.json';
 import type verify from '@/messages/en/verify.json';
 import type admin from '@/messages/en/admin.json';
+import type directory from '@/messages/en/directory.json';
+import type booking from '@/messages/en/booking.json';
 
 declare module 'next-intl' {
   interface AppConfig {
@@ -42,6 +44,8 @@ declare module 'next-intl' {
       proOnboarding: typeof proOnboarding;
       verify: typeof verify;
       admin: typeof admin;
+      directory: typeof directory;
+      booking: typeof booking;
     };
   }
 }

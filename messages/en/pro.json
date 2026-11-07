@@ -15,7 +15,9 @@
     "availability": "Availability",
     "settings": "Settings",
     "notifications": "Notifications",
-    "lockedLabel": "(locked until you're verified)"
+    "lockedLabel": "(locked until you're verified)",
+    "calendar": "Calendar",
+    "messages": "Messages"
   },
   "labels": {
     "patient": "Patient {initial}.",

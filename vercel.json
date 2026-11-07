@@ -1,6 +1,16 @@
 {
   "crons": [
-    { "path": "/api/scan/cleanup", "schedule": "0 3 * * *" },
-    { "path": "/api/kyc/expire", "schedule": "15 0 * * *" }
+    {
+      "path": "/api/scan/cleanup",
+      "schedule": "0 3 * * *"
+    },
+    {
+      "path": "/api/kyc/expire",
+      "schedule": "15 0 * * *"
+    },
+    {
+      "path": "/api/cron/booking-reminders",
+      "schedule": "*/15 * * * *"
+    }
   ]
 }

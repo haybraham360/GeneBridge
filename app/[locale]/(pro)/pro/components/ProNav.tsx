@@ -5,6 +5,8 @@ import {
   Bell,
   CalendarClock,
   CalendarDays,
+  CalendarRange,
+  MessageCircle,
   FileText,
   Flag,
   Lock,
@@ -20,6 +22,8 @@ import { cn } from '@/lib/cn';
 type Key =
   | 'queue'
   | 'sessions'
+  | 'calendar'
+  | 'messages'
   | 'patients'
   | 'referrals'
   | 'notes'
@@ -32,6 +36,8 @@ type Item = { href: string; key: Key; icon: LucideIcon; mirror?: boolean; patien
 const items: Item[] = [
   { href: '/pro', key: 'queue', icon: Flag, patientFacing: true },
   { href: '/pro/sessions', key: 'sessions', icon: CalendarDays, patientFacing: true },
+  { href: '/pro/calendar', key: 'calendar', icon: CalendarRange, patientFacing: true },
+  { href: '/pro/messages', key: 'messages', icon: MessageCircle, patientFacing: true },
   { href: '/pro/patients', key: 'patients', icon: Users, patientFacing: true },
   { href: '/pro/referrals', key: 'referrals', icon: ArrowRight, mirror: true, patientFacing: true },
   { href: '/pro/notes', key: 'notes', icon: FileText, patientFacing: true },

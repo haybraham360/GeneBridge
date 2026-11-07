@@ -64,7 +64,13 @@ export async function loadCareFacts(supabase: SupabaseClient): Promise<CareFacts
       .order('claimed_at', { ascending: false })
       .limit(1)
       .maybeSingle(),
-    supabase.from('bookings').select('starts_at, format, attended_at').order('starts_at', { ascending: false }).limit(1),
+    supabase
+      .from('bookings')
+      .select('starts_at, format, attended_at')
+      // Live or done; cancelled and declined bookings don't count (task 15).
+      .in('status', ['requested', 'confirmed', 'completed'])
+      .order('starts_at', { ascending: false })
+      .limit(1),
     supabase
       .from('referrals')
       .select('step, status, updated_at, services(name)')

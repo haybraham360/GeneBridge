@@ -1,0 +1,58 @@
+{
+  "choose": "Choose a professional",
+  "count": "{count, plural, one {# verified professional} other {# verified professionals}}",
+  "verified": "Verified · {authority}",
+  "next": "Next: {when}",
+  "noSlots": "No free times in the next 30 days",
+  "online": "Online now",
+  "message": "Message",
+  "messageAria": "Message {name}",
+  "book": "Book a session",
+  "bookAria": "Book a session with {name}",
+  "selected": "Selected",
+  "profile": "View profile",
+  "profileAria": "View {name}'s profile",
+  "empty": "No professionals are available right now. We'll notify you when one is.",
+  "emptyFiltered": "No professionals match these filters.",
+  "experience": "{years, plural, one {# year} other {# years}} of experience",
+  "filters": {
+    "label": "Filter professionals",
+    "language": "Language",
+    "anyLanguage": "Any language",
+    "profession": "Profession",
+    "anyProfession": "Any profession",
+    "specialty": "Specialty",
+    "anySpecialty": "Any specialty",
+    "thisWeek": "Available this week",
+    "womenOnly": "Women only",
+    "womenOnlyHint": "Shows professionals who chose to show their gender.",
+    "clear": "Clear filters",
+    "showing": "{count, plural, =0 {No professionals shown} one {# professional shown} other {# professionals shown}}"
+  },
+  "profilePage": {
+    "back": "All professionals",
+    "about": "About",
+    "credentials": "Credentials",
+    "credentialsBody": "Licence checked by a GeneBridge admin with {authority}. Status: verified.",
+    "specialties": "Specialties",
+    "languages": "Languages",
+    "facility": "Works at",
+    "availability": "Availability",
+    "availabilityHint": "Free times in the next two weeks.",
+    "noAvailability": "No free times in the next two weeks. Send a message to ask about other times.",
+    "notFound": "This professional isn't available right now.",
+    "notFoundBody": "They may have stopped accepting patients. Choose another professional.",
+    "choose": "Choose another professional"
+  },
+  "offers": {
+    "title": "Professionals offering to help",
+    "body": "These verified professionals speak your language and offered to take your request. Choose one; nothing about you is shared until you do.",
+    "accept": "Choose {name}",
+    "accepted": "{name} will take your request. You can now message them or book a time.",
+    "error": "Couldn't choose this professional. Please try again."
+  },
+  "request": {
+    "title": "Choose who you'd like to talk to",
+    "body": "Your request is ready. Pick a professional below, or wait for one to offer."
+  }
+}

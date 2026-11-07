@@ -44,31 +44,6 @@ export async function saveProfile(input: DetailsInput & { photoPath?: string | n
   return { status: 'ok' };
 }
 
-export type Slot = { weekday: number; startsAt: string; endsAt: string };
-
-const TIME = /^([01]\d|2[0-3]):[0-5]\d$/;
-
-/** Replaces the weekly hours. Saved now, shown to patients only once verified (task 15). */
-export async function saveAvailability(slots: Slot[]): Promise<{ status: 'ok' } | { status: 'invalid' } | { status: 'error' }> {
-  const { supabase, userId } = await requireProfessionalAction();
-  if (!Array.isArray(slots) || slots.length > 28) return { status: 'invalid' };
-  const clean: Slot[] = [];
-  for (const s of slots) {
-    if (!Number.isInteger(s?.weekday) || s.weekday < 0 || s.weekday > 6) return { status: 'invalid' };
-    if (!TIME.test(s.startsAt) || !TIME.test(s.endsAt) || s.endsAt <= s.startsAt) return { status: 'invalid' };
-    clean.push({ weekday: s.weekday, startsAt: s.startsAt, endsAt: s.endsAt });
-  }
-  const { error: deleteError } = await supabase.from('professional_availability').delete().eq('user_id', userId);
-  if (deleteError) return { status: 'error' };
-  if (clean.length) {
-    const { error } = await supabase
-      .from('professional_availability')
-      .insert(clean.map((s) => ({ user_id: userId, weekday: s.weekday, starts_at: s.startsAt, ends_at: s.endsAt })));
-    if (error) return { status: 'error' };
-  }
-  return { status: 'ok' };
-}
-
 export async function saveSettings(input: { language: string; notifyEmail: boolean }): Promise<{ ok: boolean; uiLocale?: 'ar' | 'en' }> {
   const { supabase, userId } = await requireProfessionalAction();
   const language = input.language === 'en' ? 'en' : input.language === 'ar' ? 'ar' : null;

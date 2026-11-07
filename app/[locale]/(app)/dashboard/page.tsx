@@ -10,6 +10,9 @@ import SummaryCards from "@/components/dashboard/SummaryCards";
 import AskGeneBridge from "@/components/dashboard/AskGeneBridge";
 import ExplorePanel from "@/components/dashboard/ExplorePanel";
 import { PatientNotifications } from "@/components/notifications/PatientNotifications";
+import { NextSession } from "@/components/booking/NextSession";
+import { LiveRefresh } from "@/components/realtime/LiveRefresh";
+import { loadNextBooking } from "@/lib/booking/server";
 import { careView } from "@/lib/care/display";
 import { loadCareFacts } from "@/lib/care/tracker";
 import { loadNotifications } from "@/lib/notifications/server";
@@ -55,7 +58,8 @@ export default async function Page({ params, searchParams }: PageProps<'/[locale
       />
     );
   }
-  const summary = await loadHomeSummary(supabase, path);
+  // The next live session (task 15) sits under the care tracker.
+  const [summary, nextBooking] = await Promise.all([loadHomeSummary(supabase, path), loadNextBooking(supabase)]);
   const byId = new Map(catalogue.map((c) => [c.id, c]));
   const followedItems = path.followed.flatMap((f) => {
     const c = byId.get(f.conditionId);
@@ -85,7 +89,9 @@ export default async function Page({ params, searchParams }: PageProps<'/[locale
 
             <div className="mt-4.25 flex flex-col gap-4.5">
                 {userId ? <PatientNotifications items={notifications} userId={userId} /> : null}
+                {userId ? <LiveRefresh channel={`home-bookings-${userId}`} watch={[{ table: 'bookings', filter: `patient_id=eq.${userId}` }]} /> : null}
                 <CareJourney steps={care.steps} current={care.current} />
+                {nextBooking ? <NextSession booking={nextBooking} /> : null}
                 <SummaryCards summary={summary} catalogue={catalogue} />
                 <div className="grid gap-5 lg:grid-cols-[1.75fr_1fr]">
                 <AskGeneBridge canUseFollowed={path.followed.length > 0} />

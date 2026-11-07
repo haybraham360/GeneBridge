@@ -6,6 +6,8 @@ import { loadRequests, loadSpecialistServices, requireCounsellorPage } from '@/l
 import { QueueView } from '../components/QueueView';
 import { AcceptingToggle } from '../components/AcceptingToggle';
 import { requireProfessionalPage } from '@/lib/kyc/server';
+import { OpenRequestsPanel } from '@/components/booking/OpenRequestsPanel';
+import { loadOpenRequests } from '@/lib/booking/server';
 
 export async function generateMetadata({ params }: PageProps<'/[locale]/pro'>) {
   const { locale } = await params;
@@ -30,7 +32,7 @@ export default async function QueuePage({ params, searchParams }: PageProps<'/[l
     getTranslations({ locale, namespace: 'pro.queue' }),
     searchParams,
   ]);
-  const [rows, services] = await Promise.all([loadRequests(supabase), loadSpecialistServices(supabase)]);
+  const [rows, services, openRequests] = await Promise.all([loadRequests(supabase), loadSpecialistServices(supabase), loadOpenRequests(supabase)]);
   const requested = typeof query.request === 'string' ? query.request : null;
 
   return (
@@ -42,6 +44,7 @@ export default async function QueuePage({ params, searchParams }: PageProps<'/[l
         </div>
         <AcceptingToggle initial={pro.profile.acceptingPatients} />
       </header>
+      <OpenRequestsPanel requests={openRequests} accepting={pro.profile.acceptingPatients} />
       <QueueView
         rows={rows}
         services={services}

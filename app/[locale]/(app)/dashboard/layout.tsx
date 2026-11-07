@@ -8,6 +8,8 @@ import { conditionGuideHref } from "@/lib/conditions/links";
 import { currentPerson } from "@/lib/profile/currentPerson";
 import { loadUserPath } from "@/lib/user/path";
 import { createClient, getAuthUser } from "@/lib/supabase/server";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
+import { loadInbox } from "@/lib/notifications/inbox";
 
 /**
  * Patient dashboard shell. The account type chosen at onboarding decides the
@@ -25,7 +27,7 @@ export default async function DashboardLayout({
 
   // One round of queries, all at once. The name and path come from the same
   // cached user lookup the page uses, so nothing is fetched twice.
-  const [role, person, path] = await Promise.all([
+  const [role, person, path, inbox] = await Promise.all([
     user
       ? supabase
           .from("profiles")
@@ -37,6 +39,7 @@ export default async function DashboardLayout({
     // The signed-in person's own name, never a demo persona.
     currentPerson(supabase),
     loadUserPath(supabase),
+    user ? loadInbox(supabase) : [],
   ]);
   // Professionals and admins have their own workspaces, never the patient app.
   if (role === "professional") return redirect({ href: PRO_HOME, locale });
@@ -48,7 +51,16 @@ export default async function DashboardLayout({
   return (
     <div className="fixed inset-0 flex flex-col overflow-hidden lg:flex-row">
       <Sidebar name={person.firstName} initial={person.initial} conditionsHref={conditionsHref} />
-      <main className="min-w-0 flex-1 overflow-y-auto">{children}</main>
+      <main className="relative min-w-0 flex-1 overflow-y-auto">
+        {user ? (
+          <div className="pointer-events-none sticky top-0 z-30 flex h-0 justify-end px-4 pt-3 lg:px-6">
+            <div className="pointer-events-auto">
+              <NotificationBell userId={user.id} role="patient" initial={inbox} />
+            </div>
+          </div>
+        ) : null}
+        {children}
+      </main>
     </div>
   );
 }

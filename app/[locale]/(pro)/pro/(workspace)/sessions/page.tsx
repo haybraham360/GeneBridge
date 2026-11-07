@@ -1,12 +1,13 @@
 import { hasLocale } from 'next-intl';
-import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
-import { Link } from '@/i18n/navigation';
+import { ProBookingCard } from '@/components/booking/ProBookingCard';
+import { LiveRefresh } from '@/components/realtime/LiveRefresh';
 import { routing } from '@/i18n/routing';
-import { proLabels, type Translate } from '@/lib/pro/labels';
-import { PROGRAMME_TIME_ZONE, todaysSessions } from '@/lib/pro/queue';
-import { loadRequests, requireCounsellorPage } from '@/lib/pro/server';
-import { JoinButton } from '../../components/JoinButton';
+import { loadProBookingContext } from '@/lib/booking/pro';
+import { loadProBookings } from '@/lib/booking/server';
+import { dayKey, zoneLabel } from '@/lib/booking/time';
+import { requireProfessionalPage } from '@/lib/kyc/server';
 import { PageHeader } from '../../components/PageHeader';
 
 export async function generateMetadata({ params }: PageProps<'/[locale]/pro/sessions'>) {
@@ -16,62 +17,52 @@ export async function generateMetadata({ params }: PageProps<'/[locale]/pro/sess
   return { title: `${t('sessions.title')} · ${t('meta.title')}`, robots: { index: false } };
 }
 
-/** Today's bookings in time order, with join buttons. */
+/**
+ * Sessions (task 15, section 4): requests waiting for a response, today's
+ * sessions and the next two weeks, in the professional's time zone. Live:
+ * a patient's booking appears here as soon as it's made.
+ */
 export default async function SessionsPage({ params }: PageProps<'/[locale]/pro/sessions'>) {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
-  const [{ supabase }, t, format] = await Promise.all([
-    requireCounsellorPage(),
-    getTranslations({ locale, namespace: 'pro' }),
-    getFormatter({ locale }),
-  ]);
-  const L = proLabels(t as unknown as Translate);
-  const sessions = todaysSessions(await loadRequests(supabase), new Date());
+  const [{ supabase, userId }, t] = await Promise.all([requireProfessionalPage(), getTranslations({ locale, namespace: 'booking.pro' })]);
+  const ctx = await loadProBookingContext(supabase, userId);
+  const now = new Date();
+  const bookings = await loadProBookings(supabase, new Date(now.getTime() - 12 * 3600_000), new Date(now.getTime() + 14 * 86_400_000));
+  const today = dayKey(now.toISOString(), ctx.timeZone);
+
+  const waiting = bookings.filter((b) => b.status === 'requested');
+  const todays = bookings.filter((b) => b.status !== 'requested' && dayKey(b.startsAt, ctx.timeZone) === today && b.status !== 'cancelled' && b.status !== 'declined');
+  const upcoming = bookings.filter((b) => b.status === 'confirmed' && dayKey(b.startsAt, ctx.timeZone) > today);
+
+  const list = (items: typeof bookings, empty: string, testId: string, showDay = false) =>
+    items.length === 0 ? (
+      <p className="rounded-card border border-line bg-surface p-6 text-muted shadow-card">{empty}</p>
+    ) : (
+      <ol className="flex flex-col gap-3" data-testid={testId}>
+        {items.map((b) => (
+          <ProBookingCard key={b.id} booking={b} timeZone={ctx.timeZone} showDay={showDay} googleConnected={ctx.googleConnected} />
+        ))}
+      </ol>
+    );
 
   return (
     <>
-      <PageHeader title={t('sessions.title')} subtitle={t('sessions.subtitle')} />
-      {sessions.length === 0 ? (
-        <p className="rounded-card border border-line bg-surface p-6 text-muted shadow-card">{t('sessions.empty')}</p>
-      ) : (
-        <ol className="flex flex-col gap-3">
-          {sessions.map((s) => (
-            <li
-              key={s.id}
-              className="flex flex-wrap items-center gap-4 rounded-card border border-line bg-surface p-5 shadow-card"
-            >
-              <span className="min-w-16 text-xl font-extrabold tabular-nums">
-                {format.dateTime(new Date(s.booking!.startsAt), {
-                  hour: '2-digit',
-                  minute: '2-digit',
-                  hourCycle: 'h23',
-                  timeZone: PROGRAMME_TIME_ZONE,
-                })}
-              </span>
-              <span className="flex min-w-0 flex-1 flex-col">
-                <span className="font-extrabold">{L.request(s)}</span>
-                <span className="text-sm text-muted">
-                  {t(s.isCouple ? 'detail.coupleSession' : 'detail.individualSession')} ·{' '}
-                  {t(`detail.formats.${s.booking!.format}`)} · {t(`status.${s.status}`)}
-                </span>
-              </span>
-              <span className="flex flex-wrap items-center gap-3">
-                <Link href={`/pro?request=${s.id}`} className="text-sm font-semibold text-brand-text underline">
-                  {t('sessions.open')}
-                </Link>
-                {s.booking!.attendedAt ? (
-                  <span className="rounded-full bg-success-tint px-3 py-1.5 text-[13px] font-bold text-success-text">
-                    {t('sessions.attended')}
-                  </span>
-                ) : s.status !== 'closed' ? (
-                  <JoinButton requestId={s.id} label={t('sessions.join')} />
-                ) : null}
-              </span>
-            </li>
-          ))}
-        </ol>
-      )}
+      <LiveRefresh channel={`pro-bookings-${userId}`} watch={[{ table: 'bookings', filter: `professional_id=eq.${userId}` }]} />
+      <PageHeader title={t('sessionsTitle')} subtitle={t('sessionsSubtitle', { zone: zoneLabel(now.toISOString(), ctx.timeZone, locale) })} />
+      <section className="flex flex-col gap-3" aria-labelledby="waiting">
+        <h2 id="waiting" className="text-lg font-extrabold">{t('waiting')}</h2>
+        {list(waiting, t('waitingEmpty'), 'waiting-bookings', true)}
+      </section>
+      <section className="flex flex-col gap-3" aria-labelledby="today">
+        <h2 id="today" className="text-lg font-extrabold">{t('today')}</h2>
+        {list(todays, t('todayEmpty'), 'todays-sessions')}
+      </section>
+      <section className="flex flex-col gap-3" aria-labelledby="upcoming">
+        <h2 id="upcoming" className="text-lg font-extrabold">{t('upcoming')}</h2>
+        {list(upcoming, t('upcomingEmpty'), 'upcoming-sessions', true)}
+      </section>
     </>
   );
 }

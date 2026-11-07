@@ -7,6 +7,9 @@ import { requireProfessionalPage } from '@/lib/kyc/server';
 import { loadMe } from '@/lib/pro/server';
 import { ProSidebar } from './components/ProSidebar';
 import { VerificationBanner } from './components/VerificationBanner';
+import { NotificationBell } from '@/components/notifications/NotificationBell';
+import { ProfessionalPresence } from '@/components/realtime/presence';
+import { loadInbox } from '@/lib/notifications/inbox';
 
 /**
  * Professional workspace shell (tasks 07 and 14): its own side menu, stacked
@@ -22,7 +25,7 @@ export default async function ProLayout({ children, params }: LayoutProps<'/[loc
   const tl = await getTranslations({ locale, namespace: 'proOnboarding.labels' });
 
   // The facility name comes from the workspace record, which exists once verified.
-  const me = ctx.verified ? await loadMe(ctx.supabase) : null;
+  const [me, inbox] = await Promise.all([ctx.verified ? loadMe(ctx.supabase) : null, loadInbox(ctx.supabase)]);
   const name = ctx.profile.displayName || me?.name || '';
   const subline = me?.facilityName ?? (ctx.profile.profession ? tl(`profession.${ctx.profile.profession}`) : '');
 
@@ -30,10 +33,15 @@ export default async function ProLayout({ children, params }: LayoutProps<'/[loc
     <div className="flex min-h-screen flex-col bg-bg md:flex-row">
       <ProSidebar name={name} subline={subline} verified={ctx.verified} />
       <main id="main" className="flex min-w-0 flex-1 flex-col gap-6 px-[clamp(16px,3vw,40px)] pt-8 pb-12">
+        <div className="flex justify-end">
+          <NotificationBell userId={ctx.userId} role="professional" initial={inbox} />
+        </div>
         <VerificationBanner state={ctx.banner} welcomeSeen={Boolean(ctx.profile.welcomeSeenAt)} />
         {children}
       </main>
       <IdleSignOut />
+      {/* "Online now" in the directory: only verified professionals who are accepting patients appear there. */}
+      {ctx.verified && ctx.profile.acceptingPatients ? <ProfessionalPresence userId={ctx.userId} /> : null}
     </div>
   );
 }
