@@ -6,7 +6,8 @@
     "queue": "Pending",
     "professionals": "Professionals",
     "bookings": "Flagged bookings",
-    "demoData": "Demo data"
+    "demoData": "Demo data",
+    "reports": "Message reports"
   },
   "queue": {
     "title": "Pending verifications",

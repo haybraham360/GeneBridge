@@ -1,0 +1,110 @@
+{
+  "title": "Messages",
+  "subtitleProfessional": "Conversations with your patients. Only you and the patient can read them.",
+  "subtitlePatient": "Conversations with your professionals. Only you and they can read them.",
+  "empty": "No conversations yet.",
+  "emptyPatient": "No conversations yet. Choose a professional in Counsellor & referral and press Message.",
+  "findProfessional": "Find a professional",
+  "unread": "{count, plural, one {# unread} other {# unread}}",
+  "back": "All conversations",
+  "privacyLine": "{name} can't see your results unless you share them.",
+  "privacyLinePro": "You see only what {name} chooses to share.",
+  "aiNote": "Messages are private between you two. They're never read by AI or used for analytics.",
+  "placeholder": "Write a message",
+  "label": "Message to {name}",
+  "send": "Send",
+  "sending": "Sending…",
+  "tooLong": "Messages can be up to 4,000 characters.",
+  "sendError": "Couldn't send. Please try again.",
+  "seen": "Seen",
+  "sent": "Sent",
+  "typing": "{name} is typing…",
+  "deleted": "Message deleted",
+  "delete": "Delete",
+  "you": "You",
+  "newMessage": "New message from {name}",
+  "system": {
+    "shared:result": "{who} shared the result summary",
+    "shared:values_summary": "{who} shared the values summary",
+    "shared:family_map": "{who} shared the family map"
+  },
+  "share": {
+    "button": "Share my result summary",
+    "more": "Share more",
+    "result": "My result summary",
+    "values_summary": "My values summary",
+    "family_map": "My family map",
+    "done": "Shared. You can stop sharing any time in Privacy & consent.",
+    "revoke": "Stop sharing in Privacy & consent"
+  },
+  "book": "Book a session from this chat",
+  "report": {
+    "button": "Report",
+    "aria": "Report this message",
+    "title": "Report this message?",
+    "body": "A GeneBridge admin will see this one message only, to check it is safe. They won't see the rest of the conversation.",
+    "reasons": {
+      "harassment": "Harassment",
+      "inappropriate": "Inappropriate",
+      "safety": "I feel unsafe",
+      "spam": "Spam",
+      "other": "Something else"
+    },
+    "send": "Send report",
+    "cancel": "Cancel",
+    "done": "Thank you. An admin will review it."
+  },
+  "block": {
+    "button": "Block",
+    "unblock": "Unblock",
+    "confirm": "Block {name}? Neither of you can send messages until you unblock.",
+    "yes": "Block",
+    "no": "Cancel",
+    "blockedByMe": "You blocked this conversation. Unblock to send messages again.",
+    "blockedByOther": "This conversation is closed."
+  },
+  "unavailable": "This professional is currently unavailable. Choose another professional.",
+  "chooseAnother": "Choose another professional",
+  "notFound": "This conversation isn't available.",
+  "startError": "This professional isn't available for messages right now.",
+  "shared": {
+    "title": "Shared with you",
+    "empty": "Nothing shared yet. The patient decides what to share.",
+    "open": "Open",
+    "close": "Close",
+    "logged": "Opening this is recorded in the patient's access log.",
+    "result": "Result summary",
+    "values_summary": "Values summary",
+    "family_map": "Family map",
+    "status": {
+      "carrier": "carrier",
+      "affected": "affected",
+      "uncertain": "uncertain"
+    },
+    "flagged": "flagged: needs specialist review",
+    "unverified": "from a photographed report, not yet confirmed",
+    "relatives": "{count, plural, one {# relative} other {# relatives}} on the map",
+    "bands": {
+      "very_important": "very important",
+      "important": "important",
+      "somewhat_important": "somewhat important",
+      "less_important": "less important"
+    }
+  },
+  "admin": {
+    "nav": "Message reports",
+    "title": "Message reports",
+    "subtitle": "Opening a report shows that one message only. Every view and decision is audited.",
+    "empty": "No reports.",
+    "open": "Open",
+    "sender": "Sent by the {role, select, patient {patient} other {professional}}",
+    "deletedBody": "The sender deleted this message.",
+    "dismiss": "Dismiss",
+    "action": "Mark actioned",
+    "status": {
+      "open": "Open",
+      "dismissed": "Dismissed",
+      "actioned": "Actioned"
+    }
+  }
+}

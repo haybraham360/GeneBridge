@@ -20,6 +20,7 @@ import type verify from '@/messages/en/verify.json';
 import type admin from '@/messages/en/admin.json';
 import type directory from '@/messages/en/directory.json';
 import type booking from '@/messages/en/booking.json';
+import type chat from '@/messages/en/chat.json';
 
 declare module 'next-intl' {
   interface AppConfig {
@@ -46,6 +47,7 @@ declare module 'next-intl' {
       admin: typeof admin;
       directory: typeof directory;
       booking: typeof booking;
+      chat: typeof chat;
     };
   }
 }

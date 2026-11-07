@@ -34,10 +34,11 @@ export function isNoticePath(path: string): boolean {
 export const NOTICE_PREVIEW_PATH = '/family-notice/preview';
 
 /**
- * Admin pages: verification review (task 14) and demo data (task 15). Admins
+ * Admin pages: verification review (task 14), demo data and message reports
+ * (task 15). Admins
  * only. Everyone else gets a 404.
  */
-const ADMIN_SECTIONS = ['/admin/verifications', '/admin/demo-data'];
+const ADMIN_SECTIONS = ['/admin/verifications', '/admin/demo-data', '/admin/reports'];
 
 export function isAdminPath(path: string): boolean {
   return ADMIN_SECTIONS.some((section) => path === section || path.startsWith(`${section}/`));

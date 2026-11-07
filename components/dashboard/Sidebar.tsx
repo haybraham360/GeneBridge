@@ -10,6 +10,7 @@ import {
   ShieldCheck,
   MessageSquare,
   MessagesSquare,
+  MessageCircle,
   Search,
   MapPin,
   ArrowRight,
@@ -36,6 +37,7 @@ type NavKey =
   | "services"
   | "options"
   | "counsellor"
+  | "messages"
   | "privacy";
 
 
@@ -72,6 +74,7 @@ const groups: { key: GroupKey | null; items: NavItem[] }[] = [
     items: [
       { label: "Options", icon: Compass, link: "/dashboard/options", short: "options" },
       { label: "Counsellor & referral", icon: Calendar, link: "/dashboard/counsellor", short: "counsellor" },
+      { label: "Messages", icon: MessageCircle, link: "/dashboard/messages", short: "messages" },
       { label: "Care & services", icon: MapPin, link: "/dashboard/services", short: "services" },
       { label: "Privacy & consent", icon: ShieldCheck, link: "/dashboard/privacy", short: "privacy" },
     ],

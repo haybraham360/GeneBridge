@@ -59,9 +59,9 @@ insert into public.counsellor_requests (id, user_id, source, reason, urgency, st
   ('15100000-0000-4000-8000-0000000000b1', '15100000-0000-4000-8000-0000000000a1', 'booking', 'asked_for_person', 'standard', 'booked', '15100000-0000-4000-8000-0000000000ff');
 insert into public.bookings (id, request_id, counsellor_id, starts_at, format) values
   ('15100000-0000-4000-8000-0000000000c1', '15100000-0000-4000-8000-0000000000b1', '15100000-0000-4000-8000-0000000000e2', now() + interval '2 days', 'video');
-insert into public.pro_conversations (id, patient_id, professional_id) values
+insert into public.conversations (id, patient_id, professional_id) values
   ('15100000-0000-4000-8000-0000000000cc', '15100000-0000-4000-8000-0000000000a1', '15100000-0000-4000-8000-0000000000d2');
-insert into public.pro_messages (conversation_id, sender_id, body) values
+insert into public.messages (conversation_id, sender_id, body) values
   ('15100000-0000-4000-8000-0000000000cc', '15100000-0000-4000-8000-0000000000a1', 'Hello');
 insert into public.share_grants (owner_id, grantee_id, resource, level) values
   ('15100000-0000-4000-8000-0000000000a1', '15100000-0000-4000-8000-0000000000d2', 'result', 'summary');
@@ -123,10 +123,10 @@ begin
   if not (select is_demo from public.bookings where id = '15100000-0000-4000-8000-0000000000c1') then
     raise exception 'a booking with a demo professional is not demo';
   end if;
-  if not (select is_demo from public.pro_conversations where id = '15100000-0000-4000-8000-0000000000cc') then
+  if not (select is_demo from public.conversations where id = '15100000-0000-4000-8000-0000000000cc') then
     raise exception 'a conversation with a demo professional is not demo';
   end if;
-  if exists (select 1 from public.pro_messages where conversation_id = '15100000-0000-4000-8000-0000000000cc' and not is_demo) then
+  if exists (select 1 from public.messages where conversation_id = '15100000-0000-4000-8000-0000000000cc' and not is_demo) then
     raise exception 'a message in a demo conversation is not demo';
   end if;
   if exists (select 1 from public.share_grants where grantee_id = '15100000-0000-4000-8000-0000000000d2' and not is_demo) then
@@ -186,7 +186,7 @@ begin
      or exists (select 1 from public.followed_conditions where user_id = '15100000-0000-4000-8000-0000000000d1') then
     raise exception 'removing one demo account left its rows';
   end if;
-  if not exists (select 1 from public.pro_conversations where id = '15100000-0000-4000-8000-0000000000cc') then
+  if not exists (select 1 from public.conversations where id = '15100000-0000-4000-8000-0000000000cc') then
     raise exception 'removing one demo account removed another account''s rows';
   end if;
 

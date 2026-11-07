@@ -23,7 +23,7 @@ const GROUPS = {
   family: ['family_members', 'family_links', 'family_member_conditions'],
   requests: ['counsellor_requests'],
   bookings: ['bookings'],
-  conversations: ['pro_conversations', 'pro_messages'],
+  conversations: ['conversations', 'messages'],
   notices: ['family_notifications', 'notice_sends'],
   events: ['events'],
 } as const;

@@ -47,9 +47,9 @@ insert into public.share_grants (owner_id, grantee_id, resource, level) values
   ('14000000-0000-4000-8000-0000000000a1', '14000000-0000-4000-8000-0000000000c1', 'result', 'summary');
 insert into public.bookings (id, request_id, counsellor_id, starts_at, format) values
   ('14000000-0000-4000-8000-0000000000aa', '14000000-0000-4000-8000-0000000000b2', '14000000-0000-4000-8000-0000000000e1', now() + interval '3 days', 'video');
-insert into public.pro_conversations (id, patient_id, professional_id) values
+insert into public.conversations (id, patient_id, professional_id) values
   ('14000000-0000-4000-8000-0000000000cc', '14000000-0000-4000-8000-0000000000a1', '14000000-0000-4000-8000-0000000000c1');
-insert into public.pro_messages (conversation_id, sender_id, body) values
+insert into public.messages (conversation_id, sender_id, body) values
   ('14000000-0000-4000-8000-0000000000cc', '14000000-0000-4000-8000-0000000000a1', 'Hello');
 
 create function pg_temp.as_user(id text) returns void language plpgsql as $$
@@ -92,9 +92,9 @@ begin
     if n <> 0 then raise exception '% reads a patient profile', who; end if;
     select count(*) into n from public.screening_results;
     if n <> 0 then raise exception '% reads results', who; end if;
-    select count(*) into n from public.pro_conversations;
+    select count(*) into n from public.conversations;
     if n <> 0 then raise exception '% reads conversations', who; end if;
-    select count(*) into n from public.pro_messages;
+    select count(*) into n from public.messages;
     if n <> 0 then raise exception '% reads messages', who; end if;
     select count(*) into n from public.my_counsellor();
     if n <> 0 then raise exception '% has a counsellor record', who; end if;
@@ -156,7 +156,7 @@ begin
 
   ok := false;
   begin
-    insert into public.pro_conversations (patient_id, professional_id)
+    insert into public.conversations (patient_id, professional_id)
     values ('14000000-0000-4000-8000-0000000000a1', '14000000-0000-4000-8000-0000000000c2');
   exception when insufficient_privilege then ok := true; end;
   if not ok then raise exception 'patient could start a conversation with an unverified professional'; end if;
@@ -389,7 +389,7 @@ begin
   perform pg_temp.as_user('14000000-0000-4000-8000-0000000000c1');
   select count(*) into n from public.counsellor_requests;
   if n <> 0 then raise exception 'suspended professional still sees requests'; end if;
-  select count(*) into n from public.pro_messages;
+  select count(*) into n from public.messages;
   if n <> 0 then raise exception 'suspended professional still reads messages'; end if;
 
   perform pg_temp.as_user('14000000-0000-4000-8000-0000000000a1');
@@ -397,11 +397,11 @@ begin
   if n <> 0 then raise exception 'suspended professional is in the directory'; end if;
   select available into avail from public.my_pro_conversations() where professional_id = '14000000-0000-4000-8000-0000000000c1';
   if avail then raise exception 'conversation still shows the professional as available'; end if;
-  select count(*) into n from public.pro_messages;
+  select count(*) into n from public.messages;
   if n <> 1 then raise exception 'patient lost their own messages'; end if;
   ok := false;
   begin
-    insert into public.pro_messages (conversation_id, sender_id, body)
+    insert into public.messages (conversation_id, sender_id, body)
     values ('14000000-0000-4000-8000-0000000000cc', '14000000-0000-4000-8000-0000000000a1', 'Are you there?');
   exception when insufficient_privilege then ok := true; end;
   if not ok then raise exception 'patient could message a suspended professional'; end if;

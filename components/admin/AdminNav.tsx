@@ -1,6 +1,6 @@
 'use client';
 
-import { CalendarX, ClipboardCheck, DatabaseZap, UserCheck } from 'lucide-react';
+import { CalendarX, ClipboardCheck, DatabaseZap, Flag, UserCheck } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 import { Link, usePathname } from '@/i18n/navigation';
@@ -8,11 +8,13 @@ import { cn } from '@/lib/cn';
 
 const VERIFICATIONS = '/admin/verifications';
 const DEMO_DATA = '/admin/demo-data';
+const REPORTS = '/admin/reports';
 
 const items = [
   { key: 'queue', href: VERIFICATIONS, icon: ClipboardCheck },
   { key: 'professionals', href: `${VERIFICATIONS}?tab=professionals`, icon: UserCheck },
   { key: 'bookings', href: `${VERIFICATIONS}?tab=bookings`, icon: CalendarX },
+  { key: 'reports', href: REPORTS, icon: Flag },
   { key: 'demoData', href: DEMO_DATA, icon: DatabaseZap },
 ] as const;
 
@@ -23,6 +25,7 @@ export function AdminNav() {
 
   const isActive = (key: (typeof items)[number]['key']) => {
     if (key === 'demoData') return pathname === DEMO_DATA;
+    if (key === 'reports') return pathname === REPORTS;
     if (pathname === VERIFICATIONS) return tab === key;
     // A submission's detail page sits under the queue.
     return key === 'queue' && pathname.startsWith(`${VERIFICATIONS}/`);

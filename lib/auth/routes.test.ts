@@ -124,5 +124,6 @@ describe('isAdminPath', () => {
     expect(isAdminPath('/admin/demo-data')).toBe(true);
     expect(isAdminPath('/admin/demo-datax')).toBe(false);
     expect(isAnalystPath('/admin/demo-data')).toBe(false);
+    expect(isAdminPath('/admin/reports')).toBe(true);
   });
 });

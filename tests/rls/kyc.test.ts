@@ -46,7 +46,7 @@ describe.skipIf(!hasSupabase)('RLS: professional verification', () => {
   });
 
   it("an unverified professional can't read any conversation, booking, request, share grant or patient profile", async () => {
-    for (const table of ['pro_conversations', 'pro_messages', 'bookings', 'counsellor_requests', 'share_grants', 'referrals', 'screening_results']) {
+    for (const table of ['conversations', 'messages', 'bookings', 'counsellor_requests', 'share_grants', 'referrals', 'screening_results']) {
       const { data, error } = await unverified.from(table).select('id');
       expect(error, table).toBeNull();
       expect(data, table).toHaveLength(0);
@@ -88,7 +88,7 @@ describe.skipIf(!hasSupabase)('RLS: professional verification', () => {
       .from('share_grants')
       .insert({ owner_id: mariamId, grantee_id: unverifiedId, resource: 'values_summary', level: 'summary' });
     expect(shareError?.code).toBe('42501');
-    const { error: convoError } = await mariam.from('pro_conversations').insert({ patient_id: mariamId, professional_id: unverifiedId });
+    const { error: convoError } = await mariam.from('conversations').insert({ patient_id: mariamId, professional_id: unverifiedId });
     expect(convoError).not.toBeNull();
   });
 
