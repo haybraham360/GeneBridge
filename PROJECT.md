@@ -132,6 +132,11 @@ Follow the design in `design/` exactly (screenshots for layout, `design/screens/
 | `/pro` | Professional workspace | Verification banner and locked patient pages until verified; then queue, sessions, shared summaries only |
 | `/pro/verify` | Licence verification | Licence details, licence photo, ID front/back, optional selfie, consent; AI pre-check assists the admin |
 | `/admin/verifications` | Verification review | Admin only: pending queue, documents side by side, approve / request info / reject, suspend |
+| `/dashboard/counsellor/[id]` | Professional profile | Bio, credentials (verified authority and status, never the licence number), specialties, languages, two weeks of free times |
+| `/dashboard/messages`, `/pro/messages` | Messages | Real-time chat between a patient and a verified professional; sharing, report and block (task 15) |
+| `/pro/sessions`, `/pro/calendar`, `/pro/availability` | Bookings | Requests to confirm, today's sessions, next 14 days, weekly hours and exceptions (task 15) |
+| `/admin/demo-data`, `/admin/reports` | Admin | Remove demo data; review reported messages, one message at a time, audited (task 15) |
+| `/trust` | Trust & safety | Verified professionals, private chats, neutral calendar events, telehealth compliance note |
 
 Every app screen has: a side menu (stacks on mobile), a page title and subtitle, a Listen button (audio), and a language switch.
 

@@ -196,5 +196,29 @@
     "someone": "Someone",
     "noTime": "your session"
   },
-  "compliance": "Telehealth consultations must follow the professional's licensing rules and local telehealth regulations [CONFIRM: applicable Abu Dhabi / UAE telehealth standard]. GeneBridge verifies licences but professionals are responsible for their clinical practice."
+  "compliance": "Telehealth consultations must follow the professional's licensing rules and local telehealth regulations [CONFIRM: applicable Abu Dhabi / UAE telehealth standard]. GeneBridge verifies licences but professionals are responsible for their clinical practice.",
+  "trust": {
+    "title": "Trust & safety",
+    "subtitle": "How GeneBridge keeps counselling safe and private.",
+    "link": "Trust & safety",
+    "items": {
+      "verified": {
+        "title": "Only verified professionals",
+        "body": "Every professional's licence is checked by a GeneBridge admin before they can appear in the directory, receive messages or be booked. If a licence expires or is suspended, they lose access straight away."
+      },
+      "chat": {
+        "title": "Your messages stay between you two",
+        "body": "Messages with a professional are read only by you and them. They are never read by AI, never used for analytics, and an admin sees a single message only if one of you reports it, and every view is recorded."
+      },
+      "sharing": {
+        "title": "You decide what to share",
+        "body": "Messaging or booking a professional shares nothing about your results. You choose what to share, and you can stop sharing at any time in Privacy & consent."
+      },
+      "calendar": {
+        "title": "No health information in calendars",
+        "body": "Calendar events are titled \"GeneBridge session\" and contain only a link back to GeneBridge. No condition, result or health detail is ever added."
+      }
+    },
+    "complianceTitle": "Telehealth"
+  }
 }

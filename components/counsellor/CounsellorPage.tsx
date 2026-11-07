@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Check, Info } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { logDirectoryViewed } from "@/app/[locale]/(app)/dashboard/counsellor/actions";
 import { BookingPanel } from "@/components/booking/BookingPanel";
 import { MyBookings } from "@/components/booking/MyBookings";
@@ -41,6 +42,7 @@ type Props = {
 export default function CounsellorPage({ entries, bookings, cutoffHours, offers, path, familyTopic = false, requestId = null, initialProfessionalId = null }: Props) {
   const t = useTranslations("dashboard.counsellor");
   const td = useTranslations("directory");
+  const tb = useTranslations("booking");
   const [selectedId, setSelectedId] = useState<string | null>(
     entries.find((e) => e.userId === initialProfessionalId)?.userId ?? entries[0]?.userId ?? null,
   );
@@ -127,6 +129,11 @@ export default function CounsellorPage({ entries, bookings, cutoffHours, offers,
             />
           </div>
         </div>
+
+        <p className="text-[12px] leading-5 text-neutral-500" data-testid="compliance-note">
+          {tb("compliance")}{" "}
+          <Link href="/trust" className="font-bold text-[#C2410C] underline">{tb("trust.link")}</Link>
+        </p>
       </div>
     </div>
   );

@@ -61,6 +61,11 @@ Copy `.env.example` to `.env.local` and fill it in. `.env.local` is git-ignored.
 | `ASSISTANT_CLASSIFIER_MODEL`, `ASSISTANT_GRADER_MODEL` | Server, eval | Classifier (default `claude-haiku-5-5`) and evaluation grader (default `claude-opus-5-5`). |
 | `NOTICE_PHONE_SALT` | Server only | Secret for hashing relatives' phone numbers (family notices). Any long random string; **required in production**, and keep it the same once notices exist. A dev-only default is used locally. |
 | `SUPABASE_DB_URL` | Scripts only | Session pooler connection string. Needed for `npm run test:sql` and for applying migrations with `psql`. |
+| `NEXT_PUBLIC_SITE_URL` | Browser and server | The site's public address, used in emails and calendar events (task 15). |
+| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REDIRECT_URI` | Server only | Google Calendar and Meet for professionals. See [Google Meet links](#google-meet-links). Leave empty and professionals paste a video link instead. |
+| `CALENDAR_TOKEN_KEY` | Server only | 32 random bytes, base64 (`openssl rand -base64 32`). Encrypts stored Google refresh tokens. **Required in production.** |
+| `EMAIL_PROVIDER` | Server only | Optional email notifications: `resend` (with `RESEND_API_KEY` and `EMAIL_FROM`) or `log`. Emails never contain message text, names or health details. See [Email notifications](#email-notifications). |
+| `CRON_SECRET` | Server only | Protects the cron routes (scan clean-up, licence expiry, booking reminders). |
 
 ### 2. Database
 
@@ -71,7 +76,17 @@ Apply the migrations in `supabase/migrations/`, in order:
 3. `20261104020000_analytics.sql`: `profiles.is_synthetic`, the analyst lock-out on `profiles`, and the aggregate-only dashboard functions (see [Health authority dashboard](#health-authority-dashboard)).
 4. `20261105000000_assistant.sql`: Ask GeneBridge conversations (owner-only, 30-day retention), `counsellor_requests`, and the functions behind them (see [Ask GeneBridge](#ask-genebridge-ai-assistant)). Optional: turn on the `pg_cron` extension (Database → Extensions) before applying it, for nightly clean-up; without it, expired messages are removed on each chat request.
 
-Later tasks add more migrations, applied the same way in filename order; the latest is `20261109000000_professional_kyc.sql` (professional sign-up and verification: the `professional` and `admin` roles, `professional_profiles`, `verification_submissions`, the append-only `verification_audit`, `is_verified_professional()` on every patient-facing path, and the private `kyc-documents` bucket; see [Health professionals and verification](#health-professionals-and-verification)). Then run `npm run seed:auth` again, so the demo professionals are verified.
+Later tasks add more migrations, applied the same way in filename order. `20261109000000_professional_kyc.sql` adds professional sign-up and verification (the `professional` and `admin` roles, `professional_profiles`, `verification_submissions`, the append-only `verification_audit`, `is_verified_professional()` on every patient-facing path, and the private `kyc-documents` bucket; see [Health professionals and verification](#health-professionals-and-verification)). Then run `npm run seed:auth` again, so the demo professionals are verified.
+
+Task 15 adds five, in this order:
+
+| Migration | What it adds |
+|---|---|
+| `20261110000000_demo_data.sql` | `is_demo` on every seeded table, inherited from each row's owner; the purge functions and `demo_purge_audit`; real-data Privacy & consent |
+| `20261110010000_demo_data_service_role.sql` | Fix: the server (service role) can update profiles again |
+| `20261111000000_directory_booking.sql` | `availability_rules` (renamed from `professional_availability`), `availability_exceptions`, booking settings on `professional_profiles`, the new `bookings` columns and statuses with the no-overlap constraint (needs `btree_gist`, created in the `extensions` schema), free slots, the directory, `request_offers`, booking notifications and reminders |
+| `20261112000000_chat.sql` | `conversations` and `messages` (renamed from `pro_conversations` and `pro_messages`), read receipts, sharing in chat, blocking, `message_reports` with an append-only audit |
+| `20261113000000_calendar.sql` | `calendar_connections` (the refresh token column is never granted to signed-in users) |
 
 - **Hosted project:** `npx supabase link --project-ref <ref>` then `npx supabase db push`, or paste each SQL file into the SQL editor. With `SUPABASE_DB_URL` set in `.env.local` (Connect → Session pooler), `psql "$SUPABASE_DB_URL" -f <file>` also works.
 - **Local (needs Docker):** `npx supabase start`. This also applies `supabase/config.toml`, which already has the test phone numbers.
@@ -349,6 +364,81 @@ KYC_TEST_PRECHECK=1 npx playwright test kyc
 
 Events: `pro_signup_completed` (profession), `kyc_submitted`, `kyc_precheck_completed` (passed / failed / unclear counts), `kyc_decision` (outcome, hours to decision), `pro_accepting_toggled`, `pro_expired`. Never document content, names or numbers.
 
+## Counsellors: directory, messages, booking and Google Meet
+
+Task 15. Patients find a verified professional, message them, book a session, and get a Google Meet link, all with real accounts. Every rule below is enforced in the database (row-level security and `security definer` functions), not only in the app.
+
+### Directory (`/dashboard/counsellor`)
+
+- Only professionals who are verified **and** accepting patients appear (`professional_directory()`, guardrail 15).
+- Order: professionals who speak the patient's language first, then specialty matches with the patient's findings or followed conditions, then the soonest free time (`lib/directory/sort.ts`).
+- Filters: language, profession, specialty, available this week, and women only (only professionals who choose to show their gender in Availability can match).
+- Each card shows a photo or initials, a "Verified · authority" badge, specialties, languages, the next free time and an "Online now" dot (Supabase Realtime presence, active in the last 5 minutes).
+- Profile pages (`/dashboard/counsellor/[id]`) show the bio, credentials (the verifying authority and status, never the licence number), specialties, languages and two weeks of free times.
+- Escalations and flagged results still create `counsellor_requests`. Open, unassigned requests appear under "Open requests in your languages" in `/pro` for verified professionals who speak the patient's language (topic, urgency and language only). A professional offers; the patient chooses on the Counsellor page.
+
+### Messages (`/dashboard/messages`, `/pro/messages`)
+
+- Real time on both sides (Realtime), with a typing indicator (a broadcast with no text) and "Seen".
+- Starting a conversation shares nothing. "Share my result summary" (or the values summary or family map) creates a `share_grants` row and a system message; patients revoke it in Privacy & consent. The professional's side panel lists what was shared, and each opening is written to the patient's access log.
+- Either side can report a message (an admin sees that message only, at `/admin/reports`, and every view is audited) or block the other (the conversation becomes read-only until the blocker unblocks).
+- If the professional is no longer verified (suspended, expired), they can't read or send; the patient keeps their history and is asked to choose another professional.
+- **Guardrail 17:** message text never reaches an AI model, an event, a notification or an email. `message_sent` carries the sender's role only.
+- No attachments in this version.
+
+### Availability and booking
+
+- `/pro/availability`: weekly hours (several blocks a day, 30, 45 or 60-minute sessions, video or in person) in the professional's own time zone, days off and extra times, a break between sessions (default 10 minutes), a daily maximum and "Auto-accept bookings".
+- Weekly hours are stored as wall-clock times with the professional's time zone, so they keep their hour across daylight saving changes. Every slot, exception and booking instant is stored in UTC and shown in each viewer's own time zone (default Asia/Dubai), always with the zone named.
+- Free slots are computed in the database (`free_slots()`): the rules plus extra times, minus days off, minus live bookings and their buffers, minus days already at the maximum. `book_session()` re-checks the slot under a per-professional lock, and an `EXCLUDE USING gist` constraint on each professional's time ranges makes a double booking impossible.
+- Statuses: `requested` → `confirmed` or `declined`, then `completed` or `no_show`; `cancelled` at any point before. Bookings confirm at once with auto-accept; otherwise the professional confirms or declines in `/pro/sessions`.
+- Patients choose what to share before the session (result summary, values summary, family map), whether a family member joins, and whether to get a calendar invite.
+- Reschedule and cancel, with a reason, up to **24 hours** before (`booking_private.policy.change_cutoff_hours`, `[CONFIRM]` the right number with the programme). Professionals can cancel later, with a reason. Every change notifies the other side.
+- Both sides see changes immediately: the patient's Home (next session under the care tracker) and Counsellor page, the professional's Sessions and Calendar pages.
+- Each booking is linked to a `counsellor_requests` row, so the task 07 workspace (queue, notes, referrals) keeps working. `completed` logs `session_attended` for the dashboard.
+
+### Reminders
+
+`/api/cron/booking-reminders` writes in-app reminders 24 hours and 1 hour before each confirmed session, once each, for both sides, and emails them when email is on. `vercel.json` runs it every 15 minutes with `Authorization: Bearer $CRON_SECRET`. Vercel's Hobby plan only runs crons once a day: use the Pro plan or call the route from another scheduler for timely reminders.
+
+### Google Meet links
+
+Each professional connects their own Google Calendar in `/pro/settings`. When a booking is confirmed, GeneBridge creates an event on their calendar with a Google Meet link and saves the link on the booking. Rescheduling moves the event and cancelling deletes it. "Join video call" appears for both sides from 10 minutes before the start.
+
+- **Guardrail 18:** the event title is always "GeneBridge session" and the description is only a link back to GeneBridge. No condition, result or patient name is ever sent to Google. The patient is added as an attendee only if they ticked "Send me a calendar invite".
+- **Fallback:** if the professional hasn't connected Google, or a Google call fails, the booking still stands. The professional sees "Add a video link" and can paste one; the patient sees "Your video link will appear here before the session." Outcomes are logged as `meet_link_created` (success / fallback / manual).
+- **Scopes:** `https://www.googleapis.com/auth/calendar.events` to create and change events, plus `openid email` only to show which account is connected. The refresh token is encrypted with `CALENDAR_TOKEN_KEY` and stored where only the server can read it. "Disconnect" revokes it with Google and deletes it.
+
+**Google Cloud setup:**
+
+1. In the [Google Cloud console](https://console.cloud.google.com/), create a project.
+2. **APIs & Services → Library:** enable the **Google Calendar API**.
+3. **OAuth consent screen:** choose External, fill in the app name and support email, and add the scopes `.../auth/calendar.events`, `openid` and `email`.
+4. While the app is in **Testing** mode, add each professional's Google account under **Test users** (only test users can connect).
+5. **Credentials → Create credentials → OAuth client ID → Web application.** Add the authorised redirect URI, for example `http://localhost:3000/api/calendar/google/callback` and your production URL's `/api/calendar/google/callback`.
+6. Set `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` and `GOOGLE_REDIRECT_URI` (and `CALENDAR_TOKEN_KEY`) in `.env.local` and in Vercel.
+
+Opening it to the public (out of Testing mode) needs Google's app verification for the `calendar.events` scope, which is a sensitive scope.
+
+### Email notifications
+
+Off by default. Set `EMAIL_PROVIDER=resend` with `RESEND_API_KEY` and `EMAIL_FROM` (a verified sender), or `EMAIL_PROVIDER=log` to see in the server log that an email would be sent. Emails go out for new messages (once per unread conversation), booking requests, confirmations, changes, cancellations and reminders. They contain only a fixed line such as "You have a new message on GeneBridge." and a link to sign in: never message text, names, conditions or results. Professionals can turn email off in Settings.
+
+### Compliance
+
+Telehealth consultations must follow the professional's licensing rules and local telehealth regulations [CONFIRM: applicable Abu Dhabi / UAE telehealth standard]. GeneBridge verifies licences but professionals are responsible for their clinical practice. The same note is on the Trust & safety page (`/trust`) and the Counsellor page.
+
+### Events
+
+`directory_viewed` (count only), `conversation_started`, `message_sent` (role only), `result_shared_in_chat` (resource), `booking_requested`, `booking_created`, `booking_confirmed`, `booking_declined`, `booking_cancelled` (by role), `booking_rescheduled` (by role), `meet_link_created` (success / fallback / manual), `session_joined` (role), `session_attended`, `session_completed`, `request_offered`, `request_offer_accepted`, `message_reported`, `conversation_blocked`, `calendar_connected`, `calendar_disconnected` and `demo_data_purged` (counts). None carries message text or health details.
+
+### Tests
+
+- `supabase/tests/booking.sql`, `chat.sql`, `calendar.sql` (`npm run test:sql`): slots in Dubai and London time, buffers, days off, extra times, the daily maximum, two bookings for one slot (one fails cleanly), who reads which bookings, the cut-off, reminders, offers, participants-only chat, unverified and suspended professionals, sharing, reports, blocking, and the calendar token never readable.
+- Unit tests (`npm run test:rls`): time display for Dubai and London (including daylight saving), directory order and filters, chat helpers, content-free emails, and the Google API mocked: confirm creates a Meet event with a neutral title and no health text, reschedule moves it, cancel deletes it, and a failure falls back without losing the booking.
+- `tests/rls/booking-chat.test.ts`: the same rules through the API, with throwaway accounts.
+- `tests/e2e/realtime.spec.ts` (Playwright, two browser contexts): a message reaches the professional within 2 seconds and the reply comes back; a booking appears in the professional's sessions; confirming updates the patient's Home with "Join video call".
+
 ## Scripts
 
 | Command | What it does |
@@ -365,7 +455,7 @@ Events: `pro_signup_completed` (profession), `kyc_submitted`, `kyc_precheck_comp
 | `npm run purge:demo` | Removes every demo account and everything linked to it, after you type `REMOVE` (`-- --yes` to skip). Real accounts and synthetic data are kept |
 | `npm run test:rls` | Unit tests, plus row-level security tests when Supabase env vars are set |
 | `npm run eval:assistant` | Ask GeneBridge evaluation (offline by default; `-- --ai` for the live model) |
-| `npm run test:sql` | SQL tests for the analytics functions (group-of-10 rule, no identifiers, access). Needs `psql` and `SUPABASE_DB_URL`; rolls back everything |
+| `npm run test:sql` | SQL tests in `supabase/tests/` (analytics, assistant, workspace, verification, demo data, booking, chat, calendar). Needs `psql` and `SUPABASE_DB_URL`; rolls back everything |
 | `npm run samples:generate` | Generates the fake sample reports in `samples/reports/` (see [Report scanner](#report-scanner-photograph-your-report)) |
 | `npm run eval:scan` | Report scanner evaluation; prints the results table (`-- --offline` for no AI calls) |
 | `npm run create:admin -- <email-or-phone>` | Makes an account a verification admin (the only way to get the role) |
