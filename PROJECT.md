@@ -66,6 +66,8 @@ These come straight from the brief. Breaking one loses points or causes harm. Ch
 14. **The exploring path is never a diagnosis.** People without a result can follow conditions (family history, "I think I may have it", or learning). Never confirm, deny or estimate whether the person has or carries a condition from what they tell us: no symptom checker and no "your likely risk" numbers for the person themselves. Speak about families in general only ("if a brother or sister has it, there is a real chance you carry it; only a test can tell you"); the AI may explain general inheritance with the engine but must say a test is the only way to know. Every exploring screen shows "This isn't a diagnosis". For "I think I have it" with a dominant, X-linked or `always_escalate` condition, show the counsellor option prominently and suggest a priority counsellor request (with consent).
 15. **Only verified professionals serve patients.** No unverified professional can appear in the directory, receive messages, take bookings, claim requests or read shared data. Verification is approved by a human admin; AI only pre-checks documents.
 16. **Verification documents are highly sensitive.** Stored encrypted in a private bucket, visible only to admins reviewing them, deleted after the decision (keep only the outcome, licence number, expiry date and an audit record).
+17. **AI never reads patient–professional chats.** Messages are not sent to any AI model, not used for analytics, and not shown to anyone except the two participants (and admins only for a reported safety issue, with an audit record).
+18. **Calendar events contain no health information.** Titles are neutral ("GeneBridge session"), with no condition, result or patient health details.
 
 ---
 
@@ -163,7 +165,31 @@ family_members   (id, owner_id, label, relation, parent_ids[], partner_id, condi
 family_notifications(id, sender_id, recipient_phone_hash, anonymous, template_id, sent_at, opened_at)
 values_answers   (id, user_id, question_id, value)                       -- 1..5
 counsellors      (id, user_id, name, languages[], facility_id)              -- created when a professional is verified
-bookings         (id, user_id, counsellor_id, starts_at, format, partner_invited)
+availability_rules(id, user_id, weekday, start_time, end_time, session_minutes, format, time_zone)
+                 -- weekly recurring; session_minutes: 30 | 45 | 60 ; format: video | in_person
+                 -- wall-clock times in the professional's time_zone (default Asia/Dubai); every slot and booking instant is UTC
+                 -- booking settings on professional_profiles: buffer_minutes (default 10), max_sessions_per_day,
+                 -- auto_accept_bookings, time_zone
+availability_exceptions(id, user_id, starts_at, ends_at, kind)            -- kind: day_off | extra_slot ; UTC
+bookings         (id, patient_id, professional_id, starts_at, ends_at, format, status, meeting_url, calendar_event_id,
+                 family_member_invited, request_id, share_choices jsonb, send_calendar_invite, cancel_reason, created_at)
+                 -- status: requested | confirmed | declined | cancelled | completed | no_show
+                 -- request_id is nullable (link to counsellor_requests); no two live bookings overlap per professional
+                 -- (EXCLUDE USING gist on tstzrange(starts_at, ends_at) where status in requested | confirmed)
+request_offers   (id, request_id, professional_id, status, created_at)    -- a verified professional offers to take an open request;
+                 -- status: offered | accepted | withdrawn ; the patient accepts one
+conversations    (id, patient_id, professional_id, status, blocked_by, created_at, last_message_at)
+                 -- status: active | closed | blocked ; one per patient–professional pair
+messages         (id, conversation_id, sender_id, kind, body, created_at, read_at, deleted_at)
+                 -- kind: text | system ; body max 4,000 characters ; no attachments
+                 -- readable only by the two participants; never sent to AI or analytics (guardrail 17)
+message_reports  (id, message_id, reporter_id, reason, status, reviewed_by, reviewed_at, created_at)
+                 -- an admin sees only the reported message, and every review is audited
+notifications    (id, user_id, kind, booking_id, conversation_id, request_id, created_at, read_at)
+                 -- kind adds: new_message | booking_requested | booking_confirmed | booking_declined | booking_changed
+                 -- | booking_cancelled | booking_reminder | request_offer ; text built in the app, never message content
+calendar_connections(user_id, provider, encrypted_refresh_token, google_email, connected_at)
+                 -- provider: google ; owner reads google_email and connected_at only; the token never reaches the browser
 referrals        (id, user_id, step, status, updated_at)
                  -- step: screening | counselling_booked | counselling_attended | confirmatory_test | specialist
 events           (id, user_id, name, props jsonb, created_at)            -- powers analytics
@@ -176,6 +202,9 @@ events           (id, user_id, name, props jsonb, created_at)            -- powe
 - Analysts can only query aggregate views that enforce `HAVING count(*) >= 10`.
 - `is_verified_professional(uid)` gates every professional touch of patient data: the directory, conversations and messages, bookings (also needs `accepting_patients`), `counsellor_requests` visibility and claiming, `share_grants` and `access_log` writes.
 - Only admins read `verification_submissions` of other people; documents live in a private bucket with no user policies and are served to admins by a server route.
+- `conversations` and `messages` are readable and writable only by the two participants, and only while the professional is verified; when they aren't, the conversation is read-only and the patient is offered another professional. Admins see a single message only through a `message_reports` row, audited.
+- Patients read only their own `bookings`; professionals read only bookings where they are `professional_id`.
+- `calendar_connections` are readable by the owner only, and `encrypted_refresh_token` is never granted to the browser.
 
 **Events to log from day one:** `onboarding_step_completed`, `result_viewed`, `teachback_answered` (pre/post), `couple_view_unlocked`, `simulator_run`, `family_notification_sent`, `booking_created`, `session_attended`, `ai_question` (category only, never the text of a personal question), `ai_routed_to_counsellor`.
 
@@ -225,6 +254,13 @@ Each JSON file has an audio file path for listen mode.
 ---
 
 ## 10. Demo personas (synthetic seed data)
+
+Demo personas are **optional and removable**. GeneBridge runs with real people: patients sign up, professionals sign up and are verified by an admin (task 14), and every screen has a friendly empty state when there is no data yet.
+
+- Every seeded or synthetic row (users, profiles, results, findings, family trees, conversations, bookings, requests, notices, events) has `is_demo = true`. All seed scripts set it.
+- `npm run purge:demo` (`scripts/purge-demo.ts`) or the admin page `/admin/demo-data` removes every demo account and everything linked to it, including Auth users and storage files. The admin action needs `REMOVE` typed to confirm and is audited.
+- Synthetic analytics data (task 05) is separate: it keeps its own `is_synthetic` flag and `npm run clear:synthetic`.
+- `NEXT_PUBLIC_DEMO_MODE=false` is the default for real use and hides every demo helper (UAE PASS test identities, "Demo: Khalid agrees", dev-only message toasts, and the "Synthetic demo data" label when no synthetic data exists).
 
 | Persona | Result | Purpose |
 |---|---|---|
