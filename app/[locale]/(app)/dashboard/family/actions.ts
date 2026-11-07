@@ -19,6 +19,7 @@ import { createClient } from '@/lib/supabase/server';
 import type { TreeDiff } from '@/lib/family/diff';
 import { treeDiffSchema } from '@/lib/family/diffSchema';
 import { saveFamilyDiff } from '@/lib/family/server';
+import { isDemoMode } from '@/lib/demo/mode';
 
 /*
  * "Choose relatives to notify" (task 08 section 6). Templates only: the
@@ -130,10 +131,10 @@ export async function sendFamilyNotices(input: SendNoticesInput): Promise<SendNo
   ]);
 
   // Every number counts as sent, so the sender can't tell that a relative
-  // stopped messages. Links are shown in development only, for the demo.
+  // stopped messages. Links are shown in development and demo mode only.
   return {
     status: 'sent',
     count: phones.length,
-    devLinks: process.env.NODE_ENV === 'production' ? [] : links,
+    devLinks: process.env.NODE_ENV !== 'production' && isDemoMode() ? links : [],
   };
 }

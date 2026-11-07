@@ -1,6 +1,7 @@
 import 'server-only';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { isDemoMode } from '@/lib/demo/mode';
 import { demoUsers } from './demoUsers';
 
 /**
@@ -11,7 +12,7 @@ import { demoUsers } from './demoUsers';
  * synthetic personas by minting a one-time sign-in token on the server and
  * redeeming it straight away, so the session cookie is set for the browser.
  *
- * Disabled unless DEMO_UAE_PASS_ENABLED=true.
+ * A demo helper: available only when NEXT_PUBLIC_DEMO_MODE=true (lib/demo/mode.ts).
  */
 export const uaePassIdentities = ['mariam', 'khalid', 'patientR', 'amaka', 'layla', 'analyst'] as const;
 export type UaePassIdentity = (typeof uaePassIdentities)[number];
@@ -21,7 +22,7 @@ export function isUaePassIdentity(value: unknown): value is UaePassIdentity {
 }
 
 export function uaePassMockEnabled(): boolean {
-  return process.env.DEMO_UAE_PASS_ENABLED === 'true';
+  return isDemoMode();
 }
 
 export async function signInWithUaePass(

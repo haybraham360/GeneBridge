@@ -1,7 +1,7 @@
 /**
  * Programme dashboard (task 05, M8). Needs Supabase env vars, all
  * migrations, `npm run seed:auth`, `npm run seed:analytics` and
- * NEXT_PUBLIC_DEMO_DATA=true. See README.md.
+ * NEXT_PUBLIC_DEMO_MODE=true (for the UAE PASS sign-in). See README.md.
  */
 import { readFile } from 'node:fs/promises';
 import { expect, test, type Page } from '@playwright/test';

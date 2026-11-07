@@ -5,7 +5,7 @@
  *
  * Safe to run more than once: existing users are updated, not duplicated.
  * Needs NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in .env.local.
- * All data is synthetic.
+ * All data is synthetic and marked is_demo; remove it with npm run purge:demo.
  */
 import { config } from 'dotenv';
 import { createClient, type User } from '@supabase/supabase-js';
@@ -77,6 +77,8 @@ async function main() {
         locale: persona.locale,
         role: persona.role,
         onboarding_step: persona.onboardingStep,
+        // Demo data (task 15): removable with npm run purge:demo.
+        is_demo: true,
       })
       .eq('user_id', user.id);
     if (profileError) throw new Error(`${persona.displayName} profile: ${profileError.message}`);
@@ -90,7 +92,7 @@ async function main() {
       .is('revoked_at', null)
       .maybeSingle();
     if (!consent) {
-      const { error } = await admin.from('consents').insert({ user_id: user.id, kind: 'terms' });
+      const { error } = await admin.from('consents').insert({ user_id: user.id, kind: 'terms', is_demo: true });
       if (error) throw new Error(`${persona.displayName} consent: ${error.message}`);
     }
 
@@ -111,6 +113,7 @@ async function main() {
           licence_expiry: new Date(Date.now() + 2 * 365 * 864e5).toISOString().slice(0, 10),
           verified_at: new Date().toISOString(),
           accepting_patients: true,
+          is_demo: true,
         },
         { onConflict: 'user_id' },
       );
@@ -123,6 +126,7 @@ async function main() {
           name: persona.displayName,
           languages: ['en', 'ar'],
           facility_code: persona.facilityKey,
+          is_demo: true,
         },
         { onConflict: 'user_id' },
       );

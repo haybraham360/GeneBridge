@@ -1,14 +1,14 @@
-import { useTranslations } from 'next-intl';
-import { isDemoData } from '@/lib/analytics/demo';
+import { getTranslations } from 'next-intl/server';
+import { showSyntheticLabel } from '@/lib/analytics/demo';
 import { cn } from '@/lib/cn';
 
 /**
  * "Synthetic demo data" tag on every figure (guardrail 12). Renders nothing
- * unless NEXT_PUBLIC_DEMO_DATA=true.
+ * unless demo mode is on or synthetic analytics data exists.
  */
-export function DemoLabel({ className }: { className?: string }) {
-  const t = useTranslations('analytics.header');
-  if (!isDemoData()) return null;
+export async function DemoLabel({ className }: { className?: string }) {
+  if (!(await showSyntheticLabel())) return null;
+  const t = await getTranslations('analytics.header');
   return (
     <span
       className={cn(

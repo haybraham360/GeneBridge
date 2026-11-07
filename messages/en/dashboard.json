@@ -17,16 +17,18 @@
     "ask": {
       "title": "Ask GeneBridge",
       "description": "General questions about genetics. It won't interpret your personal result.",
-      "cta": "Ask a question",
       "cta": "Ask a question"
     },
     "account": "Your account",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
     "label": "Main menu",
-    "groups": { "understand": "Understand", "family": "Partner & family", "care": "Choices & care" }
+    "groups": {
+      "understand": "Understand",
+      "family": "Partner & family",
+      "care": "Choices & care"
+    }
   },
-
   "shared": {
     "listen": "Listen"
   },
@@ -39,12 +41,30 @@
     "title": "Your care journey",
     "progress": "Step {current} of {total}",
     "steps": {
-      "screening": { "title": "Screening done", "meta": "28 Oct" },
-      "understood": { "title": "Result understood", "meta": "29 Oct" },
-      "booked": { "title": "Counselling booked", "meta": "Thu 12 Nov, 10:00" },
-      "session": { "title": "Counselling session", "meta": "Upcoming" },
-      "test": { "title": "Confirmatory test", "meta": "If advised" },
-      "specialist": { "title": "Specialist", "meta": "Only if needed" }
+      "screening": {
+        "title": "Screening done",
+        "meta": "28 Oct"
+      },
+      "understood": {
+        "title": "Result understood",
+        "meta": "29 Oct"
+      },
+      "booked": {
+        "title": "Counselling booked",
+        "meta": "Thu 12 Nov, 10:00"
+      },
+      "session": {
+        "title": "Counselling session",
+        "meta": "Upcoming"
+      },
+      "test": {
+        "title": "Confirmatory test",
+        "meta": "If advised"
+      },
+      "specialist": {
+        "title": "Specialist",
+        "meta": "Only if needed"
+      }
     }
   },
   "summaryCards": {
@@ -121,7 +141,6 @@
     "options": "Explore your options",
     "talk": "Talk to your partner and family"
   },
-
   "result": {
     "header": {
       "title": "Your result, explained",
@@ -193,7 +212,6 @@
       "share": "Share with my partner"
     }
   },
-
   "couple": {
     "header": {
       "title": "Couple view",
@@ -229,9 +247,18 @@
     },
     "actions": {
       "navAria": "Next steps",
-      "simulator": { "title": "See how it works", "description": "Simulate pregnancies in the inheritance simulator." },
-      "options": { "title": "Explore your options", "description": "Every path, shown equally." },
-      "session": { "title": "Talk it through together", "description": "Book a couple session with a counsellor." }
+      "simulator": {
+        "title": "See how it works",
+        "description": "Simulate pregnancies in the inheritance simulator."
+      },
+      "options": {
+        "title": "Explore your options",
+        "description": "Every path, shown equally."
+      },
+      "session": {
+        "title": "Talk it through together",
+        "description": "Book a couple session with a counsellor."
+      }
     },
     "toast": {
       "simulator": "Opening the inheritance simulator…",
@@ -249,7 +276,6 @@
     "you": "You",
     "yourPartner": "Your partner"
   },
-
   "simulator": {
     "header": {
       "title": "Inheritance simulator",
@@ -354,7 +380,10 @@
       "carrier": "Healthy carrier",
       "unaffected": "No changed copy"
     },
-    "sex": { "son": "Son", "daughter": "Daughter" },
+    "sex": {
+      "son": "Son",
+      "daughter": "Daughter"
+    },
     "short": {
       "affected": "Has it",
       "carrier": "Carrier",
@@ -386,7 +415,6 @@
       "hasNamed": "has {name}"
     }
   },
-
   "family": {
     "header": {
       "title": "Family map",
@@ -449,10 +477,18 @@
       }
     },
     "relations": {
-      "father": "Father", "mother": "Mother", "parent": "Parent",
-      "brother": "Brother", "sister": "Sister", "sibling": "Sibling",
-      "son": "Son", "daughter": "Daughter", "child": "Child",
-      "husband": "Husband", "wife": "Wife", "partner": "Partner"
+      "father": "Father",
+      "mother": "Mother",
+      "parent": "Parent",
+      "brother": "Brother",
+      "sister": "Sister",
+      "sibling": "Sibling",
+      "son": "Son",
+      "daughter": "Daughter",
+      "child": "Child",
+      "husband": "Husband",
+      "wife": "Wife",
+      "partner": "Partner"
     },
     "errors": {
       "noTarget": "Choose who this person is related to.",
@@ -546,7 +582,6 @@
     "selfName": "{name} (you)",
     "selfNoName": "You"
   },
-
   "options": {
     "header": {
       "title": "Your options",
@@ -615,7 +650,6 @@
       "intro": "Your options. Every option here is valid. Take your time."
     }
   },
-
   "counsellor": {
     "header": {
       "title": "Counsellor & referral",
@@ -631,17 +665,40 @@
       "selectedAria": "Selected {name}"
     },
     "days": {
-      "short": { "wed11": "Wed 11", "thu12": "Thu 12", "sun15": "Sun 15" },
-      "long": { "wed11": "Wed 11 Nov", "thu12": "Thu 12 Nov", "sun15": "Sun 15 Nov" }
+      "short": {
+        "wed11": "Wed 11",
+        "thu12": "Thu 12",
+        "sun15": "Sun 15"
+      },
+      "long": {
+        "wed11": "Wed 11 Nov",
+        "thu12": "Thu 12 Nov",
+        "sun15": "Sun 15 Nov"
+      }
     },
     "referral": {
       "title": "Your referral path",
       "steps": {
-        "received": { "title": "Screening result received", "meta": "28 Oct · {centre}" },
-        "booked": { "title": "Counselling booked", "meta": "3 Nov · {counsellor}" },
-        "session": { "title": "Counselling session", "meta": "Thu 12 Nov, 10:00 · Video call" },
-        "test": { "title": "Confirmatory test", "meta": "Arranged after your session, if advised" },
-        "specialist": { "title": "Specialist referral", "meta": "Only if needed" }
+        "received": {
+          "title": "Screening result received",
+          "meta": "28 Oct · {centre}"
+        },
+        "booked": {
+          "title": "Counselling booked",
+          "meta": "3 Nov · {counsellor}"
+        },
+        "session": {
+          "title": "Counselling session",
+          "meta": "Thu 12 Nov, 10:00 · Video call"
+        },
+        "test": {
+          "title": "Confirmatory test",
+          "meta": "Arranged after your session, if advised"
+        },
+        "specialist": {
+          "title": "Specialist referral",
+          "meta": "Only if needed"
+        }
       },
       "record": "Referral shared with your health record (Malaffi, demo)"
     },
@@ -663,7 +720,6 @@
       "booked": "Booked with {counsellor} · {day}, {time} · {session}"
     }
   },
-
   "privacy": {
     "accessLogLine": "{name} viewed your {resource}",
     "accessLogEmpty": "No one has viewed your shared information yet.",
@@ -689,6 +745,7 @@
       "roles": {
         "partner": "Partner",
         "counsellor": "Genetic counsellor",
+        "professional": "Health professional",
         "relatives": "Relatives"
       },
       "levels": {
@@ -700,31 +757,31 @@
       "revokeAria": "Revoke access for {name}",
       "share": "Share",
       "shareAria": "Share with {name}",
-      "dates": {
-        "oct30": "30 Oct 2026",
-        "nov3": "3 Nov 2026",
-        "today": "Today"
-      }
+      "items": {
+        "result_summary": "Result summary",
+        "result_full": "Full report",
+        "values_summary": "Values summary",
+        "questions": "Your questions",
+        "ai_summary": "Ask GeneBridge summary",
+        "family_map": "Family map"
+      },
+      "coupleLevels": {
+        "shared_only": "Shared results only",
+        "summary": "Summary only",
+        "full": "Full report"
+      },
+      "unnamed": "Someone you shared with",
+      "empty": "You haven’t shared your information with anyone. Sharing always starts with you.",
+      "relativesNote": "Relatives never see your result.",
+      "shareCoupleAria": "Set up the couple view with {name}"
     },
     "log": {
       "title": "Access log",
-      "subtitle": "Every time someone opens your result.",
-      "viewedFull": "{name} viewed your full report",
-      "viewedSummary": "{name} viewed your summary",
-      "downloaded": "You downloaded your result",
-      "when": {
-        "a": "3 Nov, 10:14",
-        "b": "30 Oct, 21:02",
-        "c": "29 Oct, 18:40"
-      }
+      "subtitle": "Every time someone opens your result."
     },
     "notifications": {
       "title": "Family notifications",
       "subtitle": "Messages you sent to relatives through GeneBridge.",
-      "sent": "Sent anonymously to {count, plural, one {# relative} other {# relatives}}",
-      "sentWhen": "1 Nov · your result was not included",
-      "opened": "{count, plural, one {# relative opened the testing information} other {# relatives opened the testing information}}",
-      "openedWhen": "2 Nov",
       "sentMeta": "{when} · your result was not included{condition, select, yes {; condition name included} other {}}",
       "empty": "You haven't sent any family messages.",
       "sentLine": "{anonymous, select, yes {Sent anonymously} other {Sent with your name}} to {count, plural, one {# relative} other {# relatives}} by {channel, select, sms {SMS} other {WhatsApp}}"
@@ -744,14 +801,15 @@
     "consent": {
       "title": "Consent history",
       "agreed": "Agreed to the privacy terms",
-      "unlocked": "Unlocked couple view with {name} (summary only)",
-      "shared": "Shared full report with {name}",
-      "when": {
-        "a": "27 Oct 2026",
-        "b": "30 Oct 2026",
-        "c": "3 Nov 2026"
-      }
-    }
+      "coupleAgreed": "Agreed to the couple view{level, select, shared_only { (shared results only)} summary { (summary only)} full { (full report)} other {}}",
+      "coupleWithdrawn": "Withdrew from the couple view",
+      "compareValues": "Agreed to compare values with your partner",
+      "shared": "Shared your {item} with {name}",
+      "stopped": "Stopped sharing your {item} with {name}",
+      "someone": "someone",
+      "empty": "No consent changes yet."
+    },
+    "revokeError": "Couldn't change sharing. Please try again."
   },
   "careMeta": {
     "notYet": "Not yet",

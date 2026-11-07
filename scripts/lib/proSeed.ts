@@ -36,6 +36,9 @@ function check<T>(label: string, result: { data: T; error: { message: string } |
   return result.data;
 }
 
+/** Every seeded row is demo data (task 15), removable with npm run purge:demo. */
+const demo = <T extends object>(rows: T[]) => rows.map((row) => ({ ...row, is_demo: true }));
+
 const minutesAgo = (n: number) => new Date(Date.now() - n * 60_000).toISOString();
 
 /** Today at hh:mm in Abu Dhabi (UTC+4, no daylight saving). */
@@ -95,7 +98,7 @@ export async function seedPro(admin: SupabaseClient): Promise<ProSeed> {
   //    Mariam's Ask GeneBridge summary (design: Pro.html).
   check(
     'prep',
-    await admin.from('counselling_prep').insert([
+    await admin.from('counselling_prep').insert(demo([
       {
         user_id: ids.mariam,
         questions: [
@@ -110,18 +113,18 @@ export async function seedPro(admin: SupabaseClient): Promise<ProSeed> {
         user_id: ids.patientS,
         questions: ['What are the options if we are both carriers?', 'Can my mother join the session?'],
       },
-    ], { defaultToNull: false }),
+    ]), { defaultToNull: false }),
   );
   check(
     'values',
-    await admin.from('values_answers').insert([
+    await admin.from('values_answers').insert(demo([
       { user_id: ids.mariam, question_id: 'biological_children', value: 5 },
       { user_id: ids.mariam, question_id: 'religious_guidance', value: 4 },
       { user_id: ids.mariam, question_id: 'avoid_procedures', value: 5 },
       { user_id: ids.khalid, question_id: 'biological_children', value: 5 },
       { user_id: ids.khalid, question_id: 'religious_guidance', value: 4 },
       { user_id: ids.khalid, question_id: 'avoid_procedures', value: 2 },
-    ]),
+    ])),
   );
   // Understanding check after the explainer: Mariam 3/3, Khalid 2/3.
   const teachback = (user: string, question: string, correct: boolean) => ({
@@ -133,14 +136,14 @@ export async function seedPro(admin: SupabaseClient): Promise<ProSeed> {
     'teachback',
     await admin
       .from('events')
-      .insert([
+      .insert(demo([
         teachback(ids.mariam, 'q1', true),
         teachback(ids.mariam, 'q2', true),
         teachback(ids.mariam, 'q3', true),
         teachback(ids.khalid, 'q1', true),
         teachback(ids.khalid, 'q2', true),
         teachback(ids.khalid, 'q3', false),
-      ]),
+      ])),
   );
 
   // 4. The four requests, all assigned to Dr. Amaka at the demo facility.
@@ -149,7 +152,7 @@ export async function seedPro(admin: SupabaseClient): Promise<ProSeed> {
     'requests',
     await admin
       .from('counsellor_requests')
-      .insert([
+      .insert(demo([
         {
           ...base,
           user_id: ids.patientR,
@@ -191,7 +194,7 @@ export async function seedPro(admin: SupabaseClient): Promise<ProSeed> {
           created_at: minutesAgo(26 * 60),
         },
         // Columns left out of a row keep their defaults (not null).
-      ], { defaultToNull: false })
+      ]), { defaultToNull: false })
       .select('id, user_id'),
   ) as { id: string; user_id: string }[];
   const requestFor = (user: string) => rows.find((r) => r.user_id === user)!.id;
@@ -204,13 +207,13 @@ export async function seedPro(admin: SupabaseClient): Promise<ProSeed> {
 
   check(
     'booking',
-    await admin.from('bookings').insert({
+    await admin.from('bookings').insert(demo([{
       request_id: requests.couple,
       counsellor_id: amaka.id,
       starts_at: todayAt('10:00'),
       format: 'video',
       partner_invited: true,
-    }),
+    }])),
   );
 
   // 5. What each person shared with Dr. Amaka. Patient R. shared nothing yet,
@@ -226,7 +229,7 @@ export async function seedPro(admin: SupabaseClient): Promise<ProSeed> {
     'grants',
     await admin
       .from('share_grants')
-      .insert([
+      .insert(demo([
         grant(ids.mariam, 'result'),
         grant(ids.mariam, 'values_summary'),
         grant(ids.mariam, 'questions'),
@@ -235,7 +238,7 @@ export async function seedPro(admin: SupabaseClient): Promise<ProSeed> {
         grant(ids.khalid, 'values_summary'),
         grant(ids.khalid, 'questions'),
         grant(ids.patientS, 'questions'),
-      ]),
+      ])),
   );
 
   return { ids, requests };

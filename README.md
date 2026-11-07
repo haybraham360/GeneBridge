@@ -53,10 +53,9 @@ Copy `.env.example` to `.env.local` and fill it in. `.env.local` is git-ignored.
 | `NEXT_PUBLIC_SUPABASE_URL` | Browser and server | Project settings → API |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Browser and server | Project settings → API |
 | `SUPABASE_SERVICE_ROLE_KEY` | Server only | Professional account set-up, verification documents (encrypted storage), UAE PASS mock, seed scripts, tests. Never prefix with `NEXT_PUBLIC_`. |
-| `DEMO_UAE_PASS_ENABLED` | Server | `true` shows the UAE PASS mock. Leave unset in production. |
+| `NEXT_PUBLIC_DEMO_MODE` | Browser and server | **`false` for real use** (the default). `true` shows the demo helpers: the UAE PASS test identities and the family-notice demo links. The Playwright tests turn it on for their own dev server. See [Demo data](#demo-data-and-real-accounts). |
 | `GOOGLE_AUTH_ENABLED` | Server | Leave empty: "Continue with Google" appears by itself once the Google provider is on in Supabase (step 3). `false` hides it. |
 | `PHONE_AUTH_ENABLED` | Server | `true` shows phone code sign-in. **Off for now**: email is the main path until the Phone provider is set up (step 3). |
-| `NEXT_PUBLIC_DEMO_DATA` | Browser and server | `true` labels every dashboard figure and export "Synthetic demo data". Keep it `true` while the synthetic seed is in the database. |
 | `ANTHROPIC_API_KEY` | Server only | Ask GeneBridge's AI mode. **Optional**: leave empty and the assistant runs in free offline mode (see [Ask GeneBridge](#ask-genebridge-ai-assistant)). Never prefix with `NEXT_PUBLIC_`. |
 | `ASSISTANT_MODEL` | Server only | Main assistant model. Default `claude-opus-5-5`; `claude-haiku-5-5` is the cheapest. |
 | `ASSISTANT_CLASSIFIER_MODEL`, `ASSISTANT_GRADER_MODEL` | Server, eval | Classifier (default `claude-haiku-5-5`) and evaluation grader (default `claude-opus-5-5`). |
@@ -95,7 +94,7 @@ npm run seed:auth
 npm run seed:results
 ```
 
-Both are safe to run again. All data is synthetic. `seed:results` adds the demo screening results **unclaimed** (each persona connects theirs in onboarding) and clears couple links between the personas.
+Both are safe to run again. All data is synthetic, and every seeded row is marked `is_demo = true`, so it can be removed in one step later (see [Demo data and real accounts](#demo-data-and-real-accounts)). Signing in as a persona needs `NEXT_PUBLIC_DEMO_MODE=true`. `seed:results` adds the demo screening results **unclaimed** (each persona connects theirs in onboarding) and clears couple links between the personas.
 
 | Reference number | Belongs to | Result |
 |---|---|---|
@@ -118,6 +117,17 @@ The demo email addresses don't receive mail. To sign in as any persona in a demo
 
 - **UAE PASS (mock):** "Continue with UAE PASS" opens a "Demo: UAE PASS" dialog with all five personas. Dr. Amaka Okoro lands on `/pro`; the Programme analyst lands on `/admin/analytics`.
 - **Health professionals:** on Create account, choose "I'm a health professional" and sign up with your own email. You land on `/pro` with a verification banner; patient pages stay locked until an admin approves you. There is no facility code.
+
+### Demo data and real accounts
+
+GeneBridge runs with real people: patients sign up, professionals sign up and are verified by an admin, and every screen has a friendly empty state when there's no data yet. The demo personas are optional.
+
+- **Demo mode** (`NEXT_PUBLIC_DEMO_MODE`, default `false`) only shows or hides the demo helpers. It never adds or removes data.
+- **Marking:** every seeded row has `is_demo = true`. Rows created later by a demo account (a booking Mariam makes in a demo, say) inherit the flag from their owner in the database, so they're removed with it. Only the service role can set the flag; signed-in users can never set or clear it.
+- **Removing everything:** `npm run purge:demo` lists the demo accounts and records, asks you to type `REMOVE` (`-- --yes` skips the question), then deletes every demo account and everything linked to it: database rows, storage files (scans, audio, verification documents, photos) and the Supabase Auth users. It prints a summary.
+- **From the app:** admins can do the same at `/admin/demo-data` ("Remove all demo data", confirmed by typing `REMOVE`), or remove demo accounts one at a time. The admin running it is never deleted.
+- **Audit:** every removal writes two rows to `demo_purge_audit` (append-only): the rows deleted, then the accounts and files deleted. The admin page also logs `demo_data_purged` with counts only.
+- **Never touched:** real accounts (the database refuses to remove an account that isn't marked demo), synthetic analytics data (`is_synthetic`, removed with `npm run clear:synthetic`), and the sample report and verification images in `samples/`, which are files, not accounts.
 
 ### How sign-in works
 
@@ -159,7 +169,7 @@ npm run clear:synthetic           # removes every synthetic user and all their d
 - Synthetic accounts have `profiles.is_synthetic = true` and `@synthetic.genebridge.invalid` addresses. Their screening results use `SYN-` reference codes. Demo personas and real users are never touched.
 - Running `seed:analytics` again replaces the earlier synthetic set. The output is the same every time (fixed seed).
 - Users are spread across Arabic, English, Urdu, Hindi and Tagalog; read, listen, and read and listen; and `[Centre A]`, `[Centre B]` and `[Centre C]`. Tagalog is kept small (about 20 people), so some of its figures show "Hidden (under 10)".
-- Keep `NEXT_PUBLIC_DEMO_DATA=true` while this data is loaded.
+- Every figure and the export are labelled "Synthetic demo data" automatically while any synthetic account exists (and always in demo mode). After `clear:synthetic` the label disappears.
 
 ### How the figures are protected
 
@@ -352,6 +362,7 @@ Events: `pro_signup_completed` (profession), `kyc_submitted`, `kyc_precheck_comp
 | `npm run seed:notices` | Seeds the three demo family notices (links in [Family notices](#family-notices-relatives-landing-page)) |
 | `npm run seed:analytics` | Seeds about 1,250 synthetic users for the dashboard (`-- --days 180` to spread them wider) |
 | `npm run clear:synthetic` | Removes all synthetic users and their data |
+| `npm run purge:demo` | Removes every demo account and everything linked to it, after you type `REMOVE` (`-- --yes` to skip). Real accounts and synthetic data are kept |
 | `npm run test:rls` | Unit tests, plus row-level security tests when Supabase env vars are set |
 | `npm run eval:assistant` | Ask GeneBridge evaluation (offline by default; `-- --ai` for the live model) |
 | `npm run test:sql` | SQL tests for the analytics functions (group-of-10 rule, no identifiers, access). Needs `psql` and `SUPABASE_DB_URL`; rolls back everything |

@@ -33,9 +33,14 @@ export function isNoticePath(path: string): boolean {
 
 export const NOTICE_PREVIEW_PATH = '/family-notice/preview';
 
-/** Verification review (task 14): admins only. Everyone else gets a 404. */
+/**
+ * Admin pages: verification review (task 14) and demo data (task 15). Admins
+ * only. Everyone else gets a 404.
+ */
+const ADMIN_SECTIONS = ['/admin/verifications', '/admin/demo-data'];
+
 export function isAdminPath(path: string): boolean {
-  return path === '/admin/verifications' || path.startsWith('/admin/verifications/');
+  return ADMIN_SECTIONS.some((section) => path === section || path.startsWith(`${section}/`));
 }
 
 /** Paths only analysts may open (task 05). Everyone else gets a 404. */

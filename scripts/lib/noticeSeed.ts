@@ -54,6 +54,7 @@ export async function seedNotices(admin: SupabaseClient): Promise<{ senderId: st
       signed_name: null,
       created_at: new Date(sent).toISOString(),
       expires_at: new Date(sent + 90 * day).toISOString(),
+      is_demo: true,
     };
   });
   const { error } = await admin.from('family_notifications').insert(rows);

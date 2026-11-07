@@ -3,7 +3,7 @@ import { getTranslations } from 'next-intl/server';
 import { routing } from '@/i18n/routing';
 import { logEvents } from '@/lib/auth/events';
 import { toCsv, type CsvRow } from '@/lib/analytics/csv';
-import { isDemoData } from '@/lib/analytics/demo';
+import { showSyntheticLabel } from '@/lib/analytics/demo';
 import { equityFlags } from '@/lib/analytics/equity';
 import { exportFileName, parseFilters } from '@/lib/analytics/filters';
 import { isAnalyst, loadCentres, loadDashboard } from '@/lib/analytics/queries';
@@ -42,7 +42,7 @@ export async function GET(request: Request, { params }: RouteContext<'/[locale]/
   }
 
   const t = await getTranslations({ locale, namespace: 'analytics' });
-  const csv = toCsv(reportRows(data, filters, t));
+  const csv = toCsv(reportRows(data, filters, t, await showSyntheticLabel()));
 
   // Filters only: never the figures, never anything about a person.
   const event: ProgrammeEvent = {
@@ -71,14 +71,14 @@ function value(v: Figure, hidden: string): string | number {
   return v === null ? hidden : Math.round(v * 10) / 10;
 }
 
-function reportRows(data: DashboardData, filters: Filters, t: T): CsvRow[] {
+function reportRows(data: DashboardData, filters: Filters, t: T, synthetic: boolean): CsvRow[] {
   const hidden = t('hidden');
   const v = (x: Figure) => value(x, hidden);
   const c = (key: Parameters<T>[0]) => t(key);
   const prev = (x: Figure) => (data.previous ? v(x) : '');
 
   const rows: CsvRow[] = [];
-  if (isDemoData()) rows.push([c('csv.notice')]);
+  if (synthetic) rows.push([c('csv.notice')]);
   rows.push(
     [c('csv.filters'), c('csv.range'), t(`filters.ranges.${filters.range}`)],
     [c('csv.filters'), c('csv.centre'), filters.centre ?? c('filters.allCentres')],

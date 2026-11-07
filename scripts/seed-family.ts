@@ -31,7 +31,7 @@ async function resetFamily(userId: string) {
   if (delError) throw new Error(`delete failed: ${delError.message}`);
   const { error } = await admin
     .from('family_members')
-    .insert({ owner_id: userId, relation_to_owner: 'self', is_owner: true, generation: 0, created_by: 'manual' });
+    .insert({ owner_id: userId, relation_to_owner: 'self', is_owner: true, generation: 0, created_by: 'manual', is_demo: true });
   if (error) throw new Error(`insert failed: ${error.message}`);
 }
 

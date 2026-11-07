@@ -116,10 +116,13 @@ describe('isAnalystPath', () => {
 });
 
 describe('isAdminPath', () => {
-  it('covers the verification review only', () => {
+  it('covers the verification review and demo data pages', () => {
     expect(isAdminPath('/admin/verifications')).toBe(true);
     expect(isAdminPath('/admin/verifications/123')).toBe(true);
     expect(isAdminPath('/admin/analytics')).toBe(false);
     expect(isAdminPath('/admin/verificationsx')).toBe(false);
+    expect(isAdminPath('/admin/demo-data')).toBe(true);
+    expect(isAdminPath('/admin/demo-datax')).toBe(false);
+    expect(isAnalystPath('/admin/demo-data')).toBe(false);
   });
 });

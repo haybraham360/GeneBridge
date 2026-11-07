@@ -30,5 +30,7 @@ export default defineConfig({
     url: `http://localhost:${PORT}/en`,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
+    // The tests sign in with the demo personas (UAE PASS mock), a demo helper.
+    env: { NEXT_PUBLIC_DEMO_MODE: process.env.NEXT_PUBLIC_DEMO_MODE ?? 'true' },
   },
 });

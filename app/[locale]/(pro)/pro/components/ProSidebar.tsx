@@ -1,7 +1,7 @@
 import { useTranslations } from 'next-intl';
 import { LanguageSwitch } from '@/components/marketing/LanguageSwitch';
 import { Logo } from '@/components/ui/Logo';
-import { isDemoData } from '@/lib/analytics/demo';
+import { isDemoMode } from '@/lib/demo/mode';
 import { SignOutButton } from '@/components/auth/SignOutButton';
 import { initialsOf } from '@/lib/pro/labels';
 import { ProNav } from './ProNav';
@@ -36,7 +36,7 @@ export function ProSidebar({ name, subline, verified }: { name: string; subline:
           </span>
         </div>
         <SignOutButton />
-        {isDemoData() ? <p className="px-2 text-xs font-bold text-brand-text-dark">{t('synthetic')}</p> : null}
+        {isDemoMode() ? <p className="px-2 text-xs font-bold text-brand-text-dark">{t('synthetic')}</p> : null}
       </div>
     </aside>
   );

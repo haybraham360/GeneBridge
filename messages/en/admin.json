@@ -1,11 +1,12 @@
 {
   "nav": {
-    "title": "Verification review",
+    "title": "Admin",
     "privacyNote": "Documents are encrypted, shown only here and deleted after each decision. Every view and action is audited.",
-    "label": "Verification menu",
+    "label": "Admin menu",
     "queue": "Pending",
     "professionals": "Professionals",
-    "bookings": "Flagged bookings"
+    "bookings": "Flagged bookings",
+    "demoData": "Demo data"
   },
   "queue": {
     "title": "Pending verifications",
@@ -142,5 +143,58 @@
     "doneDeletePending": "Done. The documents will be deleted by the daily cleanup.",
     "invalid": "Check the details: the expiry must be in the future and a message is required.",
     "error": "That didn't work. Try again."
+  },
+  "demoData": {
+    "title": "Demo data",
+    "subtitle": "Seeded demo accounts and everything linked to them. Real accounts are never listed or removed here.",
+    "modeOn": "Demo mode is on: demo helpers such as the UAE PASS test identities are visible.",
+    "modeOff": "Demo mode is off: demo helpers are hidden from everyone.",
+    "empty": "No demo data. GeneBridge is running with real accounts only.",
+    "counts": {
+      "title": "What's here",
+      "accounts": "Demo accounts",
+      "results": "Results",
+      "family": "Family map entries",
+      "requests": "Counsellor requests",
+      "bookings": "Bookings",
+      "conversations": "Conversations and messages",
+      "notices": "Family notices",
+      "events": "Events",
+      "other": "Other records"
+    },
+    "removeAll": {
+      "intro": "Removes every demo account, its records, its storage files and its sign-in. This can't be undone.",
+      "button": "Remove all demo data",
+      "title": "Remove all demo data?",
+      "body": "Every demo account and everything linked to it will be deleted permanently, including files and sign-ins. Real accounts are not affected. This is recorded in the audit log.",
+      "label": "Type {word} to confirm",
+      "hint": "Type the word in capital letters, exactly as shown.",
+      "confirm": "Remove permanently",
+      "working": "Removing…",
+      "cancel": "Cancel",
+      "done": "Removed {accounts, plural, one {# account} other {# accounts}}, {rows, plural, one {# record} other {# records}} and {files, plural, one {# file} other {# files}}.",
+      "keptSelf": "Your own account was kept.",
+      "error": "Something went wrong, and some demo data may remain. Try again; it's safe to repeat."
+    },
+    "removeOne": {
+      "button": "Remove",
+      "buttonAria": "Remove the demo account {name}",
+      "question": "Remove {name} and everything linked to it?",
+      "confirm": "Yes, remove",
+      "working": "Removing…",
+      "cancel": "Cancel",
+      "error": "Couldn't remove this account. Try again."
+    },
+    "accounts": {
+      "title": "Demo accounts",
+      "noName": "(no name)",
+      "roles": {
+        "individual": "Patient",
+        "professional": "Health professional",
+        "analyst": "Analyst",
+        "admin": "Admin"
+      }
+    },
+    "syntheticNote": "Synthetic analytics data for the programme dashboard is separate and isn't removed here. Clear it with npm run clear:synthetic."
   }
 }

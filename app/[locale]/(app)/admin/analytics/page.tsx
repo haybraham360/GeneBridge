@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { buttonClasses } from '@/components/ui/Button';
 import { routing } from '@/i18n/routing';
-import { isDemoData } from '@/lib/analytics/demo';
+import { showSyntheticLabel } from '@/lib/analytics/demo';
 import { filtersQuery, parseFilters } from '@/lib/analytics/filters';
 import { isAnalyst, loadCentres } from '@/lib/analytics/queries';
 import { createClient } from '@/lib/supabase/server';
@@ -37,9 +37,10 @@ export default async function AnalyticsPage({
   const supabase = await createClient();
   if (!(await isAnalyst(supabase))) notFound();
 
-  const [t, centres] = await Promise.all([
+  const [t, centres, synthetic] = await Promise.all([
     getTranslations({ locale, namespace: 'analytics' }),
     loadCentres(supabase).catch(() => [] as string[]),
+    showSyntheticLabel(),
   ]);
   const filters = parseFilters(await searchParams, centres);
   const query = filtersQuery(filters);
@@ -58,7 +59,7 @@ export default async function AnalyticsPage({
               {t('header.title')}
             </h1>
             <p className="text-[15px] text-muted">
-              {isDemoData() ? (
+              {synthetic ? (
                 <>
                   <strong className="font-bold text-brand-text-dark">{t('header.synthetic')}</strong>
                   {' · '}

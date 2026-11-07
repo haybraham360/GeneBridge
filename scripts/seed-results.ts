@@ -38,6 +38,8 @@ async function main() {
     centre: r.centre,
     owner_id: null,
     claimed_at: null,
+    // Demo data (task 15): removable with npm run purge:demo.
+    is_demo: true,
   }));
 
   // Each demo report is replaced whole: one row per screened condition (task 10).

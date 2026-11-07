@@ -149,7 +149,7 @@ async function main() {
   console.log(
     `\nDone: ${plan.people.length} synthetic users, ${plan.results.length} results, ` +
       `${plan.couples.length} couple links, ${plan.events.length} events over ${days} days.` +
-      '\nSet NEXT_PUBLIC_DEMO_DATA=true so the dashboard labels them. Remove with npm run clear:synthetic.',
+      '\nThe dashboard labels them "Synthetic demo data" while they exist. Remove with npm run clear:synthetic.',
   );
 }
 
