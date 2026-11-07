@@ -224,6 +224,20 @@ begin
   raise notice 'ok: the demo purge audit is append-only';
 end $$;
 
+-- The real service role (not a superuser) can update profiles, including
+-- is_demo: the seed scripts and professional sign-up depend on it.
+do $$
+begin
+  perform set_config('role', 'service_role', true);
+  perform set_config('request.jwt.claims', '{"role":"service_role"}', true);
+  update public.profiles set is_demo = true, display_name = 'Real R' where user_id = '15100000-0000-4000-8000-0000000000a1';
+  if not (select is_demo from public.profiles where user_id = '15100000-0000-4000-8000-0000000000a1') then
+    raise exception 'the service role could not set is_demo';
+  end if;
+  perform set_config('role', 'postgres', true);
+  raise notice 'ok: the service role updates profiles';
+end $$;
+
 rollback;
 \o
 select 'demo_data: all checks passed' as result;
