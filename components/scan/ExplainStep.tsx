@@ -212,7 +212,7 @@ function SpecialistCard({ unmatched = false }: { unmatched?: boolean }) {
   const t = useTranslations('scan');
   return (
     <section data-testid="specialist-card" className={cn(cardClasses, 'flex flex-col gap-3 border-2 border-info-text/20 p-[clamp(24px,4vw,36px)]')}>
-      <h2 className="text-[clamp(20px,2.4vw,26px)] leading-tight font-extrabold tracking-[-0.02em]">{t('explain.specialistTitle')}</h2>
+      <h2 className="font-display text-[clamp(20px,2.4vw,26px)] leading-tight font-extrabold tracking-[-0.02em]">{t('explain.specialistTitle')}</h2>
       <p className="text-base leading-[1.6] text-muted">{unmatched ? t('check.unmatched') : t('explain.specialistBody')}</p>
       <Link href="/dashboard/counsellor" className={buttonClasses('primary', 'lg', 'self-start')}>
         {t('explain.book')}
@@ -244,7 +244,7 @@ function FindingDetail({ finding, simple, locale }: { finding: ExplainedFinding;
       </ul>
       <div className="flex flex-wrap items-start gap-5">
         <div className="flex min-w-[260px] flex-1 flex-col gap-3">
-          <h2 className="text-[clamp(22px,2.6vw,30px)] leading-tight font-extrabold tracking-[-0.02em]">
+          <h2 className="font-display text-[clamp(22px,2.6vw,30px)] leading-tight font-extrabold tracking-[-0.02em]">
             <WithLtr text={text[0] ?? finding.title} />
           </h2>
           {text.slice(1).map((s, i) => (

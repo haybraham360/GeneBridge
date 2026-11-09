@@ -7,6 +7,14 @@
  * people who ask for reduced motion (see the bottom of this file).
  */
 @theme {
+  /*
+   * Headline face (`font-display`): Fraunces on Latin pages, Alexandria on
+   * Arabic pages (switched under html[dir='rtl'] below). Each direction gets
+   * its own stack because next/font's metric fallback for Fraunces is a local
+   * serif with no unicode-range, which would otherwise swallow Arabic glyphs.
+   */
+  --font-display: var(--font-fraunces), var(--font-plex-arabic), Georgia, serif;
+
   --animate-fade-up: fade-up 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
   --animate-float: float 7s ease-in-out infinite;
 
@@ -261,3 +269,38 @@ html[dir='rtl'] [class*='tracking-'] {
     transition: none !important;
   }
 }
+
+  /* Page titles always use the display face; large h2s opt in with `font-display`. */
+  h1 {
+    font-family: var(--font-display);
+  }
+
+  h1,
+  .font-display {
+    font-optical-sizing: auto;
+    font-variation-settings: 'SOFT' 50;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+/*
+ * Display headings: Fraunces reads best a step below 800, so titles marked
+ * `font-extrabold` settle at 650. Arabic headlines need taller lines than
+ * the Latin `leading-[1.05]` values, or hamzas and dots collide between lines.
+ * Unlayered, so these win over the utility classes.
+ */
+:where(h1, .font-display) {
+  font-weight: 650;
+}
+
+html[dir='rtl'] {
+  --font-display: var(--font-alexandria), var(--font-plex-arabic), system-ui, sans-serif;
+}
+
+html[dir='rtl'] :where(h1, .font-display) {
+  font-weight: 700;
+  line-height: 1.3;
+}
+

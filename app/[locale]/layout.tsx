@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { IBM_Plex_Sans_Arabic, Plus_Jakarta_Sans } from 'next/font/google';
+import { Alexandria, Fraunces, IBM_Plex_Sans_Arabic, Plus_Jakarta_Sans } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import { hasLocale } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
@@ -18,6 +18,24 @@ const plexArabic = IBM_Plex_Sans_Arabic({
   subsets: ['arabic'],
   weight: ['400', '500', '600', '700'],
   variable: '--font-plex-arabic',
+  display: 'swap',
+});
+
+// Display faces for page titles and big section headlines only (see
+// `font-display` in globals.css). Body and UI text stay in Jakarta / Plex.
+// Fraunces is variable: its soft and optical-size axes keep big titles warm.
+const fraunces = Fraunces({
+  subsets: ['latin'],
+  axes: ['SOFT', 'opsz'],
+  variable: '--font-fraunces',
+  display: 'swap',
+});
+
+// Alexandria: modern Arabic display face with true heavy weights (100–900).
+// Loads Latin too, so names and digits inside Arabic headlines match.
+const alexandria = Alexandria({
+  subsets: ['arabic', 'latin'],
+  variable: '--font-alexandria',
   display: 'swap',
 });
 
@@ -42,7 +60,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<'/[
     <html
       lang={locale}
       dir={localeDirection[locale]}
-      className={`${jakarta.variable} ${plexArabic.variable}`}
+      className={`${jakarta.variable} ${plexArabic.variable} ${fraunces.variable} ${alexandria.variable}`}
     >
       <body>
         <a

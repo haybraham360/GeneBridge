@@ -83,7 +83,7 @@ export function RequestDetail({ detail, services, onChange, onClosed, onAnnounce
       {/* 1. Header */}
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex flex-col gap-1.5">
-          <h2 id="request-title" className="text-2xl font-extrabold">
+          <h2 id="request-title" className="font-display text-2xl font-extrabold">
             {title}
           </h2>
           <p className="text-sm text-muted">{subtitle}</p>

@@ -17,7 +17,7 @@ export function PrivacyBand() {
       <div className="reveal flex flex-wrap items-center gap-12 rounded-[32px] bg-ink p-[clamp(32px,5vw,64px)] text-white">
         <div className="flex min-w-0 flex-[1_1_380px] flex-col gap-5">
           <p className="text-xs font-extrabold tracking-[0.18em] text-[#FF8A5C] uppercase">{t('eyebrow')}</p>
-          <h2 className="text-[clamp(32px,4vw,46px)] leading-[1.1] font-extrabold tracking-[-0.02em]">
+          <h2 className="font-display text-[clamp(32px,4vw,46px)] leading-[1.1] font-extrabold tracking-[-0.02em]">
             {t('title')}
           </h2>
           <CheckList

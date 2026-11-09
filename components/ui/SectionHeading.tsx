@@ -41,7 +41,7 @@ export function SectionHeading({
       {title ? (
         <h2
           className={cn(
-            'text-[clamp(30px,3.6vw,42px)] leading-[1.1] font-extrabold tracking-[-0.02em]',
+            'font-display text-[clamp(30px,3.6vw,42px)] leading-[1.1] font-extrabold tracking-[-0.02em]',
             titleClassName,
           )}
         >

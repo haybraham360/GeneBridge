@@ -94,7 +94,7 @@ export function GuidePanel({
       {/* Re-keyed per guide, so the content cross-fades between tabs. */}
       <div key={guide.id} className="flex flex-col gap-5 motion-safe:animate-cross-fade">
         <div className="flex flex-col gap-2">
-          <h2 className="text-2xl font-extrabold tracking-[-0.01em]">{guide.title}</h2>
+          <h2 className="font-display text-2xl font-extrabold tracking-[-0.01em]">{guide.title}</h2>
           <p className="text-base leading-[1.55] text-muted">{guide.intro}</p>
         </div>
 

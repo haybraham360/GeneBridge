@@ -16,7 +16,7 @@ export function PrivacyPanel() {
 
   return (
     <aside className="flex flex-[1_1_420px] flex-col justify-center gap-8 bg-brand px-[clamp(24px,5vw,72px)] py-14 text-ink">
-      <h2 className="text-[clamp(36px,4vw,52px)] leading-[1.05] font-extrabold tracking-[-0.03em] motion-safe:animate-fade-up motion-safe:[animation-delay:120ms]">
+      <h2 className="font-display text-[clamp(36px,4vw,52px)] leading-[1.05] font-extrabold tracking-[-0.03em] motion-safe:animate-fade-up motion-safe:[animation-delay:120ms]">
         {t('heading')}
       </h2>
       <ul className="flex flex-col gap-4 text-lg font-semibold">

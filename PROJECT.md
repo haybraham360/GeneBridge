@@ -80,7 +80,7 @@ These come straight from the brief. Breaking one loses points or causes harm. Ch
 - **AI:** server route calling an LLM API with a fixed system prompt and a topic allow-list (see section 8)
 - **Hosting:** Vercel
 - **Testing:** Vitest for logic, Playwright for the demo flow and the RLS access tests
-- **Fonts:** Plus Jakarta Sans (Latin), IBM Plex Sans Arabic (Arabic)
+- **Fonts:** Plus Jakarta Sans (Latin), IBM Plex Sans Arabic (Arabic) for body and UI; headlines (`h1` and large `h2` via `font-display`) use Fraunces (Latin) and Alexandria (Arabic)
 
 ---
 

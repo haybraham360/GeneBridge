@@ -177,7 +177,7 @@ export function ResultsView({ subtitle, screenedCount, findings, unverified }: P
             </ul>
             <div className="flex flex-wrap items-start gap-5">
               <div className="flex min-w-[260px] flex-1 flex-col gap-3">
-                <h2 className="text-[clamp(22px,2.6vw,30px)] leading-tight font-extrabold tracking-[-0.02em]">{detailHeading(selected)}</h2>
+                <h2 className="font-display text-[clamp(22px,2.6vw,30px)] leading-tight font-extrabold tracking-[-0.02em]">{detailHeading(selected)}</h2>
                 <p className="text-base leading-[1.6]">
                   {selected.status === 'affected' ? t('detail.affectedBody') : simple ? selected.simple : selected.explanation}
                 </p>
