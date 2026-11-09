@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { Helix } from './Helix';
 
 /*
  * Interactive, purely decorative hero art. Everything here is aria-hidden and
@@ -10,7 +11,8 @@ import { useEffect, useRef } from 'react';
  *
  * - Pills drift with the cursor at different depths (parallax) and lean away
  *   when the cursor gets close. Hovering a pill gives it a small bounce.
- * - The helix tilts towards the cursor; clicking it gives it one full twist.
+ * - The helix turns in 3D (see Helix.tsx) and tilts towards the cursor;
+ *   hovering spins it faster and clicking gives it an extra twist.
  * - A soft orange glow follows the cursor across the hero.
  *
  * Positions are written straight to the DOM in a requestAnimationFrame loop,
@@ -28,15 +30,6 @@ const pills = [
   { pos: 'start-[100px] top-[150px]', tilt: 'rotate-[80deg] [animation-delay:-5.6s]', depth: 1.1 },
   { pos: 'start-[170px] top-[170px]', tilt: '-rotate-[10deg] [animation-delay:-2.1s]', depth: 0.7 },
   { pos: 'start-[60px] top-[210px]', tilt: 'rotate-[25deg] [animation-delay:-4.9s]', depth: 1.3 },
-];
-
-const rungs = [
-  { d: 'M62 34l40 10', delay: '[animation-delay:0s]' },
-  { d: 'M52 58l58 12', delay: '[animation-delay:0.35s]' },
-  { d: 'M62 86l40 8', delay: '[animation-delay:0.7s]' },
-  { d: 'M58 210l44 10', delay: '[animation-delay:1.05s]' },
-  { d: 'M50 236l60 12', delay: '[animation-delay:1.4s]' },
-  { d: 'M60 262l40 8', delay: '[animation-delay:1.75s]' },
 ];
 
 const PARALLAX = 14; // px of drift at the hero's edge, for depth 1
@@ -160,15 +153,6 @@ export function HeroArt() {
     });
   };
 
-  // One full twist around the helix's long axis.
-  const twist = (el: HTMLElement) => {
-    if (!motionOk()) return;
-    el.animate([{ transform: 'rotateY(0turn)' }, { transform: 'rotateY(1turn)' }], {
-      duration: 1100,
-      easing: 'cubic-bezier(0.65, 0, 0.35, 1)',
-    });
-  };
-
   return (
     <>
       {/* Cursor glow: sits behind the hero content. */}
@@ -202,35 +186,12 @@ export function HeroArt() {
       <div
         ref={helixRef}
         aria-hidden="true"
-        className="absolute end-4 top-6 hidden h-[280px] w-[150px] [perspective:600px] min-[900px]:block"
+        className="absolute end-4 top-4 hidden h-[300px] w-[170px] [perspective:700px] min-[900px]:block"
       >
-        <div
-          // Twist the inner layer so it doesn't fight the tilt transform.
-          onClick={(e) => twist(e.currentTarget.firstElementChild as HTMLElement)}
-          className="size-full cursor-pointer [transform-style:preserve-3d] [transform:rotateX(var(--tilt-x,0deg))_rotateY(var(--tilt-y,0deg))]"
-        >
-          <div className="size-full">
-            <svg
-              focusable="false"
-              viewBox="0 0 160 300"
-              fill="none"
-              strokeLinecap="round"
-              className="size-full origin-center motion-safe:animate-sway"
-            >
-              <path d="M40 10C140 60 140 110 80 150S20 240 120 290" stroke="#141414" strokeWidth="3" />
-              <path d="M120 10C20 60 20 110 80 150S140 240 40 290" stroke="#141414" strokeWidth="3" />
-              {/* Rungs shimmer one after another, top to bottom. */}
-              {rungs.map(({ d, delay }) => (
-                <path
-                  key={d}
-                  d={d}
-                  stroke="#FF5A1F"
-                  strokeWidth="5"
-                  className={`motion-safe:animate-rung ${delay}`}
-                />
-              ))}
-            </svg>
-          </div>
+        {/* Soft warm halo that breathes behind the helix. */}
+        <div className="pointer-events-none absolute inset-x-[-30%] inset-y-[10%] rounded-full bg-[radial-gradient(closest-side,rgba(255,90,31,0.16),transparent)] blur-xl motion-safe:animate-[halo_6s_ease-in-out_infinite]" />
+        <div className="relative size-full cursor-pointer [transform-style:preserve-3d] [transform:rotateX(var(--tilt-x,0deg))_rotateY(var(--tilt-y,0deg))_rotateZ(-14deg)]">
+          <Helix />
         </div>
       </div>
     </>

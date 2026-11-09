@@ -9,8 +9,6 @@
 @theme {
   --animate-fade-up: fade-up 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
   --animate-float: float 7s ease-in-out infinite;
-  --animate-sway: sway 9s ease-in-out infinite;
-  --animate-rung: rung 3.2s ease-in-out infinite;
 
   /* Simulator: a simulated child's copies and dots settle into place. */
   --animate-pop: pop 320ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
@@ -65,13 +63,16 @@
     }
   }
 
-  @keyframes sway {
+  /* Landing hero: the warm halo behind the DNA helix breathes. */
+  @keyframes halo {
     0%,
     100% {
-      rotate: -3deg;
+      opacity: 0.7;
+      scale: 0.92;
     }
     50% {
-      rotate: 3deg;
+      opacity: 1;
+      scale: 1.06;
     }
   }
 
@@ -131,16 +132,6 @@
     }
     to {
       opacity: 1;
-    }
-  }
-
-  @keyframes rung {
-    0%,
-    100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.35;
     }
   }
 }
