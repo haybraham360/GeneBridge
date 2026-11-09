@@ -6,7 +6,9 @@ import 'server-only';
  * shared resource it returns.
  */
 import type { SupabaseClient } from '@supabase/supabase-js';
+import { getLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
+import { entryForConditionCode } from '@/lib/assistant/library';
 import { createClient } from '@/lib/supabase/server';
 import type {
   CounsellorMe,
@@ -166,6 +168,11 @@ export async function openRequestDetail(supabase: SupabaseClient, requestId: str
   const { data, error } = await supabase.rpc('pro_request_detail', { p_request_id: requestId });
   if (error || !data) return null;
   const d = data as DetailJson;
+  const locale = (await getLocale()) === 'ar' ? 'ar' : 'en';
+  const namesFor = (code: string) => {
+    const entry = entryForConditionCode(code, locale);
+    return entry ? { name: entry.disease_label ?? entry.title, carrier: entry.carrier_label ?? entry.title } : null;
+  };
   const people: PersonDetail[] = d.people.map((p) => ({
     role: p.role,
     label: { firstName: p.first_name, initial: p.initial },
@@ -175,6 +182,7 @@ export async function openRequestDetail(supabase: SupabaseClient, requestId: str
       ? {
           level: p.result.level,
           conditionCode: p.result.condition_code,
+          conditionNames: namesFor(p.result.condition_code),
           status: p.result.status,
           genotype: p.result.genotype,
           flagged: p.result.flagged,

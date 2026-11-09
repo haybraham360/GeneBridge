@@ -1,6 +1,7 @@
 {
   "id": "cystic_fibrosis",
   "kind": "condition",
+  "featured": true,
   "locale": "en",
   "inheritance": "autosomal_recessive",
   "gene": "CFTR",

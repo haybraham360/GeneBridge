@@ -1,11 +1,12 @@
 import { Check, Heart, Lock, ShieldCheck, Users } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import type { ReactNode } from 'react';
 import { buttonClasses } from '@/components/ui/Button';
 import { cardClasses } from '@/components/ui/Card';
 import { Chip } from '@/components/ui/Chip';
 import { Link } from '@/i18n/navigation';
 import { cn } from '@/lib/cn';
+import { getCondition } from '@/lib/conditions/catalogue';
 import type { NoticeCondition } from '@/lib/notices/types';
 import { NoticeListen } from './NoticeListen';
 
@@ -63,7 +64,16 @@ type MainCardProps = {
 
 export function NoticeMainCard({ conditionId, signedName, listenExtra }: MainCardProps) {
   const t = useTranslations('notice');
-  const conditionName = conditionId ? t(`conditions.${conditionId}.name`) : null;
+  const locale = useLocale() === 'ar' ? 'ar' : 'en';
+  // Hand-worded names in messages/{locale}/notice.json win; any other
+  // catalogue condition uses its library title.
+  const libraryTitle = conditionId ? (getCondition(conditionId, locale)?.title ?? null) : null;
+  // Condition ids are dynamic keys, so look them up with a loosely typed translator.
+  const names = t as unknown as { (key: string): string; has: (key: string) => boolean };
+  const named = (field: 'name' | 'inSentence') =>
+    conditionId && names.has(`conditions.${conditionId}.${field}`) ? names(`conditions.${conditionId}.${field}`) : libraryTitle;
+  const conditionName = named('name');
+  const inSentence = named('inSentence');
   const sender = signedName ? t('signed', { name: signedName }) : t('anonymous');
   const conditionLine = conditionName
     ? `${t('condition.label')} ${conditionName}.`
@@ -101,7 +111,7 @@ export function NoticeMainCard({ conditionId, signedName, listenExtra }: MainCar
             target={{ href: `/family-notice/learn/${conditionId}` }}
             className={cn(linkClasses, 'inline-flex min-h-11 items-center text-base md:text-sm')}
           >
-            {t('condition.learn', { name: t(`conditions.${conditionId}.inSentence`) })}
+            {t('condition.learn', { name: inSentence ?? '' })}
           </NoticeLink>
         </div>
       ) : (

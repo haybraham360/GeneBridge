@@ -1,6 +1,7 @@
 {
   "id": "g6pd_deficiency",
   "kind": "condition",
+  "featured": true,
   "locale": "en",
   "inheritance": "x_linked",
   "gene": "G6PD",

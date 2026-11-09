@@ -1,6 +1,7 @@
 {
   "id": "spinal_muscular_atrophy",
   "kind": "condition",
+  "featured": true,
   "locale": "ar",
   "inheritance": "autosomal_recessive",
   "gene": "SMN1",

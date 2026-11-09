@@ -31,6 +31,8 @@ export type LibraryEntry = {
    * suggest a match the person then confirms, never as a match.
    */
   everyday_terms?: string[];
+  /** Conditions: shown as a chip on the landing page (the rest are in Conditions A–Z). */
+  featured?: boolean;
   /** Conditions: always route to a counsellor, whatever the result (task 10 flagging). */
   always_escalate?: boolean;
   summary: string;

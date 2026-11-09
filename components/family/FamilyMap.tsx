@@ -707,7 +707,7 @@ export default function FamilyMap({ initialTree, catalogue, selfName, onSave, on
         />
       ) : null}
       {dialog === 'notify' ? (
-        <NotifyDialog relatives={relatives} anonymous={anonymous} onAnonymousChange={setAnonymous} defaultLocale={locale} onSend={handleSend} onClose={() => setDialog(null)} />
+        <NotifyDialog relatives={relatives} conditions={catalogue} anonymous={anonymous} onAnonymousChange={setAnonymous} defaultLocale={locale} onSend={handleSend} onClose={() => setDialog(null)} />
       ) : null}
 
       {devLinks.length > 0 ? (

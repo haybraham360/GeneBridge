@@ -1,6 +1,7 @@
 {
   "id": "sickle_cell_disease",
   "kind": "condition",
+  "featured": true,
   "locale": "ar",
   "inheritance": "autosomal_recessive",
   "gene": "HBB",

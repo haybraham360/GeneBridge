@@ -1,6 +1,7 @@
 {
   "id": "alpha_thalassemia",
   "kind": "condition",
+  "featured": true,
   "locale": "en",
   "inheritance": "complex",
   "gene": "HBA1, HBA2",

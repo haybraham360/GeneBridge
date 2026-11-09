@@ -16,20 +16,10 @@ import type {
 } from './types';
 import { resources } from './types';
 
-/** Conditions with names in messages/{locale}/pro.json → conditions. */
-const knownConditions = [
-  'sickle_cell',
-  'beta_thalassemia',
-  'alpha_thalassemia',
-  'cystic_fibrosis',
-  'g6pd_deficiency',
-  'gjb2_hearing_loss',
-  'phenylketonuria',
-  'spinal_muscular_atrophy',
-] as const;
-
 /** A next-intl translator for the `pro` namespace, loosely typed for dynamic keys. */
-export type Translate = (key: string, values?: Record<string, string | number>) => string;
+export type Translate = ((key: string, values?: Record<string, string | number>) => string) & {
+  has?: (key: string) => boolean;
+};
 
 export function proLabels(t: Translate) {
   const list = (items: string[]) => items.join(t('labels.listSeparator'));
@@ -72,10 +62,10 @@ export function proLabels(t: Translate) {
 
   /** "Carrier, sickle cell trait (HbAS)". */
   const resultLine = (r: SharedResult) => {
-    const key = `conditions.${r.conditionCode}`;
-    const condition = (knownConditions as readonly string[]).includes(r.conditionCode)
-      ? t(r.status === 'carrier' ? `${key}.carrier` : `${key}.name`)
-      : r.conditionCode.replace(/_/g, ' ');
+    // Hand-worded names in messages/{locale}/pro.json win, then the catalogue.
+    const key = `conditions.${r.conditionCode}.${r.status === 'carrier' ? 'carrier' : 'name'}`;
+    const fromCatalogue = r.conditionNames ? (r.status === 'carrier' ? r.conditionNames.carrier : r.conditionNames.name) : null;
+    const condition = t.has?.(key) ? t(key) : (fromCatalogue ?? r.conditionCode.replace(/_/g, ' '));
     const line = t(`result.${r.status}`, { condition });
     return r.genotype ? t('result.genotype', { line, genotype: r.genotype }) : line;
   };

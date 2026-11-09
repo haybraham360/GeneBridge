@@ -12,7 +12,10 @@ import { listConditions } from '@/lib/conditions/catalogue';
 export function ConditionsBand() {
   const t = useTranslations('landing.conditions');
   const locale = useLocale() === 'ar' ? 'ar' : 'en';
-  const conditions = listConditions(locale);
+  // A few chips as examples; every condition is in Conditions A–Z.
+  const all = listConditions(locale);
+  const featured = all.filter((c) => c.featured);
+  const conditions = featured.length > 0 ? featured : all.slice(0, 8);
 
   return (
     <section className="reveal mx-auto mt-[72px] flex max-w-[1200px] flex-col items-center gap-5 px-6 text-center">

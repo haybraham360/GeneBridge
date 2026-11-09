@@ -23,7 +23,8 @@
     "seed:family": "tsx scripts/seed-family.ts",
     "eval:family": "tsx --conditions=react-server tests/family/eval.ts",
     "create:admin": "tsx scripts/create-admin.ts",
-    "samples:kyc": "tsx scripts/generate-sample-kyc.ts"
+    "samples:kyc": "tsx scripts/generate-sample-kyc.ts",
+    "library:index": "tsx scripts/gen-library-index.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.5.0",

@@ -12,6 +12,7 @@ export type CatalogueCondition = {
   gene: string | null;
   area: 'blood' | 'nerves_muscles' | 'hearing_vision' | 'metabolic' | 'heart' | 'other';
   cardSummary: string;
+  featured: boolean;
 };
 
 export const conditionAreas = ['blood', 'nerves_muscles', 'hearing_vision', 'metabolic', 'heart', 'other'] as const;

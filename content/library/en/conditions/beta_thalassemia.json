@@ -1,6 +1,7 @@
 {
   "id": "beta_thalassemia",
   "kind": "condition",
+  "featured": true,
   "locale": "en",
   "inheritance": "autosomal_recessive",
   "gene": "HBB",

@@ -518,19 +518,10 @@ export type NotifyResult =
   | { status: 'name_required' }
   | { status: 'error' };
 
-const NOTICE_CONDITIONS = [
-  'sickle_cell_disease',
-  'beta_thalassemia',
-  'alpha_thalassemia',
-  'g6pd_deficiency',
-  'cystic_fibrosis',
-  'phenylketonuria',
-  'spinal_muscular_atrophy',
-  'gjb2_hearing_loss',
-] as const;
 
 export function NotifyDialog({
   relatives,
+  conditions,
   anonymous,
   onAnonymousChange,
   defaultLocale,
@@ -538,6 +529,8 @@ export function NotifyDialog({
   onClose,
 }: {
   relatives: { id: string; name: string; marker: Marker }[];
+  /** The condition catalogue (content/library), sorted by title. */
+  conditions: { id: string; title: string }[];
   anonymous: boolean;
   onAnonymousChange: (next: boolean) => void;
   defaultLocale: 'ar' | 'en';
@@ -550,12 +543,15 @@ export function NotifyDialog({
   const [channel, setChannel] = useState<'sms' | 'whatsapp'>('whatsapp');
   const [locale, setLocale] = useState<'ar' | 'en'>(defaultLocale);
   const [includeCondition, setIncludeCondition] = useState(false);
-  const [conditionId, setConditionId] = useState<string>(NOTICE_CONDITIONS[0]);
+  const [conditionId, setConditionId] = useState<string>(conditions[0]?.id ?? '');
   const [signedName, setSignedName] = useState('');
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const t = useTranslations('dashboard.family');
   const tNotice = useTranslations('notice.conditions');
+  // Hand-worded notice names win; other catalogue conditions use their title.
+  const loose = tNotice as unknown as { (key: string): string; has: (key: string) => boolean };
+  const noticeName = (id: string, title: string) => (loose.has(`${id}.name`) ? loose(`${id}.name`) : title);
   const ids = useId();
 
   const chosen = relatives.filter((r) => picked.includes(r.id));
@@ -720,9 +716,9 @@ export function NotifyDialog({
                 {t('notify.conditionLabel')}
               </label>
               <select id={`${ids}-condition`} value={conditionId} onChange={(e) => setConditionId(e.target.value)} className={inputClass}>
-                {NOTICE_CONDITIONS.map((id) => (
+                {conditions.map(({ id, title }) => (
                   <option key={id} value={id}>
-                    {tNotice(`${id}.name`)}
+                    {noticeName(id, title)}
                   </option>
                 ))}
               </select>

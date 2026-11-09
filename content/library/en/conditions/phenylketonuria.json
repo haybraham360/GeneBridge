@@ -1,6 +1,7 @@
 {
   "id": "phenylketonuria",
   "kind": "condition",
+  "featured": true,
   "locale": "en",
   "inheritance": "autosomal_recessive",
   "gene": "PAH",

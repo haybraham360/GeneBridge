@@ -96,6 +96,8 @@ export type RequestRow = {
 export type SharedResult = {
   level: ShareLevel;
   conditionCode: string;
+  /** Catalogue names in the viewer's language, for conditions without a pro.json name. */
+  conditionNames: { name: string; carrier: string } | null;
   status: 'carrier' | 'affected' | 'no_variant' | 'uncertain';
   genotype: string | null;
   flagged: boolean;

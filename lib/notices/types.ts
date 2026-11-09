@@ -3,20 +3,13 @@
  * sending action and the tests. Pure: no server imports.
  */
 
-export const noticeConditions = [
-  'alpha_thalassemia',
-  'beta_thalassemia',
-  'cystic_fibrosis',
-  'g6pd_deficiency',
-  'gjb2_hearing_loss',
-  'phenylketonuria',
-  'sickle_cell_disease',
-  'spinal_muscular_atrophy',
-] as const;
-export type NoticeCondition = (typeof noticeConditions)[number];
+import { isConditionId } from '@/lib/conditions/catalogue';
+
+/** Any condition in the catalogue (content/library) can be named in a notice. */
+export type NoticeCondition = string;
 
 export function isNoticeCondition(value: unknown): value is NoticeCondition {
-  return typeof value === 'string' && (noticeConditions as readonly string[]).includes(value);
+  return isConditionId(value);
 }
 
 export type NoticeChannel = 'sms' | 'whatsapp';

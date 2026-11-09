@@ -19,6 +19,7 @@ function toCondition(entry: LibraryEntry): CatalogueCondition {
     gene: entry.gene ?? null,
     area: entry.area ?? 'other',
     cardSummary: entry.card_summary ?? entry.summary,
+    featured: entry.featured ?? false,
   };
 }
 

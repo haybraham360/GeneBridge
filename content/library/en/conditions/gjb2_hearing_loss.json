@@ -1,6 +1,7 @@
 {
   "id": "gjb2_hearing_loss",
   "kind": "condition",
+  "featured": true,
   "locale": "en",
   "inheritance": "autosomal_recessive",
   "gene": "GJB2",
