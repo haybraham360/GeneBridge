@@ -224,10 +224,11 @@ function SidebarBody({
   let index = 0;
 
   return (
-    // Scrolls when the screen is short, so Sign out is always reachable.
-    <div className="flex h-full flex-col overflow-y-auto bg-sidebar pb-5">
-      <div className="flex items-center justify-between gap-2 px-6 pt-6 pb-5">
-        <div className={`transition-transform duration-300 hover:scale-105 ${onClose ? "" : "mx-auto"}`}>
+    // Three bands: logo, the links (which scroll on their own when the screen
+    // is short), and a fixed footer so Ask GeneBridge and Sign out stay in reach.
+    <div className="flex h-full flex-col bg-sidebar">
+      <div className="flex shrink-0 items-center justify-between gap-2 px-5 pt-5 pb-3">
+        <div className="transition-transform duration-300 hover:scale-[1.03]">
           <Logo size="sm" />
         </div>
         {onClose && (
@@ -242,20 +243,23 @@ function SidebarBody({
         )}
       </div>
 
-      <nav aria-label={t("label")} className="relative flex flex-col px-3.25">
+      <nav
+        aria-label={t("label")}
+        className="relative min-h-0 flex-1 overflow-y-auto px-3 pt-1 pb-4 [scrollbar-width:thin] mask-[linear-gradient(to_bottom,transparent,black_12px,black_calc(100%-20px),transparent)]"
+      >
         <span
           aria-hidden="true"
-          className={`pointer-events-none absolute inset-x-3.25 rounded-xl bg-ink shadow-[0_6px_16px_rgba(20,20,20,0.18)] ${
+          className={`pointer-events-none absolute inset-x-3 rounded-xl bg-ink shadow-[0_6px_16px_rgba(20,20,20,0.18)] ${
             pill?.ready ? "transition-[translate,height] duration-400 ease-[cubic-bezier(0.22,1,0.36,1)]" : ""
           } ${pill ? "opacity-100" : "opacity-0"}`}
           style={pill ? { top: 0, height: pill.height, translate: `0 ${pill.top}px` } : undefined}
         />
 
         {menu.map((group) => (
-          <div key={group.key ?? "top"} className={group.key ? "mt-4 flex flex-col gap-0.5" : "flex flex-col"}>
+          <div key={group.key ?? "top"} className={group.key ? "mt-5 flex flex-col gap-px" : "flex flex-col pt-1"}>
             {group.key ? (
               <p
-                className="nav-in mb-1 px-4 text-[11px] font-bold uppercase tracking-[0.08em] text-muted"
+                className="nav-in mb-1.5 px-3.5 text-[10.5px] font-bold uppercase tracking-[0.12em] text-muted/80"
                 style={{ "--i": index++ } as CSSProperties}
               >
                 {t(`groups.${group.key}`)}
@@ -274,19 +278,17 @@ function SidebarBody({
                   aria-current={active ? "page" : undefined}
                   onClick={onClose}
                   style={{ "--i": index++ } as CSSProperties}
-                  className={`nav-in group relative flex min-h-10 items-center gap-3 rounded-xl px-4 py-2 text-[14px] leading-none transition-colors duration-300 ${
-                    active
-                      ? "font-semibold text-white"
-                      : "font-medium text-ink/80 hover:bg-brand/8 hover:text-ink"
+                  className={`nav-in group relative flex min-h-10 items-center gap-3 rounded-xl px-3.5 py-2 text-[13.5px] leading-tight transition-colors duration-300 ${
+                    active ? "font-semibold text-white" : "font-medium text-ink/75 hover:bg-brand/7 hover:text-ink"
                   }`}
                 >
                   <Icon
-                    className={`h-4.75 w-4.75 flex-none transition-transform duration-300 ease-out ${
-                      active ? "scale-110" : "group-hover:-rotate-6 group-hover:scale-110"
+                    className={`size-4.5 flex-none transition-[scale,rotate,color] duration-300 ease-out ${
+                      active ? "scale-110 text-brand" : "text-ink/55 group-hover:-rotate-6 group-hover:scale-110 group-hover:text-brand-text"
                     }`}
-                    strokeWidth={1.7}
+                    strokeWidth={1.8}
                   />
-                  <span className="truncate transition-transform duration-300 ease-out group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5">
+                  <span className="truncate py-0.5 transition-transform duration-300 ease-out group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5">
                     {t(`nav.${short}`)}
                   </span>
                 </Link>
@@ -296,42 +298,38 @@ function SidebarBody({
         ))}
       </nav>
 
-      <div className="mt-auto flex flex-col gap-3 pt-6">
+      <div className="flex shrink-0 flex-col gap-2 border-t border-line px-3 pt-3 pb-3">
         <Link
           href="/dashboard/assistant"
           onClick={onClose}
-          className="group mx-3.25 block rounded-2xl bg-brand/10 p-3.5 transition-all duration-300 hover:-translate-y-0.5 hover:bg-brand/15 hover:shadow-card"
+          className="group flex items-center gap-3 rounded-2xl bg-linear-to-br from-brand-tint to-brand-tint-soft p-2.5 no-underline transition-[translate,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-card"
         >
-          <span className="flex items-center gap-1.5 text-[13px] font-bold">
-            <MessageSquare className="h-3.5 w-3.5 text-brand-text" strokeWidth={1.8} />
-            {t("ask.title")}
+          <span className="flex size-9 flex-none items-center justify-center rounded-xl bg-ink text-white transition-transform duration-300 group-hover:scale-105">
+            <MessageSquare aria-hidden="true" className="size-4" strokeWidth={2} />
           </span>
-          <span className="mt-1.5 block text-[12px] leading-4 text-muted">{t("ask.description")}</span>
-          <span className="mt-2.5 inline-flex items-center gap-1 text-[12px] font-bold text-ink">
-            {t("ask.cta")}
-            <ArrowRight
-              aria-hidden="true"
-              className="size-3.5 transition-transform duration-300 group-hover:translate-x-1 rtl:-scale-x-100 rtl:group-hover:-translate-x-1"
-              strokeWidth={2}
-            />
+          <span className="flex min-w-0 flex-1 flex-col">
+            <span className="truncate text-[13px] font-extrabold text-ink">{t("ask.title")}</span>
+            <span className="text-[11.5px] leading-snug text-muted">{t("ask.hint")}</span>
           </span>
+          <ArrowRight
+            aria-hidden="true"
+            className="me-1 size-4 flex-none text-brand-text transition-transform duration-300 group-hover:translate-x-1 rtl:-scale-x-100 rtl:group-hover:-translate-x-1"
+            strokeWidth={2.2}
+          />
         </Link>
 
-        {/* The signed-in person, their language, and Sign out (design: under the name). */}
-        <div className="flex items-center gap-3 px-4.5">
+        {/* The signed-in person, their language, and Sign out, on one row. */}
+        <div className="flex items-center gap-2.5 ps-1.5">
           <div
             aria-hidden="true"
-            className="flex size-10 flex-none items-center justify-center rounded-full bg-brand-tint text-sm font-extrabold text-brand-text-dark ring-0 ring-brand-ring transition-[box-shadow] duration-300 hover:ring-4"
+            className="flex size-9 flex-none items-center justify-center rounded-full bg-brand-tint text-sm font-extrabold text-brand-text-dark ring-0 ring-brand-ring transition-[box-shadow] duration-300 hover:ring-4"
           >
             {initial ?? ""}
           </div>
-          <div className="flex min-w-0 flex-col">
-            <span className="truncate text-sm font-bold">{name ?? t("account")}</span>
-            <LanguageSwitch className="text-xs text-neutral-500" />
-          </div>
+          <span className="min-w-0 flex-1 truncate text-[13.5px] font-bold">{name ?? t("account")}</span>
+          <LanguageSwitch className="rounded-full px-2.5 text-xs font-bold text-muted transition-colors hover:bg-brand-tint-soft hover:text-ink" />
+          <SignOutButton compact />
         </div>
-
-        <SignOutButton className="px-3.25" />
       </div>
     </div>
   );

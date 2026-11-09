@@ -4,7 +4,9 @@ import { placeholderMetadata } from '@/components/PlaceholderPage';
 import { routing } from '@/i18n/routing';
 import { getFormatter, getTranslations } from "next-intl/server";
 
-import { Volume1 } from "lucide-react";
+import type { CSSProperties } from "react";
+import { ListenPill } from "@/components/ui/ListenPill";
+import ToolSpotlight from "@/components/dashboard/ToolSpotlight";
 import CareJourney from "@/components/dashboard/CareJourney";
 import SummaryCards from "@/components/dashboard/SummaryCards";
 import AskGeneBridge from "@/components/dashboard/AskGeneBridge";
@@ -34,8 +36,9 @@ export default async function Page({ params, searchParams }: PageProps<'/[locale
   const { addResult } = await searchParams;
   if (!hasLocale(routing.locales, locale)) notFound();
   const supabase = await createClient();
-  const [t, format, facts, notifications, claims, person, path, nextBooking] = await Promise.all([
+  const [t, tc, format, facts, notifications, claims, person, path, nextBooking] = await Promise.all([
     getTranslations({ locale, namespace: "dashboard" }),
+    getTranslations({ locale, namespace: "common" }),
     getFormatter({ locale }),
     loadCareFacts(supabase),
     loadNotifications(supabase),
@@ -80,45 +83,57 @@ export default async function Page({ params, searchParams }: PageProps<'/[locale
   // Care journey and counsellor updates come from the patient's own data (task 07).
   const care = careView(facts, t as unknown as Parameters<typeof careView>[1], format);
   const userId = claims?.sub;
-//   return <PlaceholderPage locale={locale} screen="dashboard" />;
-  return (
-        <main className="min-w-0 min-h-0 overflow-auto flex-1 px-[clamp(16px,3vw,40px)] pb-10 pt-7 sm:pt-9">
-            <div className="mx-auto">
-            <header className="flex flex-wrap items-start justify-between gap-4">
-                <div>
-                <h1 className="text-[28px] sm:text-[32px] text-ink font-extrabold leading-tight tracking-[-0.01em]">
-                    {person.firstName ? t("home.greeting", { name: person.firstName }) : t("home.greetingNoName")}
-                </h1>
-                <p className="mt-2 text-[15px] leading-snug text-neutral-500">
-                    {t("home.subtitle")}
-                </p>
-                </div>
-                <button className="flex shrink-0 items-center gap-1.75 rounded-full border border-neutral-200 bg-white px-6.5 py-3 text-[15px] font-bold shadow-card cursor-pointer hover:bg-brand/5">
-                <Volume1 className="h-4 w-4" strokeWidth={2.75} />
-                    {t("shared.listen")}
-                </button>
-            </header>
+  const greeting = person.firstName ? t("home.greeting", { name: person.firstName }) : t("home.greetingNoName");
+  // What Listen reads: the header and where they are in their care journey.
+  const currentStep = care.steps.find((s) => s.status === "current");
+  const listenText = [
+    greeting,
+    t("home.subtitle"),
+    `${t("careJourney.title")}: ${t("careJourney.progress", { current: care.current, total: care.steps.length })}`,
+    currentStep ? `${currentStep.title}. ${currentStep.meta}` : null,
+  ]
+    .filter(Boolean)
+    .join(". ");
+  const order = (i: number) => ({ "--i": i }) as CSSProperties;
 
-            <div className="mt-4.25 flex flex-col gap-4.5">
-                {userId ? <PatientNotifications items={notifications} userId={userId} /> : null}
-                {userId ? <LiveRefresh channel={`home-bookings-${userId}`} watch={[{ table: 'bookings', filter: `patient_id=eq.${userId}` }]} /> : null}
-                <CareJourney steps={care.steps} current={care.current} />
-                {nextBooking ? <NextSession booking={nextBooking} /> : null}
-                <SummaryCards summary={summary} catalogue={catalogue} />
-                <div className="grid gap-5 lg:grid-cols-[1.75fr_1fr]">
-                <AskGeneBridge canUseFollowed={path.followed.length > 0} />
-                <ExplorePanel />
-                </div>
-                {followedItems.length ? (
-                  <FollowingCard
-                    followed={followedItems}
-                    catalogue={catalogue}
-                    focusId={path.focus?.conditionId ?? null}
-                    title={t("explore.resultFollowing.title")}
-                  />
-                ) : null}
-            </div>
-            </div>
-        </main>
-    )
+  return (
+    <div className="min-w-0 px-[clamp(16px,3vw,40px)] pt-6 pb-12 sm:pt-8">
+      <div className="mx-auto flex max-w-page flex-col gap-6">
+        {/* lg:pe-14 keeps Listen clear of the bell in the top corner. */}
+        <header className="rise-in flex flex-wrap items-end justify-between gap-4 lg:pe-14" style={order(0)}>
+          <div className="min-w-0">
+            <h1 className="text-[28px] leading-tight font-extrabold tracking-[-0.01em] text-ink sm:text-[34px]">{greeting}</h1>
+            <p className="mt-1.5 text-[15px] leading-snug text-muted">{t("home.subtitle")}</p>
+          </div>
+          <ListenPill text={listenText} play={t("shared.listen")} stop={tc("listen.stop")} />
+        </header>
+
+        {userId ? <PatientNotifications items={notifications} userId={userId} /> : null}
+        {userId ? <LiveRefresh channel={`home-bookings-${userId}`} watch={[{ table: "bookings", filter: `patient_id=eq.${userId}` }]} /> : null}
+
+        <CareJourney steps={care.steps} current={care.current} style={order(1)} />
+        {nextBooking ? <NextSession booking={nextBooking} /> : null}
+
+        <section aria-label={t("sections.status")} className="rise-in" style={order(2)}>
+          <SummaryCards summary={summary} catalogue={catalogue} />
+        </section>
+
+        <ToolSpotlight style={order(3)} />
+
+        <div className="rise-in grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1.75fr)_minmax(0,1fr)]" style={order(4)}>
+          <AskGeneBridge canUseFollowed={path.followed.length > 0} />
+          <ExplorePanel />
+        </div>
+
+        {followedItems.length ? (
+          <FollowingCard
+            followed={followedItems}
+            catalogue={catalogue}
+            focusId={path.focus?.conditionId ?? null}
+            title={t("explore.resultFollowing.title")}
+          />
+        ) : null}
+      </div>
+    </div>
+  );
 }

@@ -1,4 +1,4 @@
-import { Info } from 'lucide-react';
+import { Info, MessageSquare } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 import { AssistantChat } from '@/components/assistant/AssistantChat';
 import { aiEnabled } from '@/lib/assistant/claude';
@@ -7,13 +7,19 @@ import { aiEnabled } from '@/lib/assistant/claude';
 export default async function AskGeneBridge({ canUseFollowed = false }: { canUseFollowed?: boolean }) {
   const t = await getTranslations('assistant');
   return (
-    <section aria-labelledby="ask-genebridge-title" className="flex flex-col gap-3 rounded-2xl bg-white px-4 pt-4.5 pb-3 shadow-card">
-      <div className="flex items-center justify-between gap-3">
-        <h2 id="ask-genebridge-title" className="text-[20px] leading-none font-extrabold text-ink">
+    <section
+      aria-labelledby="ask-genebridge-title"
+      className="flex min-w-0 flex-col gap-3 rounded-card border border-line bg-surface p-4 shadow-card sm:p-5"
+    >
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1.5">
+        <h2 id="ask-genebridge-title" className="flex items-center gap-2.5 text-[20px] leading-none font-extrabold tracking-[-0.01em] text-ink">
+          <span aria-hidden="true" className="flex size-8 items-center justify-center rounded-lg bg-ink text-white">
+            <MessageSquare className="size-4" strokeWidth={2} />
+          </span>
           {t('title')}
         </h2>
-        <span className="flex items-center gap-1.25 text-[13px] text-muted">
-          <Info aria-hidden="true" className="h-4 w-4" strokeWidth={1.6} />
+        <span className="flex items-center gap-1.25 rounded-full bg-bg px-2.5 py-1 text-[12.5px] text-muted">
+          <Info aria-hidden="true" className="size-3.5" strokeWidth={1.8} />
           {t('cardBadge')}
         </span>
       </div>

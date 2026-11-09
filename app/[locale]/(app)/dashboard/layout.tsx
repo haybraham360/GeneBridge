@@ -51,16 +51,14 @@ export default async function DashboardLayout({
   return (
     <div className="fixed inset-0 flex flex-col overflow-hidden lg:flex-row">
       <Sidebar name={person.firstName} initial={person.initial} conditionsHref={conditionsHref} />
-      <main className="relative min-w-0 flex-1 overflow-y-auto">
-        {user ? (
-          <div className="pointer-events-none sticky top-0 z-30 flex h-0 justify-end px-4 pt-3 lg:px-6">
-            <div className="pointer-events-auto">
-              <NotificationBell userId={user.id} role="patient" initial={inbox} />
-            </div>
-          </div>
-        ) : null}
-        {children}
-      </main>
+      {/* One bell: in the phone top bar (next to the menu button), and at the
+          top corner of the page from 1024px. */}
+      {user ? (
+        <div className="absolute end-17 top-2 z-40 lg:end-6 lg:top-4">
+          <NotificationBell userId={user.id} role="patient" initial={inbox} />
+        </div>
+      ) : null}
+      <main className="relative min-w-0 flex-1 overflow-y-auto">{children}</main>
     </div>
   );
 }

@@ -11,8 +11,9 @@ import { cn } from '@/lib/cn';
  * toggles, message drafts, check-in) before the session ends, then lands
  * on the home page with a short "You've signed out." No confirmation.
  */
-export function SignOutButton({ className }: { className?: string }) {
+export function SignOutButton({ className, compact = false }: { className?: string; compact?: boolean }) {
   const t = useTranslations('common');
+  const label = t('signOut');
   return (
     <form
       action={signOut}
@@ -25,6 +26,17 @@ export function SignOutButton({ className }: { className?: string }) {
       }}
       className={className}
     >
+      {compact ? (
+        // Icon only (patient side menu): still 44px and named "Sign out".
+        <button
+          type="submit"
+          aria-label={label}
+          title={label}
+          className="flex size-11 cursor-pointer items-center justify-center rounded-full text-muted transition-colors hover:bg-brand-tint-soft hover:text-ink"
+        >
+          <LogOut aria-hidden="true" className="size-4.5 rtl:-scale-x-100" strokeWidth={2} />
+        </button>
+      ) : (
       <button
         type="submit"
         className={cn(
@@ -32,8 +44,9 @@ export function SignOutButton({ className }: { className?: string }) {
         )}
       >
         <LogOut aria-hidden="true" className="size-4 rtl:-scale-x-100" strokeWidth={2} />
-        {t('signOut')}
+        {label}
       </button>
+      )}
     </form>
   );
 }

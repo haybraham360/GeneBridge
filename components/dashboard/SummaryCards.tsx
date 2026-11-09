@@ -1,4 +1,4 @@
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, BarChart3, CalendarDays, Users } from "lucide-react";
 import { getFormatter, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import type { CatalogueCondition } from "@/lib/conditions/search";
@@ -94,19 +94,33 @@ export default async function SummaryCards({ summary, catalogue }: { summary: Ho
       }
     : { key: "appointment", pill: t("appointment.pill"), pillClass: pills.appointment, title: t("appointment.none"), body: t("appointment.noneBody"), link: t("appointment.linkBook"), href: "/dashboard/counsellor" };
 
+  const icons = { result: BarChart3, couple: Users, appointment: CalendarDays } as const;
+
   return (
-    <section data-testid="home-summary" className="grid gap-5 lg:grid-cols-3">
-      {[result, couple, appointment].map((card) => (
-        <article key={card.key} className="flex flex-col rounded-2xl bg-white py-6 ps-6 pe-8 shadow-card">
-          <span className={`w-fit rounded-full px-3 py-1 text-[12px] leading-none font-bold ${card.pillClass}`}>{card.pill}</span>
-          <h3 className="mt-2.5 text-[22px] leading-6 font-bold">{card.title}</h3>
-          <p className="my-3 text-[15px] leading-5 text-neutral-500">{card.body}</p>
-          <Link href={card.href} className="mt-auto flex items-center gap-1.25 text-[15px] font-extrabold text-[#C2410C]">
-            {card.link}
-            <ArrowRight aria-hidden="true" className="h-3 w-3 rtl:-scale-x-100" strokeWidth={1.8} />
-          </Link>
-        </article>
-      ))}
+    <section data-testid="home-summary" className="grid grid-cols-1 gap-4 md:grid-cols-3">
+      {[result, couple, appointment].map((card) => {
+        const Icon = icons[card.key as keyof typeof icons];
+        return (
+          <article
+            key={card.key}
+            className="group relative flex min-w-0 flex-col rounded-card border border-line bg-surface p-5 shadow-card transition-[translate,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] focus-within:border-brand-ring hover:-translate-y-0.5 hover:border-brand-ring hover:shadow-[0_14px_32px_rgba(60,30,10,0.09)] sm:p-6"
+          >
+            <div className="flex items-center justify-between gap-3">
+              <span className={`w-fit rounded-full px-3 py-1 text-[12px] leading-none font-bold ${card.pillClass}`}>{card.pill}</span>
+              <span aria-hidden="true" className="flex size-9 items-center justify-center rounded-xl bg-bg text-ink/60 transition-colors duration-300 group-hover:bg-brand-tint group-hover:text-brand-text">
+                <Icon className="size-4.5" strokeWidth={1.9} />
+              </span>
+            </div>
+            <h3 className="mt-3 text-[20px] leading-6 font-extrabold tracking-[-0.01em]">{card.title}</h3>
+            <p className="mt-2 mb-4 text-[14.5px] leading-[1.5] text-muted">{card.body}</p>
+            {/* The whole card is clickable through the link's stretched hit area. */}
+            <Link href={card.href} className="mt-auto flex w-fit items-center gap-1.5 text-[14.5px] font-extrabold text-brand-text after:absolute after:inset-0 after:rounded-card">
+              {card.link}
+              <ArrowRight aria-hidden="true" className="size-4 transition-transform duration-300 group-hover:translate-x-1 rtl:-scale-x-100 rtl:group-hover:-translate-x-1" strokeWidth={2.2} />
+            </Link>
+          </article>
+        );
+      })}
     </section>
   );
 }

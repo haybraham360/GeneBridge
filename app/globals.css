@@ -199,6 +199,98 @@
   }
 }
 
+/*
+ * Dashboard sections rise in one after the other (--i is the section's
+ * order). Short and calm; off for reduced motion.
+ */
+@utility rise-in {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: card-in 560ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: calc(var(--i, 0) * 70ms);
+  }
+}
+
+/*
+ * Tool spotlight illustrations on Home. Each one is still until the tile is
+ * hovered or focused, then plays a small loop: a scan line sweeps the
+ * report, the family tree draws itself, the simulator beads swap, and the
+ * voice bars move. Purely decorative (aria-hidden), never on risk figures.
+ */
+@keyframes scan-sweep {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 38px;
+  }
+}
+
+/* Starts and ends fully drawn, so the paused (idle) tree is complete. */
+@keyframes draw-line {
+  0%,
+  100% {
+    stroke-dashoffset: 0;
+  }
+  45% {
+    stroke-dashoffset: 60;
+  }
+}
+
+@keyframes bead-swap {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -6px;
+  }
+}
+
+@keyframes voice-bar {
+  0%,
+  100% {
+    scale: 1 0.35;
+  }
+  50% {
+    scale: 1 1;
+  }
+}
+
+@utility tool-art {
+  & .scan-line,
+  & .tree-line,
+  & .bead,
+  & .voice-bar {
+    animation-play-state: paused;
+  }
+  & .tree-line {
+    stroke-dasharray: 60;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    & .scan-line {
+      animation: scan-sweep 2.4s ease-in-out infinite paused;
+    }
+    & .tree-line {
+      stroke-dashoffset: 0;
+      animation: draw-line 2.2s cubic-bezier(0.65, 0, 0.35, 1) infinite paused;
+    }
+    & .bead {
+      animation: bead-swap 1.4s ease-in-out infinite paused;
+      animation-delay: calc(var(--d, 0) * 180ms);
+    }
+    & .voice-bar {
+      transform-origin: center;
+      transform-box: fill-box;
+      animation: voice-bar 0.9s ease-in-out infinite paused;
+      animation-delay: calc(var(--d, 0) * -150ms);
+    }
+    &:where(.group:hover *, .group:focus-visible *) :is(.scan-line, .tree-line, .bead, .voice-bar) {
+      animation-play-state: running;
+    }
+  }
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
@@ -217,6 +309,22 @@
 
   button {
     cursor: pointer;
+  }
+
+  /* Page titles always use the display face; large h2s opt in with `font-display`. */
+  h1 {
+    font-family: var(--font-display);
+  }
+
+  h1,
+  .font-display {
+    font-optical-sizing: auto;
+    font-variation-settings: 'SOFT' 50;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
   }
   /* Anchored sections land below the top edge, not flush against it. */
   [id] {
@@ -253,39 +361,6 @@
 }
 
 /*
- * Negative letter-spacing breaks the joins between Arabic letters, so tracking
- * is reset for RTL pages. Unlayered, so it overrides the tracking utilities.
- */
-html[dir='rtl'] [class*='tracking-'] {
-  letter-spacing: 0;
-}
-
-/* Belt and braces: stop every animation and transition for reduced motion. */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation: none !important;
-    transition: none !important;
-  }
-}
-
-  /* Page titles always use the display face; large h2s opt in with `font-display`. */
-  h1 {
-    font-family: var(--font-display);
-  }
-
-  h1,
-  .font-display {
-    font-optical-sizing: auto;
-    font-variation-settings: 'SOFT' 50;
-    text-wrap: balance;
-  }
-
-  p {
-    text-wrap: pretty;
-  }
-/*
  * Display headings: Fraunces reads best a step below 800, so titles marked
  * `font-extrabold` settle at 650. Arabic headlines need taller lines than
  * the Latin `leading-[1.05]` values, or hamzas and dots collide between lines.
@@ -304,3 +379,20 @@ html[dir='rtl'] :where(h1, .font-display) {
   line-height: 1.3;
 }
 
+/*
+ * Negative letter-spacing breaks the joins between Arabic letters, so tracking
+ * is reset for RTL pages. Unlayered, so it overrides the tracking utilities.
+ */
+html[dir='rtl'] [class*='tracking-'] {
+  letter-spacing: 0;
+}
+
+/* Belt and braces: stop every animation and transition for reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

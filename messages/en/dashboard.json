@@ -18,7 +18,8 @@
     "ask": {
       "title": "Ask GeneBridge",
       "description": "General questions about genetics. It won't interpret your personal result.",
-      "cta": "Ask a question"
+      "cta": "Ask a question",
+      "hint": "General genetics questions"
     },
     "account": "Your account",
     "openMenu": "Open menu",
@@ -140,7 +141,9 @@
     "simulator": "Inheritance simulator",
     "family": "Build your family map",
     "options": "Explore your options",
-    "talk": "Talk to your partner and family"
+    "talk": "Talk to your partner and family",
+    "services": "Find care and services",
+    "conditions": "Browse conditions A–Z"
   },
   "result": {
     "header": {
@@ -979,5 +982,36 @@
       "cta": "Add your result"
     },
     "menuConditions": "My conditions"
+  },
+  "spotlight": {
+    "title": "Your GeneBridge tools",
+    "subtitle": "Four ways to understand inherited conditions, at your own pace.",
+    "scan": {
+      "tag": "Camera",
+      "title": "Scan your report",
+      "body": "Take a photo of your screening report and get it explained in plain words.",
+      "cta": "Scan a report"
+    },
+    "family": {
+      "tag": "Private",
+      "title": "Draw your family tree",
+      "body": "Map your relatives privately. You decide if anything is shared.",
+      "cta": "Open family map"
+    },
+    "simulator": {
+      "tag": "Interactive",
+      "title": "Inheritance simulator",
+      "body": "See how a condition can pass from parents to children, one pregnancy at a time.",
+      "cta": "Try the simulator"
+    },
+    "talk": {
+      "tag": "Voice",
+      "title": "Talk to GeneBridge",
+      "body": "Ask by typing or speaking, in Arabic or English. General education, never a diagnosis.",
+      "cta": "Start a conversation"
+    }
+  },
+  "sections": {
+    "status": "At a glance"
   }
 }
