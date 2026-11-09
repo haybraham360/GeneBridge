@@ -27,12 +27,15 @@ export default async function AssistantPage({ params, searchParams }: PageProps<
   const t = await getTranslations({ locale, namespace: 'assistant' });
 
   return (
-    <div className="mx-auto flex h-full max-w-4xl flex-col gap-5 px-[clamp(16px,3vw,40px)] pt-8 pb-6">
+    // From 1024px the chat fills the screen and only the conversation scrolls.
+    // On phones the page scrolls instead: locking it to the screen height
+    // left the conversation a few pixels tall under the banner and controls.
+    <div className="mx-auto flex max-w-4xl flex-col gap-5 px-[clamp(16px,3vw,40px)] pt-8 pb-6 lg:h-full">
       <header className="flex flex-col gap-2">
         <h1 className="text-[32px] leading-tight font-extrabold tracking-[-0.02em]">{t('title')}</h1>
         <p className="text-[15px] text-muted">{t('page.subtitle')}</p>
       </header>
-      <div className="flex min-h-0 flex-1 flex-col rounded-card border border-line bg-surface p-5 shadow-card">
+      <div className="flex flex-col rounded-card border border-line bg-surface p-5 shadow-card lg:min-h-0 lg:flex-1">
         <AssistantChat
           aiEnabled={aiEnabled()}
           canUseFollowed={path.followed.length > 0}

@@ -110,7 +110,12 @@ export function AssistantChat({
   }, [initialShareFamily]);
 
   useEffect(() => {
-    listRef.current?.scrollTo({ top: listRef.current.scrollHeight });
+    const list = listRef.current;
+    if (!list || messages.length === 0) return;
+    // Desktop: the conversation scrolls inside itself.
+    list.scrollTo({ top: list.scrollHeight });
+    // Phones: the page scrolls, so bring the newest message into view too.
+    if (list.scrollHeight <= list.clientHeight) list.lastElementChild?.scrollIntoView({ block: 'end' });
   }, [messages]);
 
   const send = useCallback(
@@ -245,7 +250,7 @@ export function AssistantChat({
   );
 
   return (
-    <div className={cn('flex min-h-0 flex-col gap-3', compact ? '' : 'h-full')}>
+    <div className={cn('flex min-h-0 flex-col gap-3', compact ? '' : 'lg:h-full')}>
       <p className="flex items-start gap-2 rounded-tile bg-brand-tint-soft p-3 text-[13px] leading-relaxed" data-testid="boundary-banner">
         <Info aria-hidden="true" className="mt-0.5 size-4 flex-none text-brand-text" strokeWidth={2} />
         <span>{t('boundary')}</span>
@@ -258,7 +263,7 @@ export function AssistantChat({
         aria-live="polite"
         aria-relevant="additions"
         aria-label={t('title')}
-        className={cn('flex min-h-0 flex-col gap-4 overflow-y-auto', compact ? 'max-h-105' : 'flex-1 pe-1')}
+        className={cn('flex flex-col gap-4 overflow-y-auto', compact ? 'min-h-0 max-h-105' : 'min-h-[40svh] pe-1 lg:min-h-0 lg:flex-1')}
       >
         {messages.length === 0 ? (
           <div className="flex flex-col gap-2">
@@ -446,7 +451,8 @@ export function AssistantChat({
             if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) submit(e);
           }}
           placeholder={speech.listening ? t('input.listening') : t('input.placeholder')}
-          className="max-h-40 min-h-12 flex-1 resize-none rounded-[24px] border border-line-strong bg-surface px-4 py-3 text-[15px] placeholder:text-muted disabled:opacity-60"
+          // 16px on phones: iOS Safari zooms the page when a smaller field is focused.
+          className="max-h-40 min-h-12 flex-1 resize-none rounded-[24px] border border-line-strong bg-surface px-4 py-3 text-base placeholder:text-muted disabled:opacity-60 lg:text-[15px]"
         />
         {/* Task 12: photograph or upload a report; it opens the scan flow. */}
         <Link
