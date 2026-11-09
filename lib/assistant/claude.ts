@@ -10,7 +10,7 @@
  *   (lib/assistant/outputCheck.ts), then streamed to the browser.
  */
 import Anthropic from '@anthropic-ai/sdk';
-import { findEntries, type LibraryEntry } from './library';
+import { chip, findEntries, normalise, type LibraryEntry } from './library';
 import { draftingPrompt, systemPrompts } from './systemPrompt';
 import { runTool, toolDefinitions, type ToolContext } from './tools';
 import { categories, type Category, type RespondInput } from './types';
@@ -82,6 +82,20 @@ export async function refineCategory(message: string, ruleCategory: Category): P
   }
 }
 
+/**
+ * Library entries given in the prompt become source chips when the reply
+ * uses them (tool lookups record their own). An entry counts as used when
+ * the reply names it or one of its aliases; a reply that cites the library
+ * without naming an entry is credited to every entry it was given.
+ */
+function recordPromptSources(ctx: ToolContext, entries: LibraryEntry[], text: string): void {
+  if (!entries.length) return;
+  const reply = normalise(text);
+  const named = entries.filter((e) => [e.title, ...e.aliases].some((term) => reply.includes(normalise(term))));
+  const citesLibrary = /GeneBridge library|مكتبة GeneBridge/iu.test(text);
+  for (const entry of named.length ? named : citesLibrary ? entries : []) ctx.sources.set(entry.id, chip(entry));
+}
+
 /** Runs the model with tools until it finishes. Returns the reply text. */
 export async function claudeReply(input: RespondInput, ctx: ToolContext, category: Category): Promise<string | null> {
   const entries = findEntries(input.message, input.locale, 3);
@@ -136,6 +150,7 @@ export async function claudeReply(input: RespondInput, ctx: ToolContext, categor
         .map((b) => b.text)
         .join('\n')
         .trim();
+      if (text) recordPromptSources(ctx, entries, text);
       return text || null;
     }
     messages.push({ role: 'assistant', content: response.content });
