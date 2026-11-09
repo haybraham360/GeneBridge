@@ -37,13 +37,42 @@ export function splitSentences(text: string): string[] {
   return (text.match(/[^.!?؟]+[.!?؟]+["')\]]*|[^.!?؟]+$/gu) ?? []).map((s) => s.trim()).filter(Boolean);
 }
 
+/** Higher-quality voices browsers expose: Edge "Online (Natural)", Safari/macOS "Premium"/"Enhanced"/Siri, Chrome "Google". */
+const NATURAL = /natural|neural|online|premium|enhanced|siri/i;
+const NETWORK = /google/i;
+/** Robotic or novelty voices (eSpeak, macOS compact and character voices) — only used as a last resort. */
+const ROBOTIC =
+  /compact|espeak|albert|bad news|bahh|bells|boing|bubbles|cellos|good news|jester|organ|superstar|trinoids|whisper|wobble|zarvox|fred|junior|ralph|kathy|grandma|grandpa|eddy|flo|reed|rocko|sandy|shelley/i;
+
+let voiceCache: SpeechSynthesisVoice[] = [];
+if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+  // Chrome loads its voice list asynchronously; keep it warm so the first Listen tap gets the good voice.
+  const load = () => (voiceCache = window.speechSynthesis.getVoices());
+  load();
+  window.speechSynthesis.addEventListener?.('voiceschanged', load);
+}
+
+/** Picks the most natural-sounding installed voice for the locale, preferring the regional variant on ties. */
 function pickVoice(locale: SpeechLocale): SpeechSynthesisVoice | undefined {
-  const voices = window.speechSynthesis.getVoices();
-  for (const lang of browserLang[locale]) {
-    const match = voices.find((v) => v.lang.toLowerCase().startsWith(lang.toLowerCase()));
-    if (match) return match;
+  const voices = voiceCache.length ? voiceCache : window.speechSynthesis.getVoices();
+  const langs = browserLang[locale].map((l) => l.toLowerCase());
+  let best: SpeechSynthesisVoice | undefined;
+  let bestScore = -Infinity;
+  for (const v of voices) {
+    const rank = langs.findIndex((l) => v.lang.toLowerCase().replace('_', '-').startsWith(l));
+    if (rank < 0) continue;
+    const name = v.name;
+    const score =
+      (NATURAL.test(name) ? 100 : NETWORK.test(name) ? 50 : 0) -
+      (ROBOTIC.test(name) ? 200 : 0) +
+      (langs.length - rank) * 5 +
+      (v.default ? 1 : 0);
+    if (score > bestScore) {
+      best = v;
+      bestScore = score;
+    }
   }
-  return undefined;
+  return best;
 }
 
 async function cloudUrls(sentences: string[], locale: SpeechLocale): Promise<string[] | null> {
@@ -91,8 +120,12 @@ export function narrate(sentences: string[], locale: SpeechLocale, options: Narr
     const utterance = new SpeechSynthesisUtterance(parts[index]);
     utterance.lang = browserLang[locale][0];
     const voice = pickVoice(locale);
-    if (voice) utterance.voice = voice;
-    utterance.rate = 0.95;
+    if (voice) {
+      utterance.voice = voice;
+      utterance.lang = voice.lang;
+    }
+    // Natural voices are already paced for listening; slowing them makes them sound drawn out.
+    utterance.rate = voice && NATURAL.test(voice.name) ? 1 : 0.95;
     utterance.onstart = () => options.onSentence?.(index);
     utterance.onend = () => playBrowser(index + 1);
     utterance.onerror = () => finish();

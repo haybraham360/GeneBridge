@@ -19,6 +19,20 @@ export const maxDuration = 60;
 const MAX_SENTENCES = 40;
 const MAX_SENTENCE = 600;
 
+/** Like Promise.all(items.map(fn)), but with at most `limit` calls in flight. */
+async function mapLimit<T, R>(items: T[], limit: number, fn: (item: T) => Promise<R>): Promise<R[]> {
+  const results = new Array<R>(items.length);
+  let next = 0;
+  const worker = async () => {
+    while (next < items.length) {
+      const i = next++;
+      results[i] = await fn(items[i]);
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker));
+  return results;
+}
+
 export async function POST(request: Request) {
   const provider = ttsProvider();
   if (!provider) return Response.json({ provider: null }, { headers: { 'Cache-Control': 'no-store' } });
@@ -40,8 +54,10 @@ export async function POST(request: Request) {
   const { lang, voice } = provider.voice(locale);
   const bucket = supabase.storage.from(TTS_BUCKET);
   try {
-    const urls = await Promise.all(
-      sentences.map(async (sentence) => {
+    const urls = await mapLimit(
+      sentences,
+      provider.concurrency ?? sentences.length,
+      async (sentence) => {
         const hash = createHash('sha256').update(`${provider.name}|${voice}|${sentence}`).digest('hex');
         const path = `${user.id}/${hash}.mp3`;
         const existing = await bucket.createSignedUrl(path, 600);
@@ -52,7 +68,7 @@ export async function POST(request: Request) {
         const signed = await bucket.createSignedUrl(path, 600);
         if (!signed.data?.signedUrl) throw new Error('tts sign failed');
         return signed.data.signedUrl;
-      }),
+      },
     );
     return Response.json({ provider: provider.name, lang, urls }, { headers: { 'Cache-Control': 'no-store' } });
   } catch {

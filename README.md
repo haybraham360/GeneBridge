@@ -455,7 +455,7 @@ GeneBridge runs on Vercel as the project **genebridge** (team `abrahams-projects
 - **Demo mode:** off in production, so real users never see the demo sign-in. For a demo with the seeded personas, set `NEXT_PUBLIC_DEMO_MODE=true` and redeploy.
 - **Supabase:** the database migrations are applied, and Authentication → URL Configuration lists the live address (see [Auth settings](#3-auth-settings-hosted-project)).
 - **Crons** (`vercel.json`): scan clean-up, licence expiry and booking reminders, all daily on the Hobby plan. See [Reminders](#reminders) for 1-hour reminders.
-- **Not yet configured in production:** Google Meet (`GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REDIRECT_URI=https://genebridge-nine.vercel.app/api/calendar/google/callback`, plus that redirect URI in the Google OAuth client) and email (`EMAIL_PROVIDER`, `RESEND_API_KEY`, `EMAIL_FROM`). Until then professionals paste a video link, and notifications are in-app only.
+- **Not yet configured in production:** Google Meet (`GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REDIRECT_URI=https://genebridge-nine.vercel.app/api/calendar/google/callback`, plus that redirect URI in the Google OAuth client) and email (`EMAIL_PROVIDER`, `RESEND_API_KEY`, `EMAIL_FROM`). Until then professionals paste a video link, and notifications are in-app only. Natural voices for Listen (`TTS_PROVIDER=elevenlabs` and `ELEVENLABS_API_KEY`) are also not set yet, so Listen uses the browser's built-in speech.
 
 ## Scripts
 
