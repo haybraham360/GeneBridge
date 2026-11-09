@@ -1,0 +1,61 @@
+{
+  "id": "pompe_disease",
+  "kind": "condition",
+  "locale": "en",
+  "inheritance": "autosomal_recessive",
+  "gene": "GAA",
+  "area": "metabolic",
+  "title": "Pompe disease",
+  "aliases": [
+    "Pompe",
+    "GSD II",
+    "GAA",
+    "acid maltase deficiency"
+  ],
+  "synonyms": [
+    "Pompe disease",
+    "glycogen storage disease type II",
+    "GSD II",
+    "GSD2",
+    "acid maltase deficiency",
+    "acid alpha-glucosidase deficiency",
+    "مرض بومبي",
+    "داء اختزان الجليكوجين من النوع الثاني"
+  ],
+  "everyday_terms": [
+    "floppy baby",
+    "weak muscles and big heart",
+    "muscle weakness and breathing problems"
+  ],
+  "summary": "Pompe disease happens when the body cannot break down glycogen, a stored form of sugar. It builds up in muscles, including the heart and breathing muscles.",
+  "inheritance_plain": "It is inherited in an autosomal recessive way: a child is affected only if they get a changed copy of the GAA gene from both parents.",
+  "carrier_meaning": "A carrier has one changed copy. Carriers are healthy and usually do not know they are carriers until they are tested.",
+  "disease_meaning": "A person with two changed copies has Pompe disease. It can start in infancy, when it is often severe, or later in life with slower muscle weakness. Treatment exists and is given by specialist teams.",
+  "screening": "A carrier test uses a blood or saliva sample. It looks for the most common changes and cannot find every possible change.",
+  "suggested_questions": [
+    "Someone in my family has Pompe disease. Could I be a carrier?",
+    "Can Pompe disease skip a generation?",
+    "What does a test for the GAA gene involve?"
+  ],
+  "card_summary": "Stored sugar builds up in the muscles, including the heart. Carriers are healthy.",
+  "carrier_label": "Pompe disease carrier",
+  "disease_label": "Pompe disease",
+  "carrier_short": "One changed copy. Healthy. Can pass the copy on.",
+  "disease_short": "Two changed copies. Affects the muscles and sometimes the heart; treatment exists.",
+  "care": "Specialist metabolic, neuromuscular and heart clinics, physiotherapy, genetic counselling and family support groups.",
+  "counsellor_questions": [
+    "Which carrier test is right for me?",
+    "If I'm a carrier, could my partner be tested too?",
+    "What treatment and support exist today?"
+  ],
+  "sources": [
+    {
+      "title": "Pompe disease",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/pompe-disease/"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-09",
+  "audio": "/audio/en/conditions/pompe_disease.mp3"
+}

@@ -1,0 +1,56 @@
+{
+  "id": "marfan_syndrome",
+  "kind": "condition",
+  "locale": "en",
+  "inheritance": "autosomal_dominant",
+  "gene": "FBN1",
+  "area": "heart",
+  "title": "Marfan syndrome",
+  "aliases": [
+    "Marfan",
+    "FBN1"
+  ],
+  "synonyms": [
+    "Marfan syndrome",
+    "Marfan's syndrome",
+    "FBN1-related",
+    "متلازمة مارفان",
+    "متلازمة مارفن"
+  ],
+  "everyday_terms": [
+    "very tall with long arms",
+    "long fingers and loose joints",
+    "weak aorta"
+  ],
+  "summary": "Marfan syndrome affects connective tissue, which holds the body together. It can affect the heart and main blood vessel (the aorta), the eyes, and the bones and joints. Many people are tall with long arms and fingers.",
+  "inheritance_plain": "It is inherited in an autosomal dominant way: one changed copy of the FBN1 gene can be enough to cause it. A parent with the change can pass it on, and the chance is the same for each pregnancy. A genetic counsellor talks this through with you.",
+  "carrier_meaning": "For a dominant condition, one changed copy can be enough to cause it, so people with a change are not usually called carriers. How much it affects someone varies, and some people have few signs for many years. A genetic counsellor explains what a result means.",
+  "disease_meaning": "Features vary, even within one family. Regular heart and eye checks and care from specialist teams help prevent serious problems, and many people live full lives.",
+  "screening": "A genetic test can look for a change in the FBN1 gene. Testing is a personal choice, and counselling before and after the test is part of it.",
+  "suggested_questions": [
+    "Someone in my family has Marfan syndrome. What could that mean for me?",
+    "Can Marfan syndrome skip a generation?",
+    "What does a test for the FBN1 gene involve?"
+  ],
+  "card_summary": "Affects connective tissue in the heart, eyes and bones.",
+  "carrier_label": "Marfan syndrome: one changed copy",
+  "disease_label": "Marfan syndrome",
+  "carrier_short": "One changed copy. Can be enough to cause the condition. A counsellor explains.",
+  "disease_short": "Affects the heart, eyes and bones; regular specialist checks help prevent problems.",
+  "care": "Specialist heart, eye and bone clinics, genetic counselling and family support groups.",
+  "counsellor_questions": [
+    "What would a test result tell me, and what wouldn't it?",
+    "How could this affect my children?",
+    "What care and support exist today?"
+  ],
+  "sources": [
+    {
+      "title": "Marfan syndrome",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/marfan-syndrome/"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-09",
+  "audio": "/audio/en/conditions/marfan_syndrome.mp3"
+}

@@ -41,7 +41,7 @@ describe('catalogue matching', () => {
   });
 
   it('a condition not in the catalogue is unmatched', () => {
-    expect(matchCondition({ condition_text: 'Tay-Sachs disease', gene: 'HEXA' })).toEqual({ conditionId: null, method: null, suggestion: null });
+    expect(matchCondition({ condition_text: 'Alport syndrome', gene: 'COL4A5' })).toEqual({ conditionId: null, method: null, suggestion: null });
   });
 
   it('helpers', () => {

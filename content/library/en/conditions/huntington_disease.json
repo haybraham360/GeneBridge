@@ -1,0 +1,61 @@
+{
+  "id": "huntington_disease",
+  "kind": "condition",
+  "locale": "en",
+  "inheritance": "autosomal_dominant",
+  "gene": "HTT",
+  "area": "nerves_muscles",
+  "always_escalate": true,
+  "title": "Huntington disease",
+  "aliases": [
+    "Huntington",
+    "Huntington's",
+    "HTT"
+  ],
+  "synonyms": [
+    "Huntington disease",
+    "Huntington's disease",
+    "Huntington's chorea",
+    "HD",
+    "HTT-related",
+    "داء هنتنغتون",
+    "مرض هنتنجتون",
+    "رقص هنتنغتون"
+  ],
+  "everyday_terms": [
+    "uncontrolled movements",
+    "jerky movements and memory problems",
+    "movement and mood changes in middle age"
+  ],
+  "summary": "Huntington disease slowly affects parts of the brain that control movement, thinking and mood. Signs usually start in adulthood, often in middle age.",
+  "inheritance_plain": "It is inherited in an autosomal dominant way: one changed copy of the HTT gene can be enough to cause it. A parent with the change can pass it on, and the chance is the same for each pregnancy. A genetic counsellor talks this through with you.",
+  "carrier_meaning": "For a dominant condition, one changed copy can be enough to cause it, so people with a change are not usually called carriers. How much it affects someone varies, and some people have few signs for many years. A genetic counsellor explains what a result means.",
+  "disease_meaning": "A person with the change will usually develop Huntington disease at some point. There is no cure yet, but specialist teams help with movement, mood and daily life. Testing before symptoms is a big personal decision, so it always includes counselling.",
+  "screening": "A genetic test can look for the change in HTT. Testing before symptoms is a personal choice made with a genetic counsellor, with counselling before and after the test.",
+  "suggested_questions": [
+    "Someone in my family has Huntington disease. What could that mean for me?",
+    "Can Huntington disease skip a generation?",
+    "What does a test for the HTT gene involve?"
+  ],
+  "card_summary": "Slowly affects movement, thinking and mood, usually from adulthood.",
+  "carrier_label": "Huntington disease: one changed copy",
+  "disease_label": "Huntington disease",
+  "carrier_short": "One changed copy. Can be enough to cause the condition. A counsellor explains.",
+  "disease_short": "Affects movement, thinking and mood; specialist teams support people and families.",
+  "care": "Specialist neurology and Huntington disease clinics, mental health support, genetic counselling and family support groups.",
+  "counsellor_questions": [
+    "What would a test result tell me, and what wouldn't it?",
+    "How could this affect my children?",
+    "What care and support exist today?"
+  ],
+  "sources": [
+    {
+      "title": "Huntington disease",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/huntington-disease/"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-09",
+  "audio": "/audio/en/conditions/huntington_disease.mp3"
+}

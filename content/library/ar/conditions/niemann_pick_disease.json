@@ -1,0 +1,61 @@
+{
+  "id": "niemann_pick_disease",
+  "kind": "condition",
+  "locale": "ar",
+  "inheritance": "autosomal_recessive",
+  "gene": "SMPD1",
+  "area": "metabolic",
+  "title": "مرض نيمان بيك (النوعان A وB)",
+  "aliases": [
+    "نيمان بيك",
+    "نيمان-بيك",
+    "ASMD",
+    "SMPD1"
+  ],
+  "synonyms": [
+    "Niemann-Pick disease type A",
+    "Niemann-Pick disease type B",
+    "Niemann-Pick disease types A and B",
+    "acid sphingomyelinase deficiency",
+    "ASMD",
+    "SMPD1-related",
+    "مرض نيمان بيك",
+    "داء نيمان-بيك",
+    "نقص إنزيم السفينغوميليناز الحمضي"
+  ],
+  "everyday_terms": [
+    "تضخم الكبد والطحال",
+    "انتفاخ بطن الطفل"
+  ],
+  "summary": "يحدث مرض نيمان بيك من النوعين A وB عندما يفتقر الجسم إلى إنزيم يفكّك مادة دهنية، فتتراكم في الكبد والطحال والرئتين، وفي النوع A في الدماغ أيضاً.",
+  "inheritance_plain": "يُورَّث بطريقة جسمية متنحية: يُصاب الطفل فقط إذا ورث نسخة متغيّرة من جين SMPD1 من كلا الوالدين.",
+  "carrier_meaning": "حامل الصفة لديه نسخة متغيّرة واحدة. حاملو الصفة أصحّاء، وعادةً لا يعرفون أنهم يحملونها حتى يُجرى لهم الفحص.",
+  "disease_meaning": "الشخص الذي لديه نسختان متغيّرتان مصاب بمرض نيمان بيك. يبدأ النوع A في الرضاعة ويكون شديداً، والنوع B أخف ويختلف من شخص لآخر. يوجد اليوم علاج لبعض جوانبه تقدّمه فرق متخصصة. أما النوع C فحالة مختلفة بجينات مختلفة.",
+  "screening": "يُجرى فحص حامل الصفة بعيّنة دم أو لعاب. يبحث عن التغيّرات الأكثر شيوعاً، ولا يمكنه اكتشاف كل تغيّر ممكن.",
+  "suggested_questions": [
+    "لدى أحد أفراد عائلتي مرض نيمان بيك. هل يمكن أن أكون حاملاً للصفة؟",
+    "هل يمكن لهذه الحالة أن تتخطى جيلاً؟",
+    "ماذا يتضمن فحص جين SMPD1؟"
+  ],
+  "card_summary": "تتراكم مادة دهنية في الكبد والطحال والرئتين. حاملو الصفة أصحّاء.",
+  "carrier_label": "حامل صفة مرض نيمان بيك",
+  "disease_label": "مرض نيمان بيك (النوعان A وB)",
+  "carrier_short": "نسخة متغيّرة واحدة. بصحة جيدة. يمكن أن تنتقل النسخة.",
+  "disease_short": "نسختان متغيّرتان. يؤثر في الكبد والطحال والرئتين، وتعتمد شدّته على النوع.",
+  "care": "عيادات الأيض المتخصصة، والاستشارة الوراثية، ومجموعات دعم العائلات.",
+  "counsellor_questions": [
+    "ما فحص حامل الصفة المناسب لي؟",
+    "إذا كنت حاملاً للصفة، هل يمكن أن يُفحص شريكي أيضاً؟",
+    "ما العلاجات والدعم المتوفرة اليوم؟"
+  ],
+  "sources": [
+    {
+      "title": "Niemann-Pick disease",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/niemann-pick-disease/"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-09",
+  "audio": "/audio/ar/conditions/niemann_pick_disease.mp3"
+}

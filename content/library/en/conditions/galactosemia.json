@@ -1,0 +1,60 @@
+{
+  "id": "galactosemia",
+  "kind": "condition",
+  "locale": "en",
+  "inheritance": "autosomal_recessive",
+  "gene": "GALT",
+  "area": "metabolic",
+  "title": "Galactosaemia",
+  "aliases": [
+    "galactosemia",
+    "galactosaemia",
+    "GALT"
+  ],
+  "synonyms": [
+    "galactosemia",
+    "galactosaemia",
+    "classic galactosemia",
+    "GALT deficiency",
+    "galactose-1-phosphate uridylyltransferase deficiency",
+    "الجالاكتوسيميا",
+    "الغالاكتوزيميا",
+    "ارتفاع الجالاكتوز في الدم"
+  ],
+  "everyday_terms": [
+    "baby can't have milk",
+    "milk sugar problem",
+    "jaundice and vomiting after milk"
+  ],
+  "summary": "Galactosaemia means the body cannot break down galactose, a sugar found in milk, including breast milk. Without treatment it can make a newborn baby very unwell.",
+  "inheritance_plain": "It is inherited in an autosomal recessive way: a child is affected only if they get a changed copy of the GALT gene from both parents.",
+  "carrier_meaning": "A carrier has one changed copy. Carriers are healthy and usually do not know they are carriers until they are tested.",
+  "disease_meaning": "A baby with two changed copies has galactosaemia. It is managed by removing galactose from the diet from early on, with ongoing care from a specialist team.",
+  "screening": "A carrier test uses a blood or saliva sample. It looks for the most common changes and cannot find every possible change.",
+  "suggested_questions": [
+    "Someone in my family has galactosaemia. Could I be a carrier?",
+    "Can galactosaemia skip a generation?",
+    "What does a test for the GALT gene involve?"
+  ],
+  "card_summary": "The body can't break down a sugar found in milk. Carriers are healthy.",
+  "carrier_label": "Galactosaemia carrier",
+  "disease_label": "Galactosaemia",
+  "carrier_short": "One changed copy. Healthy. Can pass the copy on.",
+  "disease_short": "Two changed copies. Managed with a galactose-free diet and specialist care.",
+  "care": "Specialist metabolic clinics, dietitians, genetic counselling and family support groups.",
+  "counsellor_questions": [
+    "Which carrier test is right for me?",
+    "If I'm a carrier, could my partner be tested too?",
+    "What treatment and support exist today?"
+  ],
+  "sources": [
+    {
+      "title": "Galactosemia",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/galactosemia/"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-09",
+  "audio": "/audio/en/conditions/galactosemia.mp3"
+}

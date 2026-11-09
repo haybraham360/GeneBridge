@@ -1,0 +1,61 @@
+{
+  "id": "congenital_adrenal_hyperplasia",
+  "kind": "condition",
+  "locale": "en",
+  "inheritance": "autosomal_recessive",
+  "gene": "CYP21A2",
+  "area": "other",
+  "title": "Congenital adrenal hyperplasia (CAH)",
+  "aliases": [
+    "CAH",
+    "congenital adrenal hyperplasia",
+    "21-hydroxylase deficiency",
+    "CYP21A2"
+  ],
+  "synonyms": [
+    "congenital adrenal hyperplasia",
+    "CAH",
+    "21-hydroxylase deficiency",
+    "21 hydroxylase deficiency",
+    "CYP21A2 deficiency",
+    "تضخم الغدة الكظرية الخلقي",
+    "فرط تنسج الكظر الخلقي",
+    "نقص إنزيم 21 هيدروكسيليز"
+  ],
+  "everyday_terms": [
+    "salt losing in a baby",
+    "hormone problem from birth",
+    "adrenal gland problem"
+  ],
+  "summary": "Congenital adrenal hyperplasia affects the adrenal glands, which make important hormones. The most common type, 21-hydroxylase deficiency, means the body makes too little of some hormones and too much of others.",
+  "inheritance_plain": "It is inherited in an autosomal recessive way: a child is affected only if they get a changed copy of the CYP21A2 gene from both parents.",
+  "carrier_meaning": "A carrier has one changed copy. Carriers are healthy and usually do not know they are carriers until they are tested.",
+  "disease_meaning": "A person with two changed copies has CAH. It ranges from a serious form noticed soon after birth to milder forms found later. It is managed for life with hormone treatment from a specialist team.",
+  "screening": "A carrier test uses a blood or saliva sample. It looks for the most common changes and cannot find every possible change.",
+  "suggested_questions": [
+    "Someone in my family has CAH. Could I be a carrier?",
+    "Can CAH skip a generation?",
+    "What does a test for the CYP21A2 gene involve?"
+  ],
+  "card_summary": "The adrenal glands don't make the right balance of hormones. Carriers are healthy.",
+  "carrier_label": "CAH carrier",
+  "disease_label": "Congenital adrenal hyperplasia (CAH)",
+  "carrier_short": "One changed copy. Healthy. Can pass the copy on.",
+  "disease_short": "Two changed copies. Managed for life with hormone treatment from a specialist team.",
+  "care": "Specialist endocrinology clinics, genetic counselling and family support groups.",
+  "counsellor_questions": [
+    "Which carrier test is right for me?",
+    "If I'm a carrier, could my partner be tested too?",
+    "What treatment and support exist today?"
+  ],
+  "sources": [
+    {
+      "title": "21-hydroxylase deficiency",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/21-hydroxylase-deficiency/"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-09",
+  "audio": "/audio/en/conditions/congenital_adrenal_hyperplasia.mp3"
+}

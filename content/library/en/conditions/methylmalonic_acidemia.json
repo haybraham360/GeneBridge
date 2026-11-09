@@ -1,0 +1,60 @@
+{
+  "id": "methylmalonic_acidemia",
+  "kind": "condition",
+  "locale": "en",
+  "inheritance": "autosomal_recessive",
+  "gene": "MMUT",
+  "area": "metabolic",
+  "title": "Methylmalonic acidaemia (MMA)",
+  "aliases": [
+    "MMA",
+    "methylmalonic acidemia",
+    "methylmalonic acidaemia",
+    "MMUT"
+  ],
+  "synonyms": [
+    "methylmalonic acidemia",
+    "methylmalonic acidaemia",
+    "MMA",
+    "methylmalonic aciduria",
+    "MMUT deficiency",
+    "حماض الميثيل مالونيك",
+    "بيلة حمض الميثيل مالونيك"
+  ],
+  "everyday_terms": [
+    "baby vomiting and very sleepy",
+    "acid in the blood",
+    "poor feeding in a newborn"
+  ],
+  "summary": "Methylmalonic acidaemia means the body cannot break down some parts of protein and fat. A substance called methylmalonic acid builds up and can make a person unwell, often from the first days of life.",
+  "inheritance_plain": "It is inherited in an autosomal recessive way: a child is affected only if they get a changed copy of the same gene (most often MMUT) from both parents.",
+  "carrier_meaning": "A carrier has one changed copy. Carriers are healthy and usually do not know they are carriers until they are tested.",
+  "disease_meaning": "A person with two changed copies has MMA. How it affects someone depends on the exact type. It is managed for life with a special diet and close care from a specialist team.",
+  "screening": "A carrier test uses a blood or saliva sample. It looks for the most common changes and cannot find every possible change.",
+  "suggested_questions": [
+    "Someone in my family has MMA. Could I be a carrier?",
+    "Can MMA skip a generation?",
+    "What does a test for MMA involve?"
+  ],
+  "card_summary": "The body can't break down some parts of protein and fat. Carriers are healthy.",
+  "carrier_label": "MMA carrier",
+  "disease_label": "Methylmalonic acidaemia (MMA)",
+  "carrier_short": "One changed copy. Healthy. Can pass the copy on.",
+  "disease_short": "Two changed copies. Managed for life by a specialist team with a special diet.",
+  "care": "Specialist metabolic and kidney clinics, dietitians, genetic counselling and family support groups.",
+  "counsellor_questions": [
+    "Which carrier test is right for me?",
+    "If I'm a carrier, could my partner be tested too?",
+    "What treatment and support exist today?"
+  ],
+  "sources": [
+    {
+      "title": "Methylmalonic acidemia",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/methylmalonic-acidemia/"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-09",
+  "audio": "/audio/en/conditions/methylmalonic_acidemia.mp3"
+}

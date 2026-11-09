@@ -1,0 +1,61 @@
+{
+  "id": "hypertrophic_cardiomyopathy",
+  "kind": "condition",
+  "locale": "en",
+  "inheritance": "autosomal_dominant",
+  "gene": "MYBPC3, MYH7",
+  "area": "heart",
+  "title": "Hypertrophic cardiomyopathy (HCM)",
+  "aliases": [
+    "HCM",
+    "HOCM",
+    "hypertrophic cardiomyopathy",
+    "thick heart muscle"
+  ],
+  "synonyms": [
+    "hypertrophic cardiomyopathy",
+    "familial hypertrophic cardiomyopathy",
+    "HCM",
+    "HOCM",
+    "hypertrophic obstructive cardiomyopathy",
+    "اعتلال عضلة القلب الضخامي",
+    "تضخم عضلة القلب الوراثي",
+    "اعتلال عضلة القلب التضخمي"
+  ],
+  "everyday_terms": [
+    "thick heart muscle",
+    "sudden death in a young relative",
+    "fainting during exercise"
+  ],
+  "summary": "Hypertrophic cardiomyopathy makes the heart muscle thicker than usual, which can make it harder for the heart to pump. Many people have mild or no symptoms; some have chest pain, breathlessness or an irregular heartbeat.",
+  "inheritance_plain": "It is inherited in an autosomal dominant way: one changed copy of one of the genes linked to it (most often MYBPC3 or MYH7) can be enough to cause it. A parent with the change can pass it on, and the chance is the same for each pregnancy. A genetic counsellor talks this through with you.",
+  "carrier_meaning": "For a dominant condition, one changed copy can be enough to cause it, so people with a change are not usually called carriers. How much it affects someone varies, and some people have few signs for many years. A genetic counsellor explains what a result means.",
+  "disease_meaning": "People with HCM are looked after by heart specialists, who check the heart regularly and offer treatment when needed. Close relatives can be offered heart checks.",
+  "screening": "A heart scan and ECG can check the heart, and a genetic test can look for a change in the genes linked to HCM. A genetic counsellor can explain which relatives might choose to be checked.",
+  "suggested_questions": [
+    "Someone in my family has HCM. What could that mean for me?",
+    "Can HCM skip a generation?",
+    "What does a test for HCM involve?"
+  ],
+  "card_summary": "The heart muscle is thicker than usual. Heart specialists check and treat it.",
+  "carrier_label": "HCM: one changed copy",
+  "disease_label": "Hypertrophic cardiomyopathy (HCM)",
+  "carrier_short": "One changed copy. Can be enough to cause the condition. A counsellor explains.",
+  "disease_short": "Thicker heart muscle; regular checks and treatment from heart specialists.",
+  "care": "Specialist heart and inherited cardiac conditions clinics, genetic counselling and family support groups.",
+  "counsellor_questions": [
+    "What would a test result tell me, and what wouldn't it?",
+    "How could this affect my children?",
+    "What care and support exist today?"
+  ],
+  "sources": [
+    {
+      "title": "Familial hypertrophic cardiomyopathy",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/familial-hypertrophic-cardiomyopathy/"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-09",
+  "audio": "/audio/en/conditions/hypertrophic_cardiomyopathy.mp3"
+}

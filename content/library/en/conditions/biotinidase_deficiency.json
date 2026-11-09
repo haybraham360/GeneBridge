@@ -1,0 +1,55 @@
+{
+  "id": "biotinidase_deficiency",
+  "kind": "condition",
+  "locale": "en",
+  "inheritance": "autosomal_recessive",
+  "gene": "BTD",
+  "area": "metabolic",
+  "title": "Biotinidase deficiency",
+  "aliases": [
+    "biotinidase",
+    "BTD"
+  ],
+  "synonyms": [
+    "biotinidase deficiency",
+    "BTD deficiency",
+    "late-onset multiple carboxylase deficiency",
+    "نقص إنزيم البيوتينيداز",
+    "نقص البيوتينيداز"
+  ],
+  "everyday_terms": [
+    "hair loss and skin rash in a baby",
+    "seizures in a baby"
+  ],
+  "summary": "Biotinidase deficiency means the body cannot reuse biotin, a B vitamin, properly. Without treatment, it can cause problems such as seizures, skin rashes and hearing loss.",
+  "inheritance_plain": "It is inherited in an autosomal recessive way: a child is affected only if they get a changed copy of the BTD gene from both parents.",
+  "carrier_meaning": "A carrier has one changed copy. Carriers are healthy and usually do not know they are carriers until they are tested.",
+  "disease_meaning": "A person with two changed copies has biotinidase deficiency. Found early, it is treated simply under the care of a specialist team, and most people stay well.",
+  "screening": "A carrier test uses a blood or saliva sample. It looks for the most common changes and cannot find every possible change.",
+  "suggested_questions": [
+    "Someone in my family has biotinidase deficiency. Could I be a carrier?",
+    "Can biotinidase deficiency skip a generation?",
+    "What does a test for the BTD gene involve?"
+  ],
+  "card_summary": "The body can't reuse a B vitamin properly. Carriers are healthy.",
+  "carrier_label": "Biotinidase deficiency carrier",
+  "disease_label": "Biotinidase deficiency",
+  "carrier_short": "One changed copy. Healthy. Can pass the copy on.",
+  "disease_short": "Two changed copies. Treated under specialist care; most people stay well when found early.",
+  "care": "Specialist metabolic clinics, genetic counselling and family support groups.",
+  "counsellor_questions": [
+    "Which carrier test is right for me?",
+    "If I'm a carrier, could my partner be tested too?",
+    "What treatment and support exist today?"
+  ],
+  "sources": [
+    {
+      "title": "Biotinidase deficiency",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/biotinidase-deficiency/"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-09",
+  "audio": "/audio/en/conditions/biotinidase_deficiency.mp3"
+}

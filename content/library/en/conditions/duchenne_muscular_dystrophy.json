@@ -1,0 +1,62 @@
+{
+  "id": "duchenne_muscular_dystrophy",
+  "kind": "condition",
+  "locale": "en",
+  "inheritance": "x_linked",
+  "gene": "DMD",
+  "area": "nerves_muscles",
+  "title": "Duchenne and Becker muscular dystrophy",
+  "aliases": [
+    "Duchenne",
+    "DMD",
+    "Becker",
+    "Becker muscular dystrophy"
+  ],
+  "synonyms": [
+    "Duchenne muscular dystrophy",
+    "DMD",
+    "Becker muscular dystrophy",
+    "BMD",
+    "dystrophinopathy",
+    "ضمور العضلات الدوشيني",
+    "حثل دوشين العضلي",
+    "ضمور دوشين",
+    "ضمور العضلات من نوع بيكر"
+  ],
+  "everyday_terms": [
+    "boy falls a lot",
+    "trouble climbing stairs",
+    "big calf muscles and weak legs"
+  ],
+  "summary": "Duchenne and Becker muscular dystrophy cause muscles to weaken over time, because the body cannot make enough of a protein called dystrophin. Duchenne usually starts in early childhood; Becker is milder and starts later.",
+  "inheritance_plain": "It is X-linked: the DMD gene is on the X chromosome. Boys have one X, so one changed copy affects them. Girls have two X chromosomes and are usually carriers, though some have signs too. X-linked chances depend on which parent has the change, so a genetic counsellor talks them through with you.",
+  "carrier_meaning": "A woman with one changed copy is called a carrier. Many carriers have no symptoms, but some have muscle weakness or heart changes, so heart checks are often offered.",
+  "disease_meaning": "These conditions mostly affect boys. Care from specialist neuromuscular teams, including heart and breathing checks, physiotherapy and newer treatments, helps people stay active and well for longer.",
+  "screening": "A genetic test can look for a change in the DMD gene. A genetic counsellor can explain who in a family might choose to be tested.",
+  "suggested_questions": [
+    "Why is Duchenne muscular dystrophy more common in boys?",
+    "My brother has Duchenne muscular dystrophy. What could that mean for me?",
+    "What does a test for the DMD gene involve?"
+  ],
+  "card_summary": "Muscles weaken over time. Mostly affects boys.",
+  "carrier_label": "Duchenne muscular dystrophy carrier",
+  "disease_label": "Duchenne and Becker muscular dystrophy",
+  "carrier_short": "A changed copy on one X chromosome. Often no symptoms. Can pass it on.",
+  "disease_short": "Muscles weaken over time. Needs specialist neuromuscular care.",
+  "care": "Specialist neuromuscular, heart and breathing clinics, physiotherapy, genetic counselling and family support groups.",
+  "counsellor_questions": [
+    "How is it passed on in my family?",
+    "Can my sisters or daughters be tested too?",
+    "What does a test involve?"
+  ],
+  "sources": [
+    {
+      "title": "Duchenne and Becker muscular dystrophy",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/duchenne-and-becker-muscular-dystrophy/"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-09",
+  "audio": "/audio/en/conditions/duchenne_muscular_dystrophy.mp3"
+}

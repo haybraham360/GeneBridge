@@ -1,0 +1,61 @@
+{
+  "id": "niemann_pick_disease",
+  "kind": "condition",
+  "locale": "en",
+  "inheritance": "autosomal_recessive",
+  "gene": "SMPD1",
+  "area": "metabolic",
+  "title": "Niemann-Pick disease types A and B",
+  "aliases": [
+    "Niemann-Pick",
+    "Niemann Pick",
+    "ASMD",
+    "SMPD1"
+  ],
+  "synonyms": [
+    "Niemann-Pick disease type A",
+    "Niemann-Pick disease type B",
+    "Niemann-Pick disease types A and B",
+    "acid sphingomyelinase deficiency",
+    "ASMD",
+    "SMPD1-related",
+    "مرض نيمان بيك",
+    "داء نيمان-بيك",
+    "نقص إنزيم السفينغوميليناز الحمضي"
+  ],
+  "everyday_terms": [
+    "big liver and spleen",
+    "swollen belly in a baby"
+  ],
+  "summary": "Niemann-Pick disease types A and B happen when the body lacks an enzyme that breaks down a fatty substance. It builds up in the liver, spleen, lungs and, in type A, the brain.",
+  "inheritance_plain": "It is inherited in an autosomal recessive way: a child is affected only if they get a changed copy of the SMPD1 gene from both parents.",
+  "carrier_meaning": "A carrier has one changed copy. Carriers are healthy and usually do not know they are carriers until they are tested.",
+  "disease_meaning": "A person with two changed copies has Niemann-Pick disease. Type A starts in infancy and is severe; type B is milder and varies. A treatment now exists for some features and is given by specialist teams. Type C is a different condition with different genes.",
+  "screening": "A carrier test uses a blood or saliva sample. It looks for the most common changes and cannot find every possible change.",
+  "suggested_questions": [
+    "Someone in my family has Niemann-Pick disease. Could I be a carrier?",
+    "Can Niemann-Pick disease skip a generation?",
+    "What does a test for the SMPD1 gene involve?"
+  ],
+  "card_summary": "A fatty substance builds up in the liver, spleen and lungs. Carriers are healthy.",
+  "carrier_label": "Niemann-Pick disease carrier",
+  "disease_label": "Niemann-Pick disease types A and B",
+  "carrier_short": "One changed copy. Healthy. Can pass the copy on.",
+  "disease_short": "Two changed copies. Affects the liver, spleen and lungs; severity depends on the type.",
+  "care": "Specialist metabolic clinics, genetic counselling and family support groups.",
+  "counsellor_questions": [
+    "Which carrier test is right for me?",
+    "If I'm a carrier, could my partner be tested too?",
+    "What treatment and support exist today?"
+  ],
+  "sources": [
+    {
+      "title": "Niemann-Pick disease",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/niemann-pick-disease/"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-09",
+  "audio": "/audio/en/conditions/niemann_pick_disease.mp3"
+}

@@ -1,0 +1,60 @@
+{
+  "id": "gaucher_disease",
+  "kind": "condition",
+  "locale": "en",
+  "inheritance": "autosomal_recessive",
+  "gene": "GBA1",
+  "area": "metabolic",
+  "title": "Gaucher disease",
+  "aliases": [
+    "Gaucher",
+    "GBA",
+    "GBA1"
+  ],
+  "synonyms": [
+    "Gaucher disease",
+    "Gaucher's disease",
+    "glucocerebrosidase deficiency",
+    "GBA-related Gaucher disease",
+    "مرض جوشيه",
+    "داء غوشيه",
+    "مرض غوشر"
+  ],
+  "everyday_terms": [
+    "big spleen",
+    "enlarged spleen",
+    "bone pain and bruising",
+    "low platelets"
+  ],
+  "summary": "Gaucher disease happens when the body lacks enough of an enzyme that breaks down a fatty substance. The substance builds up, mainly in the spleen, liver and bones.",
+  "inheritance_plain": "It is inherited in an autosomal recessive way: a child is affected only if they get a changed copy of the GBA1 gene from both parents.",
+  "carrier_meaning": "A carrier has one changed copy. Carriers are healthy and usually do not know they are carriers until they are tested.",
+  "disease_meaning": "A person with two changed copies has Gaucher disease. It varies a lot: some people have mild signs, others more serious ones. Treatments exist for some types and are given by specialist teams.",
+  "screening": "A carrier test uses a blood or saliva sample. It looks for the most common changes and cannot find every possible change.",
+  "suggested_questions": [
+    "Someone in my family has Gaucher disease. Could I be a carrier?",
+    "Can Gaucher disease skip a generation?",
+    "What does a test for the GBA1 gene involve?"
+  ],
+  "card_summary": "A fatty substance builds up in the spleen, liver and bones. Carriers are healthy.",
+  "carrier_label": "Gaucher disease carrier",
+  "disease_label": "Gaucher disease",
+  "carrier_short": "One changed copy. Healthy. Can pass the copy on.",
+  "disease_short": "Two changed copies. Can affect the spleen, liver and bones; treatments exist for some types.",
+  "care": "Specialist metabolic and haematology clinics, genetic counselling and family support groups.",
+  "counsellor_questions": [
+    "Which carrier test is right for me?",
+    "If I'm a carrier, could my partner be tested too?",
+    "What treatment and support exist today?"
+  ],
+  "sources": [
+    {
+      "title": "Gaucher disease",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/gaucher-disease/"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-09",
+  "audio": "/audio/en/conditions/gaucher_disease.mp3"
+}

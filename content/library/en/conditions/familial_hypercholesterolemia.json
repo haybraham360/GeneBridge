@@ -1,0 +1,61 @@
+{
+  "id": "familial_hypercholesterolemia",
+  "kind": "condition",
+  "locale": "en",
+  "inheritance": "autosomal_dominant",
+  "gene": "LDLR",
+  "area": "heart",
+  "title": "Familial hypercholesterolaemia (FH)",
+  "aliases": [
+    "FH",
+    "familial hypercholesterolemia",
+    "familial high cholesterol",
+    "LDLR"
+  ],
+  "synonyms": [
+    "familial hypercholesterolemia",
+    "familial hypercholesterolaemia",
+    "FH",
+    "LDLR-related",
+    "heterozygous familial hypercholesterolemia",
+    "فرط كوليسترول الدم العائلي",
+    "ارتفاع الكوليسترول العائلي",
+    "فرط شحميات الدم العائلي"
+  ],
+  "everyday_terms": [
+    "high cholesterol in the family",
+    "heart attack at a young age",
+    "very high cholesterol"
+  ],
+  "summary": "Familial hypercholesterolaemia means the body cannot clear 'bad' LDL cholesterol from the blood well, so levels are high from birth. Over time this raises the chance of heart disease at a younger age.",
+  "inheritance_plain": "It is inherited in an autosomal dominant way: one changed copy of one of the genes linked to it (most often LDLR) can be enough to cause it. A parent with the change can pass it on, and the chance is the same for each pregnancy. A genetic counsellor talks this through with you.",
+  "carrier_meaning": "For a dominant condition, one changed copy can be enough to cause it, so people with a change are not usually called carriers. How much it affects someone varies, and some people have few signs for many years. A genetic counsellor explains what a result means.",
+  "disease_meaning": "FH is common and very treatable. Finding it early, then care from a doctor with healthy habits and cholesterol-lowering treatment, greatly lowers the chance of heart problems. Close relatives can be offered a cholesterol test.",
+  "screening": "A simple blood test measures cholesterol, and a genetic test can look for a change in the genes linked to FH. A genetic counsellor can explain which relatives might choose to be tested.",
+  "suggested_questions": [
+    "Someone in my family has FH. What could that mean for me?",
+    "Can FH skip a generation?",
+    "What does a test for FH involve?"
+  ],
+  "card_summary": "High cholesterol from birth. Common and very treatable when found early.",
+  "carrier_label": "FH: one changed copy",
+  "disease_label": "Familial hypercholesterolaemia (FH)",
+  "carrier_short": "One changed copy. Can be enough to cause the condition. A counsellor explains.",
+  "disease_short": "High cholesterol from birth; very treatable when found early.",
+  "care": "Lipid and heart clinics, family doctors, genetic counselling and family support groups.",
+  "counsellor_questions": [
+    "What would a test result tell me, and what wouldn't it?",
+    "How could this affect my children?",
+    "What care and support exist today?"
+  ],
+  "sources": [
+    {
+      "title": "Familial hypercholesterolemia",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/familial-hypercholesterolemia/"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-09",
+  "audio": "/audio/en/conditions/familial_hypercholesterolemia.mp3"
+}

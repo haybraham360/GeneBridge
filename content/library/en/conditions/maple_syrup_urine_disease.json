@@ -1,0 +1,59 @@
+{
+  "id": "maple_syrup_urine_disease",
+  "kind": "condition",
+  "locale": "en",
+  "inheritance": "autosomal_recessive",
+  "gene": "BCKDHA, BCKDHB, DBT",
+  "area": "metabolic",
+  "title": "Maple syrup urine disease (MSUD)",
+  "aliases": [
+    "MSUD",
+    "maple syrup urine disease",
+    "maple syrup disease"
+  ],
+  "synonyms": [
+    "maple syrup urine disease",
+    "MSUD",
+    "branched-chain ketoaciduria",
+    "BCKD deficiency",
+    "داء بول شراب القيقب",
+    "مرض البول القيقبي",
+    "مرض شراب القيقب"
+  ],
+  "everyday_terms": [
+    "urine smells sweet",
+    "sweet smelling urine",
+    "baby poor feeding and sleepy"
+  ],
+  "summary": "Maple syrup urine disease means the body cannot break down some building blocks of protein. They build up in the blood, and the urine can smell sweet, like maple syrup.",
+  "inheritance_plain": "It is inherited in an autosomal recessive way: a child is affected only if they get a changed copy of the same gene (BCKDHA, BCKDHB or DBT) from both parents.",
+  "carrier_meaning": "A carrier has one changed copy. Carriers are healthy and usually do not know they are carriers until they are tested.",
+  "disease_meaning": "A baby with two changed copies has MSUD. Signs usually start in the first days of life. Found early, it is managed with a special diet and close care from a specialist team for life.",
+  "screening": "A carrier test uses a blood or saliva sample. It looks for the most common changes and cannot find every possible change.",
+  "suggested_questions": [
+    "Someone in my family has MSUD. Could I be a carrier?",
+    "Can MSUD skip a generation?",
+    "What does a test for MSUD involve?"
+  ],
+  "card_summary": "The body can't break down some protein building blocks. Carriers are healthy.",
+  "carrier_label": "MSUD carrier",
+  "disease_label": "Maple syrup urine disease (MSUD)",
+  "carrier_short": "One changed copy. Healthy. Can pass the copy on.",
+  "disease_short": "Two changed copies. Managed with a special diet and specialist care from early on.",
+  "care": "Specialist metabolic clinics, dietitians, genetic counselling and family support groups.",
+  "counsellor_questions": [
+    "Which carrier test is right for me?",
+    "If I'm a carrier, could my partner be tested too?",
+    "What treatment and support exist today?"
+  ],
+  "sources": [
+    {
+      "title": "Maple syrup urine disease",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/maple-syrup-urine-disease/"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-09",
+  "audio": "/audio/en/conditions/maple_syrup_urine_disease.mp3"
+}

@@ -1,0 +1,64 @@
+{
+  "id": "mucopolysaccharidosis_type_1",
+  "kind": "condition",
+  "locale": "en",
+  "inheritance": "autosomal_recessive",
+  "gene": "IDUA",
+  "area": "metabolic",
+  "title": "Mucopolysaccharidosis type I (MPS I)",
+  "aliases": [
+    "MPS I",
+    "MPS1",
+    "Hurler",
+    "Hurler syndrome",
+    "IDUA"
+  ],
+  "synonyms": [
+    "mucopolysaccharidosis type I",
+    "mucopolysaccharidosis type 1",
+    "MPS I",
+    "MPS 1",
+    "MPS1",
+    "Hurler syndrome",
+    "Hurler-Scheie syndrome",
+    "Scheie syndrome",
+    "IDUA deficiency",
+    "عديد السكاريد المخاطي من النوع الأول",
+    "متلازمة هيرلر"
+  ],
+  "everyday_terms": [
+    "stiff joints and coarse features",
+    "cloudy eyes in a child"
+  ],
+  "summary": "MPS I happens when the body cannot break down large sugar molecules. They build up in many parts of the body, including the joints, heart, eyes and sometimes the brain.",
+  "inheritance_plain": "It is inherited in an autosomal recessive way: a child is affected only if they get a changed copy of the IDUA gene from both parents.",
+  "carrier_meaning": "A carrier has one changed copy. Carriers are healthy and usually do not know they are carriers until they are tested.",
+  "disease_meaning": "A child with two changed copies has MPS I. It ranges from severe to milder forms. Treatments exist and work best when started early, under a specialist team.",
+  "screening": "A carrier test uses a blood or saliva sample. It looks for the most common changes and cannot find every possible change.",
+  "suggested_questions": [
+    "Someone in my family has MPS I. Could I be a carrier?",
+    "Can MPS I skip a generation?",
+    "What does a test for the IDUA gene involve?"
+  ],
+  "card_summary": "Large sugar molecules build up in many parts of the body. Carriers are healthy.",
+  "carrier_label": "MPS I carrier",
+  "disease_label": "Mucopolysaccharidosis type I (MPS I)",
+  "carrier_short": "One changed copy. Healthy. Can pass the copy on.",
+  "disease_short": "Two changed copies. Affects many parts of the body; treatments work best started early.",
+  "care": "Specialist metabolic clinics, transplant and enzyme treatment centres, genetic counselling and family support groups.",
+  "counsellor_questions": [
+    "Which carrier test is right for me?",
+    "If I'm a carrier, could my partner be tested too?",
+    "What treatment and support exist today?"
+  ],
+  "sources": [
+    {
+      "title": "Mucopolysaccharidosis type I",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/mucopolysaccharidosis-type-i/"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-09",
+  "audio": "/audio/en/conditions/mucopolysaccharidosis_type_1.mp3"
+}

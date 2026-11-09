@@ -1,0 +1,60 @@
+{
+  "id": "fanconi_anemia",
+  "kind": "condition",
+  "locale": "en",
+  "inheritance": "autosomal_recessive",
+  "gene": "FANCA",
+  "area": "blood",
+  "title": "Fanconi anaemia",
+  "aliases": [
+    "Fanconi",
+    "Fanconi anemia",
+    "FANCA"
+  ],
+  "synonyms": [
+    "Fanconi anemia",
+    "Fanconi anaemia",
+    "FA",
+    "FANCA",
+    "Fanconi pancytopenia",
+    "فقر دم فانكوني",
+    "أنيميا فانكوني",
+    "فاقة الدم فانكوني"
+  ],
+  "everyday_terms": [
+    "bone marrow failure",
+    "low blood counts in a child",
+    "thumb differences and anaemia"
+  ],
+  "summary": "Fanconi anaemia affects the bone marrow, where blood cells are made. Over time the marrow can make too few blood cells. Some children are also born with differences in the thumbs, arms, kidneys or height.",
+  "inheritance_plain": "It is inherited in an autosomal recessive way: a child is affected only if they get a changed copy of the same gene (most often FANCA) from both parents.",
+  "carrier_meaning": "A carrier has one changed copy. Carriers are healthy and usually do not know they are carriers until they are tested.",
+  "disease_meaning": "A person with two changed copies has Fanconi anaemia. Specialist teams check blood counts regularly, and a bone marrow transplant can treat the blood problems. Lifelong checks help find other problems early.",
+  "screening": "A carrier test uses a blood or saliva sample. It looks for the most common changes and cannot find every possible change.",
+  "suggested_questions": [
+    "Someone in my family has Fanconi anaemia. Could I be a carrier?",
+    "Can Fanconi anaemia skip a generation?",
+    "What does a test for Fanconi anaemia involve?"
+  ],
+  "card_summary": "The bone marrow makes too few blood cells over time. Carriers are healthy.",
+  "carrier_label": "Fanconi anaemia carrier",
+  "disease_label": "Fanconi anaemia",
+  "carrier_short": "One changed copy. Healthy. Can pass the copy on.",
+  "disease_short": "Two changed copies. Affects the bone marrow; needs lifelong specialist checks.",
+  "care": "Specialist haematology and transplant centres, genetic counselling and family support groups.",
+  "counsellor_questions": [
+    "Which carrier test is right for me?",
+    "If I'm a carrier, could my partner be tested too?",
+    "What treatment and support exist today?"
+  ],
+  "sources": [
+    {
+      "title": "Fanconi anemia",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/fanconi-anemia/"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-09",
+  "audio": "/audio/en/conditions/fanconi_anemia.mp3"
+}

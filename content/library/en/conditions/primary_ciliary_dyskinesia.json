@@ -1,0 +1,59 @@
+{
+  "id": "primary_ciliary_dyskinesia",
+  "kind": "condition",
+  "locale": "en",
+  "inheritance": "autosomal_recessive",
+  "gene": "DNAH5, DNAI1",
+  "area": "other",
+  "title": "Primary ciliary dyskinesia (PCD)",
+  "aliases": [
+    "PCD",
+    "Kartagener",
+    "Kartagener syndrome"
+  ],
+  "synonyms": [
+    "primary ciliary dyskinesia",
+    "PCD",
+    "Kartagener syndrome",
+    "immotile cilia syndrome",
+    "خلل الحركة الهدبية الأولي",
+    "متلازمة كارتاجنر",
+    "خلل حركة الأهداب"
+  ],
+  "everyday_terms": [
+    "constant wet cough from birth",
+    "chest infections and sinus problems",
+    "heart on the right side"
+  ],
+  "summary": "Primary ciliary dyskinesia affects cilia, the tiny hairs that clear mucus from the airways. Mucus stays in the lungs, ears and sinuses, which leads to frequent infections.",
+  "inheritance_plain": "It is inherited in an autosomal recessive way: a child is affected only if they get a changed copy of the same gene (one of many linked to it) from both parents.",
+  "carrier_meaning": "A carrier has one changed copy. Carriers are healthy and usually do not know they are carriers until they are tested.",
+  "disease_meaning": "A person with two changed copies has PCD. Daily airway clearance and care from a specialist team help keep the lungs healthy. Some people also have organs on the opposite side, or fertility questions a doctor can discuss.",
+  "screening": "A carrier test uses a blood or saliva sample. It looks for the most common changes and cannot find every possible change.",
+  "suggested_questions": [
+    "Someone in my family has PCD. Could I be a carrier?",
+    "Can PCD skip a generation?",
+    "What does a test for PCD involve?"
+  ],
+  "card_summary": "The tiny hairs that clear mucus don't work properly. Carriers are healthy.",
+  "carrier_label": "PCD carrier",
+  "disease_label": "Primary ciliary dyskinesia (PCD)",
+  "carrier_short": "One changed copy. Healthy. Can pass the copy on.",
+  "disease_short": "Two changed copies. Affects the airways, ears and sinuses; needs specialist care.",
+  "care": "Specialist respiratory and ear clinics, physiotherapy, genetic counselling and family support groups.",
+  "counsellor_questions": [
+    "Which carrier test is right for me?",
+    "If I'm a carrier, could my partner be tested too?",
+    "What treatment and support exist today?"
+  ],
+  "sources": [
+    {
+      "title": "Primary ciliary dyskinesia",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/primary-ciliary-dyskinesia/"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-09",
+  "audio": "/audio/en/conditions/primary_ciliary_dyskinesia.mp3"
+}

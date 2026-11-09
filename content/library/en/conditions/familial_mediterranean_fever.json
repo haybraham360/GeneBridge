@@ -1,0 +1,59 @@
+{
+  "id": "familial_mediterranean_fever",
+  "kind": "condition",
+  "locale": "en",
+  "inheritance": "autosomal_recessive",
+  "gene": "MEFV",
+  "area": "other",
+  "title": "Familial Mediterranean fever (FMF)",
+  "aliases": [
+    "FMF",
+    "Mediterranean fever",
+    "MEFV"
+  ],
+  "synonyms": [
+    "familial Mediterranean fever",
+    "FMF",
+    "MEFV-related",
+    "recurrent polyserositis",
+    "حمى البحر الأبيض المتوسط العائلية",
+    "حمى البحر المتوسط",
+    "الحمى المتوسطية العائلية"
+  ],
+  "everyday_terms": [
+    "repeated fevers with tummy pain",
+    "fever attacks",
+    "fever and joint pain that comes and goes"
+  ],
+  "summary": "Familial Mediterranean fever causes repeated attacks of fever with pain in the tummy, chest or joints. Attacks usually last a few days, and people feel well in between.",
+  "inheritance_plain": "It is inherited in an autosomal recessive way: a child is affected only if they get a changed copy of the MEFV gene from both parents.",
+  "carrier_meaning": "A carrier has one changed copy. Carriers are healthy. A small number of people with one changed copy have attacks, and a doctor can explain this.",
+  "disease_meaning": "A person with two changed copies usually has FMF, although some have few or no attacks. It is managed with daily treatment from a specialist team, which also helps protect the kidneys.",
+  "screening": "A carrier test uses a blood or saliva sample. It looks for the most common changes and cannot find every possible change.",
+  "suggested_questions": [
+    "Someone in my family has FMF. Could I be a carrier?",
+    "Can FMF skip a generation?",
+    "What does a test for the MEFV gene involve?"
+  ],
+  "card_summary": "Repeated attacks of fever and pain. Carriers are healthy.",
+  "carrier_label": "FMF carrier",
+  "disease_label": "Familial Mediterranean fever (FMF)",
+  "carrier_short": "One changed copy. Healthy. Can pass the copy on.",
+  "disease_short": "Two changed copies. Repeated fever attacks; managed with daily treatment from a specialist.",
+  "care": "Rheumatology clinics, kidney clinics, genetic counselling and family support groups.",
+  "counsellor_questions": [
+    "Which carrier test is right for me?",
+    "If I'm a carrier, could my partner be tested too?",
+    "What treatment and support exist today?"
+  ],
+  "sources": [
+    {
+      "title": "Familial Mediterranean fever",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/familial-mediterranean-fever/"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-09",
+  "audio": "/audio/en/conditions/familial_mediterranean_fever.mp3"
+}

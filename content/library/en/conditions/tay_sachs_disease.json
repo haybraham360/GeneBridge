@@ -1,0 +1,59 @@
+{
+  "id": "tay_sachs_disease",
+  "kind": "condition",
+  "locale": "en",
+  "inheritance": "autosomal_recessive",
+  "gene": "HEXA",
+  "area": "metabolic",
+  "title": "Tay-Sachs disease",
+  "aliases": [
+    "Tay-Sachs",
+    "Tay Sachs",
+    "HEXA"
+  ],
+  "synonyms": [
+    "Tay-Sachs disease",
+    "Tay Sachs",
+    "HEXA deficiency",
+    "hexosaminidase A deficiency",
+    "GM2 gangliosidosis",
+    "مرض تاي ساكس",
+    "داء تاي-ساكس"
+  ],
+  "everyday_terms": [
+    "baby losing skills",
+    "cherry red spot",
+    "baby stopped developing"
+  ],
+  "summary": "Tay-Sachs disease happens when the body cannot break down a fatty substance, which slowly builds up in nerve cells in the brain and spinal cord.",
+  "inheritance_plain": "It is inherited in an autosomal recessive way: a child is affected only if they get a changed copy of the HEXA gene from both parents.",
+  "carrier_meaning": "A carrier has one changed copy. Carriers are healthy and usually do not know they are carriers until they are tested.",
+  "disease_meaning": "A child with two changed copies has Tay-Sachs disease. In the most common form, signs start in the first months of life and the condition is severe. Specialist teams focus on comfort and support for the whole family.",
+  "screening": "A carrier test uses a blood or saliva sample. It looks for the most common changes and cannot find every possible change.",
+  "suggested_questions": [
+    "Someone in my family has Tay-Sachs. Could I be a carrier?",
+    "Can Tay-Sachs skip a generation?",
+    "What does a test for the HEXA gene involve?"
+  ],
+  "card_summary": "A fatty substance builds up in nerve cells. Carriers are healthy.",
+  "carrier_label": "Tay-Sachs carrier",
+  "disease_label": "Tay-Sachs disease",
+  "carrier_short": "One changed copy. Healthy. Can pass the copy on.",
+  "disease_short": "Two changed copies. Affects nerve cells; needs specialist and family support.",
+  "care": "Specialist neurology and metabolic clinics, palliative care, genetic counselling and family support groups.",
+  "counsellor_questions": [
+    "Which carrier test is right for me?",
+    "If I'm a carrier, could my partner be tested too?",
+    "What treatment and support exist today?"
+  ],
+  "sources": [
+    {
+      "title": "Tay-Sachs disease",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/tay-sachs-disease/"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-09",
+  "audio": "/audio/en/conditions/tay_sachs_disease.mp3"
+}

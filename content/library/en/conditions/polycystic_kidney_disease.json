@@ -1,0 +1,62 @@
+{
+  "id": "polycystic_kidney_disease",
+  "kind": "condition",
+  "locale": "en",
+  "inheritance": "autosomal_dominant",
+  "gene": "PKD1, PKD2",
+  "area": "other",
+  "title": "Polycystic kidney disease (ADPKD)",
+  "aliases": [
+    "ADPKD",
+    "PKD",
+    "polycystic kidneys",
+    "PKD1",
+    "PKD2"
+  ],
+  "synonyms": [
+    "autosomal dominant polycystic kidney disease",
+    "polycystic kidney disease",
+    "ADPKD",
+    "PKD",
+    "adult polycystic kidney disease",
+    "داء الكلى متعدد الكيسات",
+    "الكلى متعددة الكيسات",
+    "مرض تكيس الكلى"
+  ],
+  "everyday_terms": [
+    "cysts on the kidneys",
+    "kidney cysts in the family",
+    "kidney failure in the family"
+  ],
+  "summary": "In autosomal dominant polycystic kidney disease, many fluid-filled sacs (cysts) grow in the kidneys over time. It often causes high blood pressure, and kidney function may slowly fall in adulthood.",
+  "inheritance_plain": "It is inherited in an autosomal dominant way: one changed copy of one of the genes linked to it (PKD1 or PKD2) can be enough to cause it. A parent with the change can pass it on, and the chance is the same for each pregnancy. A genetic counsellor talks this through with you.",
+  "carrier_meaning": "For a dominant condition, one changed copy can be enough to cause it, so people with a change are not usually called carriers. How much it affects someone varies, and some people have few signs for many years. A genetic counsellor explains what a result means.",
+  "disease_meaning": "How it affects someone varies a lot. Kidney specialists check blood pressure and kidney function regularly, and treatments can slow it down. There is also a rarer recessive form that starts in childhood; a counsellor can explain the difference.",
+  "screening": "A genetic test can look for a change in one of the genes linked to it (PKD1 or PKD2). Testing is a personal choice, and counselling before and after the test is part of it.",
+  "suggested_questions": [
+    "Someone in my family has polycystic kidney disease. What could that mean for me?",
+    "Can polycystic kidney disease skip a generation?",
+    "What does a test for polycystic kidney disease involve?"
+  ],
+  "card_summary": "Cysts grow in the kidneys over time, usually in adulthood.",
+  "carrier_label": "Polycystic kidney disease: one changed copy",
+  "disease_label": "Polycystic kidney disease (ADPKD)",
+  "carrier_short": "One changed copy. Can be enough to cause the condition. A counsellor explains.",
+  "disease_short": "Kidney cysts grow over time; kidney specialists check and treat it.",
+  "care": "Kidney clinics, blood pressure care, genetic counselling and family support groups.",
+  "counsellor_questions": [
+    "What would a test result tell me, and what wouldn't it?",
+    "How could this affect my children?",
+    "What care and support exist today?"
+  ],
+  "sources": [
+    {
+      "title": "Polycystic kidney disease",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/polycystic-kidney-disease/"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-09",
+  "audio": "/audio/en/conditions/polycystic_kidney_disease.mp3"
+}

@@ -1,0 +1,59 @@
+{
+  "id": "wilson_disease",
+  "kind": "condition",
+  "locale": "en",
+  "inheritance": "autosomal_recessive",
+  "gene": "ATP7B",
+  "area": "metabolic",
+  "title": "Wilson disease",
+  "aliases": [
+    "Wilson",
+    "Wilson's disease",
+    "ATP7B"
+  ],
+  "synonyms": [
+    "Wilson disease",
+    "Wilson's disease",
+    "hepatolenticular degeneration",
+    "ATP7B-related",
+    "مرض ويلسون",
+    "داء ويلسون",
+    "التنكس الكبدي العدسي"
+  ],
+  "everyday_terms": [
+    "too much copper",
+    "copper build up",
+    "liver problems in a young person"
+  ],
+  "summary": "Wilson disease means the body cannot get rid of extra copper. Copper builds up, mainly in the liver and the brain, and signs often start in childhood or young adulthood.",
+  "inheritance_plain": "It is inherited in an autosomal recessive way: a child is affected only if they get a changed copy of the ATP7B gene from both parents.",
+  "carrier_meaning": "A carrier has one changed copy. Carriers are healthy and usually do not know they are carriers until they are tested.",
+  "disease_meaning": "A person with two changed copies has Wilson disease. It is treatable: lifelong treatment from a specialist team removes extra copper, and starting early helps prevent damage.",
+  "screening": "A carrier test uses a blood or saliva sample. It looks for the most common changes and cannot find every possible change.",
+  "suggested_questions": [
+    "Someone in my family has Wilson disease. Could I be a carrier?",
+    "Can Wilson disease skip a generation?",
+    "What does a test for the ATP7B gene involve?"
+  ],
+  "card_summary": "Extra copper builds up in the liver and brain. It is treatable. Carriers are healthy.",
+  "carrier_label": "Wilson disease carrier",
+  "disease_label": "Wilson disease",
+  "carrier_short": "One changed copy. Healthy. Can pass the copy on.",
+  "disease_short": "Two changed copies. Copper builds up; lifelong treatment from a specialist team.",
+  "care": "Specialist liver and neurology clinics, genetic counselling and family support groups.",
+  "counsellor_questions": [
+    "Which carrier test is right for me?",
+    "If I'm a carrier, could my partner be tested too?",
+    "What treatment and support exist today?"
+  ],
+  "sources": [
+    {
+      "title": "Wilson disease",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/wilson-disease/"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-09",
+  "audio": "/audio/en/conditions/wilson_disease.mp3"
+}

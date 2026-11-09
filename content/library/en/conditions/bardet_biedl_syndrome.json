@@ -1,0 +1,57 @@
+{
+  "id": "bardet_biedl_syndrome",
+  "kind": "condition",
+  "locale": "en",
+  "inheritance": "autosomal_recessive",
+  "gene": "BBS1, BBS10",
+  "area": "other",
+  "title": "Bardet-Biedl syndrome",
+  "aliases": [
+    "Bardet-Biedl",
+    "BBS"
+  ],
+  "synonyms": [
+    "Bardet-Biedl syndrome",
+    "Bardet Biedl syndrome",
+    "BBS",
+    "Laurence-Moon-Bardet-Biedl syndrome",
+    "متلازمة باردي بيدل",
+    "متلازمة بارديت بيدل"
+  ],
+  "everyday_terms": [
+    "extra fingers and poor night vision",
+    "extra fingers or toes",
+    "night blindness in a child"
+  ],
+  "summary": "Bardet-Biedl syndrome affects many parts of the body. Common features are sight loss that starts in childhood, extra fingers or toes, weight gain and kidney differences.",
+  "inheritance_plain": "It is inherited in an autosomal recessive way: a child is affected only if they get a changed copy of the same gene (one of many linked to it) from both parents.",
+  "carrier_meaning": "A carrier has one changed copy. Carriers are healthy and usually do not know they are carriers until they are tested.",
+  "disease_meaning": "A person with two changed copies has Bardet-Biedl syndrome. Features vary, even within one family. Care from several specialist teams helps with sight, kidneys, weight and learning.",
+  "screening": "A carrier test uses a blood or saliva sample. It looks for the most common changes and cannot find every possible change.",
+  "suggested_questions": [
+    "Someone in my family has Bardet-Biedl syndrome. Could I be a carrier?",
+    "Can Bardet-Biedl syndrome skip a generation?",
+    "What does a test for Bardet-Biedl syndrome involve?"
+  ],
+  "card_summary": "Affects sight, kidneys and other parts of the body. Carriers are healthy.",
+  "carrier_label": "Bardet-Biedl syndrome carrier",
+  "disease_label": "Bardet-Biedl syndrome",
+  "carrier_short": "One changed copy. Healthy. Can pass the copy on.",
+  "disease_short": "Two changed copies. Affects sight, kidneys and more; care from several specialists.",
+  "care": "Eye, kidney and endocrinology clinics, genetic counselling and family support groups.",
+  "counsellor_questions": [
+    "Which carrier test is right for me?",
+    "If I'm a carrier, could my partner be tested too?",
+    "What treatment and support exist today?"
+  ],
+  "sources": [
+    {
+      "title": "Bardet-Biedl syndrome",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/bardet-biedl-syndrome/"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-09",
+  "audio": "/audio/en/conditions/bardet_biedl_syndrome.mp3"
+}

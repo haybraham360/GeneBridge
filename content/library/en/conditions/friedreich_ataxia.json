@@ -1,0 +1,59 @@
+{
+  "id": "friedreich_ataxia",
+  "kind": "condition",
+  "locale": "en",
+  "inheritance": "autosomal_recessive",
+  "gene": "FXN",
+  "area": "nerves_muscles",
+  "title": "Friedreich ataxia",
+  "aliases": [
+    "Friedreich",
+    "FRDA",
+    "FXN"
+  ],
+  "synonyms": [
+    "Friedreich ataxia",
+    "Friedreich's ataxia",
+    "FRDA",
+    "FA",
+    "FXN-related ataxia",
+    "رنح فريدريك",
+    "رنح فريدرايخ"
+  ],
+  "everyday_terms": [
+    "clumsy walking getting worse",
+    "losing balance as a teenager",
+    "unsteady walking"
+  ],
+  "summary": "Friedreich ataxia affects the nerves that control movement and balance. Signs usually start in childhood or the teenage years and slowly get worse. It can also affect the heart.",
+  "inheritance_plain": "It is inherited in an autosomal recessive way: a child is affected only if they get a changed copy of the FXN gene from both parents.",
+  "carrier_meaning": "A carrier has one changed copy. Carriers are healthy and usually do not know they are carriers until they are tested.",
+  "disease_meaning": "A person with two changed copies has Friedreich ataxia. Care from specialist teams, physiotherapy and heart checks help, and a treatment is now available for some people.",
+  "screening": "A carrier test uses a blood or saliva sample. It looks for the most common changes and cannot find every possible change.",
+  "suggested_questions": [
+    "Someone in my family has Friedreich ataxia. Could I be a carrier?",
+    "Can Friedreich ataxia skip a generation?",
+    "What does a test for the FXN gene involve?"
+  ],
+  "card_summary": "Affects the nerves that control movement and balance. Carriers are healthy.",
+  "carrier_label": "Friedreich ataxia carrier",
+  "disease_label": "Friedreich ataxia",
+  "carrier_short": "One changed copy. Healthy. Can pass the copy on.",
+  "disease_short": "Two changed copies. Affects balance and movement, and sometimes the heart.",
+  "care": "Specialist neurology and heart clinics, physiotherapy, genetic counselling and family support groups.",
+  "counsellor_questions": [
+    "Which carrier test is right for me?",
+    "If I'm a carrier, could my partner be tested too?",
+    "What treatment and support exist today?"
+  ],
+  "sources": [
+    {
+      "title": "Friedreich ataxia",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/friedreich-ataxia/"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-09",
+  "audio": "/audio/en/conditions/friedreich_ataxia.mp3"
+}

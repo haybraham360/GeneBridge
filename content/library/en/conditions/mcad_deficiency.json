@@ -1,0 +1,59 @@
+{
+  "id": "mcad_deficiency",
+  "kind": "condition",
+  "locale": "en",
+  "inheritance": "autosomal_recessive",
+  "gene": "ACADM",
+  "area": "metabolic",
+  "title": "MCAD deficiency",
+  "aliases": [
+    "MCAD",
+    "MCADD",
+    "ACADM"
+  ],
+  "synonyms": [
+    "MCAD deficiency",
+    "MCADD",
+    "medium-chain acyl-CoA dehydrogenase deficiency",
+    "medium chain acyl coa dehydrogenase deficiency",
+    "ACADM deficiency",
+    "نقص إنزيم MCAD",
+    "نقص نازعة هيدروجين أسيل CoA متوسطة السلسلة"
+  ],
+  "everyday_terms": [
+    "low blood sugar when ill",
+    "baby very sleepy when not feeding",
+    "sick after fasting"
+  ],
+  "summary": "MCAD deficiency means the body cannot use certain fats for energy. This matters most when someone goes a long time without food or is ill.",
+  "inheritance_plain": "It is inherited in an autosomal recessive way: a child is affected only if they get a changed copy of the ACADM gene from both parents.",
+  "carrier_meaning": "A carrier has one changed copy. Carriers are healthy and usually do not know they are carriers until they are tested.",
+  "disease_meaning": "A person with two changed copies has MCAD deficiency. When it is found early, for example through newborn screening, most people stay well by avoiding long gaps without food, following a plan from their specialist team.",
+  "screening": "A carrier test uses a blood or saliva sample and cannot find every possible change. Some newborn screening programmes check babies for MCAD deficiency; a counsellor can tell you what is checked locally.",
+  "suggested_questions": [
+    "Someone in my family has MCAD deficiency. Could I be a carrier?",
+    "Can MCAD deficiency skip a generation?",
+    "What does a test for the ACADM gene involve?"
+  ],
+  "card_summary": "The body can't use some fats for energy, especially when fasting or ill. Carriers are healthy.",
+  "carrier_label": "MCAD deficiency carrier",
+  "disease_label": "MCAD deficiency",
+  "carrier_short": "One changed copy. Healthy. Can pass the copy on.",
+  "disease_short": "Two changed copies. Needs a plan to avoid long gaps without food; most people stay well.",
+  "care": "Specialist metabolic clinics, dietitians, genetic counselling and family support groups.",
+  "counsellor_questions": [
+    "Which carrier test is right for me?",
+    "If I'm a carrier, could my partner be tested too?",
+    "What treatment and support exist today?"
+  ],
+  "sources": [
+    {
+      "title": "Medium-chain acyl-CoA dehydrogenase deficiency",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/medium-chain-acyl-coa-dehydrogenase-deficiency/"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-09",
+  "audio": "/audio/en/conditions/mcad_deficiency.mp3"
+}

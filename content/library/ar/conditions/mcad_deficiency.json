@@ -1,0 +1,59 @@
+{
+  "id": "mcad_deficiency",
+  "kind": "condition",
+  "locale": "ar",
+  "inheritance": "autosomal_recessive",
+  "gene": "ACADM",
+  "area": "metabolic",
+  "title": "نقص إنزيم MCAD",
+  "aliases": [
+    "MCAD",
+    "MCADD",
+    "ACADM"
+  ],
+  "synonyms": [
+    "MCAD deficiency",
+    "MCADD",
+    "medium-chain acyl-CoA dehydrogenase deficiency",
+    "medium chain acyl coa dehydrogenase deficiency",
+    "ACADM deficiency",
+    "نقص إنزيم MCAD",
+    "نقص نازعة هيدروجين أسيل CoA متوسطة السلسلة"
+  ],
+  "everyday_terms": [
+    "انخفاض السكر عند المرض",
+    "الطفل نعسان جداً عند عدم الرضاعة",
+    "تعب بعد الصيام"
+  ],
+  "summary": "يعني نقص إنزيم MCAD أن الجسم لا يستطيع استخدام بعض الدهون لإنتاج الطاقة، ويهمّ ذلك أكثر عندما يبقى الشخص وقتاً طويلاً بلا طعام أو عندما يمرض.",
+  "inheritance_plain": "يُورَّث بطريقة جسمية متنحية: يُصاب الطفل فقط إذا ورث نسخة متغيّرة من جين ACADM من كلا الوالدين.",
+  "carrier_meaning": "حامل الصفة لديه نسخة متغيّرة واحدة. حاملو الصفة أصحّاء، وعادةً لا يعرفون أنهم يحملونها حتى يُجرى لهم الفحص.",
+  "disease_meaning": "الشخص الذي لديه نسختان متغيّرتان مصاب بنقص إنزيم MCAD. عند اكتشافه مبكراً، مثلاً عبر فحص حديثي الولادة، يبقى معظم المصابين بصحة جيدة بتجنّب الفترات الطويلة بلا طعام وفق خطة من الفريق المتخصص.",
+  "screening": "يُجرى فحص حامل الصفة بعيّنة دم أو لعاب، ولا يمكنه اكتشاف كل تغيّر ممكن. تفحص بعض برامج فحص حديثي الولادة الأطفال لنقص إنزيم MCAD، ويمكن للمستشار أن يخبرك بما يُفحص محلياً.",
+  "suggested_questions": [
+    "لدى أحد أفراد عائلتي نقص إنزيم MCAD. هل يمكن أن أكون حاملاً للصفة؟",
+    "هل يمكن لهذه الحالة أن تتخطى جيلاً؟",
+    "ماذا يتضمن فحص جين ACADM؟"
+  ],
+  "card_summary": "لا يستطيع الجسم استخدام بعض الدهون للطاقة، خاصة عند الصيام أو المرض. حاملو الصفة أصحّاء.",
+  "carrier_label": "حامل صفة نقص إنزيم MCAD",
+  "disease_label": "نقص إنزيم MCAD",
+  "carrier_short": "نسخة متغيّرة واحدة. بصحة جيدة. يمكن أن تنتقل النسخة.",
+  "disease_short": "نسختان متغيّرتان. يحتاج إلى خطة لتجنّب الفترات الطويلة بلا طعام، ومعظم المصابين بصحة جيدة.",
+  "care": "عيادات الأيض المتخصصة، وأخصائيو التغذية، والاستشارة الوراثية، ومجموعات دعم العائلات.",
+  "counsellor_questions": [
+    "ما فحص حامل الصفة المناسب لي؟",
+    "إذا كنت حاملاً للصفة، هل يمكن أن يُفحص شريكي أيضاً؟",
+    "ما العلاجات والدعم المتوفرة اليوم؟"
+  ],
+  "sources": [
+    {
+      "title": "Medium-chain acyl-CoA dehydrogenase deficiency",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/medium-chain-acyl-coa-dehydrogenase-deficiency/"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-09",
+  "audio": "/audio/ar/conditions/mcad_deficiency.mp3"
+}

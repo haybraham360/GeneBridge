@@ -1,0 +1,69 @@
+{
+  "id": "haemophilia",
+  "kind": "condition",
+  "locale": "en",
+  "inheritance": "x_linked",
+  "gene": "F8, F9",
+  "area": "blood",
+  "title": "Haemophilia",
+  "aliases": [
+    "haemophilia",
+    "hemophilia",
+    "F8",
+    "F9",
+    "factor VIII",
+    "factor IX"
+  ],
+  "synonyms": [
+    "haemophilia",
+    "hemophilia",
+    "haemophilia A",
+    "hemophilia A",
+    "haemophilia B",
+    "hemophilia B",
+    "factor VIII deficiency",
+    "factor IX deficiency",
+    "Christmas disease",
+    "الهيموفيليا",
+    "الناعور",
+    "مرض نزف الدم الوراثي",
+    "نقص العامل الثامن",
+    "نقص العامل التاسع"
+  ],
+  "everyday_terms": [
+    "bleeding that won't stop",
+    "bleeding into joints",
+    "bleeds a lot after a cut"
+  ],
+  "summary": "Haemophilia means the blood does not clot properly because a clotting protein is missing or low. Bleeding lasts longer, and in more severe forms bleeding can happen inside joints and muscles.",
+  "inheritance_plain": "It is X-linked: the F8 gene (haemophilia A) or the F9 gene (haemophilia B) is on the X chromosome. Boys have one X, so one changed copy affects them. Girls have two X chromosomes and are usually carriers, though some have signs too. X-linked chances depend on which parent has the change, so a genetic counsellor talks them through with you.",
+  "carrier_meaning": "A woman with one changed copy is called a carrier. Many carriers have no symptoms; some have milder effects, and a doctor can check for them.",
+  "disease_meaning": "Haemophilia mostly affects boys and men. Modern treatment from specialist haemophilia centres prevents and treats bleeds, and many people live full, active lives.",
+  "screening": "A genetic test can look for a change in the F8 gene (haemophilia A) or the F9 gene (haemophilia B). A genetic counsellor can explain who in a family might choose to be tested.",
+  "suggested_questions": [
+    "Why is haemophilia more common in boys?",
+    "My brother has haemophilia. What could that mean for me?",
+    "What does a test for haemophilia involve?"
+  ],
+  "card_summary": "The blood doesn't clot properly, so bleeding lasts longer. Mostly affects males.",
+  "carrier_label": "Haemophilia carrier",
+  "disease_label": "Haemophilia",
+  "carrier_short": "A changed copy on one X chromosome. Often no symptoms. Can pass it on.",
+  "disease_short": "Blood doesn't clot properly. Treated at specialist haemophilia centres.",
+  "care": "Specialist haemophilia centres, physiotherapy, genetic counselling and family support groups.",
+  "counsellor_questions": [
+    "How is it passed on in my family?",
+    "Can my sisters or daughters be tested too?",
+    "What does a test involve?"
+  ],
+  "sources": [
+    {
+      "title": "Hemophilia",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/hemophilia/"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-09",
+  "audio": "/audio/en/conditions/haemophilia.mp3"
+}

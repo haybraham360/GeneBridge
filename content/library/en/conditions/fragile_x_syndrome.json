@@ -1,0 +1,61 @@
+{
+  "id": "fragile_x_syndrome",
+  "kind": "condition",
+  "locale": "en",
+  "inheritance": "x_linked",
+  "gene": "FMR1",
+  "area": "other",
+  "always_escalate": true,
+  "title": "Fragile X syndrome",
+  "aliases": [
+    "fragile X",
+    "FXS",
+    "FMR1"
+  ],
+  "synonyms": [
+    "fragile X syndrome",
+    "fragile X",
+    "FXS",
+    "FMR1-related disorder",
+    "Martin-Bell syndrome",
+    "متلازمة الكروموسوم X الهش",
+    "متلازمة إكس الهش",
+    "متلازمة الصبغي X الهش"
+  ],
+  "everyday_terms": [
+    "learning difficulties in boys",
+    "autism in the family",
+    "developmental delay"
+  ],
+  "summary": "Fragile X syndrome is a common inherited cause of learning difficulties. It can also affect behaviour, speech and social skills. It is caused by a section of the FMR1 gene that has grown too long.",
+  "inheritance_plain": "It is X-linked: the FMR1 gene is on the X chromosome. The changed section can grow longer when a mother passes it on, so the pattern is more complicated than other X-linked conditions. A genetic counsellor talks it through with you.",
+  "carrier_meaning": "A smaller change, called a premutation, does not cause fragile X syndrome. Many people with a premutation are healthy, though some have health effects of their own later in life. A genetic counsellor explains what a result means.",
+  "disease_meaning": "Boys are usually more affected than girls. Early support with learning, speech and behaviour makes a real difference, and many people with fragile X live fulfilling lives.",
+  "screening": "A genetic test can look for a change in the FMR1 gene. A genetic counsellor can explain who in a family might choose to be tested.",
+  "suggested_questions": [
+    "Why is fragile X more common in boys?",
+    "My brother has fragile X. What could that mean for me?",
+    "What does a test for the FMR1 gene involve?"
+  ],
+  "card_summary": "A common inherited cause of learning difficulties. Boys are usually more affected.",
+  "carrier_label": "Fragile X premutation",
+  "disease_label": "Fragile X syndrome",
+  "carrier_short": "A smaller change (premutation). Often healthy. A counsellor explains.",
+  "disease_short": "Affects learning, speech and behaviour; early support makes a real difference.",
+  "care": "Child development and learning support services, speech therapy, genetic counselling and family support groups.",
+  "counsellor_questions": [
+    "How is it passed on in my family?",
+    "Can my sisters or daughters be tested too?",
+    "What does a test involve?"
+  ],
+  "sources": [
+    {
+      "title": "Fragile X syndrome",
+      "publisher": "MedlinePlus Genetics (U.S. National Library of Medicine)",
+      "url": "https://medlineplus.gov/genetics/condition/fragile-x-syndrome/"
+    }
+  ],
+  "reviewed": false,
+  "last_checked": "2026-11-09",
+  "audio": "/audio/en/conditions/fragile_x_syndrome.mp3"
+}
