@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { Button, buttonClasses } from '@/components/ui/Button';
 import { OptionCards } from '@/components/ui/OptionCards';
 import { Link, useRouter } from '@/i18n/navigation';
-import { completeAuth, prepareAuth, uaePassSignIn } from '@/lib/auth/actions';
+import { completeAuth, guestSignIn, prepareAuth, uaePassSignIn } from '@/lib/auth/actions';
 import type { FinishResult } from '@/lib/auth/complete';
 import { isRateLimited, sendErrorKey, verifyErrorKey, type AuthErrorKey } from '@/lib/auth/errors';
 import { createClient } from '@/lib/supabase/browser';
@@ -24,7 +24,7 @@ type Field = 'phone' | 'email' | 'password' | 'consent' | 'code';
 /** "How will you use GeneBridge?" (task 14). The server never accepts any other value. */
 type AccountType = 'individual' | 'professional';
 const accountTypes: AccountType[] = ['individual', 'professional'];
-type Errors = Partial<Record<Field | 'uaePass' | 'google', string>>;
+type Errors = Partial<Record<Field | 'uaePass' | 'google' | 'guest', string>>;
 
 const RESEND_SECONDS = 30;
 const emptyCode = () => Array<string>(CODE_LENGTH).fill('');
@@ -51,6 +51,7 @@ export function AuthForm({
   uaePassEnabled,
   googleEnabled,
   phoneEnabled,
+  guestEnabled,
   initialView = 'start',
 }: {
   next: string | null;
@@ -61,6 +62,8 @@ export function AuthForm({
   googleEnabled: boolean;
   /** Phone code sign-in. Off until an SMS setup is ready (PHONE_AUTH_ENABLED). */
   phoneEnabled: boolean;
+  /** "Continue as a guest" (anonymous sign-in on in Supabase). */
+  guestEnabled: boolean;
   initialView?: 'start' | 'consent';
 }) {
   const t = useTranslations('auth');
@@ -338,6 +341,25 @@ export function AuthForm({
     } catch {
       setBusy(false);
       setErrors({ google: t('google.failed') });
+    }
+  };
+
+  /** No phone or email: an anonymous account that still gives consent. */
+  const continueAsGuest = async () => {
+    if (isSignup && !consent) return fail({ consent: t('consent.required') });
+    setBusy(true);
+    setErrors({});
+    try {
+      const result = await guestSignIn({ mode, consent: isSignup && consent, next });
+      if (result.status === 'error') {
+        setBusy(false);
+        setErrors({ guest: t('guest.failed') });
+        return;
+      }
+      finish(result);
+    } catch {
+      setBusy(false);
+      setErrors({ guest: t('guest.failed') });
     }
   };
 
@@ -713,6 +735,30 @@ export function AuthForm({
             </>
           ) : null}
           {methodFields}
+          {guestEnabled ? (
+            <>
+              <Divider>{t('guest.divider')}</Divider>
+              <div className="flex flex-col gap-2">
+                <button
+                  type="button"
+                  onClick={() => void continueAsGuest()}
+                  disabled={busy}
+                  aria-describedby="guest-hint"
+                  className={buttonClasses(
+                    'ghost',
+                    'md',
+                    'min-h-[52px] w-full disabled:cursor-wait disabled:opacity-70',
+                  )}
+                >
+                  {t('guest.button')}
+                </button>
+                <p id="guest-hint" className="text-center text-[13px] leading-[1.5] text-muted">
+                  {t('guest.hint')}
+                </p>
+                <FieldError id="guest-error" message={errors.guest} />
+              </div>
+            </>
+          ) : null}
         </div>
       </>
     );

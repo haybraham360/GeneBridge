@@ -74,6 +74,35 @@ export async function uaePassSignIn(input: {
   return finishSignIn(supabase);
 }
 
+/**
+ * "Continue as a guest": an anonymous Supabase user, so nothing needs a phone
+ * or email. Guests are always "For myself or my family", never professional,
+ * and still give the terms consent (here on Create account, or on the
+ * consent step after). Everything stays behind the same RLS as any account.
+ */
+export async function guestSignIn(input: {
+  mode: 'signup' | 'signin';
+  consent: boolean;
+  next?: string | null;
+}): Promise<FinishResult | { status: 'error' }> {
+  if (input.mode === 'signup' && !input.consent) return { status: 'error' };
+  const locale = (await getLocale()) === 'en' ? 'en' : 'ar';
+
+  await setPendingAuth({
+    mode: input.mode,
+    method: 'guest',
+    consent: input.mode === 'signup' && input.consent,
+    accountType: 'individual',
+    next: safeNextPath(input.next),
+    locale,
+  });
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.signInAnonymously({ options: { data: { locale } } });
+  if (error) return { status: 'error' };
+  return finishSignIn(supabase);
+}
+
 /** "Skip for now" on the set-password screen. Doesn't ask again. */
 export async function skipPassword(next: string | null) {
   const supabase = await createClient();

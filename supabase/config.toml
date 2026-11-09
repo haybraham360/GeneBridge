@@ -10,6 +10,8 @@ site_url = "http://localhost:3000"
 additional_redirect_urls = ["http://localhost:3000/**"]
 # 30 minutes of inactivity signs people out (enforced in proxy.ts as well).
 jwt_expiry = 3600
+# "Continue as a guest" on /auth: an anonymous Supabase user, no phone or email.
+enable_anonymous_sign_ins = true
 
 [auth.rate_limit]
 # Built-in limits; the auth page shows a calm "please wait" message on 429.

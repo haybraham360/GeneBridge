@@ -4,7 +4,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
  * Auth analytics events. Props never hold personal data: no phone numbers,
  * emails, names or codes. Only the allow-listed fields below.
  */
-export type AuthMethod = 'phone' | 'email' | 'password' | 'google' | 'uae_pass';
+export type AuthMethod = 'phone' | 'email' | 'password' | 'google' | 'uae_pass' | 'guest';
 
 export type AuthEvent =
   | { name: 'auth_method_selected'; props: { method: AuthMethod } }

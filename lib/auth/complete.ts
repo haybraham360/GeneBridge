@@ -52,7 +52,8 @@ async function takePendingAuth(): Promise<PendingAuth | null> {
         parsed.method === 'email' ||
         parsed.method === 'password' ||
         parsed.method === 'google' ||
-        parsed.method === 'uae_pass'
+        parsed.method === 'uae_pass' ||
+        parsed.method === 'guest'
           ? parsed.method
           : 'phone',
       consent: parsed.consent === true,

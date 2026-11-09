@@ -7,7 +7,11 @@ import { redirect } from '@/i18n/navigation';
 import { routing } from '@/i18n/routing';
 import { destinationProfile } from '@/lib/auth/destination';
 import { destinationFor, IDLE_REASON, safeNextPath } from '@/lib/auth/routes';
-import { googleSignInAvailable, phoneSignInAvailable } from '@/lib/auth/providers';
+import {
+  googleSignInAvailable,
+  guestSignInAvailable,
+  phoneSignInAvailable,
+} from '@/lib/auth/providers';
 import { uaePassMockEnabled } from '@/lib/auth/uaePass';
 import { createClient } from '@/lib/supabase/server';
 import { AuthForm } from './components/AuthForm';
@@ -49,9 +53,10 @@ export default async function AuthPage({ params, searchParams }: PageProps<'/[lo
     needsConsent = true;
   }
 
-  const [googleEnabled, phoneEnabled] = await Promise.all([
+  const [googleEnabled, phoneEnabled, guestEnabled] = await Promise.all([
     googleSignInAvailable(),
     phoneSignInAvailable(),
+    guestSignInAvailable(),
   ]);
 
   return (
@@ -68,6 +73,7 @@ export default async function AuthPage({ params, searchParams }: PageProps<'/[lo
             uaePassEnabled={uaePassMockEnabled()}
             googleEnabled={googleEnabled}
             phoneEnabled={phoneEnabled}
+            guestEnabled={guestEnabled}
             initialView={needsConsent ? 'consent' : 'start'}
           />
         </main>
