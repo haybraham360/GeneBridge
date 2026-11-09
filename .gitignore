@@ -10,3 +10,6 @@ next-env.d.ts
 test-results/
 playwright-report/
 .vercel
+
+# Python
+__pycache__/
