@@ -2,42 +2,42 @@
   "general": {
     "lead": "{summary}",
     "more": "{detail}",
-    "next_condition": "Next step: if you'd like, I can work out the chances for a couple where both partners carry {condition}.",
-    "next_general": "Next step: ask me about any condition in the library, or how screening works."
+    "next_condition": "Want to see the chances for a couple where both partners carry {condition}? Just ask.",
+    "next_general": "Curious about another condition, or how screening works? Just ask."
   },
-  "simpler_prefix": "In simple words:",
-  "detail_prefix": "In more detail:",
-  "not_in_library": "I don't have reviewed information about that in my library, so I won't guess. A genetic counsellor can answer it properly.",
+  "simpler_prefix": "Put simply:",
+  "detail_prefix": "Here's a bit more:",
+  "not_in_library": "That's a good question, but it isn't in my library yet, and I'd rather not guess. A genetic counsellor can give you a proper answer.",
   "risk": {
-    "need_details": "I can work out the chances with GeneBridge's inheritance engine. Tell me the condition and whether each parent is a carrier, affected, or neither. For example: \"both parents are carriers of beta-thalassaemia\".",
-    "intro": "For each pregnancy, when {p1} and {p2}, the chances for {condition} are:",
-    "intro_both": "For each pregnancy, when {both}, the chances for {condition} are:",
-    "affected": "{n}% the child has {condition}",
-    "carrier": "{n}% the child is a healthy carrier",
-    "unaffected": "{n}% the child has no changed copy",
-    "same": "These chances are the same for every pregnancy. Earlier children don't change them.",
-    "sons": "For a son: {a}% affected, {u}% not affected.",
-    "daughters": "For a daughter: {a}% affected, {c}% a carrier, {u}% no changed copy.",
+    "need_details": "I can work out the chances for you. Just tell me the condition and whether each parent is a carrier, has the condition, or neither. For example: \"both parents are carriers of beta-thalassaemia\".",
+    "intro": "For each pregnancy, when {p1} and {p2}, here are the chances for {condition}:",
+    "intro_both": "For each pregnancy, when {both}, here are the chances for {condition}:",
+    "affected": "{n}% chance the baby has {condition}",
+    "carrier": "{n}% chance the baby is a healthy carrier",
+    "unaffected": "{n}% chance the baby doesn't carry it at all",
+    "same": "These chances start fresh with every pregnancy, a bit like flipping a coin. Earlier children don't change them.",
+    "sons": "For a son: {a}% chance he has it, {u}% chance he doesn't.",
+    "daughters": "For a daughter: {a}% chance she has it, {c}% chance she's a carrier, {u}% chance she doesn't carry it.",
     "xl_dom_note": "Because this condition is {pattern}, the chances in a real family depend on details a genetic counsellor checks. I've added a way to talk to one.",
     "complex": "{condition} is more complicated than most inherited conditions, because people have four copies of the alpha-globin genes. The chances depend on exactly which copies each parent has, so a genetic counsellor works them out from your full reports. I won't give a number that could be wrong.",
     "parent": {
       "carrier": "one parent is a carrier",
-      "affected": "one parent is affected",
-      "unaffected": "one parent has no changed copy"
+      "affected": "one parent has the condition",
+      "unaffected": "one parent doesn't carry it"
     },
     "both": {
       "carrier": "both parents are carriers",
-      "affected": "both parents are affected",
-      "unaffected": "neither parent has a changed copy"
+      "affected": "both parents have the condition",
+      "unaffected": "neither parent carries it"
     },
     "xl_mother": {
       "carrier": "the mother is a carrier",
-      "affected": "the mother is affected",
-      "unaffected": "the mother has no changed copy"
+      "affected": "the mother has the condition",
+      "unaffected": "the mother doesn't carry it"
     },
     "xl_father": {
-      "affected": "the father is affected",
-      "unaffected": "the father is not affected"
+      "affected": "the father has the condition",
+      "unaffected": "the father doesn't have it"
     },
     "pattern_names": {
       "autosomal_dominant": "dominant",
@@ -45,11 +45,11 @@
     }
   },
   "result": {
-    "off": "I can explain your own result if you turn on \"Use my result in this chat\" above the message box. I would then see only your condition and carrier status, never your raw data. For now, here's the general picture.",
+    "off": "I can explain your own result if you switch on \"Use my result in this chat\" above the message box. I'd only see your condition and carrier status, never your raw data. Meanwhile, here's the general picture.",
     "none": "I couldn't find a connected result on your account. You can connect one with your reference number from your report.",
     "flagged": "Your result needs a genetic counsellor to explain it. It includes a finding that an app can't explain safely, and a counsellor can look at your full situation. I've marked this as a priority request, and the chat stays open for general questions.",
-    "carrier": "Your result shows you are a healthy carrier of {condition}. You have one typical copy and one changed copy of the gene. Carriers are healthy, and this is not a diagnosis.",
-    "no_variant": "Your result shows no changed copy was found for {condition} in the genes that were tested.",
+    "carrier": "Your result shows you're a healthy carrier of {condition}. One of your two copies of the gene has a small change, and the other copy works normally. You're healthy, and this isn't a diagnosis.",
+    "no_variant": "Your result shows no gene change was found for {condition} in the genes that were tested.",
     "affected": "Your result shows two changed copies for {condition}. Your own care team is the right place for questions about your health. Here I can explain what it means for children.",
     "couple_both": "You and {partner} both carry a changed copy of the gene for {condition}.",
     "couple_one": "{partner}'s result shows no changed copy for {condition}.",
@@ -130,7 +130,7 @@
   "distress": "I'm really sorry you're going through this. What you're feeling matters, and you don't have to deal with it alone. I'll pause the genetics questions for now. If you'd like, I can connect you with a counsellor, and the people below can talk with you today.",
   "emergency": "This sounds like a medical emergency. Please call {number} now, or go to the nearest emergency department. I'll stop here so you can get help.",
   "injection": "I can't change how I work, share my instructions, or act as a doctor. I'm here to explain genetics and inheritance, and to connect you with a counsellor for anything about your own situation. What would you like to know?",
-  "off_topic": "I can only help with genetics, inheritance, screening and counselling. Is there something about those I can explain?",
+  "off_topic": "I'm here to help with genetics, family health, screening and counselling. Is there something in those I can explain for you?",
   "report": {
     "lead": "Here's your report, line by line:",
     "line_unknown": "Nothing to explain on this line.",
