@@ -797,6 +797,7 @@
       "never": "We never store",
       "neverBody": "Your raw genome or any relative’s test result.",
       "photos": "Photos of reports are processed by our AI provider to read them and are not stored by GeneBridge.",
+      "location": "Your location: never stored. \"Care near you\" uses your approximate location once to sort the list.",
       "download": "Download my data",
       "delete": "Delete my account",
       "cancel": "Cancel",

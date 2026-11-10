@@ -61,4 +61,10 @@ export type DashboardData = {
   exploring: { explorers: Figure; tested: Figure; testedPct: Figure };
   /** Task 12: reports scanned, and average seconds from upload to explanation. Hidden under 10 people. */
   scans: { scanned: Figure; people: Figure; avgSeconds: Figure };
+  /** Care near you: searches by distance to the nearest verified professional found. Hidden under 10 people per band. */
+  distance: DistanceRow[];
 };
+
+export const distanceBands = ['lt5', '5to10', '10to25', '25plus', 'none'] as const;
+export type DistanceBand = (typeof distanceBands)[number];
+export type DistanceRow = { band: DistanceBand; searches: Figure; people: Figure };

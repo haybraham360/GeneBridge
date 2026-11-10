@@ -132,5 +132,14 @@ function reportRows(data: DashboardData, filters: Filters, t: T, synthetic: bool
     );
   }
 
+  const distance = c('distance.title');
+  for (const row of data.distance) {
+    const group = t(`distance.bands.${row.band}`);
+    rows.push(
+      [distance, c('distance.searches'), group, v(row.searches), '', c('csv.unitCount'), ''],
+      [distance, c('distance.people'), group, v(row.people), '', c('csv.unitCount'), ''],
+    );
+  }
+
   return rows;
 }

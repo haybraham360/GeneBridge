@@ -7,6 +7,7 @@ import { AcceptingToggle } from '../components/AcceptingToggle';
 import { PageHeader } from '../components/PageHeader';
 import { SettingsForm } from './SettingsForm';
 import { CalendarConnection } from './CalendarConnection';
+import { PracticeLocations, type PracticeLocation } from './PracticeLocations';
 import { googleConfigured } from '@/lib/calendar/google';
 import { loadProBookingContext } from '@/lib/booking/pro';
 
@@ -27,10 +28,26 @@ export default async function SettingsPage({ params, searchParams }: PageProps<'
     getTranslations({ locale, namespace: 'verify.settings' }),
     getTranslations({ locale, namespace: 'proOnboarding.labels' }),
   ]);
-  const [{ data }, calendarCtx] = await Promise.all([
+  const [{ data }, calendarCtx, places] = await Promise.all([
     supabase.from('profiles').select('locale').eq('user_id', userId).maybeSingle(),
     loadProBookingContext(supabase, userId),
+    supabase
+      .from('practice_locations')
+      .select('id, label, address_en, address_ar, area_id, country_code, lat, lng, show_on_map')
+      .eq('user_id', userId)
+      .order('created_at'),
   ]);
+  const locations: PracticeLocation[] = (places.data ?? []).map((l) => ({
+    id: l.id,
+    label: l.label,
+    addressEn: l.address_en,
+    addressAr: l.address_ar,
+    areaId: l.area_id,
+    countryCode: l.country_code,
+    lat: l.lat,
+    lng: l.lng,
+    showOnMap: l.show_on_map,
+  }));
   const calendarStatuses = ['connected', 'cancelled', 'error', 'not_configured', 'disconnected'] as const;
   const calendarStatus = calendarStatuses.find((s) => s === calendar) ?? null;
 
@@ -54,6 +71,7 @@ export default async function SettingsPage({ params, searchParams }: PageProps<'
           {profile.licenceExpiry ? <p className="text-muted">{t('expires', { date: new Date(profile.licenceExpiry) })}</p> : null}
         </section>
       ) : null}
+      <PracticeLocations locations={locations} visible={verified && profile.acceptingPatients} />
       <SettingsForm language={data?.locale === 'en' ? 'en' : 'ar'} notifyEmail={profile.notifyEmail} />
       <CalendarConnection configured={googleConfigured()} connected={calendarCtx.googleConnected} email={calendarCtx.googleEmail} status={calendarStatus} />
     </>

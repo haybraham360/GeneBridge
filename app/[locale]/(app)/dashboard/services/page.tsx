@@ -1,9 +1,11 @@
 import type { Metadata } from 'next';
-import { Info } from 'lucide-react';
+import { Info, MapPin } from 'lucide-react';
 import { hasLocale } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { ServicesList } from '@/components/services/ServicesList';
+import { buttonClasses } from '@/components/ui/Button';
+import { Link } from '@/i18n/navigation';
 import { serviceTypes, type ServiceItem, type ServiceType } from '@/lib/services/types';
 import { routing } from '@/i18n/routing';
 import { createClient } from '@/lib/supabase/server';
@@ -36,6 +38,7 @@ export default async function ServicesPage({ params, searchParams }: PageProps<'
   setRequestLocale(locale);
   const { type } = await searchParams;
   const t = await getTranslations({ locale, namespace: 'services' });
+  const tn = await getTranslations({ locale, namespace: 'nearby' });
 
   const supabase = await createClient();
   const full = await supabase
@@ -63,6 +66,10 @@ export default async function ServicesPage({ params, searchParams }: PageProps<'
       <header className="flex flex-col gap-2">
         <h1 className="text-[32px] leading-tight font-extrabold tracking-[-0.02em]">{t('title')}</h1>
         <p className="text-[15px] text-muted">{t('subtitle')}</p>
+        <Link href="/dashboard/nearby?from=services" aria-label={tn('entryAria')} className={buttonClasses('ghost', 'sm', 'mt-2 self-start')} data-testid="nearby-entry">
+          <MapPin aria-hidden="true" className="size-4" strokeWidth={2} />
+          {tn('entry')}
+        </Link>
       </header>
       <p className="mt-6 flex items-start gap-3 rounded-card bg-brand-tint-soft px-5 py-4 text-[15px]">
         <Info aria-hidden="true" className="mt-0.5 size-5 flex-none text-brand-text" strokeWidth={2} />

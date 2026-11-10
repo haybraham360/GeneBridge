@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Check, Info } from "lucide-react";
+import { Check, Info, MapPin } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { logDirectoryViewed } from "@/app/[locale]/(app)/dashboard/counsellor/actions";
@@ -43,6 +43,7 @@ export default function CounsellorPage({ entries, bookings, cutoffHours, offers,
   const t = useTranslations("dashboard.counsellor");
   const td = useTranslations("directory");
   const tb = useTranslations("booking");
+  const tn = useTranslations("nearby");
   const [selectedId, setSelectedId] = useState<string | null>(
     entries.find((e) => e.userId === initialProfessionalId)?.userId ?? entries[0]?.userId ?? null,
   );
@@ -80,10 +81,21 @@ export default function CounsellorPage({ entries, bookings, cutoffHours, offers,
 
         <div className="grid items-start gap-6 lg:grid-cols-[1.2fr_1fr]">
           <div className="flex flex-col gap-5">
-            <h2 className="text-[20px] font-extrabold leading-none text-ink">
-              {td("choose")}
-              {entries.length ? <span className="ms-2 text-[13px] font-semibold text-neutral-500">{td("count", { count: entries.length })}</span> : null}
-            </h2>
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h2 className="text-[20px] font-extrabold leading-none text-ink">
+                {td("choose")}
+                {entries.length ? <span className="ms-2 text-[13px] font-semibold text-neutral-500">{td("count", { count: entries.length })}</span> : null}
+              </h2>
+              <Link
+                href="/dashboard/nearby?from=directory"
+                aria-label={tn("entryAria")}
+                className="inline-flex h-10 items-center gap-1.5 rounded-full border border-neutral-300 bg-white px-4 text-[13px] font-bold text-ink no-underline hover:bg-brand/5"
+                data-testid="nearby-entry"
+              >
+                <MapPin aria-hidden className="size-4" strokeWidth={2} />
+                {tn("entry")}
+              </Link>
+            </div>
 
             <DirectoryList
               entries={entries}

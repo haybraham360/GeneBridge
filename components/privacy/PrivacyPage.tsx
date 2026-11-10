@@ -209,6 +209,8 @@ export default function PrivacyPage({
                 <p className="mt-1.5 text-[12px] leading-4.5 text-neutral-500">{t("data.neverBody")}</p>
                 {/* Task 12: photographed reports. */}
                 <p className="mt-1.5 text-[12px] leading-4.5 text-neutral-500">{t("data.photos")}</p>
+                {/* Care near you: location is used once, never stored. */}
+                <p className="mt-1.5 text-[12px] leading-4.5 text-neutral-500">{t("data.location")}</p>
               </div>
             </div>
 

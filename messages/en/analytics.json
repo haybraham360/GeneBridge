@@ -179,5 +179,21 @@
     "avg": "Average time to explanation",
     "seconds": "{count, plural, one {# second} other {# seconds}}",
     "how": "Counts of scan_completed events: how many reports were read, by how many people, and the average seconds from upload to the findings being ready to check. No report content is logged. Groups under 10 people are hidden."
+  },
+  "distance": {
+    "title": "Distance to care",
+    "subtitle": "How far the nearest verified professional was when people searched \"Care near you\"",
+    "band": "Nearest professional",
+    "searches": "Searches",
+    "people": "People",
+    "share": "Share of searches",
+    "bands": {
+      "lt5": "Under 5 km",
+      "5to10": "5 to 10 km",
+      "10to25": "10 to 25 km",
+      "25plus": "25 km or more",
+      "none": "None within the search distance"
+    },
+    "how": "Counts of nearby_location_method events. Each holds only the search method, the distance chosen and a distance band for the nearest verified professional found, never a location or area. Long distances and \"none\" show where in-person care is hard to reach. Bands with fewer than 10 people are hidden."
   }
 }

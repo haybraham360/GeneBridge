@@ -2,10 +2,12 @@ import 'server-only';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { rangeDays } from './filters';
 import {
+  distanceBands,
   equityLanguages,
   funnelSteps,
   learningModes,
   type DashboardData,
+  type DistanceBand,
   type EquityLanguage,
   type Figure,
   type Filters,
@@ -64,7 +66,7 @@ export async function loadDashboard(
 ): Promise<DashboardData> {
   const args = { p_days: rangeDays(filters.range), p_centre: filters.centre };
 
-  const [kpis, funnel, modes, equity, exploring, scans] = await Promise.all([
+  const [kpis, funnel, modes, equity, exploring, scans, distance] = await Promise.all([
     supabase.rpc('analytics_kpis', args),
     supabase.rpc('analytics_funnel', args),
     supabase.rpc('analytics_learning_modes', args),
@@ -72,6 +74,8 @@ export async function loadDashboard(
     supabase.rpc('analytics_exploring_to_tested', args),
     // Task 12. Fails softly like "exploring to tested".
     supabase.rpc('analytics_scans', args),
+    // Care near you. Fails softly too.
+    supabase.rpc('analytics_distance_to_care', args),
   ]);
   // Function names only: error details could echo arguments.
   // "Exploring to tested" (task 11) fails softly: its figures show as hidden
@@ -93,6 +97,7 @@ export async function loadDashboard(
 
   const all = equityRows.find((r) => r.language === 'all');
   const scansRow = ((scans.error ? [] : (scans.data ?? [])) as { scanned: unknown; people: unknown; avg_seconds: unknown }[])[0];
+  const distanceRows = (distance.error ? [] : (distance.data ?? [])) as { band: string; searches: unknown; people: unknown }[];
   const exploringRow = ((exploring.error ? [] : (exploring.data ?? [])) as { explorers: unknown; tested: unknown; tested_pct: unknown }[])[0];
 
   return {
@@ -129,6 +134,10 @@ export async function loadDashboard(
       people: figure(scansRow?.people),
       avgSeconds: figure(scansRow?.avg_seconds),
     },
+    distance: distanceBands.map((band: DistanceBand) => {
+      const row = distanceRows.find((r) => r.band === band);
+      return { band, searches: figure(row?.searches), people: figure(row?.people) };
+    }),
   };
 }
 

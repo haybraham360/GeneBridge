@@ -137,6 +137,7 @@ Follow the design in `design/` exactly (screenshots for layout, `design/screens/
 | `/pro/sessions`, `/pro/calendar`, `/pro/availability` | Bookings | Requests to confirm, today's sessions, next 14 days, weekly hours and exceptions (task 15) |
 | `/admin/demo-data`, `/admin/reports` | Admin | Remove demo data; review reported messages, one message at a time, audited (task 15) |
 | `/trust` | Trust & safety | Verified professionals, private chats, neutral calendar events, telehealth compliance note |
+| `/dashboard/nearby` | Care near you | Verified professionals and services near the person's approximate location or a searched place, anywhere in the world; list first, optional map; location never stored (`docs/nearby-care.md`) |
 
 Every app screen has: a side menu (stacks on mobile), a page title and subtitle, a Listen button (audio), and a language switch.
 
@@ -195,6 +196,9 @@ notifications    (id, user_id, kind, booking_id, conversation_id, request_id, cr
                  -- | booking_cancelled | booking_reminder | request_offer ; text built in the app, never message content
 calendar_connections(user_id, provider, encrypted_refresh_token, google_email, connected_at)
                  -- provider: google ; owner reads google_email and connected_at only; the token never reaches the browser
+practice_locations(id, user_id, label, address_en, address_ar, area_id, emirate, lat, lng, show_on_map)
+                 -- where a professional sees patients in person; owner-only, read by others only through
+                 -- nearby_professionals() (bookable professionals only). Patients have no location column.
 referrals        (id, user_id, step, status, updated_at)
                  -- step: screening | counselling_booked | counselling_attended | confirmatory_test | specialist
 events           (id, user_id, name, props jsonb, created_at)            -- powers analytics
