@@ -37,7 +37,9 @@
     "share": "Share my family map with this chat",
     "shared": "Family map shared for this chat",
     "hint": "Only relations and statuses are shared, never names. For this conversation only.",
-    "stop": "Stop sharing"
+    "stop": "Stop sharing",
+    "explainStarter": "Explain my family map in simple words. What might it mean for my family?",
+    "explaining": "Reading your family map…"
   },
   "attach": "Photograph or upload a report",
   "scanContext": {

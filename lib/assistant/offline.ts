@@ -267,6 +267,7 @@ function decisionAnswer(ctx: ToolContext, input: RespondInput): Draft {
 function familyAnswer(ctx: ToolContext, input: RespondInput): Draft {
   const t = replies[input.locale].family;
   const family = input.family;
+  if (!family && input.familyShared) return draft(2, t.no_condition, t.not_diagnosis);
   if (!family) {
     const entry = findCondition(input.message, input.locale);
     const d = entry ? generalAnswer(ctx, input, [entry]) : draft(1);
@@ -281,16 +282,19 @@ function familyAnswer(ctx: ToolContext, input: RespondInput): Draft {
   const relatives = relativesToConsider(family).map(
     (m) => t.relations[m.relation as keyof typeof t.relations] ?? m.relation,
   );
-  const d = draft(2, fill(t.lead, { condition: entry ? inline(entry.title, input.locale) : family.condition, sides }));
+  // Short, labelled steps in everyday words: what the map shows, how it
+  // passes down, who might want a test, and that it isn't a diagnosis.
+  const condition = entry ? inline(entry.title, input.locale) : family.condition;
+  const d = draft(2, t.intro, sides ? fill(t.lead, { condition, sides }) : fill(t.lead_unsure, { condition }));
   if (family.pattern === 'autosomal_recessive') {
-    d.paragraphs.push(t.pattern_recessive);
+    d.paragraphs.push(`${t.picture} ${t.pattern_recessive}`);
   } else {
     d.paragraphs.push(fill(t.pattern_other, { pattern: replies[input.locale].risk.pattern_names[family.pattern] }));
     addEscalation(ctx, 'x_linked_or_dominant', 'priority');
   }
   if (relatives.length) d.paragraphs.push(fill(t.consider, { relatives: relatives.join(input.locale === 'ar' ? '، ' : ', ') }));
   if (family.cousinUnion) d.paragraphs.push(t.cousin);
-  d.paragraphs.push(t.offer);
+  d.paragraphs.push(t.not_diagnosis, t.offer);
   d.actions.push('draft_family_message');
   return d;
 }

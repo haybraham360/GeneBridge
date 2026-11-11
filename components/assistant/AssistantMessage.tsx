@@ -40,7 +40,13 @@ function postEvent(body: Record<string, unknown>) {
   }).catch(() => {});
 }
 
-/** Plain text with paragraphs and "•" bullet lines. */
+/** Renders **bold** spans (step labels); everything else stays plain text. */
+function Inline({ text }: { text: string }) {
+  const parts = text.split(/\*\*(.+?)\*\*/g);
+  return <>{parts.map((part, i) => (i % 2 ? <strong key={i} className="font-bold">{part}</strong> : part))}</>;
+}
+
+/** Plain text with paragraphs, "•" bullet lines and **bold** labels. */
 function Body({ text }: { text: string }) {
   return (
     <div className="flex flex-col gap-2.5">
@@ -51,7 +57,7 @@ function Body({ text }: { text: string }) {
             <ul key={i} className="flex flex-col gap-1.5 ps-1">
               {para.split(/\n(?=•)/).map((item, j) => (
                 <li key={j} className="whitespace-pre-line">
-                  {item.replace(/^•\s*/, '• ')}
+                  <Inline text={item.replace(/^•\s*/, '• ')} />
                 </li>
               ))}
             </ul>
@@ -59,7 +65,7 @@ function Body({ text }: { text: string }) {
         }
         return (
           <p key={i} className="whitespace-pre-line">
-            {para}
+            <Inline text={para} />
           </p>
         );
       })}
@@ -143,7 +149,7 @@ export function AssistantMessage({
         )}
       >
         <span className="sr-only">{t('assistant')}: </span>
-        {message.streaming ? <div aria-hidden="true">{message.text}</div> : <Body text={message.text} />}
+        {message.streaming ? <div aria-hidden="true" className="whitespace-pre-line">{message.text.replace(/\*\*/g, '')}</div> : <Body text={message.text} />}
       </div>
 
       {meta && !message.streaming ? (
@@ -227,7 +233,7 @@ export function AssistantMessage({
                     return;
                   }
                   setSpeaking(true);
-                  stopRef.current = speak(message.text.replace(/•/g, ''), locale, { onEnd: () => setSpeaking(false) });
+                  stopRef.current = speak(message.text.replace(/•|\*\*/g, ''), locale, { onEnd: () => setSpeaking(false) });
                 }}
               />
               <span className="ms-auto flex items-center gap-1">

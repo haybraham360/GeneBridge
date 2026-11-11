@@ -101,6 +101,7 @@ export async function claudeReply(input: RespondInput, ctx: ToolContext, categor
   const entries = findEntries(input.message, input.locale, 3);
   const shared: string[] = [];
   if (input.family) shared.push(`<family_map>${JSON.stringify(input.family)}</family_map>`);
+  else if (input.familyShared) shared.push('<family_map>{"note":"shared, but no condition from the library is marked on it yet"}</family_map>');
   if (input.reportText) shared.push(`<report>${input.reportText}</report>`);
 
   const userContent = [

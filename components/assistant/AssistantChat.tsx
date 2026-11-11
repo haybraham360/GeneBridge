@@ -57,7 +57,10 @@ export function AssistantChat({
   canUseFollowed?: boolean;
   /** Asked once on arrival, e.g. a suggested question from the exploring Home (?q=). */
   initialQuestion?: string;
-  /** Arrived from the family map's "Ask GeneBridge" (?family=1): "Use my family map" starts on. */
+  /**
+   * Arrived from the family map's "Ask GeneBridge" (?family=1): "Use my family
+   * map" starts on, and GeneBridge explains the map straight away in simple words.
+   */
   initialShareFamily?: boolean;
 }) {
   const t = useTranslations('assistant');
@@ -70,6 +73,9 @@ export function AssistantChat({
   const [shareFamily, setShareFamily] = useState(false);
   const [useFollowed, setUseFollowed] = useState(false);
   const askedInitial = useRef(false);
+  /** This session's earlier conversation has loaded (or there was none), so a first question can't be overwritten. */
+  const [restored, setRestored] = useState(false);
+  const [explainingFamily, setExplainingFamily] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
   /** A report summary from the scan flow (task 12), for this browser session only. */
   const [scanContext, setScanContext] = useState<string | null>(null);
@@ -92,7 +98,10 @@ export function AssistantChat({
     setShareFamily(initialShareFamily || session(KEYS.family) === '1');
     setUseFollowed(session(KEYS.followed) === '1');
     setScanContext(session(SCAN_CONTEXT_KEY));
-    if (!id) return;
+    if (!id) {
+      setRestored(true);
+      return;
+    }
     conversationRef.current = id;
     fetch(`/api/assistant/conversation?id=${encodeURIComponent(id)}`)
       .then((r) => (r.ok ? r.json() : { messages: [] }))
@@ -106,7 +115,8 @@ export function AssistantChat({
           })),
         );
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setRestored(true));
   }, [initialShareFamily]);
 
   useEffect(() => {
@@ -190,12 +200,30 @@ export function AssistantChat({
   );
 
   // A suggested question from another page (?q=) is asked once, on arrival.
+  // From the family map (?family=1), GeneBridge is asked to explain the map.
   useEffect(() => {
+    if (!restored || askedInitial.current) return;
     const q = initialQuestion?.trim();
-    if (!q || askedInitial.current) return;
+    if (q) {
+      askedInitial.current = true;
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- asks one question on arrival, once the earlier conversation has loaded
+      void send({ message: q, display: q, mode: 'normal' });
+      return;
+    }
+    if (!initialShareFamily || !shareFamily) return;
     askedInitial.current = true;
-    void send({ message: q, display: q, mode: 'normal' });
-  }, [initialQuestion, send]);
+    // A refresh shouldn't ask again: drop ?family=1 from the address.
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.delete('family');
+      window.history.replaceState(window.history.state, '', url);
+    } catch {
+      // Harmless if it stays.
+    }
+    const starter = t('family.explainStarter');
+    setExplainingFamily(true);
+    void send({ message: starter, display: starter, mode: 'normal' }).finally(() => setExplainingFamily(false));
+  }, [restored, initialQuestion, initialShareFamily, shareFamily, send, t]);
 
   function submit(e?: React.FormEvent) {
     e?.preventDefault();
@@ -307,7 +335,7 @@ export function AssistantChat({
                 <span key={d} className="size-1.5 rounded-full bg-muted motion-safe:animate-pulse" style={{ animationDelay: `${d * 150}ms` }} />
               ))}
             </span>
-            {t('typing')}
+            {explainingFamily ? t('family.explaining') : t('typing')}
           </p>
         ) : null}
       </div>
@@ -393,7 +421,7 @@ export function AssistantChat({
               type="button"
               aria-pressed={shareFamily}
               onClick={() => toggleFamily(!shareFamily)}
-              className={cn(chipClasses, shareFamily && 'border-ink bg-ink text-white hover:bg-ink')}
+              className={shareFamily ? chipOnClasses : chipClasses}
             >
               <Network aria-hidden="true" className="size-4" />
               {shareFamily ? t('family.shared') : t('family.share')}
@@ -507,8 +535,10 @@ export function AssistantChat({
   );
 }
 
-const chipClasses =
-  'inline-flex min-h-11 cursor-pointer items-center gap-1.5 rounded-full border border-line-strong bg-surface px-3.5 text-[13px] font-semibold hover:bg-brand-tint-soft';
+const chipBase = 'inline-flex min-h-11 cursor-pointer items-center gap-1.5 rounded-full border px-3.5 text-[13px] font-semibold';
+const chipClasses = `${chipBase} border-line-strong bg-surface hover:bg-brand-tint-soft`;
+/** `cn` only joins classes, so the "on" chip gets its own colours rather than overriding chipClasses. */
+const chipOnClasses = `${chipBase} border-ink bg-ink text-white`;
 
 function ReportForm({
   aiEnabled,

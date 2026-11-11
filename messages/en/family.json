@@ -32,6 +32,29 @@
     "reading": "Reading your description…",
     "placing": "Placing {count, plural, one {# person} other {# people}}…"
   },
+  "guide": {
+    "title": "Where you are",
+    "stepOf": "Step {current} of {total}",
+    "steps": {
+      "describe": "Describe",
+      "draw": "Draw",
+      "check": "Check",
+      "understand": "Understand"
+    },
+    "now": {
+      "describe": "Tell us who is in your family. Type or speak in the “Describe your family” box.",
+      "draw": "GeneBridge is drawing your family. Watch new people appear on the map.",
+      "check": "New people have an orange dashed border. Check them, then keep them or undo.",
+      "understand": "Your map is saved. GeneBridge can explain what it might mean for your family, in simple words."
+    },
+    "action": {
+      "describe": "Start describing",
+      "check": "Go to the changes",
+      "understand": "Explain my map"
+    },
+    "done": "done",
+    "current": "current step"
+  },
   "review": {
     "title": "Proposed changes",
     "summary": "{people, plural, =0 {No new people} one {Added # person} other {Added # people}}{conditions, plural, =0 {} one { and # condition} other { and # conditions}}.",
@@ -83,7 +106,10 @@
     "history": "Edit history",
     "undo": "Undo last change",
     "redo": "Redo",
-    "panHint": "Drag to move around. Use the buttons to zoom."
+    "panHint": "Drag to move around. Use the buttons to zoom.",
+    "drawingTitle": "Drawing your family…",
+    "empty": "Your family will appear here as you describe it.",
+    "emptyAction": "Describe your family"
   },
   "list": {
     "title": "Your family as a list",
@@ -159,7 +185,8 @@
   },
   "ask": {
     "prompt": "Want to understand what this might mean for your family?",
-    "cta": "Ask GeneBridge"
+    "cta": "Ask GeneBridge",
+    "body": "GeneBridge reads your map (relations and conditions only, never names) and explains it step by step, in everyday words."
   },
   "status": {
     "loadError": "We couldn't load your family map. Please try again shortly."

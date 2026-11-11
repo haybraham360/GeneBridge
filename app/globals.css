@@ -138,6 +138,58 @@
   }
 
   /*
+   * Family map: guidance motion. "attention" rings the next thing to look at
+   * a few times, then stops; "dash-flow" marches proposed (dashed) lines so
+   * the eye follows what is being drawn; "shimmer" sweeps the drawing bar.
+   */
+  --animate-attention: attention 1.2s ease-out 3;
+  --animate-dash-flow: dash-flow 900ms linear infinite;
+  --animate-shimmer: shimmer 1.6s ease-in-out infinite;
+  --animate-node-in: node-in 480ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+
+  @keyframes attention {
+    0% {
+      box-shadow: 0 0 0 0 rgba(255, 90, 31, 0.45);
+    }
+    70% {
+      box-shadow: 0 0 0 14px rgba(255, 90, 31, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(255, 90, 31, 0);
+    }
+  }
+
+  @keyframes dash-flow {
+    to {
+      stroke-dashoffset: -20;
+    }
+  }
+
+  @keyframes shimmer {
+    0% {
+      translate: -100% 0;
+    }
+    100% {
+      translate: 250% 0;
+    }
+  }
+
+  @keyframes node-in {
+    0% {
+      opacity: 0;
+      scale: 0.7;
+    }
+    60% {
+      opacity: 1;
+      scale: 1.06;
+    }
+    100% {
+      opacity: 1;
+      scale: 1;
+    }
+  }
+
+  /*
    * Counsellor workspace: queue cards fade in (new requests too), and the
    * request detail cross-fades when another request is opened.
    */

@@ -11,7 +11,7 @@
  *   - The family map never shows risk numbers: that stays in the couple
  *     view, the simulator and Ask GeneBridge.
  */
-import { Calendar, Check, Lock, Redo2, Sparkles, Undo2, X } from 'lucide-react';
+import { ArrowRight, Calendar, Check, Lock, Redo2, Sparkles, Undo2, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '@/components/ui/Button';
@@ -39,6 +39,7 @@ import {
   type NotifyPayload,
   type NotifyResult,
 } from './FamilyDialogs';
+import { FamilyGuide, type GuideStep } from './FamilyGuide';
 import { FamilyList } from './FamilyList';
 import { FamilyTree } from './FamilyTree';
 import { QuestionCard, type ShownQuestion } from './QuestionCard';
@@ -63,6 +64,28 @@ type StoredQuestion = Question & { values?: string[] };
 type DialogKind = 'add' | 'edit' | 'share' | 'notify' | null;
 
 const PRIVATE_NOTE_KEY = 'gb_family_private_note';
+/** Opens Ask GeneBridge with the map shared; it explains the map straight away. */
+const ASK_HREF = '/dashboard/assistant?family=1';
+
+/** Where the eye is pointed next. */
+type Attention = 'describe' | 'review' | 'ask' | 'selected' | null;
+
+const prefersReducedMotion = () => {
+  try {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  } catch {
+    return false;
+  }
+};
+
+/** Brings an element into view if it isn't already, gently unless motion is reduced. */
+function bringIntoView(id: string) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const r = el.getBoundingClientRect();
+  const visible = r.top >= 0 && (r.bottom <= window.innerHeight || r.top < window.innerHeight * 0.4);
+  if (!visible) el.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'center' });
+}
 const VIEW_KEY = 'gb_family_view';
 
 const uuid = () => crypto.randomUUID();
@@ -105,6 +128,7 @@ export default function FamilyMap({ initialTree, catalogue, selfName, onSave, on
   const [devLinks, setDevLinks] = useState<string[]>([]);
   const [showPrivate, setShowPrivate] = useState(false);
   const [hydrated, setHydrated] = useState(false);
+  const [attention, setAttention] = useState<Attention>(null);
 
   // Names stay in the browser: name ↔ [PERSON_n], and which member carries which token.
   const names = useRef<NameMap>(newNameMap());
@@ -134,6 +158,22 @@ export default function FamilyMap({ initialTree, catalogue, selfName, onSave, on
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // The ring around "look here" plays a few times, then stops.
+  useEffect(() => {
+    if (!attention) return;
+    const timer = window.setTimeout(() => setAttention(null), 3800);
+    return () => window.clearTimeout(timer);
+  }, [attention]);
+
+  /** Points the person at the next place to look: scrolls it into view and rings it. */
+  const lookAt = useCallback((id: string, ring: Attention) => {
+    // After this render, so a card that is just appearing exists.
+    window.requestAnimationFrame(() => {
+      bringIntoView(id);
+      setAttention(ring);
+    });
+  }, []);
+
   useEffect(() => {
     if (!toast) return;
     const timer = window.setTimeout(() => setToast(null), 2800);
@@ -151,6 +191,32 @@ export default function FamilyMap({ initialTree, catalogue, selfName, onSave, on
 
   const byId = memberMap(working);
   const selected = (selectedId && byId.get(selectedId)) || working.members.find((m) => m.isOwner) || null;
+  const savedPeople = base.members.filter((m) => !m.isOwner && !m.placeholder);
+
+  /* ------------------------------ Where you are ------------------------------ */
+
+  const step: GuideStep = busy ? 'draw' : pending ? 'check' : savedPeople.length > 0 ? 'understand' : 'describe';
+  const lastStep = useRef<GuideStep>(step);
+  useEffect(() => {
+    const from = lastStep.current;
+    lastStep.current = step;
+    if (from === step) return;
+    // Follow the work: the tree while drawing, the changes to check, then the explanation.
+    if (step === 'draw') lookAt('family-tree-card', null);
+    else if (step === 'check') lookAt('family-review', 'review');
+    else if (step === 'understand') lookAt('family-ask', 'ask');
+  }, [step, lookAt]);
+
+  const startDescribing = () => {
+    lookAt('family-describe', 'describe');
+    window.setTimeout(() => document.querySelector<HTMLTextAreaElement>('#family-describe textarea')?.focus({ preventScroll: true }), 350);
+  };
+
+  const selectPerson = (id: string) => {
+    setSelectedId(id);
+    // On phones the details card sits below the map: show it.
+    if (window.matchMedia('(max-width: 1023px)').matches) lookAt('family-selected', 'selected');
+  };
 
   /* --------------------------------- Saving -------------------------------- */
 
@@ -470,7 +536,6 @@ export default function FamilyMap({ initialTree, catalogue, selfName, onSave, on
 
   /* --------------------------------- Render --------------------------------- */
 
-  const savedPeople = base.members.filter((m) => !m.isOwner && !m.placeholder);
   const generations = new Set(working.members.map((m) => m.generation)).size;
   const flaggedCount = base.members.filter((m) => ['known', 'carrier'].includes(markerFor(base, m.id))).length;
   const relatives = savedPeople.map((m) => ({ id: m.id, name: display.name(m), marker: markerFor(base, m.id) }));
@@ -508,13 +573,15 @@ export default function FamilyMap({ initialTree, catalogue, selfName, onSave, on
         <p>{tm.rich(shared ? 'banner.shared' : 'banner.private', { b: (c) => <strong>{c}</strong> })}</p>
       </div>
 
+      <FamilyGuide step={step} onDescribe={startDescribing} onCheck={() => lookAt('family-review', 'review')} askHref={ASK_HREF} />
+
       <div className="mt-5 grid grid-cols-1 items-start gap-4 lg:grid-cols-[minmax(0,1fr)_340px]">
         <div className="lg:col-start-2 lg:row-start-1">
-          <DescribePanel busy={busy} progress={progress} error={describeError} showPrivate={showPrivate} onSubmit={(text, input) => runTurn(text, input, 'describe')} />
+          <DescribePanel busy={busy} progress={progress} error={describeError} showPrivate={showPrivate} highlight={attention === 'describe'} onSubmit={(text, input) => runTurn(text, input, 'describe')} />
         </div>
 
         <div className="min-w-0 space-y-4 lg:col-start-1 lg:row-span-6 lg:row-start-1">
-          <section aria-labelledby="family-title" className={cn(cardClasses, 'p-5')}>
+          <section id="family-tree-card" aria-labelledby="family-title" className={cn(cardClasses, 'scroll-mt-24 p-5')}>
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <h2 id="family-title" className="text-base font-extrabold tracking-[-0.02em]">
@@ -549,9 +616,18 @@ export default function FamilyMap({ initialTree, catalogue, selfName, onSave, on
             </div>
             <div className="mt-4">
               {view === 'tree' ? (
-                <FamilyTree tree={working} proposed={proposed} selectedId={selected?.id ?? null} onSelect={setSelectedId} display={display} rtl={rtl} />
+                <FamilyTree
+                  tree={working}
+                  proposed={proposed}
+                  selectedId={selected?.id ?? null}
+                  onSelect={selectPerson}
+                  display={display}
+                  rtl={rtl}
+                  drawing={busy ? progress ?? t('progress.reading') : null}
+                  onStartDescribing={startDescribing}
+                />
               ) : (
-                <FamilyList tree={working} proposed={proposed} selectedId={selected?.id ?? null} onSelect={setSelectedId} display={display} />
+                <FamilyList tree={working} proposed={proposed} selectedId={selected?.id ?? null} onSelect={selectPerson} display={display} />
               )}
             </div>
             {pending && !busy ? (
@@ -559,6 +635,7 @@ export default function FamilyMap({ initialTree, catalogue, selfName, onSave, on
                 counts={counts}
                 saving={saving}
                 error={saveError}
+                highlight={attention === 'review'}
                 onKeepAll={keepAll}
                 onStartReview={() => setReviewing(true)}
                 onUndo={undoProposals}
@@ -586,17 +663,36 @@ export default function FamilyMap({ initialTree, catalogue, selfName, onSave, on
           <QuestionCard questions={shownQuestions} busy={busy} onAnswer={answer} />
 
           {!pending && savedPeople.length > 0 ? (
-            <div className={cn(cardClasses, 'flex flex-wrap items-center gap-3 p-4')} data-testid="family-ask">
-              <Sparkles className="size-5 shrink-0 text-brand-text" aria-hidden />
-              <p className="min-w-0 flex-1 text-sm font-semibold">{t('ask.prompt')}</p>
-              <Button href="/dashboard/assistant?family=1" size="sm" variant="dark">
+            <div
+              id="family-ask"
+              className={cn(
+                // Tinted card: its own background and border (cn only joins classes).
+                'flex scroll-mt-24 flex-wrap items-center gap-4 rounded-card border border-brand-ring bg-brand-tint-soft p-5 shadow-card',
+                attention === 'ask' ? 'motion-safe:animate-attention' : 'motion-safe:animate-card-in',
+              )}
+              data-testid="family-ask"
+            >
+              <span aria-hidden className="grid size-11 shrink-0 place-items-center rounded-full bg-brand text-ink">
+                <Sparkles className="size-5" />
+              </span>
+              <div className="min-w-0 flex-1 basis-56">
+                <p className="text-[15px] font-extrabold tracking-[-0.02em]">{t('ask.prompt')}</p>
+                <p className="mt-1 text-[12.5px] leading-relaxed text-muted">{t('ask.body')}</p>
+              </div>
+              <Button href={ASK_HREF} size="sm" variant="dark">
                 {t('ask.cta')}
+                <ArrowRight className="size-4 rtl:-scale-x-100" aria-hidden />
               </Button>
             </div>
           ) : null}
         </div>
 
-        <section aria-label={tm('selected.aria')} aria-live="polite" className={cn(cardClasses, 'p-5 lg:col-start-2')}>
+        <section
+          id="family-selected"
+          aria-label={tm('selected.aria')}
+          aria-live="polite"
+          className={cn(cardClasses, 'scroll-mt-24 p-5 lg:col-start-2', attention === 'selected' && 'motion-safe:animate-attention')}
+        >
           <p className="text-[10px] font-semibold tracking-wide text-muted uppercase">{tm('selected.label')}</p>
           {selected ? (
             <>

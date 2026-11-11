@@ -77,18 +77,23 @@
     "no_numbers": "I won't give chances for this pregnancy here; the counsellor will go through them with you."
   },
   "family": {
-    "lead": "From the family map you shared, {condition} is seen on {sides}.",
-    "pattern_recessive": "Because it is inherited in a recessive way, other relatives on that side may also be carriers, even if they are healthy.",
-    "pattern_other": "Because it is {pattern}, relatives on that side may be affected differently. A genetic counsellor should go through your family with you; I've marked this as a priority request.",
-    "consider": "People who may want to consider testing, if they choose: {relatives}. It's their decision, and they never need to know your result.",
-    "cousin": "Your map shows a marriage between relatives. That raises the chance of a recessive condition mainly when both partners carry the same change, which screening can show.",
+    "intro": "Here is your family map in simple words.",
+    "lead": "**What your map shows:** {condition} is marked on {sides}.",
+    "lead_unsure": "**What your map shows:** {condition} is marked as “not sure” for some relatives.",
+    "picture": "**How it passes down:** think of genes as a recipe book with two copies of every recipe, one from each parent. A carrier has one copy with a small typo. The other copy still works, so they stay healthy, but they can pass the typo on.",
+    "pattern_recessive": "Because it passes down this way, other relatives on that side may also be carriers, even if they are healthy.",
+    "pattern_other": "Because it is {pattern}, relatives on that side may be affected differently. A genetic counsellor can go through your family with you; I've marked this as a priority request.",
+    "consider": "**Who might want a test:** {relatives}, if they choose. It's their decision, and they never need to know your result.",
+    "cousin": "**Marriage between relatives:** your map shows one. That raises the chance of a recessive condition mainly when both partners carry the same change, which screening can show.",
+    "not_diagnosis": "**Good to know:** a family map isn't a diagnosis. Only a test can tell someone whether they carry a gene change.",
     "offer": "Would you like help drafting an anonymous message to relatives? It won't include your result.",
     "not_shared": "I can't see your family map. Use \"Share my family map with this chat\" above the message box if you'd like me to look at it for this conversation only.",
+    "no_condition": "Thanks for sharing your family map. It doesn't show a condition I can explain yet. If a relative has a condition or carries one, add it to them on the map (or mark “not sure”), then ask me again and I'll walk you through it.",
     "sides": {
       "father": "your father's side",
       "mother": "your mother's side",
       "own": "your brothers and sisters",
-      "partner": "your partner"
+      "partner": "your partner's side"
     },
     "relations": {
       "father": "your father",

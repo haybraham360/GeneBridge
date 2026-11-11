@@ -15,6 +15,7 @@ export function ReviewBar({
   saving,
   review,
   error,
+  highlight = false,
   onKeepAll,
   onStartReview,
   onUndo,
@@ -24,6 +25,8 @@ export function ReviewBar({
   /** Set while reviewing one by one. */
   review: null | { label: string; index: number; total: number; onKeep: () => void; onSkip: () => void; onEdit: (() => void) | null; onStop: () => void };
   error: string | null;
+  /** Rings the bar a few times when it appears, so the eye finds it. */
+  highlight?: boolean;
   onKeepAll: () => void;
   onStartReview: () => void;
   onUndo: () => void;
@@ -31,9 +34,10 @@ export function ReviewBar({
   const t = useTranslations('family.review');
   return (
     <section
+      id="family-review"
       aria-labelledby="family-review-title"
       aria-live="polite"
-      className={cn(cardClasses, 'mt-4 border-dashed border-brand p-4 motion-safe:animate-card-in')}
+      className={cn(cardClasses, 'mt-4 scroll-mt-24 border-dashed border-brand p-4', highlight ? 'motion-safe:animate-attention' : 'motion-safe:animate-card-in')}
       data-testid="family-review"
     >
       <h2 id="family-review-title" className="sr-only">

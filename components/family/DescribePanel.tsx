@@ -21,6 +21,7 @@ export function DescribePanel({
   progress,
   error,
   showPrivate,
+  highlight = false,
   onSubmit,
 }: {
   busy: boolean;
@@ -28,6 +29,8 @@ export function DescribePanel({
   error: string | null;
   /** "This stays private to you", once per session. */
   showPrivate: boolean;
+  /** Rings the panel when the person is pointed here ("Start describing"). */
+  highlight?: boolean;
   onSubmit: (text: string, input: 'voice' | 'text') => Promise<boolean>;
 }) {
   const t = useTranslations('family.describe');
@@ -69,7 +72,7 @@ export function DescribePanel({
     stt.error === 'denied' ? t('mic.denied') : stt.error === 'failed' ? t('mic.failed') : !stt.supported ? t('mic.unavailable') : null;
 
   return (
-    <section className={cn(cardClasses, 'p-5')} aria-labelledby={`${ids}-title`}>
+    <section id="family-describe" className={cn(cardClasses, 'scroll-mt-24 p-5', highlight && 'motion-safe:animate-attention')} aria-labelledby={`${ids}-title`}>
       <h2 id={`${ids}-title`} className="text-base font-extrabold tracking-[-0.02em]">
         {t('title')}
       </h2>

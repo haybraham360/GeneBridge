@@ -147,6 +147,7 @@ export async function POST(request: Request) {
         history,
         useMyResult: body.useMyResult === true,
         family: body.useFamilyMap === true ? await familyFor(supabase, user.id) : null,
+        familyShared: body.useFamilyMap === true,
         reportText: reportText || null,
         followed: body.useFollowedConditions === true ? await followedFor(supabase, user.id) : null,
       },

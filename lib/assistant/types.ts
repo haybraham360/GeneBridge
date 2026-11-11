@@ -107,6 +107,11 @@ export type RespondInput = {
   useMyResult: boolean;
   /** Shared into this chat by an explicit user action, this session only. */
   family?: FamilySnapshot | null;
+  /**
+   * The person asked to use their family map. True with `family: null` means
+   * the map has no library condition marked yet (nothing to explain).
+   */
+  familyShared?: boolean;
   reportText?: string | null;
   /**
    * "Use the conditions I'm following" (task 11): condition ids and why the

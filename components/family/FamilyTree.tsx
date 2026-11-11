@@ -7,7 +7,7 @@
  * Proposed people fade in with a dashed orange border; proposed links are
  * dashed; a new condition carries a small "new" tag.
  */
-import { Maximize, Minus, Plus } from 'lucide-react';
+import { Maximize, Minus, PenLine, Plus, Sparkles } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type PointerEvent } from 'react';
 import { cn } from '@/lib/cn';
@@ -46,6 +46,8 @@ export function FamilyTree({
   onSelect,
   display,
   rtl,
+  drawing = null,
+  onStartDescribing,
 }: {
   tree: Tree;
   proposed: Proposed;
@@ -53,6 +55,10 @@ export function FamilyTree({
   onSelect: (id: string) => void;
   display: Display;
   rtl: boolean;
+  /** While GeneBridge is drawing: what it is doing now ("Placing 3 people…"). */
+  drawing?: string | null;
+  /** Shown on an empty map: takes the person to "Describe your family". */
+  onStartDescribing?: () => void;
 }) {
   const t = useTranslations('family.tree');
   const tf = useTranslations('dashboard.family');
@@ -108,6 +114,7 @@ export function FamilyTree({
 
   const isDashed = (links: string[]) => links.length > 0 && links.every((id) => proposed.links.has(id));
   const newCondition = new Set(tree.conditions.filter((c) => proposed.conditions.has(c.id)).map((c) => c.memberId));
+  const onlyYou = tree.members.filter((m) => !m.placeholder).length <= 1;
 
   return (
     <div className="relative">
@@ -121,7 +128,11 @@ export function FamilyTree({
         role="group"
         aria-label={tf('tree.aria')}
         aria-describedby="family-pan-hint"
-        className="relative h-[380px] cursor-grab touch-none overflow-hidden rounded-tile bg-bg/60 select-none active:cursor-grabbing sm:h-[460px]"
+        aria-busy={drawing ? true : undefined}
+        className={cn(
+          'relative h-[380px] cursor-grab touch-none overflow-hidden rounded-tile bg-bg/60 ring-2 transition-[box-shadow] duration-300 select-none active:cursor-grabbing sm:h-[460px]',
+          drawing ? 'ring-brand-ring' : 'ring-transparent',
+        )}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={endDrag}
@@ -149,6 +160,7 @@ export function FamilyTree({
                 strokeDasharray={isDashed(s.links) ? '6 4' : undefined}
                 strokeWidth={s.kind === 'coparent' ? 1.5 : 2}
                 data-kind={s.kind}
+                className={isDashed(s.links) ? 'motion-safe:animate-dash-flow' : undefined}
               />
             ))}
           </svg>
@@ -184,7 +196,7 @@ export function FamilyTree({
                   'absolute flex items-center gap-2 overflow-visible rounded-xl bg-surface px-2.5 text-start transition-shadow hover:shadow-[0_2px_8px_rgba(120,60,20,0.12)]',
                   focusRing,
                   isProposed
-                    ? 'border-[1.5px] border-dashed border-brand motion-safe:animate-card-in'
+                    ? 'border-[1.5px] border-dashed border-brand shadow-[0_0_0_3px_rgba(255,90,31,0.12)] motion-safe:animate-node-in'
                     : m.isOwner
                       ? 'border-[1.5px] border-ink'
                       : unsure
@@ -213,6 +225,36 @@ export function FamilyTree({
             );
           })}
         </div>
+
+        {drawing ? (
+          <div
+            className="pointer-events-none absolute inset-x-3 bottom-3 z-10 flex justify-center motion-safe:animate-card-in"
+            data-testid="family-drawing"
+          >
+            <div className="relative flex max-w-full items-center gap-2.5 overflow-hidden rounded-full bg-ink px-4 py-2.5 text-white shadow-lg">
+              <span aria-hidden className="absolute inset-y-0 start-0 w-1/3 bg-gradient-to-r from-transparent via-white/15 to-transparent motion-safe:animate-shimmer" />
+              <Sparkles className="relative size-4 shrink-0 text-brand motion-safe:animate-pulse" aria-hidden />
+              <span className="relative min-w-0">
+                <span className="block text-[13px] leading-tight font-bold">{t('drawingTitle')}</span>
+                <span className="block truncate text-[11.5px] leading-tight text-white/75">{drawing}</span>
+              </span>
+            </div>
+          </div>
+        ) : onlyYou && onStartDescribing ? (
+          <div className="absolute inset-x-3 bottom-3 z-10 flex justify-center motion-safe:animate-card-in" data-testid="family-empty-hint">
+            <div className="flex max-w-full flex-wrap items-center justify-center gap-x-3 gap-y-2 rounded-tile border border-dashed border-brand bg-surface/95 px-4 py-3 text-center shadow-card">
+              <p className="text-[13px] font-semibold">{t('empty')}</p>
+              <button
+                type="button"
+                onClick={onStartDescribing}
+                className={cn('inline-flex min-h-11 items-center gap-1.5 rounded-full bg-brand px-4 text-[13px] font-bold text-ink transition hover:bg-brand-hover', focusRing)}
+              >
+                <PenLine className="size-4" aria-hidden />
+                {t('emptyAction')}
+              </button>
+            </div>
+          </div>
+        ) : null}
       </div>
     </div>
   );
