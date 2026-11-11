@@ -191,6 +191,7 @@
       "booking_reminder": "Reminder: session {when}",
       "request_offer": "A professional offered to help",
       "offer_accepted": "A patient chose you for their request",
+      "session_summary": "{name} sent your session summary",
       "other": "Update"
     },
     "someone": "Someone",
@@ -220,5 +221,12 @@
       }
     },
     "complianceTitle": "Telehealth"
+  },
+  "summaries": {
+    "title": "Summaries from your counsellor",
+    "subtitle": "Written after your session, in plain words. Only you and your counsellor can see them.",
+    "from": "{name} · {date}",
+    "written": "Written by {name}.",
+    "writtenWithAi": "Written by {name}, prepared with AI help."
   }
 }

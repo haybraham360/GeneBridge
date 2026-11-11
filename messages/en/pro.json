@@ -209,7 +209,12 @@
       "placeholder": "Private to you and your facility",
       "saving": "Saving…",
       "saved": "Saved",
-      "error": "Couldn't save. Trying again."
+      "error": "Couldn't save. Trying again.",
+      "speak": "Speak notes",
+      "stopSpeaking": "Stop",
+      "transcribing": "Transcribing…",
+      "micDenied": "Microphone access is blocked. You can still type your notes.",
+      "micFailed": "Couldn't hear that. Try again or type your notes."
     },
     "actions": {
       "label": "Actions",
@@ -330,5 +335,70 @@
     "back": "Back to the queue",
     "markDone": "Mark session done",
     "done": "Session marked as attended."
+  },
+  "copilot": {
+    "brief": {
+      "title": "Session brief",
+      "subtitle": "Points to prepare, written from only what was shared with you. Preparing it is recorded in the patient's access log.",
+      "prepare": "Prepare brief",
+      "preparing": "Preparing…",
+      "refresh": "Prepare again",
+      "sourceAi": "Prepared with AI at {time} from what was shared with you. Check it against the details below.",
+      "sourceRules": "Prepared at {time} from what was shared with you. Check it against the details below.",
+      "error": "Couldn't prepare the brief. Try again.",
+      "rateLimited": "You've prepared a lot of briefs and summaries this hour. Try again later.",
+      "rules": {
+        "flagged": "{name}'s result is flagged. Review the original report: GeneBridge doesn't explain flagged results or show numbers for them.",
+        "understanding": "{name} answered {count} of {total} understanding questions correctly. Some parts may need more explaining.",
+        "understandingAll": "{name} answered every understanding question correctly. Ask what they'd still like to know.",
+        "questions": "{name} sent {count, plural, one {# question} other {# questions}}, listed below in their own words.",
+        "valuesDiffer": "The couple see these differently: {topics}. Worth exploring without steering either way.",
+        "sharedSummary": "{name} shared an Ask GeneBridge summary, shown below.",
+        "nothingShared": "Nothing has been shared with you yet. You can ask for access below."
+      }
+    },
+    "summary": {
+      "title": "Summary for the patient",
+      "subtitle": "After the session, draft a plain-language summary from your session note, in the patient's language. Edit it, then approve it. Nothing is sent until you approve.",
+      "subtitleManual": "After the session, write a plain-language summary in the patient's language. Nothing is sent until you approve it. AI drafting isn't set up.",
+      "loading": "Loading summary…",
+      "forPatient": "Summary · in {language}",
+      "forPerson": "For {name} · in {language}",
+      "draft": "Draft from my notes",
+      "redraft": "Draft again from my notes",
+      "working": "Working…",
+      "aiNote": "Drafted with AI from your notes. Read it closely and change anything that isn't right.",
+      "placeholder": "Use “Draft from my notes”, or write the summary here.",
+      "placeholderManual": "Write the summary here, in plain words.",
+      "problemsBlocking": "Reword this before sending:",
+      "problemsCheck": "Please check this wording:",
+      "problems": {
+        "directive": "Tells the patient what to do or recommends an option. Describe options as choices.",
+        "marriage_advice": "Comments on marriage or compatibility.",
+        "religious_ruling": "Gives a religious ruling.",
+        "medication": "Mentions medication or a dose.",
+        "carrier_not_healthy": "Describes a carrier as ill. Carriers are healthy.",
+        "diagnosis": "Reads like a diagnosis. Check it matches the patient's report.",
+        "unverified_number": "Gives a chance that isn't in your notes.",
+        "wrong_language": "Isn't in the patient's language."
+      },
+      "confirmChecked": "I've checked this wording and it's right for this patient",
+      "approve": "Approve and send",
+      "saveDraft": "Save draft",
+      "notSentYet": "{name} sees nothing until you approve it.",
+      "sentTo": "Sent to {name} · {date}",
+      "drafted": "Draft ready for {name}. Check it before sending.",
+      "savedDraft": "Draft saved",
+      "sent": "Summary sent to {name}",
+      "errors": {
+        "error": "Something went wrong. Try again.",
+        "rate_limited": "You've prepared a lot of briefs and summaries this hour. Try again later.",
+        "not_set_up": "AI drafting isn't set up. Write the summary yourself.",
+        "no_notes": "Add a few lines to your session note first: the draft uses only your notes.",
+        "failed": "Couldn't draft a summary. Try again, or write it yourself.",
+        "blocked": "Reword the highlighted parts before sending.",
+        "needs_confirm": "Tick the box to confirm you've checked the highlighted wording."
+      }
+    }
   }
 }

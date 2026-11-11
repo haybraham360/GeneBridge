@@ -220,6 +220,29 @@ export async function draftWithModel(userContent: string): Promise<string | null
 }
 
 /**
+ * Counsellor copilot (task 16): one call with a fixed system prompt and no
+ * tools. Returns the raw text, or null; the caller checks it
+ * (lib/copilot/check.ts) before anyone sees it.
+ */
+export async function copilotWithModel(system: string, userContent: string, maxTokens = 1200): Promise<string | null> {
+  const model = assistantModel();
+  const response = await anthropic().beta.messages.create({
+    model,
+    max_tokens: maxTokens,
+    system: [{ type: 'text', text: system, cache_control: { type: 'ephemeral' } }],
+    messages: [{ role: 'user', content: userContent }],
+    ...(fallbackModels.has(model) ? { betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default' as const } : {}),
+  });
+  if (response.stop_reason === 'refusal') return null;
+  const text = response.content
+    .filter((b): b is Anthropic.Beta.BetaTextBlock => b.type === 'text')
+    .map((b) => b.text)
+    .join('\n')
+    .trim();
+  return text || null;
+}
+
+/**
  * The classifier's second opinion for the drafter's privacy check: does the
  * message share another person's health information? Returns the person's
  * name or relationship as written, or null.

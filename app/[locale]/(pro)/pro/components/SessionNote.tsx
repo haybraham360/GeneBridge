@@ -1,7 +1,10 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
+import { Mic, Square } from 'lucide-react';
+import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
+import { useSpeechToText } from '@/lib/audio/stt';
+import { cn } from '@/lib/cn';
 import { saveNote } from '../actions';
 
 const SAVE_AFTER_MS = 1500;
@@ -12,9 +15,23 @@ type State = 'idle' | 'saving' | 'saved' | 'error';
 /**
  * Private session note. Saves a moment after typing stops (and on blur), with
  * a "Saved" indicator. Patients never see these notes.
+ *
+ * "Speak notes" (task 16) adds what the counsellor says to the end of the
+ * note. Audio is transcribed once and never stored (lib/audio/stt.ts); the
+ * transcript lives only in this note.
  */
-export function SessionNote({ requestId, initialBody }: { requestId: string; initialBody: string }) {
+export function SessionNote({
+  requestId,
+  initialBody,
+  onBodyChange,
+}: {
+  requestId: string;
+  initialBody: string;
+  /** The current text, for the copilot summary. */
+  onBodyChange?: (body: string) => void;
+}) {
   const t = useTranslations('pro.detail.note');
+  const locale = useLocale() === 'en' ? 'en' : 'ar';
   const [body, setBody] = useState(initialBody);
   const [state, setState] = useState<State>('idle');
   const savedBody = useRef(initialBody);
@@ -43,6 +60,23 @@ export function SessionNote({ requestId, initialBody }: { requestId: string; ini
     timer.current = setTimeout(() => void save(), ms);
   };
 
+  const update = (text: string) => {
+    latest.current = text;
+    setBody(text);
+    onBodyChange?.(text);
+    setState('idle');
+    schedule(SAVE_AFTER_MS);
+  };
+
+  const speech = useSpeechToText({
+    locale,
+    onFinal: (spoken) => {
+      const before = latest.current.trimEnd();
+      update(before ? `${before}\n${spoken}` : spoken);
+    },
+  });
+  const listening = speech.state === 'listening';
+
   // Save anything pending when switching requests or leaving the page.
   useEffect(
     () => () => {
@@ -58,22 +92,56 @@ export function SessionNote({ requestId, initialBody }: { requestId: string; ini
         <label htmlFor={`note-${requestId}`} className="font-extrabold">
           {t('label')}
         </label>
-        <span role="status" aria-live="polite" className="text-[13px] text-muted" data-testid="note-status">
-          {state === 'saving' ? t('saving') : state === 'saved' ? t('saved') : state === 'error' ? t('error') : ''}
-        </span>
+        <div className="flex items-center gap-3">
+          <span role="status" aria-live="polite" className="text-[13px] text-muted" data-testid="note-status">
+            {speech.state === 'processing'
+              ? t('transcribing')
+              : state === 'saving'
+                ? t('saving')
+                : state === 'saved'
+                  ? t('saved')
+                  : state === 'error'
+                    ? t('error')
+                    : ''}
+          </span>
+          {speech.supported ? (
+            <button
+              type="button"
+              onClick={listening ? speech.stop : speech.start}
+              disabled={speech.state === 'processing'}
+              aria-pressed={listening}
+              className={cn(
+                'inline-flex min-h-11 items-center gap-1.5 rounded-full border px-4 text-sm font-bold',
+                listening ? 'border-ink bg-ink text-white' : 'border-line-strong bg-surface text-ink hover:bg-brand-tint-soft',
+              )}
+            >
+              {listening ? (
+                <Square aria-hidden="true" className="size-4" strokeWidth={2} />
+              ) : (
+                <Mic aria-hidden="true" className="size-4" strokeWidth={2} />
+              )}
+              {listening ? t('stopSpeaking') : t('speak')}
+            </button>
+          ) : null}
+        </div>
       </div>
+      {listening && speech.transcript ? (
+        <p aria-live="polite" className="rounded-xl bg-bg px-3.5 py-2.5 text-sm text-muted">
+          {speech.transcript}
+        </p>
+      ) : null}
+      {speech.error ? (
+        <p role="alert" className="text-[13px] font-semibold text-danger">
+          {t(speech.error === 'denied' ? 'micDenied' : 'micFailed')}
+        </p>
+      ) : null}
       <textarea
         id={`note-${requestId}`}
         rows={3}
         value={body}
         placeholder={t('placeholder')}
         maxLength={20000}
-        onChange={(e) => {
-          latest.current = e.target.value;
-          setBody(e.target.value);
-          setState('idle');
-          schedule(SAVE_AFTER_MS);
-        }}
+        onChange={(e) => update(e.target.value)}
         onBlur={() => void save()}
         className="w-full resize-y rounded-input border border-line-strong px-3.5 py-3 text-[15px] placeholder:text-muted focus-visible:border-ink"
       />

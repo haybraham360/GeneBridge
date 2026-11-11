@@ -191,6 +191,7 @@
       "booking_reminder": "تذكير: الجلسة {when}",
       "request_offer": "عرض مختص المساعدة",
       "offer_accepted": "اختارك مراجع لطلبه",
+      "session_summary": "أرسل {name} ملخص جلستك",
       "other": "تحديث"
     },
     "someone": "شخص ما",
@@ -220,5 +221,12 @@
       }
     },
     "complianceTitle": "الرعاية الصحية عن بُعد"
+  },
+  "summaries": {
+    "title": "ملخصات من مستشارك",
+    "subtitle": "مكتوبة بعد جلستك بكلمات بسيطة. لا يراها غيرك وغير مستشارك.",
+    "from": "{name} · {date}",
+    "written": "كتبه {name}.",
+    "writtenWithAi": "كتبه {name} بمساعدة الذكاء الاصطناعي."
   }
 }

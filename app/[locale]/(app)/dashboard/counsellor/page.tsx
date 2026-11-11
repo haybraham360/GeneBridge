@@ -4,10 +4,12 @@ import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/serve
 import { notFound } from 'next/navigation';
 import { placeholderMetadata } from '@/components/PlaceholderPage';
 import CounsellorPage from '@/components/counsellor/CounsellorPage';
+import { SessionSummaries } from '@/components/counsellor/SessionSummaries';
 import { LiveRefresh } from '@/components/realtime/LiveRefresh';
 import { routing } from '@/i18n/routing';
 import { changeCutoffHours, loadMyBookings, loadMyOffers } from '@/lib/booking/server';
 import { careView } from '@/lib/care/display';
+import { loadMySessionSummaries } from '@/lib/copilot/server';
 import { loadCareFacts } from '@/lib/care/tracker';
 import { loadDirectory } from '@/lib/directory/server';
 import { createClient, getAuthUser } from '@/lib/supabase/server';
@@ -43,11 +45,12 @@ export default async function Page({ params, searchParams }: PageProps<'/[locale
     user ? supabase.from('profiles').select('locale').eq('user_id', user.id).maybeSingle() : null,
   ]);
   const language = profile?.data?.locale ?? locale;
-  const [entries, bookings, offers, cutoffHours] = await Promise.all([
+  const [entries, bookings, offers, cutoffHours, summaries] = await Promise.all([
     loadDirectory(supabase, { language, path }),
     loadMyBookings(supabase),
     loadMyOffers(supabase),
     changeCutoffHours(supabase),
+    user ? loadMySessionSummaries(supabase) : [],
   ]);
 
   // The referral path: the care journey without "Result understood" (task 07).
@@ -93,6 +96,7 @@ export default async function Page({ params, searchParams }: PageProps<'/[locale
         />
       ) : null}
       {banner}
+      <SessionSummaries summaries={summaries} locale={locale} />
       <CounsellorPage
         entries={entries}
         bookings={bookings}

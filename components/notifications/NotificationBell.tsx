@@ -11,7 +11,7 @@ import { cn } from '@/lib/cn';
 import type { InboxItem } from '@/lib/notifications/inbox';
 import { createClient } from '@/lib/supabase/browser';
 
-const KNOWN = ['new_message', 'booking_requested', 'booking_confirmed', 'booking_declined', 'booking_changed', 'booking_cancelled', 'booking_reminder', 'request_offer', 'offer_accepted'];
+const KNOWN = ['new_message', 'booking_requested', 'booking_confirmed', 'booking_declined', 'booking_changed', 'booking_cancelled', 'booking_reminder', 'request_offer', 'offer_accepted', 'session_summary'];
 
 /**
  * The bell (task 15, section 3): new messages, bookings, changes and
@@ -60,6 +60,7 @@ export function NotificationBell({ userId, role, initial }: { userId: string; ro
     if (i.kind === 'new_message') return role === 'patient' ? `/dashboard/messages${i.conversationId ? `/${i.conversationId}` : ''}` : `/pro/messages${i.conversationId ? `/${i.conversationId}` : ''}`;
     if (i.kind === 'offer_accepted') return '/pro';
     if (i.kind === 'kyc_status') return '/pro/verify';
+    if (i.kind === 'session_summary') return '/dashboard/counsellor#summaries';
     if (i.kind.startsWith('booking_') || i.kind === 'request_offer') return role === 'patient' ? '/dashboard/counsellor' : '/pro/sessions';
     return role === 'patient' ? '/dashboard' : '/pro';
   };

@@ -2,12 +2,14 @@
 
 import { Check, Lock, MessageSquare } from 'lucide-react';
 import { useFormatter, useTranslations } from 'next-intl';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { cn } from '@/lib/cn';
 import { proLabels, type Translate } from '@/lib/pro/labels';
 import { PROGRAMME_TIME_ZONE } from '@/lib/pro/queue';
 import type { PersonDetail, RequestDetail as Detail, Service } from '@/lib/pro/types';
 import { AccessPanel } from './AccessPanel';
+import { CopilotBrief } from './CopilotBrief';
+import { CopilotSummary } from './CopilotSummary';
 import { DetailActions } from './DetailActions';
 import { SessionNote } from './SessionNote';
 
@@ -28,6 +30,8 @@ export function RequestDetail({ detail, services, onChange, onClosed, onAnnounce
   const format = useFormatter();
   const L = useMemo(() => proLabels(t as unknown as Translate), [t]);
   const tt = t as unknown as Translate;
+  // The session note as typed, for the copilot summary (task 16).
+  const [noteBody, setNoteBody] = useState(detail.note?.body ?? '');
 
   const title = L.request({
     user: detail.people[0].label,
@@ -100,6 +104,9 @@ export function RequestDetail({ detail, services, onChange, onClosed, onAnnounce
           {consent.text}
         </span>
       </div>
+
+      {/* Copilot brief (task 16): points to prepare, from what was shared */}
+      <CopilotBrief key={`brief-${detail.id}`} requestId={detail.id} />
 
       {/* 2. Result summaries: one card per person who shared */}
       {withResults.length > 0 || sharedResultButMissing.length > 0 ? (
@@ -227,7 +234,10 @@ export function RequestDetail({ detail, services, onChange, onClosed, onAnnounce
       </div>
 
       {/* 7. Session note */}
-      <SessionNote requestId={detail.id} initialBody={detail.note?.body ?? ''} />
+      <SessionNote requestId={detail.id} initialBody={detail.note?.body ?? ''} onBodyChange={setNoteBody} />
+
+      {/* Copilot summary (task 16): drafted from the note, approved by the counsellor */}
+      <CopilotSummary key={`summary-${detail.id}`} requestId={detail.id} notes={noteBody} onAnnounce={onAnnounce} />
 
       {/* 8. Actions */}
       <DetailActions
