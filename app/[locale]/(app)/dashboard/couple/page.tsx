@@ -1,6 +1,7 @@
 import { hasLocale } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
+import type { ReactNode } from 'react';
 import { placeholderMetadata } from '@/components/PlaceholderPage';
 import { SharedCouple } from '@/components/couple/SharedCouple';
 import { buttonClasses } from '@/components/ui/Button';
@@ -16,7 +17,7 @@ export async function generateMetadata({ params }: PageProps<'/[locale]/dashboar
   return hasLocale(routing.locales, locale) ? placeholderMetadata(locale, 'couple') : {};
 }
 
-function Notice({ title, body, cta, href, testId }: { title: string; body: string; cta: string; href: string; testId: string }) {
+function Notice({ title, body, cta, href, testId, extra }: { title: string; body: string; cta: string; href: string; testId: string; extra?: ReactNode }) {
   return (
     <main className="min-w-0 flex-1 px-[clamp(16px,3vw,40px)] pt-9 pb-10">
       <section data-testid={testId} className="flex max-w-2xl flex-col gap-3 rounded-card border border-line bg-surface p-6 shadow-card">
@@ -26,6 +27,7 @@ function Notice({ title, body, cta, href, testId }: { title: string; body: strin
           {cta}
         </Link>
       </section>
+      {extra}
     </main>
   );
 }
@@ -59,7 +61,26 @@ export default async function Page({ params }: PageProps<'/[locale]/dashboard/co
     result_missing: '/dashboard?addResult=1',
     flagged: '/dashboard/counsellor?topic=family',
   }[view.state];
+  // Not linked or not agreed yet: Blind Match is the lighter first step (task 17).
+  const tb = await getTranslations({ locale, namespace: 'blindMatch.coupleCard' });
+  const blindMatch =
+    view.state === 'no_partner' || view.state === 'consent_missing' ? (
+      <section data-testid="couple-blind-match" className="mt-5 flex max-w-2xl flex-col gap-2 rounded-card border border-line bg-surface p-6 shadow-card">
+        <h2 className="text-xl font-extrabold">{tb('title')}</h2>
+        <p className="text-[15px] leading-[1.6] text-muted">{tb('body')}</p>
+        <Link href="/dashboard/blind-match" className={buttonClasses('ghost', 'md', 'self-start')}>
+          {tb('cta')}
+        </Link>
+      </section>
+    ) : null;
   return (
-    <Notice testId={`couple-${view.state}`} title={t(`${view.state}.title`)} body={t(`${view.state}.body`)} cta={t(`${view.state}.cta`)} href={href} />
+    <Notice
+      testId={`couple-${view.state}`}
+      title={t(`${view.state}.title`)}
+      body={t(`${view.state}.body`)}
+      cta={t(`${view.state}.cta`)}
+      href={href}
+      extra={blindMatch}
+    />
   );
 }

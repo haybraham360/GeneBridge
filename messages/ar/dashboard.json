@@ -6,6 +6,7 @@
       "myConditions": "حالاتي",
       "conditions": "الحالات من الألف إلى الياء",
       "couple": "عرض الزوجين",
+      "blindMatch": "الفحص المتبادل الخاص",
       "simulator": "محاكي الوراثة",
       "family": "خريطة العائلة",
       "talk": "الحديث مع العائلة",
@@ -726,6 +727,8 @@
   },
   "privacy": {
     "accessLogLine": "اطّلع {name} على {resource}",
+    "accessLogBlindMatch": "قارن الفحص المتبادل الخاص نتيجتك دون عرضها على الشخص الآخر",
+    "accessLogBlindMatchReveal": "أظهر الفحص المتبادل الخاص الحالة المشتركة، بعد أن طلبتما ذلك معًا",
     "accessLogEmpty": "لم يطّلع أحد على معلوماتك المُشارَكة بعد.",
     "resources": {
       "result": "نتيجتك",

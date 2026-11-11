@@ -10,6 +10,8 @@ type QrScannerProps = {
   onClose: () => void;
   /** "Type the number instead". */
   onTypeInstead: () => void;
+  /** Where the labels come from. Blind Match (task 17) reuses the scanner. */
+  namespace?: 'onboarding.steps.connect.scanner' | 'blindMatch.scanner';
 };
 
 type Detector = (video: HTMLVideoElement) => Promise<string | null>;
@@ -49,9 +51,9 @@ function cameraAvailable() {
   return typeof navigator !== 'undefined' && Boolean(navigator.mediaDevices?.getUserMedia);
 }
 
-/** Camera view that reads the QR code on a screening report. */
-export function QrScanner({ onScan, onClose, onTypeInstead }: QrScannerProps) {
-  const t = useTranslations('onboarding.steps.connect.scanner');
+/** Camera view that reads a QR code: the one on a screening report, or a Blind Match code. */
+export function QrScanner({ onScan, onClose, onTypeInstead, namespace = 'onboarding.steps.connect.scanner' }: QrScannerProps) {
+  const t = useTranslations(namespace as 'onboarding.steps.connect.scanner');
   const videoRef = useRef<HTMLVideoElement>(null);
   const [failed, setFailed] = useState(() => !cameraAvailable());
   const onScanRef = useRef(onScan);

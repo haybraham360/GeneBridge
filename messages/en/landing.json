@@ -127,7 +127,6 @@
   "showcase": {
     "chip": "New in GeneBridge",
     "title": "Tools that do the hard part with you.",
-    "subtitle": "Photograph a report, describe your family out loud, ask a question and hear the answer, or find care close by. In Arabic and English.",
     "tabsLabel": "GeneBridge tools",
     "example": "Example",
     "scan": {
@@ -192,6 +191,26 @@
         "initials": "AO",
         "role": "Genetic counsellor",
         "detail": "2.4 km · Arabic, English"
+      }
+    },
+    "subtitle": "Check for a shared change without showing each other your results, photograph a report, describe your family out loud, ask a question and hear the answer, or find care close by. In Arabic and English.",
+    "blindMatch": {
+      "tab": "Blind Match",
+      "tag": "Private check for two",
+      "new": "New",
+      "title": "Find out if you share a change, without showing your results.",
+      "body": "One of you shows a code, the other scans it, and each agrees on your own phone. You both see one answer: whether you carry a change in the same gene. Neither of you sees the other’s result, and a shared change comes with a direct route to a genetic counsellor.",
+      "promise": "Results are compared privately, never shown to the other person",
+      "cta": "Try Blind Match",
+      "scene": {
+        "you": "You",
+        "them": "Them",
+        "code": "K7M 2PQ",
+        "scan": "Scanned",
+        "hidden": "Result hidden",
+        "agreed": "Agreed",
+        "answer": "One answer, on both screens",
+        "neither": "Neither of you saw the other’s result"
       }
     }
   },
@@ -297,6 +316,10 @@
     "sharing": {
       "q": "Will my partner or family see my result?",
       "a": "Only if you choose. Your partner sees a couple view only when you both agree, and you can tell relatives about a family risk without revealing your own result."
+    },
+    "blindMatch": {
+      "q": "Can we check for a shared risk without showing each other our results?",
+      "a": "Yes, with Blind Match. You each agree on your own phone, and you both see one answer: whether you carry a change in the same gene. Neither of you sees the other’s result. It covers only the conditions you were both screened for, it isn’t advice about marriage, and a genetic counsellor can explain what a shared change means."
     },
     "marriage": {
       "q": "Will GeneBridge tell us whether to marry?",

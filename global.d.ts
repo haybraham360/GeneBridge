@@ -22,6 +22,7 @@ import type directory from '@/messages/en/directory.json';
 import type booking from '@/messages/en/booking.json';
 import type chat from '@/messages/en/chat.json';
 import type nearby from '@/messages/en/nearby.json';
+import type blindMatch from '@/messages/en/blindMatch.json';
 
 declare module 'next-intl' {
   interface AppConfig {
@@ -50,6 +51,7 @@ declare module 'next-intl' {
       booking: typeof booking;
       chat: typeof chat;
       nearby: typeof nearby;
+      blindMatch: typeof blindMatch;
     };
   }
 }

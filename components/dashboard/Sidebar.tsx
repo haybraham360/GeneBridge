@@ -16,6 +16,7 @@ import {
   ArrowRight,
   Menu,
   X,
+  EyeOff,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef, useState, type ComponentType, type CSSProperties } from "react";
@@ -30,6 +31,7 @@ type NavKey =
   | "results"
   | "myConditions"
   | "couple"
+  | "blindMatch"
   | "simulator"
   | "family"
   | "talk"
@@ -65,6 +67,7 @@ const groups: { key: GroupKey | null; items: NavItem[] }[] = [
     key: "family",
     items: [
       { label: "Couple view", icon: Users, link: "/dashboard/couple", short: "couple" },
+      { label: "Blind Match", icon: EyeOff, link: "/dashboard/blind-match", short: "blindMatch" },
       { label: "Family map", icon: FamilyIcon, link: "/dashboard/family", short: "family" },
       { label: "Talking to family", icon: MessagesSquare, link: "/dashboard/talk", short: "talk" },
     ],

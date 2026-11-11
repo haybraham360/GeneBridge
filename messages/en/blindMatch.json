@@ -1,0 +1,177 @@
+{
+  "meta": {
+    "title": "Blind Match"
+  },
+  "title": "Blind Match",
+  "subtitle": "Find out if you both carry a change in the same gene, without either of you seeing the other's result.",
+  "draftNote": "Draft wording, pending review by a counsellor.",
+  "start": {
+    "title": "Check together",
+    "body": "One of you shows a code and the other scans it. Each of you agrees on your own phone. Then you both see one answer.",
+    "start": "Show my code",
+    "join": "I have a code",
+    "nameLabel": "Show my first name to the other person",
+    "someone": "Someone"
+  },
+  "explainer": {
+    "title": "Before you start",
+    "points": {
+      "private": "You won't see their result, and they won't see yours.",
+      "reveals": "The answer still tells you something about each other. If it says you share a change, you'll both know the other carries a change in at least one gene you also carry. If you know your own result, you may be able to work out which one.",
+      "coverage": "If it says no shared change, it covers only the conditions you were both screened for.",
+      "stop": "You can stop at any time before the answer appears.",
+      "choice": "This is information, not advice about marriage. What you do with it is your choice.",
+      "screen": "Your answer appears on your own screen. You choose who else sees it."
+    }
+  },
+  "code": {
+    "title": "Your code",
+    "body": "Ask the other person to scan this with their phone, or to type the code in GeneBridge.",
+    "qrLabel": "QR code for joining this Blind Match",
+    "expires": "This code works once.",
+    "waiting": "Waiting for someone to join…",
+    "expired": "This code has expired. Start again for a new one.",
+    "copy": "Copy code",
+    "copied": "Copied",
+    "share": "Share link",
+    "shareText": "Join my GeneBridge Blind Match with this link.",
+    "timeLeft": "{time} left"
+  },
+  "join": {
+    "title": "Join with a code",
+    "label": "Code",
+    "placeholder": "e.g. K7M 2PQ",
+    "submit": "Join",
+    "scan": "Scan a QR code",
+    "notFound": "That code didn't work. It may have expired or already been used. Check it, or ask for a new one.",
+    "rateLimited": "Too many tries. Please wait an hour and try again.",
+    "joining": "Joining…"
+  },
+  "scanner": {
+    "label": "Camera view for scanning a Blind Match code",
+    "hint": "Point your camera at the QR code on the other person's screen.",
+    "close": "Close camera",
+    "noCamera": "We can't open your camera.",
+    "typeInstead": "Type the code instead"
+  },
+  "agree": {
+    "title": "Do you agree to check together?",
+    "with": "Checking with {name}",
+    "agree": "I agree",
+    "waitingOther": "Waiting for {name} to agree…",
+    "otherAgreed": "{name} agreed. Tap I agree to see your answer.",
+    "waitingJoin": "{name} joined. Read the points above, then agree.",
+    "understand": "I’ve read the points above and understand what the answer can tell us."
+  },
+  "cancel": "Stop",
+  "cancelled": {
+    "title": "This check was stopped",
+    "body": "No answer was worked out, and nothing was saved about either of you.",
+    "again": "Start again"
+  },
+  "answer": {
+    "shared": {
+      "title": "You share a change in the same gene",
+      "body": "For at least one condition, you each carry a change in the same gene. Most people who carry one are healthy. Neither of you has been shown the other's result. A genetic counsellor can explain what this means for any future pregnancy and what options exist."
+    },
+    "none": {
+      "title": "No shared change found",
+      "body": "You were both screened for {count, plural, one {# of the same conditions} other {# of the same conditions}}, and you don't both carry a change in any of them. This isn't a guarantee: it covers only these conditions, and only these screening tests."
+    },
+    "not_comparable": {
+      "title": "We couldn't compare your results",
+      "body": "None of the conditions Blind Match checks were on both of your screening reports, so there is nothing to compare. A genetic counsellor can tell you what other screening is available."
+    },
+    "privateNote": "Neither of you has been shown the other's result.",
+    "notCertificate": "Covers {count, plural, one {# condition} other {# conditions}} only. Not a medical certificate.",
+    "counsellor": "Talk to a counsellor",
+    "meaning": "What this means",
+    "seeConditions": "See which conditions",
+    "notCovered": "What this doesn't cover",
+    "notCoveredBody": "Blind Match compares only conditions where a child is affected when both parents carry a change (recessive conditions), and only those on both of your reports. It doesn't cover dominant or X-linked conditions, conditions only one of you was screened for, or anything a screening panel can't detect.",
+    "hide": "Hide",
+    "hidden": "Answer hidden.",
+    "show": "Show it again",
+    "done": "Done"
+  },
+  "reveal": {
+    "ask": "Show us which condition",
+    "body": "The condition is shown only if you both tap this. The other person won't know whether you tapped.",
+    "waiting": "You asked to see it. It will appear if the other person asks too.",
+    "title": "The shared condition",
+    "learn": "Learn about it",
+    "couple": "Invite to Couple view"
+  },
+  "ineligible": {
+    "flagged": {
+      "title": "Talk to a counsellor first",
+      "body": "Part of your result needs a genetic counsellor to look at it with you, so Blind Match isn't available.",
+      "cta": "Talk to a counsellor"
+    },
+    "no_result": {
+      "title": "Blind Match needs a screening result",
+      "body": "It compares screening results, so you need yours in GeneBridge first. This isn't a diagnosis: only a test can tell you whether you carry a change.",
+      "cta": "Add my result"
+    },
+    "unverified": {
+      "title": "Blind Match needs a confirmed result",
+      "body": "It uses results from your screening centre only. Connect your report with its reference code to confirm it.",
+      "cta": "Connect my report"
+    },
+    "limit": {
+      "title": "You've used Blind Match 3 times this month",
+      "body": "To protect everyone's privacy, each person can check up to 3 times in 30 days. You can still talk to a counsellor at any time.",
+      "cta": "Talk to a counsellor"
+    }
+  },
+  "history": {
+    "title": "Your recent answers",
+    "body": "Kept for 7 days, then deleted. Never which condition.",
+    "empty": "No answers yet.",
+    "with": "With {name}",
+    "outcome": {
+      "shared": "Shared change",
+      "none": "No shared change found",
+      "not_comparable": "Couldn't compare"
+    }
+  },
+  "error": "That didn't work. Please try again.",
+  "coupleCard": {
+    "title": "Not ready to link accounts?",
+    "body": "Check together first with Blind Match: one answer, and neither of you sees the other's result.",
+    "cta": "Try Blind Match"
+  },
+  "steps": {
+    "label": "Progress",
+    "connect": "Connect",
+    "agree": "Agree",
+    "answer": "Answer"
+  },
+  "how": {
+    "title": "How it works",
+    "s1": {
+      "title": "Connect",
+      "body": "One of you shows a code. The other scans it or types it in."
+    },
+    "s2": {
+      "title": "Both agree",
+      "body": "Each of you reads what the answer can tell you, and agrees on your own phone."
+    },
+    "s3": {
+      "title": "One answer",
+      "body": "You both see the same answer. Neither of you sees the other’s result."
+    }
+  },
+  "people": {
+    "title": "Who’s here",
+    "you": "You",
+    "waiting": "Waiting to join",
+    "joined": "Joined",
+    "agreed": "Agreed",
+    "notYet": "Not agreed yet"
+  },
+  "unavailable": {
+    "title": "Blind Match isn’t switched on yet",
+    "body": "It needs a database update before it can be used. Please try again later."
+  }
+}

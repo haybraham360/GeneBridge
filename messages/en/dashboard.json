@@ -6,6 +6,7 @@
       "myConditions": "My conditions",
       "conditions": "Conditions A–Z",
       "couple": "Couple view",
+      "blindMatch": "Blind Match",
       "simulator": "Inheritance simulator",
       "family": "Family map",
       "talk": "Talking to family",
@@ -726,6 +727,8 @@
   },
   "privacy": {
     "accessLogLine": "{name} viewed your {resource}",
+    "accessLogBlindMatch": "Blind Match compared your result without showing it to the other person",
+    "accessLogBlindMatchReveal": "Blind Match showed the shared condition, after you both asked",
     "accessLogEmpty": "No one has viewed your shared information yet.",
     "resources": {
       "result": "result",

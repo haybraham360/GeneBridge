@@ -6,10 +6,13 @@ import {
   BadgeCheck,
   Camera,
   Check,
+  EyeOff,
   Lock,
   MapPin,
   Mic,
   Network,
+  QrCode,
+  ScanLine,
   ShieldCheck,
   Sparkles,
   type LucideIcon,
@@ -21,7 +24,7 @@ import { SectionHeading } from '@/components/ui/SectionHeading';
 import { Link } from '@/i18n/navigation';
 import { cn } from '@/lib/cn';
 
-type ToolKey = 'scan' | 'family' | 'assistant' | 'nearby';
+type ToolKey = 'blindMatch' | 'scan' | 'family' | 'assistant' | 'nearby';
 
 type Tool = {
   key: ToolKey;
@@ -32,6 +35,8 @@ type Tool = {
   /** Tinted stage behind the scene. */
   stage: string;
   Scene: () => ReactNode;
+  /** The newest tool: a "New" badge, and the full row on phones. */
+  featured?: boolean;
 };
 
 /** Start time of a scene element (see the `scene` utility in globals.css). */
@@ -41,6 +46,61 @@ const at = (ms: number) => ({ '--t': `${ms}ms` }) as CSSProperties;
 const SLIDE_MS = 7000;
 
 /* ---------------- Scenes (decorative, aria-hidden, labelled "Example") ---------------- */
+
+function BlindMatchScene() {
+  const t = useTranslations('landing.showcase.blindMatch.scene');
+  // Two phones. Each keeps its result hidden; both agree; both get one answer.
+  const phone = (who: string, top: ReactNode, delay: number) => (
+    <div className="s-rise flex w-[132px] shrink-0 flex-col items-center gap-2 rounded-[22px] border-[3px] border-ink bg-surface px-2.5 pt-3 pb-3 shadow-card sm:w-[150px]" style={at(delay)}>
+      <span className="h-1 w-8 rounded-full bg-line-strong" />
+      <span className="text-[11px] font-extrabold text-ink">{who}</span>
+      <div className="flex h-[58px] items-center justify-center">{top}</div>
+      <span className="flex items-center gap-1 rounded-full bg-bg px-2 py-1 text-[10px] font-bold text-muted">
+        <EyeOff aria-hidden="true" className="size-3" strokeWidth={2.4} />
+        {t('hidden')}
+      </span>
+      <span className="s-pop flex items-center gap-1 rounded-full bg-success-tint px-2 py-1 text-[10px] font-bold text-success-text" style={at(1500 + delay)}>
+        <Check aria-hidden="true" className="size-3" strokeWidth={3} />
+        {t('agreed')}
+      </span>
+    </div>
+  );
+  return (
+    <div className="flex h-full flex-col items-center justify-center gap-4 px-4 pt-6 sm:px-8 sm:pt-0">
+      <div className="flex items-center gap-2 sm:gap-4">
+        {phone(
+          t('you'),
+          <span className="flex flex-col items-center gap-1">
+            <QrCode aria-hidden="true" className="s-pop size-9 text-ink" style={at(400)} strokeWidth={2} />
+            <span dir="ltr" className="font-mono text-[10px] font-extrabold tracking-[0.15em]">{t('code')}</span>
+          </span>,
+          0,
+        )}
+        {/* The code travels from one phone to the other. */}
+        <span className="flex items-center gap-1" aria-hidden="true">
+          {[0, 1, 2].map((d) => (
+            <span key={d} className="s-bar size-1.5 rounded-full bg-brand" style={{ '--d': d * 2 } as CSSProperties} />
+          ))}
+        </span>
+        {phone(
+          t('them'),
+          <span className="flex flex-col items-center gap-1">
+            <ScanLine aria-hidden="true" className="s-pop size-9 text-ink" style={at(900)} strokeWidth={2} />
+            <span className="s-fade text-[10px] font-extrabold text-success-text" style={at(1100)}>{t('scan')}</span>
+          </span>,
+          150,
+        )}
+      </div>
+      <div className="s-pop flex flex-col items-center gap-1 rounded-tile border-2 border-brand bg-surface px-4 py-2.5 text-center shadow-card" style={at(2400)}>
+        <span className="text-[13px] font-extrabold text-ink">{t('answer')}</span>
+        <span className="flex items-center gap-1.5 text-[11.5px] font-bold text-success-text">
+          <Lock aria-hidden="true" className="size-3.5 shrink-0" strokeWidth={2.4} />
+          {t('neither')}
+        </span>
+      </div>
+    </div>
+  );
+}
 
 function ScanScene() {
   const t = useTranslations('landing.showcase.scan.scene');
@@ -244,6 +304,7 @@ function NearbyScene() {
 }
 
 const tools: Tool[] = [
+  { key: 'blindMatch', href: '/dashboard/blind-match', icon: EyeOff, badge: 'bg-brand text-ink', stage: 'bg-[#FFF4EC]', Scene: BlindMatchScene, featured: true },
   { key: 'scan', href: '/dashboard/scan', icon: Camera, badge: 'bg-brand-tint text-brand-text-dark', stage: 'bg-brand-tint-soft', Scene: ScanScene },
   { key: 'family', href: '/dashboard/family', icon: Network, badge: 'bg-success-tint text-success-text', stage: 'bg-success-tint/70', Scene: FamilyScene },
   { key: 'assistant', href: '/dashboard/assistant', icon: AudioLines, badge: 'bg-[#FFE3D3] text-brand-text-dark', stage: 'bg-bg', Scene: AssistantScene },
@@ -320,7 +381,7 @@ export function ToolShowcase() {
           onKeyDown={onKeyDown}
           className="grid grid-cols-2 gap-2 lg:grid-cols-1 lg:gap-2.5"
         >
-          {tools.map(({ key, icon: Icon, badge }, index) => {
+          {tools.map(({ key, icon: Icon, badge, featured }, index) => {
             const selected = index === active;
             return (
               <button
@@ -337,6 +398,7 @@ export function ToolShowcase() {
                 onClick={() => choose(index)}
                 className={cn(
                   'group relative flex min-h-11 items-center gap-3 overflow-hidden rounded-tile border p-3 text-start transition-[background-color,border-color,box-shadow,translate] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] lg:p-4',
+                  featured && 'col-span-2 lg:col-span-1',
                   selected
                     ? 'border-line bg-surface shadow-[0_12px_32px_rgba(60,30,10,0.08)] lg:translate-x-1.5 rtl:lg:-translate-x-1.5'
                     : 'border-transparent hover:border-line hover:bg-surface/60',
@@ -352,7 +414,14 @@ export function ToolShowcase() {
                   <Icon aria-hidden="true" className="size-5" strokeWidth={2.2} />
                 </span>
                 <span className="flex min-w-0 flex-col">
-                  <span className="text-[14px] leading-snug font-extrabold text-ink lg:text-[16px]">{t(`${key}.tab`)}</span>
+                  <span className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[14px] leading-snug font-extrabold text-ink lg:text-[16px]">
+                    {t(`${key}.tab`)}
+                    {featured ? (
+                      <span className="rounded-full bg-brand px-2 py-0.5 text-[10.5px] font-extrabold tracking-wide text-ink uppercase">
+                        {t('blindMatch.new')}
+                      </span>
+                    ) : null}
+                  </span>
                   <span className="hidden text-[13px] text-muted sm:block">{t(`${key}.tag`)}</span>
                 </span>
                 {selected && auto ? (
@@ -396,7 +465,7 @@ export function ToolShowcase() {
             <p className="text-[15px] leading-[1.6] text-muted">{t(`${tool.key}.body`)}</p>
             <div className="mt-2 flex flex-wrap items-center justify-between gap-4">
               <p className="flex items-center gap-2 text-[13.5px] font-semibold text-success-text">
-                {tool.key === 'family' ? (
+                {tool.key === 'family' || tool.key === 'blindMatch' ? (
                   <Lock aria-hidden="true" className="size-4 shrink-0" strokeWidth={2.2} />
                 ) : (
                   <ShieldCheck aria-hidden="true" className="size-4 shrink-0" strokeWidth={2.2} />

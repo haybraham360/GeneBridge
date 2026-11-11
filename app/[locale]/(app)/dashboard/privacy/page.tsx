@@ -80,10 +80,15 @@ export default async function Page({ params }: PageProps<'/[locale]/dashboard/pr
   });
 
   const accessLog = ((log ?? []) as LogRow[]).map((row) => ({
-    text: tt('accessLogLine', {
-      name: row.viewer_name ?? '',
-      resource: tt(`resources.${row.resource === 'result' && row.level === 'full' ? 'resultFull' : row.resource}`),
-    }),
+    // Blind Match (task 17): the compare read the result, the other person
+    // never saw it. No name here: they may have chosen to stay "Someone".
+    text:
+      row.level === 'blind_match' || row.level === 'blind_match_reveal'
+        ? tt(row.level === 'blind_match' ? 'accessLogBlindMatch' : 'accessLogBlindMatchReveal')
+        : tt('accessLogLine', {
+            name: row.viewer_name ?? '',
+            resource: tt(`resources.${row.resource === 'result' && row.level === 'full' ? 'resultFull' : row.resource}`),
+          }),
     when: dayTime(row.viewed_at),
   }));
 
