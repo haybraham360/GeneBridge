@@ -11,6 +11,7 @@
   "header": {
     "navLabel": "Main",
     "how": "How it works",
+    "tools": "Tools",
     "features": "Features",
     "pros": "For professionals",
     "faqs": "FAQs",
@@ -23,11 +24,13 @@
   },
   "hero": {
     "chip": "Genetic health & reproductive planning",
+    "new": "New",
+    "newText": "Photograph your report and get it explained",
     "title": "Understand your genetic risks. Make informed reproductive decisions.",
     "subtitle": "A privacy-first platform that helps individuals and couples understand inherited disease risks, explore their options, and connect with qualified genetic counsellors.",
     "primaryCta": "Get started free",
     "secondaryCta": "Book a counsellor",
-    "note": "In Arabic and English · Nothing is shared without your permission"
+    "note": "In Arabic and English · No account needed to try · Nothing is shared without your permission"
   },
   "preview": {
     "label": "Product preview",
@@ -110,7 +113,7 @@
     "chip": "How GeneBridge works",
     "add": {
       "title": "Add your results",
-      "body": "Enter your screening reference or scan the QR code on your report. Securely."
+      "body": "Enter your screening reference, scan the QR code, or simply photograph your report. Securely."
     },
     "understand": {
       "title": "Understand your risk",
@@ -119,6 +122,77 @@
     "support": {
       "title": "Get expert support",
       "body": "Explore every option and connect with a qualified genetic counsellor in your language."
+    }
+  },
+  "showcase": {
+    "chip": "New in GeneBridge",
+    "title": "Tools that do the hard part with you.",
+    "subtitle": "Photograph a report, describe your family out loud, ask a question and hear the answer, or find care close by. In Arabic and English.",
+    "tabsLabel": "GeneBridge tools",
+    "example": "Example",
+    "scan": {
+      "tab": "Scan your report",
+      "tag": "Photo or PDF",
+      "title": "Photograph your report. Get every finding explained.",
+      "body": "Take a photo or upload your screening report. GeneBridge reads it, you check what it found, and each finding is explained in plain words you can also listen to. Uncertain findings go straight to a counsellor.",
+      "promise": "Photos are deleted as soon as they're read",
+      "cta": "Scan a report",
+      "scene": {
+        "report": "Screening report",
+        "finding": "Beta-thalassemia",
+        "carrier": "Carrier",
+        "rest": "Everything else screened",
+        "noChanges": "No changes found",
+        "healthy": "You are healthy",
+        "listen": "Listen"
+      }
+    },
+    "family": {
+      "tab": "Describe your family",
+      "tag": "Speak or type",
+      "title": "Say who's in your family. Watch the tree draw itself.",
+      "body": "Speak or type in Arabic or English, the way you'd tell a friend. GeneBridge proposes the people and how they're related, asks when something is unclear, and saves nothing until you keep it.",
+      "promise": "Names are removed before anything reaches the AI",
+      "cta": "Open family map",
+      "scene": {
+        "before": "My father's brother",
+        "name": "Saeed",
+        "masked": "[PERSON_1]",
+        "after": "has sickle cell disease.",
+        "father": "Father",
+        "uncle": "Uncle",
+        "condition": "Sickle cell disease",
+        "you": "You",
+        "keep": "Keep all"
+      }
+    },
+    "assistant": {
+      "tab": "Ask and listen",
+      "tag": "AI assistant",
+      "title": "Ask about inheritance. Hear the answer.",
+      "body": "Type or speak your question. Ask GeneBridge answers in short, everyday words from a reviewed library, reads the reply aloud with captions, and offers a counsellor when a question needs a person.",
+      "promise": "It never diagnoses, and uses your result only if you turn that on",
+      "cta": "Ask GeneBridge",
+      "scene": {
+        "question": "Does being a carrier mean I'm ill?",
+        "from": "From the GeneBridge library",
+        "answer": "No. Carriers are healthy. It only matters when planning children, and only if your partner carries a change in the same gene.",
+        "reading": "Reading aloud",
+        "counsellor": "Talk to a counsellor"
+      }
+    },
+    "nearby": {
+      "tab": "Care near you",
+      "tag": "Map",
+      "title": "Find verified care close to you.",
+      "body": "Search for a place, or share your location once, to see verified professionals and services nearby, with their languages, next free time and directions.",
+      "promise": "Your location is rounded on your device and never stored",
+      "cta": "Find care near you",
+      "scene": {
+        "initials": "AO",
+        "role": "Genetic counsellor",
+        "detail": "2.4 km · Arabic, English"
+      }
     }
   },
   "features": {
@@ -139,11 +213,11 @@
     },
     "family": {
       "title": "Family History Mapping",
-      "body": "Build a private family tree to see where inherited conditions appear."
+      "body": "Say or type who's in your family, and a private tree draws itself."
     },
     "counsellor": {
       "title": "Counsellor & Referral",
-      "body": "Book verified genetic counsellors and track every step of your care."
+      "body": "Message and book verified genetic counsellors, meet by video, and track every step of your care."
     },
     "privacy": {
       "title": "Privacy & Consent",
@@ -157,6 +231,7 @@
     "point2": "Change or withdraw consent at any time",
     "point3": "We store your result interpretation, never your raw genome",
     "point4": "Tell relatives about a family risk without revealing your own result",
+    "point5": "Report photos are deleted as soon as they're read, and names are removed before anything reaches the AI",
     "card": {
       "title": "Who can see my result",
       "partner": "Khalid (partner)",
@@ -171,10 +246,11 @@
   "pros": {
     "chip": "For professionals",
     "title": "Patients arrive informed. You see what they choose to share.",
-    "point1": "A clear summary of each patient's result and questions before the session",
-    "point2": "Complex or uncertain findings are routed to you, never explained by the app",
-    "point3": "Referral tracking from screening to specialist",
-    "point4": "Programme insights from aggregated, anonymised data",
+    "point1": "Only verified professionals: a person checks every licence before you see a patient",
+    "point2": "A short brief before each session, drawn only from what the patient chose to share",
+    "point3": "After the session, a plain-language summary drafted from your notes. Nothing reaches the patient until you edit and approve it",
+    "point4": "Complex or uncertain findings are routed to you, never explained by the app",
+    "point5": "Messages, bookings and video sessions in one workspace, with referral tracking",
     "cta": "Professional sign-in",
     "card": {
       "title": "Today's sessions",
@@ -196,6 +272,11 @@
         "name": "Patient S.",
         "detail": "Follow-up after confirmatory test",
         "tag": "Follow-up"
+      },
+      "summary": {
+        "title": "Session summary · Patient S.",
+        "drafted": "Drafted from your notes",
+        "status": "Waiting for your approval"
       }
     }
   },
@@ -204,6 +285,10 @@
     "conditions": {
       "q": "Which conditions does GeneBridge cover?",
       "a": "Any inherited condition in your screening panel, from blood conditions like the thalassemias and sickle cell disease to SMA, cystic fibrosis, hearing loss, metabolic conditions and more. Recessive, dominant and X-linked inheritance are all explained."
+    },
+    "guest": {
+      "q": "Do I need an account to try it?",
+      "a": "No. You can continue as a guest and start exploring straight away. Your guest session stays on this device until you sign out."
     },
     "carrier": {
       "q": "Does a carrier result mean I'm sick?",
@@ -219,12 +304,13 @@
     },
     "ai": {
       "q": "Does the AI assistant interpret my result?",
-      "a": "No. It answers general questions about genetics. Your personal result, and anything uncertain or complex, is explained by a qualified counsellor."
+      "a": "Only if you ask it to. It answers general questions about genetics, and explains your own result only when you turn on “Use my result in this chat”. It never diagnoses or works out risk itself: every number comes from the same inheritance engine as the rest of GeneBridge. Anything uncertain or complex goes to a qualified counsellor."
     }
   },
   "cta": {
     "title": "Start with understanding. Decide together.",
-    "button": "Get started free"
+    "button": "Get started free",
+    "guest": "Continue as a guest"
   },
   "footer": {
     "copyright": "© 2026 GeneBridge",

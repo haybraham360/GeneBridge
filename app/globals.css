@@ -291,6 +291,190 @@
   }
 }
 
+/*
+ * Landing tools showcase. Each scene is a short, one-time sequence that
+ * replays when its tab is shown (the scene is remounted), plus a few calm
+ * loops. `--t` is an element's start time. The final state of every element
+ * is its resting style, so with reduced motion the scene simply appears
+ * complete. Scenes are decorative (aria-hidden) and show labelled examples.
+ */
+@keyframes sweep {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 var(--sweep, 120px);
+  }
+}
+
+@keyframes pin-drop {
+  0% {
+    opacity: 0;
+    translate: 0 -28px;
+  }
+  60% {
+    opacity: 1;
+    translate: 0 3px;
+  }
+  100% {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@keyframes ring-pulse {
+  from {
+    opacity: 0.55;
+    scale: 0.4;
+  }
+  to {
+    opacity: 0;
+    scale: 1.6;
+  }
+}
+
+@keyframes draw {
+  from {
+    stroke-dashoffset: var(--len, 100);
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes swap-out {
+  from {
+    opacity: 1;
+    translate: 0 0;
+  }
+  to {
+    opacity: 0;
+    translate: 0 -8px;
+  }
+}
+
+@keyframes progress {
+  from {
+    scale: 0 1;
+  }
+  to {
+    scale: 1 1;
+  }
+}
+
+@keyframes marquee {
+  to {
+    translate: var(--marquee-to, -50%) 0;
+  }
+}
+
+@utility scene {
+  @media (prefers-reduced-motion: no-preference) {
+    & .s-pop {
+      animation: pop 460ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+      animation-delay: var(--t, 0ms);
+    }
+    & .s-rise {
+      animation: fade-up 620ms cubic-bezier(0.22, 1, 0.36, 1) both;
+      animation-delay: var(--t, 0ms);
+    }
+    & .s-fade {
+      animation: cross-fade 500ms ease-out both;
+      animation-delay: var(--t, 0ms);
+    }
+    & .s-out {
+      animation: swap-out 380ms ease-in both;
+      animation-delay: var(--t, 0ms);
+    }
+    & .s-pin {
+      animation: pin-drop 720ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+      animation-delay: var(--t, 0ms);
+    }
+    & .s-draw {
+      stroke-dasharray: var(--len, 100);
+      animation: draw 900ms cubic-bezier(0.65, 0, 0.35, 1) both;
+      animation-delay: var(--t, 0ms);
+    }
+    & .s-sweep {
+      animation: sweep 2.8s ease-in-out infinite;
+    }
+    & .s-ring {
+      animation: ring-pulse 2.6s ease-out infinite;
+      animation-delay: var(--t, 0ms);
+    }
+    & .s-bar {
+      transform-origin: center;
+      animation: voice-bar 0.9s ease-in-out infinite;
+      animation-delay: calc(var(--d, 0) * -150ms);
+    }
+    & .s-float {
+      animation: float 6s ease-in-out infinite;
+    }
+  }
+  /* Off screen, nothing moves. */
+  &:where([data-paused] *, [data-paused]) * {
+    animation-play-state: paused !important;
+  }
+}
+
+/*
+ * The active tab's progress bar. When it fills, the showcase moves to the
+ * next tool (onAnimationEnd). It pauses while the showcase is hovered,
+ * focused or off screen. With reduced motion there's no bar and no
+ * auto-advance at all.
+ */
+@utility showcase-progress {
+  scale: 0 1;
+  transform-origin: left;
+  &:where([dir='rtl'] *) {
+    transform-origin: right;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    animation: progress var(--dur, 7s) linear both;
+    &:where([data-paused] *, .showcase:hover *, .showcase:focus-within *) {
+      animation-play-state: paused;
+    }
+  }
+}
+
+/*
+ * Conditions marquee: two copies of the list move by half their width, so
+ * the loop is seamless. Moves the other way in Arabic. Pauses on hover. With
+ * reduced motion the list wraps and the copy is hidden.
+ */
+@utility marquee {
+  --marquee-to: -50%;
+  &:where([dir='rtl'] *) {
+    --marquee-to: 50%;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    animation: marquee var(--marquee-dur, 60s) linear infinite;
+    &:hover {
+      animation-play-state: paused;
+    }
+  }
+}
+
+/*
+ * How it works: the dashed line between the steps draws itself as the
+ * section scrolls into view. Without scroll-driven animation it's just there.
+ */
+@utility draw-on-scroll {
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      scale: 0 1;
+      transform-origin: left;
+      animation: progress linear both;
+      animation-timeline: view();
+      animation-range: entry 20% cover 45%;
+      &:where([dir='rtl'] *) {
+        transform-origin: right;
+      }
+    }
+  }
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;

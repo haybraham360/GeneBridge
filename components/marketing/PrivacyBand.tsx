@@ -22,7 +22,7 @@ export function PrivacyBand() {
           </h2>
           <CheckList
             className="gap-3.5"
-            items={[t('point1'), t('point2'), t('point3'), t('point4')]}
+            items={[t('point1'), t('point2'), t('point3'), t('point4'), t('point5')]}
           />
         </div>
 

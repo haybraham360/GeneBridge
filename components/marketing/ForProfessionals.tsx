@@ -1,4 +1,5 @@
-import { Users } from 'lucide-react';
+import { Sparkles, Users } from 'lucide-react';
+import type { CSSProperties } from 'react';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -25,7 +26,7 @@ export function ForProfessionals() {
           align="start"
           className="gap-[18px]"
         />
-        <CheckList className="gap-3" items={[t('point1'), t('point2'), t('point3'), t('point4')]} />
+        <CheckList className="gap-3" items={[t('point1'), t('point2'), t('point3'), t('point4'), t('point5')]} />
         <Button href="/auth" variant="dark" className="self-start">
           {t('cta')}
         </Button>
@@ -52,6 +53,33 @@ export function ForProfessionals() {
             </li>
           ))}
         </ul>
+
+        {/*
+          After the session: an AI draft the counsellor edits and approves.
+          Its lines write themselves in when the card scrolls into view.
+        */}
+        <div className="mt-1 flex flex-col gap-2.5 rounded-input border border-dashed border-brand-ring bg-brand-tint-soft p-3.5">
+          <div className="flex items-center justify-between gap-3">
+            <p className="flex items-center gap-1.5 text-sm font-bold">
+              <Sparkles aria-hidden="true" className="size-4 shrink-0 text-brand-text" strokeWidth={2.2} />
+              {t('card.summary.title')}
+            </p>
+            <span className="shrink-0 rounded-full bg-surface px-2.5 py-1 text-xs font-bold text-brand-text-dark">
+              {t('card.summary.status')}
+            </span>
+          </div>
+          <div aria-hidden="true" className="flex flex-col gap-1.5">
+            {['w-full', 'w-11/12', 'w-7/12'].map((w, i) => (
+              <span key={w} className="block h-2 overflow-hidden rounded-full bg-surface">
+                <span
+                  className={cn('draw-on-scroll block h-full rounded-full bg-brand/35', w)}
+                  style={{ animationRange: `entry ${20 + i * 10}% cover ${45 + i * 5}%` } as CSSProperties}
+                />
+              </span>
+            ))}
+          </div>
+          <p className="text-[13px] text-muted">{t('card.summary.drafted')}</p>
+        </div>
       </Card>
     </section>
   );

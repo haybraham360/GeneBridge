@@ -10,9 +10,14 @@ export function CtaBand() {
         <h2 className="font-display max-w-[620px] text-[clamp(30px,4vw,48px)] leading-[1.1] font-extrabold tracking-[-0.02em] text-ink">
           {t('title')}
         </h2>
-        <Button href="/auth" variant="dark" size="lg">
-          {t('button')}
-        </Button>
+        <div className="flex flex-wrap gap-3">
+          <Button href="/auth" variant="dark" size="lg">
+            {t('button')}
+          </Button>
+          <Button href="/auth" variant="ghost" size="lg" className="border-ink/15">
+            {t('guest')}
+          </Button>
+        </div>
       </div>
     </section>
   );

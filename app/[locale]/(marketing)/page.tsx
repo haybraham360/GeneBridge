@@ -13,6 +13,7 @@ import { PreviewCards } from '@/components/marketing/PreviewCards';
 import { PrivacyBand } from '@/components/marketing/PrivacyBand';
 import { SiteFooter } from '@/components/marketing/SiteFooter';
 import { SiteHeader } from '@/components/marketing/SiteHeader';
+import { ToolShowcase } from '@/components/marketing/ToolShowcase';
 import { SignedOutToast } from '@/components/auth/SignedOutToast';
 import { routing } from '@/i18n/routing';
 
@@ -30,6 +31,7 @@ export default async function LandingPage({ params }: PageProps<'/[locale]'>) {
         <ConditionsBand />
         <Partners />
         <HowItWorks />
+        <ToolShowcase />
         <Features />
         <PrivacyBand />
         <ForProfessionals />
