@@ -32,6 +32,27 @@
     }
   }
 
+  /* Simulator: a parent's chosen copy falls into the child's slot. */
+  --animate-drop-in: drop-in 560ms cubic-bezier(0.34, 1.4, 0.64, 1) both;
+
+  @keyframes drop-in {
+    0% {
+      opacity: 0;
+      translate: 0 -56px;
+      scale: 0.8;
+    }
+    60% {
+      opacity: 1;
+      translate: 0 4px;
+      scale: 1.04;
+    }
+    100% {
+      opacity: 1;
+      translate: 0 0;
+      scale: 1;
+    }
+  }
+
   /* Auth: a short side-to-side nudge that draws the eye to a missed required box. */
   --animate-nudge: nudge 480ms cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
 

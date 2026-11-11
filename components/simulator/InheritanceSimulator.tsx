@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowDown, ChevronDown, Info, Search, X } from 'lucide-react';
+import { ArrowDown, Baby, ChevronDown, Coins, Info, Search, Users, X, type LucideIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { logSimulatorRun } from '@/app/[locale]/(app)/dashboard/simulator/actions';
@@ -37,6 +37,7 @@ export type SimCondition = Pick<CatalogueCondition, 'id' | 'title' | 'aliases' |
 
 type Mine = { id: string; tag: 'result' | 'following' };
 type Square = { r: 0 | 1; c: 0 | 1 };
+type Phase = 'idle' | 'tossing' | 'dropping' | 'done';
 type CopyKind = 'typical' | 'changed' | 'y';
 
 type Props = {
@@ -65,8 +66,11 @@ const DEFAULTS: Record<InheritancePattern, [ParentStatus, ParentStatus]> = {
 
 const OUTCOMES: Outcome[] = ['affected', 'carrier', 'unaffected'];
 const TOTAL_RUNS = 100;
-const REVEAL_MS = 14;
-const PASSING_MS = 700;
+const REVEAL_MS = 22;
+/** One pregnancy plays out in three beats: the coin toss, the copies dropping, the result. */
+const TOSS_MS = 1050;
+const FLIP_MS = 150;
+const DROP_MS = 700;
 const FAMILY_MAX = 12;
 
 const beadClasses: Record<CopyKind, string> = {
@@ -131,12 +135,17 @@ function Bead({
   state = 'normal',
   size = 'lg',
   pop = false,
+  drop = false,
+  delayMs = 0,
 }: {
   pattern: InheritancePattern;
   allele: Allele;
   state?: 'normal' | 'chosen' | 'dimmed';
   size?: 'lg' | 'sm';
   pop?: boolean;
+  /** Falls into place, for a copy passing from a parent to the child. */
+  drop?: boolean;
+  delayMs?: number;
 }) {
   const t = useTranslations('dashboard.simulator.copies');
   return (
@@ -144,13 +153,15 @@ function Bead({
       role="img"
       aria-label={t('aria', { letter: letter(pattern, allele), kind: kindOf(allele) })}
       className={cn(
-        'grid place-items-center rounded-full font-extrabold transition-[translate,opacity,box-shadow] duration-300',
+        'grid place-items-center rounded-full font-extrabold transition-[translate,opacity,box-shadow] duration-150',
         size === 'lg' ? 'size-13 text-xl' : 'size-6 text-[11px]',
         beadClasses[kindOf(allele)],
         state === 'chosen' && '-translate-y-1.5 shadow-card ring-[3px] ring-ink ring-offset-2',
         state === 'dimmed' && 'opacity-35',
         pop && 'animate-pop',
+        drop && 'animate-drop-in',
       )}
+      style={delayMs ? { animationDelay: `${delayMs}ms` } : undefined}
     >
       {letter(pattern, allele)}
     </span>
@@ -159,6 +170,55 @@ function Bead({
 
 function OutcomeDot({ outcome, className }: { outcome: Outcome; className?: string }) {
   return <span aria-hidden="true" className={cn('inline-block size-3.5 shrink-0 rounded-full border', dotClasses[outcome], className)} />;
+}
+
+/** The three ideas behind every pregnancy. The current one lights up while a pregnancy plays out. */
+function HowItWorks({ active }: { active: 1 | 2 | 3 }) {
+  const t = useTranslations('dashboard.simulator.steps');
+  const steps: { n: 1 | 2 | 3; icon: LucideIcon; title: string; body: string }[] = [
+    { n: 1, icon: Users, title: t('one'), body: t('oneBody') },
+    { n: 2, icon: Coins, title: t('two'), body: t('twoBody') },
+    { n: 3, icon: Baby, title: t('three'), body: t('threeBody') },
+  ];
+  return (
+    <section aria-labelledby="how-title" className="mt-5">
+      <h2 id="how-title" className="sr-only">
+        {t('title')}
+      </h2>
+      <ol className="grid gap-2.5 sm:grid-cols-3">
+        {steps.map(({ n, icon: Icon, title, body }) => {
+          const on = n === active;
+          return (
+            <li
+              key={n}
+              aria-current={on ? 'step' : undefined}
+              className={cn(
+                'flex items-start gap-3 rounded-card border px-4 py-3.5 transition-[background-color,border-color,box-shadow] duration-300',
+                on ? 'border-brand bg-brand-tint-soft shadow-card' : 'border-line bg-surface',
+              )}
+            >
+              <span
+                aria-hidden="true"
+                className={cn(
+                  'relative grid size-10 shrink-0 place-items-center rounded-full transition-colors duration-300',
+                  on ? 'bg-brand text-ink' : 'bg-bead-typical text-muted',
+                )}
+              >
+                <Icon className={cn('size-5', on && n === 2 && 'animate-bounce')} />
+                <span className="absolute -top-1 -end-1 grid size-5 place-items-center rounded-full border-2 border-surface bg-ink text-[10px] font-extrabold text-white">
+                  {n}
+                </span>
+              </span>
+              <span className="flex min-w-0 flex-col gap-0.5">
+                <span className="text-sm font-extrabold">{title}</span>
+                <span className="text-[13px] leading-snug text-muted">{body}</span>
+              </span>
+            </li>
+          );
+        })}
+      </ol>
+    </section>
+  );
 }
 
 /* -------------------------------------------------------------------------- */
@@ -179,7 +239,9 @@ export default function InheritanceSimulator({ conditions, mine, initialConditio
   const [status2, setStatus2] = useState<ParentStatus>(DEFAULTS[initialPattern][1]);
 
   const [pick, setPick] = useState<Square | null>(null);
-  const [phase, setPhase] = useState<'idle' | 'passing' | 'done'>('idle');
+  const [phase, setPhase] = useState<Phase>('idle');
+  const [flip, setFlip] = useState(0);
+  const [pickN, setPickN] = useState(0);
   const [family, setFamily] = useState<(Square & { n: number })[]>([]);
   const [runs, setRuns] = useState<Outcome[]>([]);
   const [revealed, setRevealed] = useState(0);
@@ -189,6 +251,7 @@ export default function InheritanceSimulator({ conditions, mine, initialConditio
   const [query, setQuery] = useState('');
 
   const passTimer = useRef<number | null>(null);
+  const flipTimer = useRef<number | null>(null);
   const runTimer = useRef<number | null>(null);
   const countRef = useRef(0);
   const pickerId = useId();
@@ -220,8 +283,10 @@ export default function InheritanceSimulator({ conditions, mine, initialConditio
   const stopTimers = useCallback(() => {
     if (passTimer.current !== null) window.clearTimeout(passTimer.current);
     if (runTimer.current !== null) window.clearInterval(runTimer.current);
+    if (flipTimer.current !== null) window.clearInterval(flipTimer.current);
     passTimer.current = null;
     runTimer.current = null;
+    flipTimer.current = null;
   }, []);
 
   useEffect(() => stopTimers, [stopTimers]);
@@ -266,20 +331,34 @@ export default function InheritanceSimulator({ conditions, mine, initialConditio
 
   /* ------------------------------ Simulation ----------------------------- */
 
+  const busy = phase === 'tossing' || phase === 'dropping';
+
   const simulateOne = () => {
-    if (running || phase === 'passing') return;
+    if (running || busy) return;
+    stopTimers();
     const sq: Square = { r: coin(), c: coin() };
     setPick(sq);
+    setHover(null);
     countRef.current += 1;
     const entry = { ...sq, n: countRef.current };
+    setPickN(entry.n);
     const finish = () => {
       setPhase('done');
       setFamily((f) => [...f, entry].slice(-FAMILY_MAX));
     };
     void logSimulatorRun(pattern, 1).catch(() => {});
     if (reducedMotion()) return finish();
-    setPhase('passing');
-    passTimer.current = window.setTimeout(finish, PASSING_MS);
+    // Beat 1: each parent's two copies take turns being "picked", like a coin in the air.
+    setPhase('tossing');
+    setFlip(0);
+    flipTimer.current = window.setInterval(() => setFlip((f) => f + 1), FLIP_MS);
+    passTimer.current = window.setTimeout(() => {
+      if (flipTimer.current !== null) window.clearInterval(flipTimer.current);
+      flipTimer.current = null;
+      // Beat 2: the chosen copies fall into the child's slots. Beat 3: the result.
+      setPhase('dropping');
+      passTimer.current = window.setTimeout(finish, DROP_MS);
+    }, TOSS_MS);
   };
 
   const runMany = () => {
@@ -314,10 +393,13 @@ export default function InheritanceSimulator({ conditions, mine, initialConditio
 
   /* --------------------------- Bead highlighting -------------------------- */
 
-  // Hovering a square lights up the two copies that make it; otherwise the
-  // last simulated pregnancy does.
-  const focus = hover ?? (phase !== 'idle' ? pick : null);
+  // While the coin is in the air, each parent's copies take turns lighting up
+  // (out of step with each other). After that, hovering a square lights up the
+  // two copies that make it; otherwise the last simulated pregnancy does.
+  const tossing = phase === 'tossing';
+  const focus = tossing ? null : hover ?? (phase !== 'idle' ? pick : null);
   const beadState = (parent: 1 | 2, i: number): 'normal' | 'chosen' | 'dimmed' => {
+    if (tossing) return (flip + (parent === 2 ? 1 : 0)) % 2 === i ? 'chosen' : 'dimmed';
     if (!focus) return 'normal';
     return (parent === 1 ? focus.r : focus.c) === i ? 'chosen' : 'dimmed';
   };
@@ -358,6 +440,8 @@ export default function InheritanceSimulator({ conditions, mine, initialConditio
   const card = cn(cardClasses, 'p-6');
   const pickedChild = pick ? childAt(pick) : null;
   const hasAffectedSquare = result.chances.affected > 0;
+  const activeStep: 1 | 2 | 3 = tossing ? 2 : phase === 'idle' ? 1 : 3;
+  const childLanded = phase === 'dropping' || phase === 'done';
 
   return (
     <main className="min-w-0 flex-1 px-[clamp(16px,3vw,40px)] pt-9 pb-10">
@@ -531,6 +615,8 @@ export default function InheritanceSimulator({ conditions, mine, initialConditio
             </p>
           )}
 
+          <HowItWorks active={activeStep} />
+
           <div className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
             {/* Stage: parents → child */}
             <section aria-label={t('buttons.simulateOne')} className={cn(card, 'flex flex-col items-center')}>
@@ -549,6 +635,9 @@ export default function InheritanceSimulator({ conditions, mine, initialConditio
                           <Bead key={i} pattern={pattern} allele={a} state={beadState(parent, i)} />
                         ))}
                       </div>
+                      <p aria-hidden="true" className="-mt-1 h-4 text-xs font-bold text-brand-text">
+                        {tossing ? t('single.picking') : ''}
+                      </p>
                       <div
                         role="radiogroup"
                         aria-label={t('status.label', { parent: name })}
@@ -595,27 +684,63 @@ export default function InheritanceSimulator({ conditions, mine, initialConditio
                   </li>
                 )}
               </ul>
+              <p className="mt-1.5 text-center text-[13px] text-muted">{t('copies.everyone')}</p>
 
-              <ArrowDown aria-hidden="true" className={cn('mt-4 size-6 text-neutral-line', phase === 'passing' && 'animate-bounce')} />
+              <div aria-hidden="true" className="mt-4 flex gap-16">
+                {[0, 1].map((i) => (
+                  <ArrowDown
+                    key={i}
+                    className={cn('size-6 transition-colors', busy ? 'animate-bounce text-brand' : 'text-neutral-line')}
+                    style={busy ? { animationDelay: `${i * 150}ms` } : undefined}
+                  />
+                ))}
+              </div>
 
-              {/* One pregnancy */}
-              <div
-                aria-live="polite"
-                className="mt-3 flex min-h-36 w-full max-w-md flex-col items-center justify-center gap-2.5 rounded-card bg-brand-tint-soft px-6 py-5 text-center"
-              >
+              {/* One pregnancy: two empty slots, one for each parent's copy */}
+              <div className="mt-3 flex w-full max-w-md flex-col items-center gap-3 rounded-card bg-brand-tint-soft px-6 py-5 text-center">
+                <p aria-hidden="true" className="flex items-center gap-1.5 text-xs font-extrabold tracking-wide text-muted uppercase">
+                  <Baby className="size-4" />
+                  {t('single.child')}
+                </p>
+                <div aria-hidden="true" className="flex gap-6">
+                  {([1, 2] as const).map((parent) => (
+                    <div key={parent} className="flex flex-col items-center gap-1.5">
+                      <span
+                        className={cn(
+                          'grid size-15 place-items-center rounded-full border-2 border-dashed transition-colors duration-300',
+                          childLanded ? 'border-transparent' : busy ? 'border-brand' : 'border-line-strong',
+                        )}
+                      >
+                        {childLanded && pick && (
+                          <Bead
+                            key={`${pickN}-${parent}`}
+                            pattern={pattern}
+                            allele={parent === 1 ? copies1[pick.r] : copies2[pick.c]}
+                            drop={phase === 'dropping'}
+                            delayMs={parent === 2 ? 140 : 0}
+                          />
+                        )}
+                      </span>
+                      <span className="text-[11px] font-bold text-muted">
+                        {t('single.from', { parent: parent === 1 ? name1 : name2 })}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                <div aria-live="polite" className="flex min-h-20 flex-col items-center justify-center gap-2">
                 {phase === 'idle' || !pick || !pickedChild ? (
                   <p className="text-[15px] leading-relaxed text-muted">
                     {t('single.empty', { button: t('buttons.simulateOne') })}
                   </p>
-                ) : phase === 'passing' ? (
+                ) : tossing ? (
                   <p className="text-[15px] leading-relaxed text-muted">{t('single.passing')}</p>
+                ) : phase === 'dropping' ? (
+                  <p className="text-[15px] leading-relaxed text-muted">{t('single.dropping')}</p>
                 ) : (
-                  <>
-                    <div key={`${family.length}-${pick.r}${pick.c}`} className="flex gap-2">
-                      <Bead pattern={pattern} allele={copies1[pick.r]} pop />
-                      <Bead pattern={pattern} allele={copies2[pick.c]} pop />
-                    </div>
-                    <p className={cn('text-base font-extrabold', outcomeText[pickedChild.outcome])}>
+                  <div key={pickN} className="flex animate-pop flex-col items-center gap-2">
+                    <p className={cn('flex items-center gap-2 text-base font-extrabold', outcomeText[pickedChild.outcome])}>
+                      <OutcomeDot outcome={pickedChild.outcome} />
                       {t('single.sentence', {
                         sex: pickedChild.sex ?? 'other',
                         outcome: pickedChild.outcome,
@@ -635,12 +760,13 @@ export default function InheritanceSimulator({ conditions, mine, initialConditio
                       ))}
                     </ul>
                     <p className="text-[13px] font-bold">{t('single.same')}</p>
-                  </>
+                  </div>
                 )}
+                </div>
               </div>
 
               <div className="mt-5 flex flex-wrap items-center justify-center gap-2.5">
-                <button type="button" onClick={simulateOne} disabled={running || phase === 'passing'} className={buttonClasses('primary', 'sm', 'disabled:cursor-not-allowed disabled:opacity-60')}>
+                <button type="button" onClick={simulateOne} disabled={running || busy} className={buttonClasses('primary', 'sm', 'disabled:cursor-not-allowed disabled:opacity-60')}>
                   {t('buttons.simulateOne')}
                 </button>
                 <button type="button" onClick={runMany} disabled={running} className={buttonClasses('dark', 'sm', 'disabled:cursor-not-allowed disabled:opacity-60')}>
@@ -698,7 +824,15 @@ export default function InheritanceSimulator({ conditions, mine, initialConditio
                   className="mt-5 grid grid-cols-[auto_minmax(0,1fr)_minmax(0,1fr)] items-center gap-2"
                   onMouseLeave={() => setHover(null)}
                 >
+                  {/* Who each row and column comes from (also said in words above) */}
                   <span aria-hidden="true" />
+                  <span aria-hidden="true" className="col-span-2 text-center text-xs font-bold text-muted">
+                    {name2}
+                  </span>
+                  <span aria-hidden="true" className="flex items-center gap-0.5 text-xs font-bold text-muted">
+                    {name1}
+                    <ArrowDown className="size-3.5" />
+                  </span>
                   {copies2.map((a, c) => (
                     <div key={c} className="flex justify-center py-1">
                       <Bead pattern={pattern} allele={a} size="sm" state={focus ? (focus.c === c ? 'chosen' : 'dimmed') : 'normal'} />
@@ -713,6 +847,7 @@ export default function InheritanceSimulator({ conditions, mine, initialConditio
                       pattern={pattern}
                       focus={focus}
                       picked={phase === 'done' ? pick : null}
+                      pickN={pickN}
                       childAt={childAt}
                       outcomeLabel={outcomeLabel}
                       onHover={setHover}
@@ -792,6 +927,11 @@ export default function InheritanceSimulator({ conditions, mine, initialConditio
                 <p className="mt-2 text-[15px] text-muted">
                   {runs.length ? t('many.after') : t('many.description', { count: TOTAL_RUNS })}
                 </p>
+                {running && (
+                  <p aria-hidden="true" className="mt-2 text-sm font-extrabold text-brand-text tabular-nums">
+                    {t('many.progress', { n: revealed, total: TOTAL_RUNS })}
+                  </p>
+                )}
                 <ul className="mt-4 flex flex-col gap-3" aria-live="polite">
                   {OUTCOMES.filter((o) => !(o === 'carrier' && pattern === 'autosomal_dominant')).map((o) => (
                     <li key={o} className="flex flex-col gap-1.5">
@@ -803,7 +943,7 @@ export default function InheritanceSimulator({ conditions, mine, initialConditio
                       </div>
                       {/* Count against expected: the tick marks what the chances predict */}
                       <div aria-hidden="true" className="relative ms-6 h-1.5 rounded-full bg-bead-typical">
-                        <span className={cn('absolute inset-y-0 start-0 rounded-full', o === 'unaffected' ? 'bg-neutral-line' : dotClasses[o])} style={{ inlineSize: `${counts[o]}%` }} />
+                        <span className={cn('absolute inset-y-0 start-0 rounded-full transition-[inline-size] duration-200 ease-out', o === 'unaffected' ? 'bg-neutral-line' : dotClasses[o])} style={{ inlineSize: `${counts[o]}%` }} />
                         {expected[o] > 0 && (
                           <span className="absolute -inset-y-1 w-0.5 rounded-full bg-ink" style={{ insetInlineStart: `${expected[o]}%` }} />
                         )}
@@ -828,7 +968,14 @@ export default function InheritanceSimulator({ conditions, mine, initialConditio
               >
                 {Array.from({ length: TOTAL_RUNS }, (_, i) =>
                   i < revealed ? (
-                    <span key={`${runs.length}-${i}`} className={cn('aspect-square animate-pop rounded-full border', dotClasses[runs[i]])} />
+                    <span
+                      key={`${runs.length}-${i}`}
+                      className={cn(
+                        'aspect-square animate-pop rounded-full border',
+                        dotClasses[runs[i]],
+                        running && i === revealed - 1 && 'ring-2 ring-ink ring-offset-1',
+                      )}
+                    />
                   ) : (
                     <span key={i} className="aspect-square rounded-full border border-line-strong bg-surface" />
                   ),
@@ -853,6 +1000,7 @@ function PunnettRow({
   pattern,
   focus,
   picked,
+  pickN,
   childAt,
   outcomeLabel,
   onHover,
@@ -863,6 +1011,8 @@ function PunnettRow({
   pattern: InheritancePattern;
   focus: Square | null;
   picked: Square | null;
+  /** Changes with every simulated pregnancy, so the picked square pops in again. */
+  pickN: number;
   childAt: (sq: Square) => Child;
   outcomeLabel: (o: Outcome) => string;
   onHover: (sq: Square | null) => void;
@@ -881,7 +1031,7 @@ function PunnettRow({
         const isFocus = focus?.r === r && focus?.c === c;
         return (
           <button
-            key={c}
+            key={isPicked ? `picked-${pickN}` : c}
             type="button"
             onMouseEnter={() => onHover(sq)}
             onFocus={() => onHover(sq)}
@@ -892,7 +1042,7 @@ function PunnettRow({
               'flex min-h-16 cursor-pointer flex-col items-center justify-center gap-0.5 rounded-tile px-1 transition-[box-shadow,background-color]',
               child.outcome === 'affected' ? 'bg-affected-tint' : 'bg-bead-typical/60',
               isFocus && 'ring-2 ring-ink',
-              isPicked && 'ring-[3px] ring-ink ring-offset-2',
+              isPicked && 'animate-pop ring-[3px] ring-ink ring-offset-2',
             )}
           >
             <span className="text-lg font-extrabold">{g}</span>

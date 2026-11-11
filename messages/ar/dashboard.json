@@ -350,7 +350,8 @@
       "typical": "نسخة طبيعية",
       "changed": "نسخة متغيّرة",
       "y": "الكروموسوم Y",
-      "aria": "{letter}، {kind, select, typical {نسخة طبيعية} changed {نسخة متغيّرة} other {الكروموسوم Y}}"
+      "aria": "{letter}، {kind, select, typical {نسخة طبيعية} changed {نسخة متغيّرة} other {الكروموسوم Y}}",
+      "everyone": "لدى كل شخص نسختان من هذا الجين: واحدة من كل والد."
     },
     "single": {
       "theCondition": "الحالة",
@@ -358,7 +359,11 @@
       "passing": "يمرّر كل والد واحدة من نسختيه، مثل رمي قطعة نقود…",
       "passed": "{parent} مرّر {kind, select, typical {نسخة طبيعية} changed {نسخة متغيّرة} other {الكروموسوم Y}} ({letter}).",
       "sentence": "{sex, select, son {هذا الابن} daughter {هذه البنت} other {هذا الطفل}} {outcome, select, affected {{sex, select, daughter {مصابة} other {مصاب}} بـ{name}.} carrier {{sex, select, daughter {ناقلة بصحة جيدة.} other {ناقل بصحة جيدة.}}} other {بلا نسخة متغيّرة.}}",
-      "same": "الحمل التالي له الاحتمالات نفسها تمامًا. الأطفال السابقون لا يغيّرونها."
+      "same": "الحمل التالي له الاحتمالات نفسها تمامًا. الأطفال السابقون لا يغيّرونها.",
+      "picking": "يختار نسخة واحدة…",
+      "dropping": "تنتقل كل نسخة مختارة إلى الطفل…",
+      "from": "من {parent}",
+      "child": "الطفل"
     },
     "family": {
       "title": "حالات الحمل حتى الآن",
@@ -411,13 +416,23 @@
       "after": "كل نقطة هي حمل واحد في المحاكاة. تختلف النتائج قليلًا في كل مرة، حول الأعداد المتوقعة.",
       "expected": "المتوقع حوالي {n}",
       "disclaimer": "هذه احتمالات، وليست ما سيحدث فعلًا.",
-      "aria": "تم عرض {revealed} من {total} حالة حمل: {affected} {affectedLabel}، {carrier} ناقل بصحة جيدة، {unaffected} بلا نسخة متغيّرة"
+      "aria": "تم عرض {revealed} من {total} حالة حمل: {affected} {affectedLabel}، {carrier} ناقل بصحة جيدة، {unaffected} بلا نسخة متغيّرة",
+      "progress": "الحمل {n} من {total}"
     },
     "listen": {
       "intro": "محاكي الوراثة. هذه احتمالات، وليست ما سيحدث فعلًا.",
       "summary": "{pattern}. {parent1}: {status1}. {parent2}: {status2}. في كل حمل، هناك احتمال {affected} بالمئة لطفل {affectedLabel}، و{carrier} بالمئة لطفل ناقل بصحة جيدة، و{unaffected} بالمئة لطفل بلا نسخة متغيّرة. الاحتمالات هي نفسها في كل حمل.",
       "has": "مصاب بالحالة",
       "hasNamed": "مصاب بـ{name}"
+    },
+    "steps": {
+      "title": "كيف يعمل",
+      "one": "اختر الوالدين",
+      "oneBody": "اختر مثالًا سريعًا، أو حدّد حالة كل والد في الأسفل.",
+      "two": "يمرّر كل والد نسخة واحدة",
+      "twoBody": "أيّ النسختين تنتقل أمر يعود للصدفة، مثل رمي قطعة نقود.",
+      "three": "يحصل الطفل على نسختين",
+      "threeBody": "نسخة من كل والد، ومعًا تحددان النتيجة."
     }
   },
   "family": {

@@ -350,7 +350,8 @@
       "typical": "Typical copy",
       "changed": "Changed copy",
       "y": "Y chromosome",
-      "aria": "{letter}, {kind, select, typical {typical copy} changed {changed copy} other {Y chromosome}}"
+      "aria": "{letter}, {kind, select, typical {typical copy} changed {changed copy} other {Y chromosome}}",
+      "everyone": "Everyone has two copies of this gene: one from each parent."
     },
     "single": {
       "theCondition": "the condition",
@@ -358,7 +359,11 @@
       "passing": "Each parent passes on one of their two copies, like a coin toss…",
       "passed": "{parent} passed on {kind, select, typical {a typical copy} changed {a changed copy} other {the Y chromosome}} ({letter}).",
       "sentence": "{sex, select, son {This son} daughter {This daughter} other {This child}} {outcome, select, affected {has {name}.} carrier {is a healthy carrier.} other {has no changed copy.}}",
-      "same": "The next pregnancy has exactly the same chances. Earlier children don't change them."
+      "same": "The next pregnancy has exactly the same chances. Earlier children don't change them.",
+      "picking": "Picking one copy…",
+      "dropping": "Each chosen copy passes to the child…",
+      "from": "From {parent}",
+      "child": "The child"
     },
     "family": {
       "title": "Pregnancies so far",
@@ -411,13 +416,23 @@
       "after": "Each dot is one simulated pregnancy. Results vary a little each run, around the expected numbers.",
       "expected": "expected about {n}",
       "disclaimer": "This shows chances, not what will happen.",
-      "aria": "{revealed} of {total} simulated pregnancies shown: {affected} {affectedLabel}, {carrier} healthy carrier, {unaffected} no changed copy"
+      "aria": "{revealed} of {total} simulated pregnancies shown: {affected} {affectedLabel}, {carrier} healthy carrier, {unaffected} no changed copy",
+      "progress": "Pregnancy {n} of {total}"
     },
     "listen": {
       "intro": "Inheritance simulator. This shows chances, not what will happen.",
       "summary": "{pattern}. {parent1}: {status1}. {parent2}: {status2}. For each pregnancy, there is a {affected} percent chance of a child who {affectedLabel}, {carrier} percent of a healthy carrier, and {unaffected} percent of a child with no changed copy. The chances are the same for every pregnancy.",
       "has": "has the condition",
       "hasNamed": "has {name}"
+    },
+    "steps": {
+      "title": "How it works",
+      "one": "Choose the parents",
+      "oneBody": "Pick a quick example, or set each parent below.",
+      "two": "Each parent passes on one copy",
+      "twoBody": "Which of their two copies is down to chance, like a coin toss.",
+      "three": "The child gets two copies",
+      "threeBody": "One from each parent. Together they decide the result."
     }
   },
   "family": {
