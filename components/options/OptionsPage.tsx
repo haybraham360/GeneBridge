@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Check, CircleAlert, Info, Lock, Volume1 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
+import { speak } from "@/lib/audio/tts";
 
 /* ---------- content ---------- */
 
@@ -135,16 +136,12 @@ export default function OptionsPage({ sharedCondition = null }: { sharedConditio
   //   window.speechSynthesis.speak(new SpeechSynthesisUtterance(text));
   // };
   const listen = () => {
-  if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
-    window.speechSynthesis.cancel();
     const text = [
       t("listen.intro"),
       t("notice"),
       ...options.map((o) => `${o.title}. ${o.body}`),
     ].join(" ");
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = locale;
-    window.speechSynthesis.speak(u);
+    speak(text, locale === "ar" ? "ar" : "en");
   };
 
   return (

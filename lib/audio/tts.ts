@@ -44,6 +44,30 @@ const NETWORK = /google/i;
 const ROBOTIC =
   /compact|espeak|albert|bad news|bahh|bells|boing|bubbles|cellos|good news|jester|organ|superstar|trinoids|whisper|wobble|zarvox|fred|junior|ralph|kathy|grandma|grandpa|eddy|flo|reed|rocko|sandy|shelley/i;
 
+/** A zero-length WAV, played inside the tap to unlock an audio element on phones. */
+const SILENT = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=';
+/** One shared element: once a tap has unlocked it, iOS lets it play later sources too. */
+let sharedAudio: HTMLAudioElement | null = null;
+const unlocked = new WeakSet<HTMLAudioElement>();
+
+/**
+ * Phones (iOS Safari above all) only let audio start from inside a tap, and
+ * the cloud audio arrives after a fetch. Playing a silent clip on the element
+ * synchronously, during the tap, keeps it allowed to play afterwards.
+ */
+function unlockAudio(element: HTMLAudioElement) {
+  if (unlocked.has(element)) return;
+  try {
+    element.src = SILENT;
+    void element
+      .play()
+      .then(() => unlocked.add(element))
+      .catch(() => {});
+  } catch {
+    // Not fatal: playback may still be allowed, and the browser voice is the fallback.
+  }
+}
+
 let voiceCache: SpeechSynthesisVoice[] = [];
 if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
   // Chrome loads its voice list asynchronously; keep it warm so the first Listen tap gets the good voice.
@@ -85,8 +109,8 @@ async function cloudUrls(sentences: string[], locale: SpeechLocale): Promise<str
     });
     const body = (await response.json().catch(() => ({}))) as { provider?: string | null; urls?: string[] };
     if (!response.ok || !body.provider || !body.urls?.length) {
-      // No provider set up: stop asking. A one-off failure: try again next time.
-      if (response.ok || response.status === 401) cloud = 'off';
+      // No provider set up: stop asking. Signed out or a one-off failure: try again next time.
+      if (response.ok) cloud = 'off';
       return null;
     }
     cloud = 'on';
@@ -134,11 +158,17 @@ export function narrate(sentences: string[], locale: SpeechLocale, options: Narr
 
   const playCloud = (urls: string[], index: number) => {
     if (stopped || index >= urls.length || !audio) return finish();
-    audio.src = urls[index];
-    audio.onended = () => playCloud(urls, index + 1);
-    audio.onerror = () => finish();
+    const element = audio;
+    element.src = urls[index];
+    element.onended = () => playCloud(urls, index + 1);
+    element.onerror = () => finish();
     options.onSentence?.(index);
-    void audio.play().catch(() => finish());
+    void element.play().catch(() => {
+      if (stopped) return finish();
+      // Blocked by the browser (autoplay rules): read the rest with the browser voice instead of going silent.
+      element.onended = element.onerror = null;
+      playBrowser(index);
+    });
   };
 
   const narration: Narration = {
@@ -168,10 +198,14 @@ export function narrate(sentences: string[], locale: SpeechLocale, options: Narr
   }
   if (browserSpeech()) window.speechSynthesis.cancel();
 
+  // Still inside the tap: unlock the element the cloud audio will play through.
+  const element = cloud === 'off' ? null : (options.audio ?? (sharedAudio ??= new Audio()));
+  if (element) unlockAudio(element);
+
   void cloudUrls(parts, locale).then((urls) => {
     if (stopped) return;
-    if (urls && urls.length === parts.length) {
-      audio = options.audio ?? new Audio();
+    if (urls && urls.length === parts.length && element) {
+      audio = element;
       playCloud(urls, 0);
     } else {
       playBrowser(0);
