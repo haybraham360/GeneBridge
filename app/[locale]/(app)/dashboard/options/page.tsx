@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 import { loadUserPath } from '@/lib/user/path';
 import { hasLocale } from 'next-intl';
 import { notFound } from 'next/navigation';
-import { PlaceholderPage, placeholderMetadata } from '@/components/PlaceholderPage';
+import { placeholderMetadata } from '@/components/PlaceholderPage';
 import { routing } from '@/i18n/routing';
 import OptionsPage from '@/components/options/OptionsPage';
 

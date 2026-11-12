@@ -387,12 +387,6 @@ function ManageSharingDialog({
 /*  Toast (confirms which action was chosen when no handler is supplied)      */
 /* -------------------------------------------------------------------------- */
 
-const ACTION_MESSAGES: Record<ActionKey, string> = {
-  simulator: "Opening the inheritance simulator…",
-  options: "Opening your options…",
-  session: "Opening couple session booking…",
-};
-
 function Toast({ children }: { children: ReactNode }) {
   return (
     <div
@@ -455,7 +449,6 @@ export default function CoupleView({
 
   const handleAction = (key: ActionKey) => {
     if (onAction) onAction(key);
-    // else setToast(ACTION_MESSAGES[key]);
     else setToast(toastMessages[key]);
   };
 
