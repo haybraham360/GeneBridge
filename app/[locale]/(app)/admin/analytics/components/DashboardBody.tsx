@@ -1,6 +1,7 @@
-import { CircleAlert, RefreshCw } from 'lucide-react';
+import { CircleAlert, Hourglass, RefreshCw } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
-import { Card } from '@/components/ui/Card';
+import { Card, cardClasses } from '@/components/ui/Card';
+import { cn } from '@/lib/cn';
 import { buttonClasses } from '@/components/ui/Button';
 import { Link } from '@/i18n/navigation';
 import { filtersQuery } from '@/lib/analytics/filters';
@@ -15,6 +16,7 @@ import { FunnelPanel } from './FunnelPanel';
 import { KpiTiles } from './KpiTiles';
 import { ModesPanel } from './ModesPanel';
 import { NotTrackedNote } from './NotTrackedNote';
+import { TrendPanel } from './TrendPanel';
 
 /** Loads the figures for the current filters and renders every panel. */
 export async function DashboardBody({ filters }: { filters: Filters }) {
@@ -41,18 +43,63 @@ export async function DashboardBody({ filters }: { filters: Filters }) {
     return <StateCard icon="empty" title={t('empty.title')} body={t('empty.body')} />;
   }
 
+  // Panels with no figure to show fold into one short "waiting" card instead
+  // of a full-size card of "Hidden (under 10)" rows.
+  const shows = {
+    trend: data.trend.some((w) => w.preScore !== null || w.signups !== null),
+    exploring: data.exploring.explorers !== null,
+    scans: data.scans.scanned !== null,
+    distance: data.distance.some((r) => r.searches !== null),
+  };
+  const waiting = (Object.keys(shows) as (keyof typeof shows)[]).filter((k) => !shows[k]);
+  const animate = 'motion-safe:animate-fade-up';
+
   return (
     <>
       <KpiTiles current={data.current} previous={data.previous} range={filters.range} />
+      {shows.trend ? <TrendPanel weeks={data.trend} className={animate} /> : null}
       <div className="flex flex-wrap gap-5">
-        <FunnelPanel funnel={data.funnel} className="min-w-0 flex-[3_1_460px] motion-safe:animate-fade-up" />
-        <ModesPanel modes={data.modes} className="min-w-0 flex-[2_1_300px] motion-safe:animate-fade-up" />
+        <FunnelPanel funnel={data.funnel} className={`min-w-0 flex-[3_1_460px] ${animate}`} />
+        <ModesPanel modes={data.modes} className={`min-w-0 flex-[2_1_300px] ${animate}`} />
       </div>
       <EquityPanel rows={data.equity} overall={data.overall} />
-      <ExploringPanel data={data.exploring} className="motion-safe:animate-fade-up" />
-      <ScansPanel data={data.scans} className="motion-safe:animate-fade-up" />
-      <DistancePanel rows={data.distance} className="motion-safe:animate-fade-up" />
+      {shows.exploring || shows.scans ? (
+        <div className="flex flex-wrap gap-5">
+          {shows.exploring ? (
+            <ExploringPanel data={data.exploring} className={`min-w-0 flex-[1_1_380px] ${animate}`} />
+          ) : null}
+          {shows.scans ? <ScansPanel data={data.scans} className={`min-w-0 flex-[1_1_380px] ${animate}`} /> : null}
+        </div>
+      ) : null}
+      {shows.distance ? <DistancePanel rows={data.distance} className={animate} /> : null}
+      {waiting.length ? <WaitingCard panels={waiting.map((k) => t(`${k}.title`))} /> : null}
     </>
+  );
+}
+
+/** One compact card naming the panels that have no group of 10 yet. */
+async function WaitingCard({ panels }: { panels: string[] }) {
+  const t = await getTranslations('analytics.notEnough');
+  return (
+    <section aria-labelledby="waiting-title" className={cn(cardClasses, 'flex flex-col gap-3 p-6')}>
+      <div className="flex items-start gap-3">
+        <Hourglass aria-hidden="true" className="mt-0.5 size-5 flex-none text-brand-text" strokeWidth={2} />
+        <div className="flex flex-col gap-1">
+          <h2 id="waiting-title" className="text-lg font-extrabold tracking-[-0.01em]">
+            {t('title')}
+          </h2>
+          <p className="max-w-[65ch] text-sm text-muted">{t('body')}</p>
+        </div>
+      </div>
+      <p className="sr-only">{t('list')}</p>
+      <ul className="flex flex-wrap gap-2">
+        {panels.map((name) => (
+          <li key={name} className="rounded-full border border-line-strong px-3 py-1 text-[13px] font-semibold text-ink-soft">
+            {name}
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }
 

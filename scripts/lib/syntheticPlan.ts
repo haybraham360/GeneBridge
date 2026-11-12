@@ -116,7 +116,7 @@ const MODE_GAIN: Record<Mode, number> = { read: 0.3, listen: 0.34, read_listen: 
 const LANGUAGE_PROFILE: Record<Language, { gain: number; book: number; attend: number; days: number }> = {
   ar: { gain: 0.02, book: 0.88, attend: 0.93, days: 0 },
   en: { gain: 0, book: 0.86, attend: 0.92, days: -1 },
-  ur: { gain: -0.04, book: 0.78, attend: 0.88, days: 2 },
+  ur: { gain: -0.13, book: 0.78, attend: 0.88, days: 2 },
   hi: { gain: -0.02, book: 0.8, attend: 0.9, days: 1 },
   tl: { gain: -0.06, book: 0.78, attend: 0.88, days: 2 },
 };
@@ -315,5 +315,83 @@ export function buildPlan({
     }
   }
 
+  addLaterFeatureEvents({ seed, people, results, viewMs, add });
+
   return { people, results: [...results.values()], couples, events };
+}
+
+/**
+ * Events for features added after task 05: exploring path (task 11), report
+ * scanner (task 12) and "Care near you". Uses its own random stream, so the
+ * people, results and figures above stay exactly as they were.
+ */
+function addLaterFeatureEvents({
+  seed,
+  people,
+  results,
+  viewMs,
+  add,
+}: {
+  seed: number;
+  people: PlannedPerson[];
+  results: Map<number, PlannedResult>;
+  viewMs: Map<number, number>;
+  add: (person: number, name: string, ms: number, props?: PlannedEvent['props']) => void;
+}) {
+  const r = rng(seed + 1);
+
+  // Path chosen at the end of onboarding: a result connected, or exploring.
+  // About a third of explorers later add a result.
+  for (const p of people) {
+    if (!p.onboardingCompletedAt) continue;
+    const done = p.onboardingCompletedAt.getTime();
+    if (results.has(p.index)) {
+      add(p.index, 'user_path_set', done, { path: 'result' });
+      continue;
+    }
+    add(p.index, 'user_path_set', done, { path: 'exploring' });
+    if (r.chance(p.reason === 'family_condition' ? 0.42 : 0.3)) {
+      const later = done + r.between(2, 40) * DAY;
+      add(p.index, 'exploring_result_added', later);
+      add(p.index, 'user_path_set', later, { path: 'result' });
+    }
+  }
+
+  // Report scanner: some people photograph their report after viewing the result.
+  for (const [idx, res] of results) {
+    const viewed = viewMs.get(idx);
+    if (viewed === undefined || !r.chance(0.28)) continue;
+    add(idx, 'scan_completed', viewed + r.between(0.05, 6) * DAY, {
+      seconds: Math.round(clamp(r.normal(24, 7), 9, 60)),
+      findings: r.int(1, 3),
+      flagged: res.flagged ? 1 : 0,
+      report_type: 'carrier_screening',
+    });
+  }
+
+  // Care near you: distance to the nearest verified professional, as a band only.
+  for (const [idx] of results) {
+    const viewed = viewMs.get(idx);
+    if (viewed === undefined || !r.chance(0.34)) continue;
+    const ms = viewed + r.between(0.1, 10) * DAY;
+    if (r.chance(0.06)) {
+      add(idx, 'nearby_location_method', ms, { method: 'denied' });
+      continue;
+    }
+    add(idx, 'nearby_location_method', ms, {
+      method: r.pick([
+        ['device', 0.55],
+        ['area', 0.3],
+        ['place', 0.15],
+      ] as const),
+      radius_km: 25,
+      nearest_band: r.pick([
+        ['lt5', 0.37],
+        ['5to10', 0.27],
+        ['10to25', 0.2],
+        ['25plus', 0.1],
+        ['none', 0.06],
+      ] as const),
+    });
+  }
 }

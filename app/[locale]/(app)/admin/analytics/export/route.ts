@@ -132,6 +132,29 @@ function reportRows(data: DashboardData, filters: Filters, t: T, synthetic: bool
     );
   }
 
+  const exploring = c('exploring.title');
+  rows.push(
+    [exploring, c('exploring.explorers'), '', v(data.exploring.explorers), '', c('csv.unitCount'), ''],
+    [exploring, c('exploring.tested'), '', v(data.exploring.tested), '', c('csv.unitCount'), ''],
+    [exploring, c('exploring.pct'), '', v(data.exploring.testedPct), '', c('csv.unitPercent'), ''],
+  );
+
+  const scans = c('scans.title');
+  rows.push(
+    [scans, c('scans.scanned'), '', v(data.scans.scanned), '', c('csv.unitCount'), ''],
+    [scans, c('scans.people'), '', v(data.scans.people), '', c('csv.unitCount'), ''],
+    [scans, c('scans.avg'), '', v(data.scans.avgSeconds), '', c('csv.unitSeconds'), ''],
+  );
+
+  const trend = c('trend.title');
+  for (const w of data.trend) {
+    rows.push(
+      [trend, c('trend.columns.signups'), w.weekStart, v(w.signups), '', c('csv.unitCount'), c('trend.columns.week')],
+      [trend, c('csv.understandingBefore'), w.weekStart, v(w.preScore), '', c('csv.unitPercent'), c('trend.columns.week')],
+      [trend, c('csv.understandingAfter'), w.weekStart, v(w.postScore), '', c('csv.unitPercent'), c('trend.columns.week')],
+    );
+  }
+
   const distance = c('distance.title');
   for (const row of data.distance) {
     const group = t(`distance.bands.${row.band}`);

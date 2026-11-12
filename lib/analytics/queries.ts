@@ -15,6 +15,7 @@ import {
   type KpiSet,
   type LearningModeKey,
 } from './types';
+import { trendWeeks } from './trend';
 
 /**
  * Reads for the programme dashboard. Every figure comes from the aggregate
@@ -66,7 +67,7 @@ export async function loadDashboard(
 ): Promise<DashboardData> {
   const args = { p_days: rangeDays(filters.range), p_centre: filters.centre };
 
-  const [kpis, funnel, modes, equity, exploring, scans, distance] = await Promise.all([
+  const [kpis, funnel, modes, equity, exploring, scans, distance, trends] = await Promise.all([
     supabase.rpc('analytics_kpis', args),
     supabase.rpc('analytics_funnel', args),
     supabase.rpc('analytics_learning_modes', args),
@@ -76,6 +77,8 @@ export async function loadDashboard(
     supabase.rpc('analytics_scans', args),
     // Care near you. Fails softly too.
     supabase.rpc('analytics_distance_to_care', args),
+    // "Understanding over time". Fails softly too.
+    supabase.rpc('analytics_trends', args),
   ]);
   // Function names only: error details could echo arguments.
   // "Exploring to tested" (task 11) fails softly: its figures show as hidden
@@ -138,6 +141,7 @@ export async function loadDashboard(
       const row = distanceRows.find((r) => r.band === band);
       return { band, searches: figure(row?.searches), people: figure(row?.people) };
     }),
+    trend: trendWeeks(trends.error ? [] : (trends.data ?? [])),
   };
 }
 

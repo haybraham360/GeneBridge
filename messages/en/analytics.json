@@ -161,7 +161,8 @@
     "notTracked": "Marriage outcomes are not tracked or used as a measure of success.",
     "group": "Group",
     "note": "Note",
-    "thisPeriod": "This period"
+    "thisPeriod": "This period",
+    "unitSeconds": "seconds"
   },
   "exploring": {
     "title": "Exploring to tested",
@@ -195,5 +196,29 @@
       "none": "None within the search distance"
     },
     "how": "Counts of nearby_location_method events. Each holds only the search method, the distance chosen and a distance band for the nearest verified professional found, never a location or area. Long distances and \"none\" show where in-person care is hard to reach. Bands with fewer than 10 people are hidden."
+  },
+  "trend": {
+    "title": "Understanding over time",
+    "subtitle": "Teach-back score before and after the result explainer, by the week people signed up",
+    "before": "Before explainer",
+    "after": "After explainer",
+    "summary": "Average gain across {weeks, plural, one {# week} other {# weeks}}",
+    "range": "Every shown week between {min} and {max}",
+    "signups": "Sign-ups per week",
+    "weekOf": "Week of {date}",
+    "gain": "Gain",
+    "columns": {
+      "week": "Week starting",
+      "signups": "Sign-ups",
+      "before": "Before",
+      "after": "After",
+      "gain": "Gain"
+    },
+    "how": "Each point is the people who signed up in that 7-day week, counted back from today. Scores are the share of teach-back answers correct before and after the result explainer, among people who answered both times. Weeks with fewer than 10 people are hidden and the line breaks there. Last 30 days shows 4 weeks, last 90 days 12 weeks, and all time the last 26 weeks."
+  },
+  "notEnough": {
+    "title": "Waiting for more people",
+    "body": "These figures appear once each group has at least 10 people. Until then nothing is shown, to protect privacy.",
+    "list": "Not shown yet"
   }
 }

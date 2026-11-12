@@ -63,6 +63,18 @@ export type DashboardData = {
   scans: { scanned: Figure; people: Figure; avgSeconds: Figure };
   /** Care near you: searches by distance to the nearest verified professional found. Hidden under 10 people per band. */
   distance: DistanceRow[];
+  /** Weekly sign-ups and teach-back scores, oldest week first. Each week hidden under 10 people. */
+  trend: TrendWeek[];
+};
+
+/** One full 7-day bucket counted back from now (weeksAgo 0 is the last 7 days). */
+export type TrendWeek = {
+  weeksAgo: number;
+  /** ISO date (YYYY-MM-DD) of the bucket's first day. */
+  weekStart: string;
+  signups: Figure;
+  preScore: Figure;
+  postScore: Figure;
 };
 
 export const distanceBands = ['lt5', '5to10', '10to25', '25plus', 'none'] as const;

@@ -58,6 +58,9 @@ begin
   if has_function_privilege('anon', 'public.analytics_kpis(integer, text)', 'execute') then
     raise exception 'anon can call analytics_kpis';
   end if;
+  if has_function_privilege('anon', 'public.analytics_trends(integer, text)', 'execute') then
+    raise exception 'anon can call analytics_trends';
+  end if;
   raise notice 'ok: private helpers are not reachable from the API';
 end;
 $$;
@@ -174,6 +177,27 @@ begin
       raise exception '%: empty language % not hidden: %', label, r.language, r;
     end if;
   end loop;
+
+  -- Everyone signed up 10 days ago: week 1 of the trend, every other week empty.
+  for r in select * from public.analytics_trends(30, c) loop
+    if r.weeks_ago = 1 then
+      if (r.signups is not null) <> people_shown
+         or (r.pre_score is not null) <> people_shown
+         or (r.post_score is not null) <> people_shown then
+        raise exception '%: trend week 1 wrong: %', label, r;
+      end if;
+    elsif r.signups is not null or r.pre_score is not null or r.post_score is not null then
+      raise exception '%: empty trend week % not hidden: %', label, r.weeks_ago, r;
+    end if;
+    if r.signups is not null and r.signups < 10 then
+      raise exception '%: trend week % shows a group under 10: %', label, r.weeks_ago, r.signups;
+    end if;
+  end loop;
+  if (select count(*) from public.analytics_trends(30, c)) <> 4
+     or (select count(*) from public.analytics_trends(90, c)) <> 12
+     or (select count(*) from public.analytics_trends(null, c)) <> 26 then
+    raise exception '%: trend should have 4, 12 and 26 full weeks', label;
+  end if;
 
   execute 'reset role';
   perform set_config('request.jwt.claims', '', true);
