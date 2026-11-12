@@ -67,12 +67,22 @@ export function ProNav({ verified }: { verified: boolean }) {
           href={href}
           aria-current={active ? 'page' : undefined}
           className={cn(
-            'flex min-h-11 items-center gap-3 rounded-xl px-3.5 text-sm font-semibold no-underline transition-colors',
-            active ? 'bg-ink text-white' : 'text-ink-soft hover:bg-brand-tint hover:text-ink',
+            'group flex min-h-11 items-center gap-3 rounded-xl px-3.5 py-2 text-[13.5px] leading-tight no-underline transition-colors duration-300',
+            active
+              ? 'bg-ink font-semibold text-white shadow-[0_6px_16px_rgba(20,20,20,0.18)]'
+              : 'font-medium text-ink/75 hover:bg-brand/7 hover:text-ink',
           )}
         >
-          <Icon aria-hidden="true" className={cn('size-5 flex-none', mirror && 'rtl:-scale-x-100')} strokeWidth={2} />
-          <span className="flex-1">{t(key)}</span>
+          <Icon
+            aria-hidden="true"
+            className={cn(
+              'size-4.5 flex-none transition-colors duration-300',
+              active ? 'text-brand' : 'text-ink/55 group-hover:text-brand-text',
+              mirror && 'rtl:-scale-x-100',
+            )}
+            strokeWidth={1.8}
+          />
+          <span className="flex-1 truncate py-0.5">{t(key)}</span>
           {locked ? (
             <>
               <Lock aria-hidden="true" className="size-4 flex-none opacity-70" strokeWidth={2} />
