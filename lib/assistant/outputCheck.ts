@@ -17,16 +17,16 @@ export type CheckProblem =
 
 const any = (...p: string[]) => new RegExp(p.join('|'), 'iu');
 
+/** Guardrail 1. Also used by `npm run lint:copy` on the static copy. */
+const directivePattern = any(
+  '\\byou (should|must|ought to|need to (marry|cancel|stop|get|do))\\b',
+  '\\bi (would )?(recommend|suggest|advise)\\b', '\\brecommended\\b', '\\bbest (option|choice|thing to do)\\b',
+  '\\bthe right (choice|decision) (is|would be)\\b', '\\bif i were you\\b',
+  'يجب (عليك|عليكم|ان تتزوج)', 'عليكم ان', 'انصح', 'ننصح', 'الخيار الافضل', 'افضل خيار', 'موصى به', 'لو كنت مكانك',
+);
+
 const checks: { problem: CheckProblem; pattern: RegExp }[] = [
-  {
-    problem: 'directive',
-    pattern: any(
-      '\\byou (should|must|ought to|need to (marry|cancel|stop|get|do))\\b',
-      '\\bi (would )?(recommend|suggest|advise)\\b', '\\brecommended\\b', '\\bbest (option|choice|thing to do)\\b',
-      '\\bthe right (choice|decision) (is|would be)\\b', '\\bif i were you\\b',
-      'يجب (عليك|عليكم|ان تتزوج)', 'عليكم ان', 'انصح', 'ننصح', 'الخيار الافضل', 'افضل خيار', 'موصى به', 'لو كنت مكانك',
-    ),
-  },
+  { problem: 'directive', pattern: directivePattern },
   {
     problem: 'marriage_advice',
     pattern: any(
@@ -81,6 +81,12 @@ export function statedChances(text: string): number[] {
     if (d > 0 && d <= 1000 && n <= d) found.push((100 * n) / d);
   }
   return found;
+}
+
+/** The directive wording found in the text ("you should", "ننصح"...), or null. */
+export function findDirective(text: string): string | null {
+  const match = prepare(text).match(directivePattern) ?? text.toLowerCase().match(directivePattern);
+  return match ? match[0] : null;
 }
 
 export type CheckResult = { ok: boolean; problems: CheckProblem[] };
