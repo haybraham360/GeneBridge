@@ -653,3 +653,65 @@ html[dir='rtl'] [class*='tracking-'] {
     transition: none !important;
   }
 }
+
+/*
+ * Auth panel DNA helix. One registered angle turns on the container; every
+ * rung derives its position from it with cos()/sin(), so the strands rotate
+ * as a true helix. Decorative only (aria-hidden). With reduced motion the
+ * angle stays at 0 and the helix is drawn still.
+ */
+@property --helix-a {
+  syntax: '<angle>';
+  inherits: true;
+  initial-value: 0deg;
+}
+
+@keyframes helix-turn {
+  to {
+    --helix-a: 360deg;
+  }
+}
+
+@keyframes helix-glow {
+  0%,
+  100% {
+    opacity: 0.55;
+    scale: 1;
+  }
+  50% {
+    opacity: 0.9;
+    scale: 1.08;
+  }
+}
+
+@utility helix {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: helix-turn 14s linear infinite;
+  }
+  & .helix-rung {
+    --p: calc(var(--i) * 26deg + var(--helix-a));
+    --depth: sin(var(--p));
+  }
+  & .helix-bar {
+    scale: 1 cos(var(--p));
+    opacity: calc(0.25 + 0.2 * abs(cos(var(--p))));
+  }
+  & .helix-dot {
+    translate: 0 calc(cos(var(--p)) * var(--r));
+    scale: calc(0.7 + 0.3 * var(--depth));
+    opacity: calc(0.6 + 0.4 * var(--depth));
+    z-index: calc(2 + round(var(--depth)));
+  }
+  & .helix-dot-b {
+    translate: 0 calc(cos(var(--p)) * var(--r) * -1);
+    scale: calc(0.7 - 0.3 * var(--depth));
+    opacity: calc(0.6 - 0.4 * var(--depth));
+    z-index: calc(2 - round(var(--depth)));
+  }
+}
+
+@utility helix-glow {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: helix-glow 6s ease-in-out infinite;
+  }
+}

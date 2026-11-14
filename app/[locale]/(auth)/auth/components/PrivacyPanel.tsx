@@ -1,5 +1,6 @@
 import { Check, Lock } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { DnaHelix } from './DnaHelix';
 
 /**
  * Orange "Private by design" panel. Beside the form on wide screens; below it
@@ -15,7 +16,13 @@ export function PrivacyPanel() {
   ] as const;
 
   return (
-    <aside className="flex flex-[1_1_420px] flex-col justify-center gap-8 bg-brand px-[clamp(24px,5vw,72px)] py-14 text-ink">
+    <aside className="relative isolate flex flex-[1_1_420px] flex-col justify-center gap-8 overflow-hidden bg-brand bg-[radial-gradient(70%_60%_at_100%_0%,rgba(255,116,64,0.9),transparent_70%),radial-gradient(60%_50%_at_0%_100%,rgba(194,65,12,0.35),transparent_70%)] px-[clamp(24px,5vw,72px)] py-14 text-ink">
+      {/* Faint base-pair dot grid, then the turning helix above the heading. */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 -z-10 bg-[radial-gradient(rgba(20,20,20,0.12)_1px,transparent_1.5px)] [background-size:22px_22px] [mask-image:linear-gradient(to_bottom,transparent,black_30%,black_70%,transparent)]"
+      />
+      <DnaHelix className="relative hidden h-[140px] w-full max-w-[460px] -rotate-[6deg] motion-safe:animate-fade-up min-[900px]:block rtl:rotate-[6deg]" />
       <h2 className="font-display text-[clamp(36px,4vw,52px)] leading-[1.05] font-extrabold tracking-[-0.03em] motion-safe:animate-fade-up motion-safe:[animation-delay:120ms]">
         {t('heading')}
       </h2>
