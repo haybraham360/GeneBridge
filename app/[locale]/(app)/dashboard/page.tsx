@@ -20,7 +20,8 @@ import { loadCareFacts } from "@/lib/care/tracker";
 import { loadNotifications } from "@/lib/notifications/server";
 import { currentPerson } from "@/lib/profile/currentPerson";
 import { createClient, getAuthClaims } from "@/lib/supabase/server";
-import { ExploreHome } from "@/components/home/ExploreHome";
+import { AddResultPanel } from "@/components/home/AddResultPanel";
+import { NotDiagnosisBanner } from "@/components/home/NotDiagnosisBanner";
 import { FollowingCard } from "@/components/home/FollowingCard";
 import { listConditions } from "@/lib/conditions/catalogue";
 import { loadUserPath } from "@/lib/user/path";
@@ -50,30 +51,10 @@ export default async function Page({ params, searchParams }: PageProps<'/[locale
   ]);
   const catalogue = listConditions(locale);
 
-  // Exploring path (task 11): no result yet; Home is shaped by the
-  // conditions they follow, and never presents one as a diagnosis.
-  if (path.path === "exploring") {
-    const exploringUserId = claims?.sub;
-    return (
-      <>
-        {exploringUserId ? (
-          <LiveRefresh channel={`home-bookings-${exploringUserId}`} watch={[{ table: "bookings", filter: `patient_id=eq.${exploringUserId}` }]} />
-        ) : null}
-        {nextBooking ? (
-          <div className="px-[clamp(16px,3vw,40px)] pt-7">
-            <NextSession booking={nextBooking} />
-          </div>
-        ) : null}
-      <ExploreHome
-        locale={locale}
-        firstName={person.firstName}
-        path={path}
-        catalogue={catalogue}
-        openClaim={addResult === "1"}
-      />
-      </>
-    );
-  }
+  // One Home for everyone (design Home). Without a result yet (exploring
+  // path, task 11) the cards show empty states, the "not a diagnosis" banner
+  // stays on top (guardrail 14) and they can add a result here.
+  const exploring = path.path === "exploring";
   const summary = await loadHomeSummary(supabase, path);
   const byId = new Map(catalogue.map((c) => [c.id, c]));
   const followedItems = path.followed.flatMap((f) => {
@@ -108,6 +89,8 @@ export default async function Page({ params, searchParams }: PageProps<'/[locale
           <ListenPill text={listenText} play={t("shared.listen")} stop={tc("listen.stop")} />
         </header>
 
+        {exploring ? <NotDiagnosisBanner path={path} catalogue={catalogue} /> : null}
+
         {userId ? <PatientNotifications items={notifications} userId={userId} /> : null}
         {userId ? <LiveRefresh channel={`home-bookings-${userId}`} watch={[{ table: "bookings", filter: `patient_id=eq.${userId}` }]} /> : null}
 
@@ -117,6 +100,8 @@ export default async function Page({ params, searchParams }: PageProps<'/[locale
         <section aria-label={t("sections.status")} className="rise-in" style={order(2)}>
           <SummaryCards summary={summary} catalogue={catalogue} />
         </section>
+
+        {exploring && addResult === "1" ? <AddResultPanel /> : null}
 
         <ToolSpotlight style={order(3)} />
 
@@ -130,7 +115,7 @@ export default async function Page({ params, searchParams }: PageProps<'/[locale
             followed={followedItems}
             catalogue={catalogue}
             focusId={path.focus?.conditionId ?? null}
-            title={t("explore.resultFollowing.title")}
+            title={exploring ? undefined : t("explore.resultFollowing.title")}
           />
         ) : null}
       </div>

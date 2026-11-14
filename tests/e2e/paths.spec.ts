@@ -74,7 +74,8 @@ test('exploring: "I think I may have a condition" + hearing loss, then adding a 
   await expect(page).toHaveURL(/\/en\/dashboard$/);
 
   // Exploring Home: never a diagnosis.
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Welcome, Sara');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Good morning, Sara');
+  await expect(page.getByRole('heading', { name: 'Your care journey' })).toBeVisible();
   const banner = page.getByTestId('not-diagnosis-banner');
   await expect(banner).toContainText('because you think you may have it');
   await expect(banner).toContainText("This isn't a diagnosis.");
@@ -87,12 +88,12 @@ test('exploring: "I think I may have a condition" + hearing loss, then adding a 
 
   // Adding a result switches Home to the result view and keeps the condition.
   await page.goto('/en/dashboard');
-  await page.getByRole('button', { name: /Already have a result\?/ }).click();
+  await page.getByRole('link', { name: 'Add your result' }).click();
   await page.getByLabel('Screening reference number').fill(reference);
   await page.getByRole('button', { name: 'Connect result' }).click();
   await expect(page.getByTestId('not-diagnosis-banner')).toHaveCount(0);
   await expect(page.getByRole('heading', { name: "Conditions you're following" })).toBeVisible();
-  await expect(page.getByText('Congenital hearing loss (GJB2)')).toBeVisible();
+  await expect(page.getByText('Congenital hearing loss (GJB2)', { exact: true })).toBeVisible();
   await expect(page.getByRole('link', { name: 'My results' })).toBeVisible();
 });
 

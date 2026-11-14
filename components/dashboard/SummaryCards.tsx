@@ -43,7 +43,7 @@ export default async function SummaryCards({ summary, catalogue }: { summary: Ho
           : r.kind === "flagged"
             ? // Guardrail 4: a flagged result is never explained here.
               { key: "result", pill: t("result.pill"), pillClass: pills.result, title: t("result.flagged"), body: t("result.flaggedBody"), link: t("result.linkCounsellor"), href: "/dashboard/counsellor" }
-            : { key: "result", pill: t("result.pill"), pillClass: pills.result, title: t("result.missing"), body: t("result.missingBody"), link: t("result.linkAdd"), href: "/onboarding" };
+            : { key: "result", pill: t("result.pill"), pillClass: pills.result, title: t("result.missing"), body: t("result.missingBody"), link: t("result.linkAdd"), href: "/dashboard?addResult=1" };
 
   const c = summary.couple;
   const couple: Card =
