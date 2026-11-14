@@ -25,13 +25,36 @@ export function uaePassMockEnabled(): boolean {
   return isDemoMode();
 }
 
+/**
+ * One-click demo accounts on the sign-in page ("Try the prototype"), for
+ * judges and visitors: one patient and one verified genetic counsellor.
+ */
+export const demoAccounts = ['mariam', 'amaka'] as const;
+export type DemoAccount = (typeof demoAccounts)[number];
+
+export function isDemoAccount(value: unknown): value is DemoAccount {
+  return typeof value === 'string' && (demoAccounts as readonly string[]).includes(value);
+}
+
 export async function signInWithUaePass(
   supabase: SupabaseClient,
   identity: UaePassIdentity,
 ): Promise<{ ok: true } | { ok: false }> {
-  if (!uaePassMockEnabled()) return { ok: false };
+  return signInAsPersona(supabase, identity);
+}
 
-  const persona = demoUsers.find((u) => u.key === identity);
+/**
+ * Signs in a seeded synthetic persona without a password: mints a one-time
+ * sign-in token on the server and redeems it straight away, so the session
+ * cookie is set for the browser. Demo mode only.
+ */
+export async function signInAsPersona(
+  supabase: SupabaseClient,
+  key: UaePassIdentity | DemoAccount,
+): Promise<{ ok: true } | { ok: false }> {
+  if (!isDemoMode()) return { ok: false };
+
+  const persona = demoUsers.find((u) => u.key === key);
   if (!persona) return { ok: false };
 
   const { data, error } = await createAdminClient().auth.admin.generateLink({

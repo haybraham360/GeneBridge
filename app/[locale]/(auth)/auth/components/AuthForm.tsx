@@ -5,13 +5,15 @@ import { useLocale, useTranslations } from 'next-intl';
 import { Button, buttonClasses } from '@/components/ui/Button';
 import { OptionCards } from '@/components/ui/OptionCards';
 import { Link, useRouter } from '@/i18n/navigation';
-import { completeAuth, guestSignIn, prepareAuth, uaePassSignIn } from '@/lib/auth/actions';
+import { completeAuth, demoSignIn, guestSignIn, prepareAuth, uaePassSignIn } from '@/lib/auth/actions';
+import type { DemoAccount } from '@/lib/auth/uaePass';
 import type { FinishResult } from '@/lib/auth/complete';
 import { isRateLimited, sendErrorKey, verifyErrorKey, type AuthErrorKey } from '@/lib/auth/errors';
 import { createClient } from '@/lib/supabase/browser';
 import { cn } from '@/lib/cn';
 import { AuthTabs, panelId, tabId, type AuthMode } from './AuthTabs';
 import { CODE_LENGTH, CodeInput, type CodeInputHandle } from './CodeInput';
+import { DemoAccounts } from './DemoAccounts';
 import { Divider } from './Divider';
 import { FieldError } from './FieldError';
 import { PasswordField } from './PasswordField';
@@ -24,7 +26,7 @@ type Field = 'phone' | 'email' | 'password' | 'consent' | 'code';
 /** "How will you use GeneBridge?" (task 14). The server never accepts any other value. */
 type AccountType = 'individual' | 'professional';
 const accountTypes: AccountType[] = ['individual', 'professional'];
-type Errors = Partial<Record<Field | 'uaePass' | 'google' | 'guest', string>>;
+type Errors = Partial<Record<Field | 'uaePass' | 'google' | 'guest' | 'demo', string>>;
 
 const RESEND_SECONDS = 30;
 const emptyCode = () => Array<string>(CODE_LENGTH).fill('');
@@ -49,6 +51,7 @@ export function AuthForm({
   idle,
   callbackError,
   uaePassEnabled,
+  demoEnabled,
   googleEnabled,
   phoneEnabled,
   guestEnabled,
@@ -59,6 +62,8 @@ export function AuthForm({
   /** Set when the email link or Google sign-in came back with an error. */
   callbackError: 'link' | 'google' | null;
   uaePassEnabled: boolean;
+  /** "Try the prototype" one-click demo accounts (demo mode only). */
+  demoEnabled: boolean;
   googleEnabled: boolean;
   /** Phone code sign-in. Off until an SMS setup is ready (PHONE_AUTH_ENABLED). */
   phoneEnabled: boolean;
@@ -92,6 +97,7 @@ export function AuthForm({
   const [busy, setBusy] = useState(false);
   const [resendIn, setResendIn] = useState(0);
   const [uaePassOpen, setUaePassOpen] = useState(false);
+  const [demoPending, setDemoPending] = useState<DemoAccount | null>(null);
   /** Bumped each time the consent box is missed, to replay its nudge. */
   const [consentNudge, setConsentNudge] = useState(0);
 
@@ -360,6 +366,24 @@ export function AuthForm({
     } catch {
       setBusy(false);
       setErrors({ guest: t('guest.failed') });
+    }
+  };
+
+  /** One click, no password: a seeded synthetic account (demo mode only). */
+  const signInToDemo = async (account: DemoAccount) => {
+    setBusy(true);
+    setDemoPending(account);
+    setErrors({});
+    try {
+      const result = await demoSignIn({ account, next });
+      if (result.status === 'done') return finish(result);
+      setBusy(false);
+      setDemoPending(null);
+      setErrors({ demo: t('demo.failed') });
+    } catch {
+      setBusy(false);
+      setDemoPending(null);
+      setErrors({ demo: t('demo.failed') });
     }
   };
 
@@ -686,6 +710,17 @@ export function AuthForm({
   } else {
     body = (
       <>
+        {demoEnabled ? (
+          <>
+            <DemoAccounts
+              busy={busy}
+              pending={demoPending}
+              error={errors.demo}
+              onChoose={(account) => void signInToDemo(account)}
+            />
+            <Divider>{t('guest.divider')}</Divider>
+          </>
+        ) : null}
         <AuthTabs mode={mode} onChange={changeMode} />
         <div
           id={panelId}

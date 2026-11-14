@@ -13,6 +13,7 @@ import {
   phoneSignInAvailable,
 } from '@/lib/auth/providers';
 import { uaePassMockEnabled } from '@/lib/auth/uaePass';
+import { isDemoMode } from '@/lib/demo/mode';
 import { createClient } from '@/lib/supabase/server';
 import { AuthForm } from './components/AuthForm';
 import { PrivacyPanel } from './components/PrivacyPanel';
@@ -71,6 +72,7 @@ export default async function AuthPage({ params, searchParams }: PageProps<'/[lo
             idle={query.reason === IDLE_REASON}
             callbackError={query.error === 'link' || query.error === 'google' ? query.error : null}
             uaePassEnabled={uaePassMockEnabled()}
+            demoEnabled={isDemoMode()}
             googleEnabled={googleEnabled}
             phoneEnabled={phoneEnabled}
             guestEnabled={guestEnabled}

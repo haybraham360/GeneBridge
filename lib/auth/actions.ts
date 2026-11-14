@@ -9,11 +9,11 @@ import { finishSignIn, setPendingAuth, type FinishResult } from './complete';
 import type { AuthMethod } from './events';
 import { destinationProfile } from './destination';
 import { destinationFor, safeNextPath } from './routes';
-import { isUaePassIdentity, signInWithUaePass } from './uaePass';
+import { isDemoAccount, isUaePassIdentity, signInAsPersona, signInWithUaePass } from './uaePass';
 
 type PrepareInput = {
   mode: 'signup' | 'signin';
-  method: Exclude<AuthMethod, 'uae_pass'>;
+  method: Exclude<AuthMethod, 'uae_pass' | 'demo'>;
   consent: boolean;
   /** "How will you use GeneBridge?" on Create account. Never a role. */
   accountType?: string;
@@ -70,6 +70,32 @@ export async function uaePassSignIn(input: {
 
   const supabase = await createClient();
   const result = await signInWithUaePass(supabase, input.identity);
+  if (!result.ok) return { status: 'error' };
+  return finishSignIn(supabase);
+}
+
+/**
+ * "Try the prototype" one-click demo accounts (demo mode only). The browser
+ * sends a demo account key only, never a role; the seeded personas already
+ * have consent and finished onboarding, so this is always a sign-in.
+ */
+export async function demoSignIn(input: {
+  account: string;
+  next?: string | null;
+}): Promise<FinishResult | { status: 'error' }> {
+  if (!isDemoAccount(input.account)) return { status: 'error' };
+
+  await setPendingAuth({
+    mode: 'signin',
+    method: 'demo',
+    consent: false,
+    accountType: 'individual',
+    next: safeNextPath(input.next),
+    locale: (await getLocale()) === 'en' ? 'en' : 'ar',
+  });
+
+  const supabase = await createClient();
+  const result = await signInAsPersona(supabase, input.account);
   if (!result.ok) return { status: 'error' };
   return finishSignIn(supabase);
 }

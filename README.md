@@ -44,7 +44,7 @@ Everything works without these. Each one only upgrades a feature.
 npm run seed:auth && npm run seed:results
 ```
 
-Set `NEXT_PUBLIC_DEMO_MODE=true`, then on the sign-in page choose **Continue with UAE PASS** and pick a persona. All data is synthetic.
+Set `NEXT_PUBLIC_DEMO_MODE=true`. The sign-in page then shows **Try the prototype** with two one-click accounts, no password: **Mariam · patient** and **Dr. Amaka Okoro · genetic counsellor** (for judges and visitors). For the other personas, choose **Continue with UAE PASS** and pick one. All data is synthetic.
 
 | Persona | Role | Lands on |
 |---|---|---|
